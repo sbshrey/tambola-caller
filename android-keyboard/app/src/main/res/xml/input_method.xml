@@ -1,0 +1,5 @@
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="io.github.sbshrey.tambola.keyboard.MainActivity"
+    android:supportsSwitchingToNextInputMethod="true">
+    <subtype android:label="@string/keyboard_language" android:imeSubtypeLocale="en_IN" android:imeSubtypeMode="keyboard" android:isAsciiCapable="false" />
+</input-method>

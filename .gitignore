@@ -7,3 +7,8 @@ node_modules/
 .env.*
 !.env.example
 audio/**/*.tmp
+android-keyboard/.gradle/
+android-keyboard/**/build/
+android-keyboard/local.properties
+android-keyboard/*.jks
+android-keyboard/*.keystore

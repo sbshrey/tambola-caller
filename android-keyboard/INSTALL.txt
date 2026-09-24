@@ -1,0 +1,34 @@
+TAMBOLA KEYBOARD 1.0.0 - ANDROID 8 OR NEWER
+
+ONE-TIME SETUP (on the phone with WhatsApp)
+1. Download and open Tambola-Keyboard-1.0.0.apk.
+2. If Android asks, allow installation from the browser/files app you used.
+3. Open Tambola Keyboard. Tap "1. Enable Tambola Keyboard" and turn it on.
+   Android shows its standard warning for all keyboards. This app has no
+   Internet permission and does not save your message text.
+4. Return and tap "2. Choose Tambola Keyboard". Select Tambola Keyboard.
+5. Tap the practice message box, then "Next number" on the keyboard.
+   "Clear practice message" lets you try again. Practice does not affect
+   the live game or send anything to WhatsApp.
+
+PLAY IN YOUR WHATSAPP GROUP
+Open the right group, tap its empty message box, and select Tambola Keyboard.
+Tap "Next number", then WhatsApp's Send button. Repeat for each call.
+The number appears as digit emojis. Nobody else needs to install anything.
+
+"Insert again" repeats the latest call without drawing another number.
+Send or clear an existing draft before calling the next number.
+"ABC" opens the keyboard picker so you can type a normal message.
+"Board & setup" shows recent calls, the board, Undo and New game.
+Called numbers are saved on this phone. Nothing is sent automatically.
+
+This keyboard runs a separate round from the Tambola website.
+Use the keyboard as the only caller for the whole game.
+Try your own WhatsApp chat first, then start a new live game for the group.
+Undo/New game do not remove messages already sent to WhatsApp.
+
+Updates: install a newer signed APK over this app to keep the saved game.
+Uninstalling or clearing app data removes saved rounds.
+
+Guide: https://github.com/sbshrey/tambola-caller/tree/main/android-keyboard
+Downloads: https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.0.0
