@@ -1,0 +1,558 @@
+{
+  "date": "2026-09-24T02:59:47.574Z",
+  "model": "gpt-4o-mini-transcribe",
+  "note": "Automated transcription check; no expected wording or number was supplied to the model. This is not a human voice-quality or phone-delivery test.",
+  "clips": [
+    {
+      "number": 1,
+      "sha256": "d32b44b34d1b4f0a8ee9a478b9e901fc3bb6c2451ec355c7a5d3986cc5f99637",
+      "transcript": "Kelly's Eye, single number one, one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 2,
+      "sha256": "d2afa47d98059aa90b598527eb0f14eb07434da3c3d4ee1de31fca96d1011e2f",
+      "transcript": "One little duck, single number two, two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 3,
+      "sha256": "8f923d6cca166f1ad6b276526bf93e258ce37fc5dba678e65a3bdba131c7895a",
+      "transcript": "Cup of tea. Single number three. Three.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 4,
+      "sha256": "fa1f229a4468e5ed38b75d3487e5a94d8e6ac0214fab8701e74cf74cd8cb0272",
+      "transcript": "Knock at the door. Single number four. Four.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 5,
+      "sha256": "9a9c4dfb9e1adddddfaa77a834d1d0bcaa4070b897eb649ebd17a5768f27eb9b",
+      "transcript": "High five. Single number five. Five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 6,
+      "sha256": "cc20705e2c04a1ab44a702c8779f69cd9ff49a5d18d7aeb20a5441d6953de4d0",
+      "transcript": "Half a dozen. Single number six.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 7,
+      "sha256": "d593c59c7bf710cc78e547bc15bccf96ba972498c1f03150e4862a11fafd55e6",
+      "transcript": "Lucky seven. Single number seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 8,
+      "sha256": "561ddc23fe724cf96e2cd1d04d67b89e33a47b24298dcd5242115fdfa2638583",
+      "transcript": "Garden Gate, Single number 888.",
+      "expectedNumberDetected": false,
+      "secondCheck": {
+        "model": "gpt-4o-transcribe",
+        "transcript": "Garden Gate, Single Number 8, 8.",
+        "expectedNumberDetected": true
+      }
+    },
+    {
+      "number": 9,
+      "sha256": "f6632fec3e205b6b8d24657c1afb150f8f7298227c1b0424b4a725eeda07110c",
+      "transcript": "Single number nine. Nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 10,
+      "sha256": "cf8a87a32d54a8e4387a67265118db83280eaf857846e8ee18780f9935f4e6ab",
+      "transcript": "A perfect ten. Number one, zero, ten.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 11,
+      "sha256": "31cd2e1b7701f9e128f7775d16ce9fc924e28bf4d9bf3f79c860c90dfcac5476",
+      "transcript": "Legs eleven, number one, one, eleven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 12,
+      "sha256": "7716c2ee93b86f238835563c154ce7f0400ea50c1ea828046c8a2eee111bf224",
+      "transcript": "one dozen, number one-two, twelve",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 13,
+      "sha256": "bb64a962810012f4d83755a8087dcd8cb236f103d5246f8112202bec226877df",
+      "transcript": "Lucky thirteen. Number one, three, thirteen.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 14,
+      "sha256": "5bf5029ceed59eb56fa835af714d9c760c6e0df4702ed4662fe030353db3e01a",
+      "transcript": "Valentine's Day, number one, four, fourteen.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 15,
+      "sha256": "b0b05cbfaf6777f45cbb4aa08bf8dda3f79988a4d50574a9ea01ca702f2a8cbb",
+      "transcript": "Independence Day, number one, five, fifteen.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 16,
+      "sha256": "0e8b246e9a16ca891dfbfbc052c28c2fc2def52b2e69309a98fe9be9d00f59df",
+      "transcript": "Sweet sixteen. Number one, six. Sixteen.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 17,
+      "sha256": "74c1a5ccdd61febf8031ef3d442d2f3e93c48f12c9521b54fa708fe4a38e2a6d",
+      "transcript": "Number one, seven, seventeen.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 18,
+      "sha256": "cb73a265de21e6d76b99b88f4c7a8cc37746908a6c8e6a20a20c9ba9a7bbd640",
+      "transcript": "Coming of age, number one-eight, eighteen.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 19,
+      "sha256": "479128d9442b0466846dd4811830b3139b4bf2324ee3438134bc827cbc221df7",
+      "transcript": "Goodbye, Teens, Number 1-9-19",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 20,
+      "sha256": "ff74ff1ec02dff5a74f5eef5f0c341ca42a693a3de0ad1e4b6668a8a8e6adeb6",
+      "transcript": "One score. Number two zero. Twenty.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 21,
+      "sha256": "c0b318247b3d0828a0bf22aca7e3512615f66de9de8350347730ad8e56bee6ce",
+      "transcript": "Key to the door, number two, one, twenty-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 22,
+      "sha256": "9fb5b9e3d34b14aaac48d30818389b536c3599bd1facf6d02dce6012b8f6886d",
+      "transcript": "Two little ducks, number two, two, twenty-two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 23,
+      "sha256": "418e9b52c66805e46b2763eeb55626203ad9b3a9c27ce3ab7c0196615718625d",
+      "transcript": "Number two, three, twenty-three.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 24,
+      "sha256": "123ac401e69f95122b5494fb9960d7e60984da85ef1eb024fecdebb44c3fe58a",
+      "transcript": "Two dozen. Number two, four, twenty-four.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 25,
+      "sha256": "ea41fab7521206e787354e97993232585fc2862ebb0dd4ac3d624cafd44baf1a",
+      "transcript": "Silver Jubilee, number two five, twenty-five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 26,
+      "sha256": "d33b0982009016b50f9dc40c8c8c0ca4194577167a98cb99bda0340f5e8e4e53",
+      "transcript": "Republic Day, number 26",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 27,
+      "sha256": "5cb529cf53ccf1a08fecc1fa0b609e7ed1772fc8f1cad7206e36c8b31bc981e9",
+      "transcript": "Number two, seven, twenty-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 28,
+      "sha256": "3083291245b5014bd9024407fed8295ea4ce75a1e557de544faebf3e88748bdb",
+      "transcript": "Number two, eight, twenty-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 29,
+      "sha256": "14b029a35146c3dee1a935b8f037bd34021cb9587f4614c369a40dc3d5310442",
+      "transcript": "Number two, nine, twenty-nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 30,
+      "sha256": "4ffa6be3ee790357abd780592bde7694df306c67defa5b0064003b2b5825d77f",
+      "transcript": "number three zero, thirty",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 31,
+      "sha256": "0e6ab228d7fe250288cb97aae6747de662478bc95f1758e27c727aaf98e9d082",
+      "transcript": "Number three, one, thirty-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 32,
+      "sha256": "1f95832edc76962fc8cda02fd89e82f7367024b9df236411c643711792c0db80",
+      "transcript": "All the teeth. Number three, two, thirty-two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 33,
+      "sha256": "784e3eff2f9c634e3fcb76757f562a6e0e976d852739d4437423e3f611a9c087",
+      "transcript": "All the threes: number three, three, thirty-three.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 34,
+      "sha256": "85dc5b6a74562105b820aa8eabcc6197ae2fdac5d58947be6680c1b485dc3a15",
+      "transcript": "Number three, four, thirty-four.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 35,
+      "sha256": "d3354bb9126d5bbf04991c6893010e0f2b75091493eab19d5dda8cf4c10f5309",
+      "transcript": "number three, five, thirty-five",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 36,
+      "sha256": "1e559e323ad3f907e56806484eab1d8f0dff44930d8af90f44745f4b66aaebc3",
+      "transcript": "Three dozen. Number three, six, thirty-six.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 37,
+      "sha256": "19236eb80a06f889370f2a2fa8a0f28b0c902ad4c8f7f8e9a9f4e151a4928ad2",
+      "transcript": "Number three, seven, thirty-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 38,
+      "sha256": "d670f86f6b66b26adfa9857c0d1274bb073373246ac5ff27d2744d767fd15c9f",
+      "transcript": "Number three, eight, thirty-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 39,
+      "sha256": "4cc85daeac42c4a7b7c58f1b702c44d34bd89edec86c23258cd456dd3418c7c7",
+      "transcript": "Number three, nine, thirty-nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 40,
+      "sha256": "a5f16606527e94e136a96743eedbed1ae76688b1ffcbd7d931465018b3210d54",
+      "transcript": "Life begins at 40. Number four, zero. Forty.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 41,
+      "sha256": "6cc23342f4c867240232932ff8c2b1568d3ee552c6c0d1d0b76a489ea4b28e22",
+      "transcript": "Number four, one, forty-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 42,
+      "sha256": "0f52186e2a188c5e6b83f9075f302a88c8643bfc07b14ce6f78f06264dff378c",
+      "transcript": "Number four, two, forty-two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 43,
+      "sha256": "f2df839c8a4278a0f854cc7596318bcebee37a9f36257a4c412d5b7b8ceef3c1",
+      "transcript": "number four three, forty-three",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 44,
+      "sha256": "9931f62695308680c3eeed64c95f704c90ff8b7be78c3d8485c683de0271d23a",
+      "transcript": "All the fours: number four, four, forty-four.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 45,
+      "sha256": "328846318bd887dc0d7482b7704ed349162296ea23b6bd67875adc17a94bd22c",
+      "transcript": "Halfway there. Number four-five, forty-five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 46,
+      "sha256": "bdae97ac39795f3a0f395b86cab7609e0b374de1131e43b4d505e7515d8eb64d",
+      "transcript": "Number four, six, forty-six.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 47,
+      "sha256": "58880e1879e1b4b997a5ced18bd751b3df7f56b6cf41a55dd0fec75c96479548",
+      "transcript": "Number forty-seven. Forty-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 48,
+      "sha256": "1f8469d10624c81a34d7762096679db1d6dc0df02ef05e8b4570e2b42aa1578e",
+      "transcript": "Four dozen, number four, eight, forty-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 49,
+      "sha256": "230e14af52b3caa1635868500c8d0fbc525043854a91b249e864ab25b0d4e8f5",
+      "transcript": "Number four, nine, forty-nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 50,
+      "sha256": "52ec312c9afa962eef69c724097d8de24cda9b87f29bfeb31919121d91c32669",
+      "transcript": "Half a century. Number five, zero. Fifty.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 51,
+      "sha256": "0888fd6ab277b8ae13a53a705fd7935a910a1b1ba190ba71a6aa4df7a781d04e",
+      "transcript": "Number five, one, fifty-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 52,
+      "sha256": "59fe42228ee46c9429f03bfbd2f704fcb8962ed21c649fd7f100d87f958cd1e1",
+      "transcript": "A full deck, number 52.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 53,
+      "sha256": "acaa20aa63a8bd2cdc688dc0f121945fe16507b0ad55e030bbc40754e6cefdad",
+      "transcript": "Number five, three, fifty-three.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 54,
+      "sha256": "51f160340fd353246fd1a72661db8e70775b1baee1ae8150151d4b20c10f3b50",
+      "transcript": "number five four fifty-four",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 55,
+      "sha256": "a8437afc423d1a81a520dedeb735d557cfd4ecae559fba814079aa29f3a3fe56",
+      "transcript": "All the fives: number five, five, fifty-five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 56,
+      "sha256": "5d80c39e9ab6801e9f54f9772030f9f9bf28285531ade052e0db7d4552dc82fb",
+      "transcript": "Number five, six, fifty-six.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 57,
+      "sha256": "f8b46d086f753cf72d2d3f65da752f16fe5890de25d6506493d58187f17da24f",
+      "transcript": "Number five, seven, fifty-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 58,
+      "sha256": "90ad591064c800183fa762e9c9db60a431c08c11ffc448d4ff254e8cdc8813ba",
+      "transcript": "Number five. Eight. Fifty-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 59,
+      "sha256": "6c74ffadda81413158d8607fb82b345fcf4c914da61c710efc14d907ab54bf3a",
+      "transcript": "Number five, nine, fifty-nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 60,
+      "sha256": "a4ec9a974532934ad6402af3548b84ffbee84cd2b37e460e639ff179967c0961",
+      "model": "gpt-4o-transcribe",
+      "transcript": "Five dozen. Number six zero. The number is sixty.",
+      "expectedNumberDetected": true,
+      "retakeNote": "Initial take did not clearly transcribe the final full number; regenerated with explicit wording."
+    },
+    {
+      "number": 61,
+      "sha256": "b48ed1fee743e33ea8c1f5f3d8af196ce9796cffef230bfa108dd38c7e16d6ef",
+      "transcript": "Number six, one, sixty-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 62,
+      "sha256": "c3648aa704c409635e86eb6ced1116faebe5cff03238c09ba1de934bc8903132",
+      "transcript": "number six to sixty-two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 63,
+      "sha256": "637e0c252a904bdf5355ccba09ad73d84969015ee6a39ef89140977cc7c8edad",
+      "transcript": "Number six, three, sixty-three.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 64,
+      "sha256": "a2df32b8f636f433c87eac871253ab70d0097cc4dfc356bb25e7d5b3b0848e20",
+      "transcript": "Number six, four, sixty-four.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 65,
+      "sha256": "01dd78c35bd03a683e123deaa79a58bf67345a65c2775f7f3d7bbf85d717d70d",
+      "transcript": "Number six, five, sixty-five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 66,
+      "sha256": "fd0eee73030edb1cc3f434a56c4f5e13bc306554d073d8d01c63ab0295b7f4f3",
+      "model": "gpt-4o-transcribe",
+      "transcript": "All the sixes, number six six, the number is sixty-six.",
+      "expectedNumberDetected": true,
+      "retakeNote": "Initial take did not clearly transcribe the final full number; regenerated with explicit wording."
+    },
+    {
+      "number": 67,
+      "sha256": "64bd71602501a45de60431fb6a97976c3e207fb6b372a84a4736daf53c2e7315",
+      "transcript": "Number six. Seven. Sixty-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 68,
+      "sha256": "cb40b962c7e19ff3dfcabcec9c7f630c42720a6b6ded45d56e3c885145638c41",
+      "transcript": "Number six, eight, sixty-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 69,
+      "sha256": "a9a885e5873f645e01842407ec7cb9f7fe1b00d5ecd9019b70962edd6fb86de1",
+      "transcript": "Number six, nine, sixty-nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 70,
+      "sha256": "dfb9153c00d482dba4d63f44e5d96784068c9127956aff2a77b0f50785a23177",
+      "transcript": "number seven, zero, seventy",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 71,
+      "sha256": "58088d1234a5a4581c9437d5be9761dac43a8e297112e2eb23ac55ffca68203d",
+      "transcript": "Number seven, one, seventy-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 72,
+      "sha256": "30867a84dc7f3a85cb0f98c02f5057670986ca0ad8a71a198132cc4310e9e68a",
+      "transcript": "Six dozen. Number seven to seventy-two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 73,
+      "sha256": "0af0fef513b166e0a569ad384ba982a907c5999e42af1a639c019ece5f20a49c",
+      "transcript": "Number seven, three. Seventy-three.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 74,
+      "sha256": "10700c622216c91c0e565b77496fd8d13d42acdae2cffd3adedac4fae6a202f3",
+      "transcript": "number seven four, seventy-four",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 75,
+      "sha256": "52a0eebb9f9f3119e86033a978c48720daa8dc48c191c82a841e46b763512bf0",
+      "transcript": "Diamond Jubilee, number seventy-five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 76,
+      "sha256": "88571d29f29b36206c56c8c2f99eca6f9eb1ed5e692ff2b51ab94549c1d1f215",
+      "transcript": "number seven six, seventy-six",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 77,
+      "sha256": "a609d1653a2ff3a6a4e5f790cd95f7500662096026461277ad75989310115d09",
+      "transcript": "All the sevens: number seven-seven, seventy-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 78,
+      "sha256": "f80e766852068160df95a83c5cf1dca10feec534f6cfb01e1daeb420ea5fade8",
+      "transcript": "Number seven, eight, seventy-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 79,
+      "sha256": "bbc250b12e2aa6cffd32ad5897b3325465f1cbc73432b076075779a5ce3bf723",
+      "transcript": "Number seven nine. Seventy-nine.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 80,
+      "sha256": "715e2cde64afb723fb025aa48f07bdd5af863677c7f53a43f6444fb51d57f093",
+      "transcript": "number eight zero eighty",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 81,
+      "sha256": "c17af3805ba6ba054c8fbc8fcb0f305827bf1b59d7e84500bdad8036caa2d951",
+      "transcript": "Number eight. One. Eighty-one.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 82,
+      "sha256": "a263b7a3227be38f282ea2a3d68bbd20fef07151806519cf82bc5adf33d3d7e4",
+      "transcript": "Number eight, two, eighty-two.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 83,
+      "sha256": "5d61163f76003c2ee44c3e25ce34d72beb28462077a3a0491e81c4013840d4b9",
+      "transcript": "India wins the World Cup, number 83.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 84,
+      "sha256": "8433d808d4453ea00ee2d1ce5ef20d93a38dc95c6864b4f1de9381515d187c07",
+      "transcript": "Seven dozen. Number eight: four. Eighty-four.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 85,
+      "sha256": "f87b21125c17b6ae8b07a2fdef7628f36ca941ff56f3a14f62d9dda0fde1d4da",
+      "transcript": "Number eight, five, eighty-five.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 86,
+      "sha256": "8734172b067f26a1d9a355e17341f3540783dce5b044c0324c93a6a7050de676",
+      "transcript": "number eight, six, eighty-six",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 87,
+      "sha256": "3b02f1f1755c28ce382083b33f4d0066e6db32d28cff4ca03cad9e13b3578871",
+      "transcript": "Number eight, seven, eighty-seven.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 88,
+      "sha256": "e65d5d40c9942766c8d9d55ea81ccd9c0d9d8bebf8345591c17a44e1d66d560f",
+      "transcript": "All the eights: number eight eight, eighty-eight.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 89,
+      "sha256": "833d88cdd69aa782a81b4da5569afc6f9573b512f5dfe51334809ecdd80bbc81",
+      "transcript": "Nearly there. Number 8-9-89.",
+      "expectedNumberDetected": true
+    },
+    {
+      "number": 90,
+      "sha256": "0f67561e7d693290f1aa9ce07db7e96a0b158d682572338737002e21239a74b0",
+      "transcript": "top of the house, number nine zero, ninety.",
+      "expectedNumberDetected": true
+    }
+  ],
+  "checked": 90,
+  "flagged": []
+}

@@ -62,3 +62,14 @@ The preview was left with a fresh game, voice enabled, and normal network/viewpo
 - Home-screen installation and mobile Safari behavior on real devices.
 - Vercel deployment (GitHub Pages is the selected host).
 - Remote multiplayer and automatic ticket verification, which are outside V1.
+
+## V1.2 prerecorded voices — 2026-09-24
+
+- Generated all 90 MP3 files locally with OpenAI `gpt-4o-mini-tts`, `coral`, and a female Indian English host prompt. `audio/manifest.json` binds each clip to its script, generation settings fingerprint and SHA-256. The API key was read from the environment and is absent from the source/build.
+- 39 Node tests pass, including stale playback cancellation, audio-to-device-speech fallback, file sharing/cancellation, generation resume without repeat billing, all 90 assets and hashes, and offline byte-range responses. Static build succeeds and includes the full voice pack.
+- Automated transcription of every actual MP3 checked the final number without providing expected wording to the transcription model. `docs/audio-validation.json` records results and hashes. A second transcription resolved a formatting ambiguity for 8. Initial 60 and 66 clips lacked a clear full-number ending; both were regenerated with explicit wording and passed a fresh transcription. All 90 final files identify the intended number. Automated transcription is not a human accent or voice-quality assessment.
+- MP3 frame parsing checked all initial files for valid frame boundaries, complete frames and plausible durations (3.12–6.77 seconds). The two replacement clips were decoded by the transcription service; final pack hashes are covered by tests.
+- In-app Chromium: a drawn 16 loaded the matching MP3 and decoded a 6.552-second duration; Say it again restarted playback. After network emulation went offline and the app reloaded, a fresh 37 played its cached clip (5.256 seconds) and became shareable without a network connection.
+- Responsive screenshots at 390px and 320px verified the audio/text controls and fallback guidance fit. An isolated local fixture with file sharing unavailable showed the Download MP3/attach-in-WhatsApp guidance, preserved the called number, stopped playback, and cleared audio sharing/download on Undo. No console errors were observed. Unit fixtures cover native file-sharing payload and user-activation ordering.
+- No WhatsApp message was sent. Actual Android/iPhone WhatsApp handoff, delivered attachment playback, and preferred accent/voice still need a phone check. The app shares an MP3 file, not a guaranteed WhatsApp voice-note bubble. The phone user chooses the recipient/group and confirms Send.
+- The service worker caches the complete app and all 90 clips under v1.2.0, supports media byte ranges offline, and only reports the new audio pack ready when the active worker confirms its version. Old open tabs keep their previous version until closed.

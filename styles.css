@@ -58,6 +58,10 @@ h1 { font-size: clamp(25px, 3vw, 32px); font-weight: 750; letter-spacing: -1.1px
 .number-share-button { flex: 1; min-height: 50px; background: #e0f2e8; border-color: #b3d9c5; color: #176c49; font-size: 16px; }
 .number-share-button svg { width: 20px; height: 20px; margin-right: 4px; }
 .number-copy-button { min-width: 64px; min-height: 50px; background: #f4f2f0; font-size: 14px; }
+.audio-share-actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.audio-share-actions button { font-size: 14px; min-height: 46px; }
+.audio-share-actions a { display: flex; align-items: center; white-space: normal; text-align: center; min-height: 44px; }
+#audio-share-status { margin-top: 7px; }
 .secondary-actions { display: flex; gap: 12px; margin: 16px 0 12px; }
 .secondary-actions button { flex: 1; font-size: 14px; }
 .secondary-actions span { font-size: 21px; vertical-align: -1px; margin-right: 5px; }
