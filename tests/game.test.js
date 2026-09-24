@@ -1,16 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CLAIMS, newGame, drawNumber, undoNumber, recordClaim, removeClaim, parseGame, numberWords } from '../src/game.js';
+import { defaultSetup } from '../src/prizes.js';
 import { STORAGE_KEY, loadGame, saveGame } from '../src/storage.js';
 
 function gameWith(count) {
-  let game = newGame();
+  let game = { ...newGame(), players: [{ id: 'asha', name: 'Asha' }, { id: 'meera', name: 'Meera' }] };
   for (let index = 0; index < count; index++) game = drawNumber(game, () => 0);
   return game;
 }
 
 test('a fresh game has voice on and an empty board', () => {
-  assert.deepEqual(newGame(), { version: 1, called: [], claims: {}, voiceEnabled: true });
+  assert.deepEqual(newGame(), { version: 2, called: [], claims: {}, voiceEnabled: true, ...defaultSetup() });
   assert.equal(newGame(false).voiceEnabled, false);
 });
 test('each of 90 numbers is called exactly once and the game then stops', () => {
@@ -41,24 +42,24 @@ test('undo restores the only remaining number and cannot go below zero', () => {
 test('claim validation enforces the earliest possible call', () => {
   for (const [type, config] of Object.entries(CLAIMS)) {
     assert.throws(() => recordClaim(gameWith(config.minimum - 1), type));
-    assert.equal(recordClaim(gameWith(config.minimum), type, '  Asha  ').claims[type].winner, 'Asha');
+    assert.deepEqual(recordClaim(gameWith(config.minimum), type, ['asha']).claims[type].winnerIds, ['asha']);
   }
   assert.throws(() => recordClaim(gameWith(90), '__proto__'));
 });
 test('undo removes claims on the undone call while retaining earlier claims', () => {
-  const early = recordClaim(gameWith(5), 'early5', 'Asha');
-  const next = recordClaim(drawNumber(early, () => 0), 'top', 'Meera');
+  const early = recordClaim(gameWith(5), 'early5', ['asha']);
+  const next = recordClaim(drawNumber(early, () => 0), 'top', ['meera']);
   assert.deepEqual(undoNumber(next).claims, early.claims);
   assert.deepEqual(undoNumber(undoNumber(next)).claims, {});
   assert.deepEqual(removeClaim(next, 'top').claims, early.claims);
-  assert.equal(next.claims.top.winner, 'Meera');
+  assert.deepEqual(next.claims.top.winnerIds, ['meera']);
 });
 test('a saved game round-trips numbers, claims and the voice preference', () => {
-  const original = { ...recordClaim(gameWith(15), 'full', 'Asha & Meera'), voiceEnabled: false };
+  const original = { ...recordClaim(gameWith(15), 'full', ['asha', 'meera']), voiceEnabled: false };
   assert.deepEqual(parseGame(JSON.stringify(original)), original);
 });
 test('corrupt and incompatible saves are rejected instead of introducing bad calls', () => {
-  const bad = [null, {}, { ...newGame(), version: 2 }, { ...newGame(), called: [1, 1] },
+  const bad = [null, {}, { ...newGame(), version: 3 }, { ...newGame(), called: [1, 1] },
     { ...newGame(), called: [0] }, { ...newGame(), called: [91] }, { ...newGame(), called: [1.5] },
     { ...newGame(), called: ['4'] }, { ...newGame(), voiceEnabled: 'yes' },
     { ...newGame(), claims: [] }, { ...newGame(), claims: { early5: { winner: 'Asha', at: 5 } } },

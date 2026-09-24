@@ -31,6 +31,7 @@
     <div class="welcome"><div><span class="eyebrow">THE GANG’S ALL HERE</span><h1>A little luck. A lot of fun.</h1></div><span id="save-status" class="status-pill">Saved on this device</span></div>
     <p id="storage-warning" class="notice" role="status" hidden></p>
     <p id="voice-warning" class="notice" role="status" hidden></p>
+    <div class="setup-bar"><div><strong>Players & prize schemes <span class="optional">(optional)</span></strong><p id="setup-summary" class="helper align-left">Add players now or anytime during play</p></div><button id="manage-game">Manage</button></div>
     <div class="game-layout">
       <section id="caller" class="caller card" aria-labelledby="caller-label" tabindex="-1">
         <div class="section-top"><h2 id="caller-label">Let’s play Tambola</h2><span id="round-status" class="tag">READY WHEN YOU ARE</span></div>
@@ -71,6 +72,7 @@
         <div class="section-top"><div class="claims-title"><span class="trophy" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0V3Zm0 2H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 14v6m-4 1h8"/></svg></span><div><h2 id="claims-heading">Someone won?</h2><p class="helper align-left">Check their ticket, then celebrate!</p></div></div><span class="tag claim-tag">HOST CONFIRMED</span></div>
         <div id="claims" class="claim-buttons"></div>
         <p class="claim-note">Claims are checked by you. Everyone plays with their own paper ticket.</p>
+        <button id="show-results" class="results-button" disabled>Winners & share results</button>
       </section>
     </div>
     <footer><span>Made for good company <span class="heart" aria-hidden="true">♥</span></span><span id="offline-status">Getting ready for offline play…</span><button id="fullscreen" class="text-button" hidden>Full screen ↗</button></footer>
@@ -84,7 +86,30 @@
     <form method="dialog"><span class="dialog-symbol" aria-hidden="true">↻</span><h2 id="confirm-title">Start a fresh game?</h2><p id="confirm-description"></p><div class="dialog-actions"><button value="cancel" autofocus>Keep playing</button><button id="confirm-action" class="primary" value="confirm">Start new game</button></div></form>
   </dialog>
   <dialog id="claim-dialog" aria-labelledby="claim-title" aria-describedby="claim-description">
-    <form id="claim-form"><span class="dialog-symbol" aria-hidden="true">✦</span><h2 id="claim-title"></h2><p id="claim-description">Check the player’s paper ticket against the board before recording this claim.</p><label for="winner-name">Winner’s name <span class="optional">(optional)</span></label><input id="winner-name" name="winner" maxlength="60" autocomplete="off" placeholder="Who are we cheering for?"><p id="claim-at" class="helper align-left"></p><div class="dialog-actions"><button type="button" id="claim-cancel">Cancel</button><button type="submit" class="primary">Record claim</button></div><button id="claim-remove" type="button" class="text-button remove-claim" hidden>Remove this claim</button></form>
+    <form id="claim-form"><span class="dialog-symbol" aria-hidden="true">✦</span><h2 id="claim-title"></h2><p id="claim-description">Check the paper ticket, then choose up to two winners. You can leave the winners blank and assign them later.</p>
+      <p id="claim-error" class="notice" role="alert" hidden></p>
+      <label for="winner-one">Winner 1 <span class="optional">(optional)</span></label><select id="winner-one"></select>
+      <label for="winner-two">Winner 2 <span class="optional">(optional tie)</span></label><select id="winner-two"></select>
+      <label for="quick-player">Missing a player?</label><div class="quick-add"><input id="quick-player" maxlength="60" placeholder="Player name" autocomplete="off"><button id="quick-add-player" type="button">Add & select</button></div>
+      <label for="claim-prize">Total prize (₹)</label><input id="claim-prize" type="number" inputmode="numeric" min="0" max="100000" step="1" required>
+      <p id="prize-split" class="split-preview" role="status"></p><p id="legacy-winner" class="helper align-left" hidden></p>
+      <p id="claim-at" class="helper align-left"></p><div class="dialog-actions"><button type="button" id="claim-cancel">Cancel</button><button type="submit" class="primary">Record claim</button></div><button id="claim-remove" type="button" class="text-button remove-claim" hidden>Remove this claim</button>
+    </form>
+  </dialog>
+  <dialog id="setup-dialog" aria-labelledby="setup-title">
+    <form id="setup-form"><h2 id="setup-title">Players & prize schemes</h2><p>Optional tracking. Edit before or during play. Calling numbers always works without setup.</p><p id="setup-error" class="notice" role="alert" hidden></p>
+      <h3>Players</h3><p id="player-empty" class="helper align-left">No players yet. You can add them now or while recording a winner.</p><div id="player-list"></div>
+      <label for="new-players">Add player names</label><textarea id="new-players" rows="2" placeholder="Asha, Meera, Riya" aria-describedby="player-add-help"></textarea><p id="player-add-help" class="helper align-left">One per line or separated by commas. Up to 100 players.</p><button id="add-players" type="button">Add players</button>
+      <h3>Prize schemes</h3><p class="helper align-left">Tick the schemes you’re playing; untick to hide or remove one. Default ₹10 each; two winners share equally. Enter whole rupees, or ₹0 for no cash prize.</p><div id="scheme-list"></div>
+      <label for="new-scheme">Add a custom scheme</label><div class="quick-add"><input id="new-scheme" maxlength="60" placeholder="e.g. Four corners"><button id="add-scheme" type="button">Add scheme</button></div>
+      <p class="helper align-left">Up to 20 schemes. Custom schemes are host-checked after any call. Changes to a scheme’s prize apply to future awards. To change a recorded prize, edit that claim. Assigned players and claimed schemes stay available until their claims are removed.</p>
+      <div class="dialog-actions setup-actions"><button id="setup-cancel" type="button">Cancel</button><button type="submit" class="primary">Save setup</button></div>
+    </form>
+  </dialog>
+  <dialog id="results-dialog" aria-labelledby="results-title">
+    <div class="section-top"><h2 id="results-title">Winners & results</h2><form method="dialog"><button class="close-button" aria-label="Close results">×</button></form></div>
+    <p>Share whenever your round ends. Choose WhatsApp, your group, then Send.</p><label for="results-message">Results to share</label><textarea id="results-message" readonly rows="10"></textarea>
+    <div class="dialog-actions"><button id="results-share" class="primary">Share results</button><button id="results-copy">Copy</button></div><a id="results-whatsapp" class="action-link results-link" target="_blank" rel="noopener noreferrer">Open WhatsApp</a><p id="results-status" class="helper align-left" role="status" hidden></p>
   </dialog>
   <dialog id="history-dialog" aria-labelledby="history-title"><div class="section-top"><div><span class="eyebrow">FROM THE VERY FIRST CALL</span><h2 id="history-title">All called numbers</h2></div><form method="dialog"><button aria-label="Close history" class="close-button">×</button></form></div><p id="history-description" class="helper align-left"></p><ol id="history-list" class="history-list"></ol></dialog>
   <dialog id="share-dialog" aria-labelledby="share-title"><form method="dialog"><h2 id="share-title">A little Tambola, together</h2><p>Share this app with a friend. Each device starts its own game; this won’t share your live board.</p><label for="share-url">App link</label><input id="share-url" readonly><p id="share-local-note" class="helper align-left" hidden>This is a local preview. Deploy the app to get a link your friends can open.</p><div class="dialog-actions"><button value="close">Close</button><button type="button" id="copy-link" class="primary">Copy link</button></div></form></dialog>

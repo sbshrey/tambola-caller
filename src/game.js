@@ -1,15 +1,11 @@
+import { defaultSetup, validateSetup, validPrize } from './prizes.js';
+export { CLAIMS } from './prizes.js';
 export const TOTAL_NUMBERS = 90;
-export const CLAIMS = Object.freeze({
-  early5: { label: 'Early 5', minimum: 5 },
-  top: { label: 'Top line', minimum: 5 },
-  middle: { label: 'Middle line', minimum: 5 },
-  bottom: { label: 'Bottom line', minimum: 5 },
-  full: { label: 'Full house', minimum: 15 },
-});
 
 export function newGame(voiceEnabled = true) {
-  return { version: 1, called: [], claims: {}, voiceEnabled };
+  return { version: 2, called: [], claims: {}, voiceEnabled, ...defaultSetup() };
 }
+export function restartGame(state) { return { ...newGame(state.voiceEnabled), players: state.players, schemes: state.schemes }; }
 
 // Rejection sampling avoids bias when 2^32 is not divisible by the pool size.
 export function randomIndex(size) {
@@ -39,12 +35,18 @@ export function undoNumber(state) {
   return { ...state, called, claims };
 }
 
-export function recordClaim(state, type, winner = '') {
-  if (!Object.hasOwn(CLAIMS, type) || state.called.length < CLAIMS[type].minimum) {
+export function recordClaim(state, type, winnerIds = [], prize, keepLegacy = false) {
+  const scheme = state.schemes.find((item) => item.id === type && item.enabled);
+  if (!scheme || state.called.length < scheme.minimum) {
     throw new Error('There are not enough called numbers for this claim.');
   }
-  return { ...state, claims: { ...state.claims,
-    [type]: { winner: winner.trim().slice(0, 60), at: state.called.length } } };
+  if (!Array.isArray(winnerIds) || winnerIds.length > 2 || new Set(winnerIds).size !== winnerIds.length || winnerIds.some((id) => !state.players.some((player) => player.id === id))) throw Error('Select up to two different players.');
+  const amount = prize ?? state.claims[type]?.prize ?? scheme.prize;
+  if (!validPrize(amount)) throw Error('Enter a whole-rupee prize from ₹0 to ₹1,00,000.');
+  const previous = state.claims[type];
+  return { ...state, claims: { ...state.claims, [type]: { winnerIds: [...winnerIds], prize: amount,
+    at: previous?.at ?? state.called.length,
+    ...(keepLegacy && !winnerIds.length && previous?.legacyWinner ? { legacyWinner: previous.legacyWinner } : {}) } } };
 }
 
 export function removeClaim(state, type) {
@@ -56,23 +58,29 @@ export function removeClaim(state, type) {
 // Stored data is untrusted: accept a complete valid game or reset safely.
 export function parseGame(raw) {
   const state = JSON.parse(raw);
-  if (!state || state.version !== 1 || typeof state.voiceEnabled !== 'boolean'
+  if (!state || ![1, 2].includes(state.version) || typeof state.voiceEnabled !== 'boolean'
     || !Array.isArray(state.called) || state.called.length > TOTAL_NUMBERS
     || state.called.some((n) => !Number.isInteger(n) || n < 1 || n > TOTAL_NUMBERS)
     || new Set(state.called).size !== state.called.length
     || !state.claims || typeof state.claims !== 'object' || Array.isArray(state.claims)) {
     throw new Error('Invalid saved game.');
   }
+  const setup = state.version === 1 ? defaultSetup() : validateSetup(state);
   const claims = {};
   for (const [type, claim] of Object.entries(state.claims)) {
-    if (!Object.hasOwn(CLAIMS, type) || !claim || typeof claim.winner !== 'string'
-      || claim.winner.length > 60 || !Number.isInteger(claim.at)
-      || claim.at < CLAIMS[type].minimum || claim.at > state.called.length) {
+    const scheme = setup.schemes.find((item) => item.id === type && item.enabled);
+    if (!scheme || !claim || !Number.isInteger(claim.at) || claim.at < scheme.minimum || claim.at > state.called.length) {
       throw new Error('Invalid saved claim.');
     }
-    claims[type] = { winner: claim.winner, at: claim.at };
+    if (state.version === 1) {
+      if (typeof claim.winner !== 'string' || claim.winner.length > 60) throw Error('Invalid saved winner.');
+      claims[type] = { winnerIds: [], prize: 10, at: claim.at, ...(claim.winner ? { legacyWinner: claim.winner } : {}) };
+    } else {
+      if (!Array.isArray(claim.winnerIds) || claim.winnerIds.length > 2 || new Set(claim.winnerIds).size !== claim.winnerIds.length || claim.winnerIds.some((id) => !setup.players.some((player) => player.id === id)) || !validPrize(claim.prize) || (claim.legacyWinner !== undefined && (typeof claim.legacyWinner !== 'string' || claim.legacyWinner.length > 60 || claim.winnerIds.length))) throw Error('Invalid saved winners or prize.');
+      claims[type] = { winnerIds: [...claim.winnerIds], prize: claim.prize, at: claim.at, ...(claim.legacyWinner ? { legacyWinner: claim.legacyWinner } : {}) };
+    }
   }
-  return { version: 1, called: [...state.called], claims, voiceEnabled: state.voiceEnabled };
+  return { version: 2, called: [...state.called], claims, voiceEnabled: state.voiceEnabled, ...setup };
 }
 
 const ONES = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight',

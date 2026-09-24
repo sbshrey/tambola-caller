@@ -30,9 +30,12 @@ npm run build # copies only the static app to dist/
 - **Share number** prepares the latest number and its spelling, the call count, and the five most recent calls. Choose **WhatsApp → your group → Send** in your phone's sharing menu. If that menu is unavailable, the app offers **Open WhatsApp** with the message prefilled, or **Copy message**. The **Copy** button beside Share number copies the same text directly. Sharing never draws another number and cancelling it keeps the game unchanged. You confirm sending in WhatsApp; the app cannot confirm delivery or send automatically.
 - **Share audio clip** opens the phone’s file sharing menu. Choose WhatsApp, the group, then Send. If file sharing is unavailable, use **Download MP3** and attach the saved file in WhatsApp. The clip is an audio attachment; it is not guaranteed to appear as a WhatsApp voice note. Text sharing remains available.
 - **Undo last** returns the latest number to the pool. Claims recorded on that call are also removed, with confirmation.
-- **New game** asks for confirmation before clearing numbers and claims. It keeps the voice preference.
-- After checking a paper ticket, record **Early 5**, **Top line**, **Middle line**, **Bottom line**, or **Full house**. A winner name is optional and can contain several names for a tie. Tap a recorded claim to edit or remove it. Claims unlock at the earliest possible call (5 or 15); the app does not verify tickets.
-- Games and voice settings are saved in this browser. Refreshing resumes the game without speaking unexpectedly. Other tabs on the same origin pick up saved changes; use one host tab to avoid simultaneous draws.
+- **Manage** optionally adds player names and configures prize schemes before or during play. Add names one per line or separated by commas; rename or remove players, change scheme names/prizes, untick unused schemes, or add custom ones. There is no setup requirement to call numbers.
+- After checking a paper ticket, tap **Early 5**, **Top line**, **Middle line**, **Bottom line**, **Full house**, or a custom scheme. Choose up to **two winners** from the player dropdowns; **Add & select** adds a missing player on the spot. The default total prize is **₹10**: one winner gets ₹10, two receive ₹5 each. Enter any whole-rupee prize (₹0 for no cash prize); odd amounts split to paise, e.g. ₹11 gives ₹5.50 each. Winners can be left blank and assigned later. Tap a recorded claim to edit or remove it. Standard claims unlock after 5 or 15 calls; custom schemes after the first call. The host verifies tickets.
+- **Winners & share results** opens a summary of scheme winners, individual payouts, and each player's combined total. At the end of your round, tap **Share results → WhatsApp → your group → Send**, or use **Open WhatsApp** / **Copy**. You can also share an interim update without waiting for all 90 calls. Unclaimed schemes and unassigned winners are labelled clearly; only explicitly assigned players count towards totals. This tracks prizes; it does not transfer money.
+- Editing a scheme's default prize affects future awards. To revise a recorded payout, edit that claim directly. Renaming a player updates their results; assigned players and claimed schemes cannot be removed until their winner assignments or claims are removed.
+- **New game** asks for confirmation before clearing numbers and claims. It keeps players, schemes, prize defaults and the voice preference for the next round. Share the results before starting a new round.
+- Games, setup and voice settings are saved in this browser. Refreshing resumes the game without speaking unexpectedly. Existing saves upgrade automatically: calls and free-text winner notes are preserved, and the original save remains as a backup. Choose players on an old claim to include it in payout totals. Other tabs on the same origin pick up saved changes; use one host tab to avoid simultaneous draws.
 - Once **App + 90 voice clips ready offline** appears, the app and roughly 6.6 MB voice pack can reopen and play offline. Initial caching needs connectivity; keep the page open until ready. Fallback speech and winner names depend on installed device voices. Browsers may evict site data; clearing it removes the saved game and offline cache.
 - **Share app** copies the app URL for you to send. Each device runs an independent game; it does not share the host's live board. Keep everyone together, or use your usual group call to hear the host.
 
@@ -85,6 +88,7 @@ When releasing changed app assets, increment the cache version in **sw.js**. An 
 - `index.html`, `styles.css`: accessible interface and responsive layout.
 - `src/game.js`: immutable game transitions, unbiased random selection, save validation.
 - `src/app.js`: DOM interactions, confirmation dialogs, and state coordination.
+- `src/prizes.js`, `src/prize-ui.js`: optional player/scheme setup, prize splitting, winner dropdowns and shareable results.
 - `src/storage.js`, `src/voice.js`: browser adapters with graceful failure.
 - `sw.js`, `manifest.webmanifest`, `icons/`: offline app and home-screen metadata.
 - `src/audio.js`: clip URLs and audio file preparation.
@@ -96,6 +100,6 @@ When releasing changed app assets, increment the cache version in **sw.js**. An 
 
 ## Scope
 
-V1 is a caller, not a WhatsApp bot or an online multiplayer room. Digital tickets, automatic claim verification, remote board syncing, accounts, payments, and player registration are outside this version.
+V1 is a caller with optional local player and prize tracking, not a WhatsApp bot or an online multiplayer room. Digital tickets, automatic claim verification, remote board syncing, accounts, payments, and online player registration are outside this version.
 
 Before sharing with the group, check one real Android/iPhone for volume, voice quality, home-screen installation, and offline reopening. Automated adapter tests do not establish that a particular phone can play audio.

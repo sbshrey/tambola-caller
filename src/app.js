@@ -1,9 +1,10 @@
-import { CLAIMS, TOTAL_NUMBERS, newGame, drawNumber, undoNumber, recordClaim, removeClaim, numberWords, parseGame } from './game.js';
+import { TOTAL_NUMBERS, newGame, restartGame, drawNumber, undoNumber, numberWords, parseGame } from './game.js';
 import { STORAGE_KEY, loadGame, saveGame } from './storage.js';
 import { createVoice } from './voice.js';
 import { numberMessage, whatsappMessageUrl, openNumberShare, copyText, shareFile } from './sharing.js';
 import { clipUrl, createClipLoader } from './audio.js';
 import { createImagePreparer } from './board-image.js';
+import { createPrizeUI } from './prize-ui.js';
 
 const $ = (id) => document.getElementById(id);
 let storage;
@@ -13,7 +14,6 @@ let state = loaded.state;
 let drawLocked = false;
 let toastTimer;
 let pendingConfirmation;
-let activeClaim;
 let sharingNumber = false;
 let sharingAudio = false;
 let sharingImage = false;
@@ -86,6 +86,7 @@ function toast(message) {
   toastTimer = setTimeout(() => { $('toast').hidden = true; }, 4500);
 }
 const voice = createVoice(() => notice('voice-warning', 'Voice couldn’t play. Check your volume or try “Say it again”. You can keep calling numbers on screen.'), window, $('number-audio'));
+const prizeUI = createPrizeUI({ getState: () => state, commit, notify: toast, stopVoice: () => voice.stop(), announce: (message) => { if (state.voiceEnabled) voice.speak(message); } });
 if (!voice.supported) notice('voice-warning', 'Spoken calls aren’t available in this browser. You can still play using the board.');
 if (loaded.error) notice('storage-warning', 'Your saved game couldn’t be read. A fresh board is ready; this browser may have storage blocked.');
 
@@ -96,14 +97,6 @@ for (let number = 1; number <= TOTAL_NUMBERS; number++) {
   cell.setAttribute('role', 'listitem');
   cell.dataset.number = number;
   $('board').append(cell);
-}
-for (const [type, { label }] of Object.entries(CLAIMS)) {
-  const button = document.createElement('button');
-  button.className = 'claim-button';
-  button.dataset.claim = type;
-  button.textContent = label;
-  button.addEventListener('click', () => openClaim(type));
-  $('claims').append(button);
 }
 
 function render() {
@@ -150,20 +143,7 @@ function render() {
     if (recent[index] === undefined) { item.className = 'empty'; item.setAttribute('aria-hidden', 'true'); }
     $('recent').append(item);
   }
-  for (const button of $('claims').children) {
-    const type = button.dataset.claim;
-    const claim = state.claims[type];
-    button.textContent = `${claim ? '✓ ' : ''}${CLAIMS[type].label}`;
-    button.setAttribute('aria-pressed', String(Boolean(claim)));
-    button.disabled = count < CLAIMS[type].minimum;
-    button.title = button.disabled ? `Available after ${CLAIMS[type].minimum} numbers are called` : `Record or edit ${CLAIMS[type].label}`;
-    if (claim) {
-      const winner = document.createElement('span');
-      winner.className = 'claim-winner';
-      winner.textContent = claim.winner || 'Claim recorded';
-      button.append(winner);
-    }
-  }
+  prizeUI.render();
   if ($('history-dialog').open) renderHistory();
 }
 
@@ -210,9 +190,9 @@ $('undo').addEventListener('click', () => {
 });
 $('new-game').addEventListener('click', () => {
   if (!state.called.length) { toast('Your fresh board is ready. Tap Next number to begin.'); return; }
-  confirmAction('Start a fresh game?', 'This clears all called numbers and recorded claims on this device. Your voice setting will stay.', 'Start new game', () => {
+  confirmAction('Start a fresh game?', 'This clears all called numbers and recorded claims on this device. Players, prize schemes and your voice setting will stay.', 'Start new game', () => {
     voice.stop();
-    commit(newGame(state.voiceEnabled));
+    commit(restartGame(state));
     $('announcement').textContent = 'New game ready. All 90 numbers are waiting.';
     $('next').focus();
   });
@@ -225,36 +205,6 @@ $('voice-toggle').addEventListener('click', () => {
 });
 $('repeat').addEventListener('click', () => {
   if (state.called.length) { $('voice-warning').hidden = true; voice.announce(state.called.at(-1)); }
-});
-
-function openClaim(type) {
-  activeClaim = type;
-  const claim = state.claims[type];
-  $('claim-title').textContent = `${CLAIMS[type].label} — time to celebrate!`;
-  $('winner-name').value = claim?.winner ?? '';
-  $('claim-at').textContent = claim ? `Recorded after call ${claim.at}. You can update the winner or remove this claim.` : `${state.called.length} numbers called. The host confirms this claim.`;
-  $('claim-remove').hidden = !claim;
-  $('claim-dialog').showModal();
-}
-$('claim-cancel').addEventListener('click', () => $('claim-dialog').close());
-$('claim-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const winner = $('winner-name').value.trim();
-  // Editing a name preserves the original call at which the claim was recorded.
-  const previous = state.claims[activeClaim];
-  const next = recordClaim(state, activeClaim, winner);
-  if (previous) next.claims[activeClaim].at = previous.at;
-  commit(next);
-  $('claim-dialog').close();
-  const message = `${CLAIMS[activeClaim].label} recorded${winner ? ` for ${winner}` : ''}. Congratulations!`;
-  toast(message);
-  if (state.voiceEnabled) voice.speak(message);
-});
-$('claim-remove').addEventListener('click', () => {
-  commit(removeClaim(state, activeClaim));
-  $('claim-dialog').close();
-  voice.stop();
-  toast(`${CLAIMS[activeClaim].label} claim removed.`);
 });
 
 function renderHistory() {
@@ -402,7 +352,7 @@ async function prepareOffline() {
       registration.active?.postMessage({ type: 'offline-version' }, [channel.port2]);
     });
     const updateStatus = () => {
-      $('offline-status').textContent = pack?.version === '1.3.0' && pack.audioClips === 90
+      $('offline-status').textContent = pack?.version === '1.4.0' && pack.audioClips === 90
         ? (navigator.onLine ? 'App + 90 voice clips ready offline' : 'Offline · 90 voice clips ready')
         : 'App update: reopen online, then close all Tambola tabs and reopen';
     };
