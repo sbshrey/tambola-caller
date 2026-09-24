@@ -32,6 +32,12 @@ h1 { font-size: clamp(25px, 3vw, 32px); font-weight: 750; letter-spacing: -1.1px
 .game-layout { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.25fr); gap: 20px; align-items: stretch; }
 .card { border: 1px solid var(--line); border-radius: 22px; background: #fff; padding: 24px; box-shadow: 0 4px 16px #44251504; min-width: 0; }
 .section-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.section-top > div { min-width: 0; }
+.section-share { display: grid; place-items: center; width: 46px; min-width: 46px; min-height: 46px; flex-shrink: 0; color: var(--pink); background: #f8e9ef; border-color: #edcfdb; }
+.section-share svg { width: 22px; height: 22px; }
+.number-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; }
+.number-heading .eyebrow { line-height: 1.6; }
+.recent-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; }
 .tag { font-size: 9px; font-weight: 750; letter-spacing: .65px; color: #7f6270; background: #f8f0f4; padding: 6px 8px; border-radius: 6px; white-space: nowrap; }
 .caller { padding: 22px; }
 .caller .section-top h2 { font-size: 17px; }
@@ -76,7 +82,6 @@ h1 { font-size: clamp(25px, 3vw, 32px); font-weight: 750; letter-spacing: -1.1px
 .align-left { text-align: left; }
 .board-card { display: flex; flex-direction: column; }
 .board-card h2 { margin-top: 4px; font-size: 24px; }
-.range-tag { border: 1px solid #e7e2d8; border-radius: 9px; background: var(--paper); padding: 8px 12px; font-size: 14px; font-weight: 700; }
 .board { margin-top: 25px; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 7px; flex: 1; }
 .board-cell { display: flex; justify-content: center; align-items: center; min-height: 39px; border-radius: 7px; border: 1px solid #eeeae6; background: #f6f4f1; color: #645e69; font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
 .board-cell.called { background: #fbe3ed; border-color: #efc4d5; color: #93264f; }

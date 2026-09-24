@@ -1,10 +1,65 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { imageSummary, createBoardImage, createImagePreparer } from '../src/board-image.js';
+import { IMAGE_FORMATS, imageSummary, imageDescription, drawBoardImage, createBoardImage, createImagePreparer } from '../src/board-image.js';
 import { shareFile } from '../src/sharing.js';
 import { newGame, undoNumber } from '../src/game.js';
 
 const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+function drawingCanvas() {
+  const labels = [];
+  const context = new Proxy({ fillText(value) { labels.push(value); } }, { get: (target, key) => target[key] ?? (() => {}) });
+  return { labels, getContext: () => context, toBlob: (callback) => callback(new Blob(['png'], { type: 'image/png' })) };
+}
+
+test('separate PNGs contain only the requested numbers and use distinct sizes and filenames', async () => {
+  const state = { ...newGame(), called: [1, 2, 3, 4, 6, 7, 8, 5, 66, 13, 82, 47], players: [{ id: 'p', name: 'Private player' }] };
+  const summary = imageSummary(state);
+  const all = Array.from({ length: 90 }, (_, i) => i + 1);
+  for (const [kind, expected] of [['number', [47]], ['recent', summary.recent], ['board', all], ['combined', [47, ...summary.recent, ...all]]]) {
+    const canvas = drawingCanvas();
+    const file = await createBoardImage(state, { canvas, kind });
+    assert.equal(file.type, 'image/png');
+    assert.match(file.name, new RegExp(`^Tambola${kind === 'combined' ? '' : '-' + kind}-call-12-number-47\\.png$`));
+    assert.equal(canvas.width, IMAGE_FORMATS[kind].width);
+    assert.equal(canvas.height, IMAGE_FORMATS[kind].height);
+    assert.deepEqual(canvas.labels.filter((value) => /^\d{1,2}$/.test(value)).map(Number), expected, kind);
+    assert.equal(canvas.labels.some((value) => value.includes('Private player')), false);
+    assert.equal(canvas.labels.includes('Year of Independence'), kind === 'number');
+    assert.equal(canvas.labels.includes('Forty seven'), kind === 'number' || kind === 'combined');
+  }
+});
+
+test('number PNG follows the language and recent PNG handles fewer than ten calls', () => {
+  const canvas = drawingCanvas();
+  const summary = imageSummary({ called: [47], callLanguage: 'hi' });
+  drawBoardImage(canvas, summary, 'number');
+  assert.ok(canvas.labels.includes('सैंतालीस'));
+  assert.ok(canvas.labels.includes('आज़ादी का साल'));
+  assert.match(imageDescription(summary, 'number'), /सैंतालीस/);
+  assert.equal(imageDescription(summary, 'recent'), 'Last 1 call, latest first: 47.');
+  const recent = drawingCanvas();
+  drawBoardImage(recent, summary, 'recent');
+  assert.equal(recent.labels.filter((value) => value === '–').length, 9);
+  assert.throws(() => drawBoardImage(canvas, summary, '__proto__'), /Unknown image format/);
+});
+
+test('each separate format discards stale images after undo, language change and reset', async () => {
+  for (const kind of ['number', 'recent', 'board']) {
+    const updates = [], pending = [];
+    const prepare = createImagePreparer((image) => updates.push(image), (state, options) => new Promise((resolve) => pending.push({ state, options, resolve })), kind);
+    prepare({ called: [22, 47], callLanguage: 'en' }); await flush();
+    prepare({ called: [22], callLanguage: 'hi' }); await flush();
+    assert.deepEqual(pending[1].options, { kind });
+    assert.deepEqual(pending[1].state, { called: [22], callLanguage: 'hi' });
+    pending[1].resolve('current'); await flush();
+    pending[0].resolve('stale'); await flush();
+    assert.equal(updates.at(-1).file, 'current');
+    prepare({ called: [], callLanguage: 'hi' });
+    assert.equal(updates.at(-1).file, null);
+    assert.equal(updates.at(-1).pending, false);
+  }
+});
 test('image data includes the latest number, last ten calls and full board without player names', () => {
   const state = { ...newGame(), called: [1, 2, 3, 4, 6, 7, 8, 5, 66, 13, 82, 47], claims: { early5: { winner: 'Private player', at: 5 } } };
   const data = imageSummary(state);

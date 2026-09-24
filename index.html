@@ -39,7 +39,7 @@
         <p id="language-help" class="helper align-left">Changes calls, number words and shared MP3s. Try voice previews 22 without drawing. Controls stay in English.</p>
         <div class="number-stage">
           <span class="spark spark-one" aria-hidden="true">✦</span><span class="spark spark-two" aria-hidden="true">✧</span>
-          <p id="number-label" class="eyebrow">YOUR FIRST NUMBER AWAITS</p>
+          <div class="number-heading"><p id="number-label" class="eyebrow">YOUR FIRST NUMBER AWAITS</p><button id="share-number-image" class="section-share" aria-label="Share current number as PNG" title="Share current number as PNG" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg></button></div>
           <div id="current-number" class="current-number">—</div>
           <p id="number-words" class="number-words">Ready, set, Tambola!</p>
           <p id="call-phrase" class="call-phrase" hidden></p>
@@ -47,7 +47,7 @@
         </div>
         <div class="call-stats"><span><span class="green-dot" aria-hidden="true"></span> <strong id="called-count">0</strong> called</span><span><strong id="remaining-count">90</strong> to go</span></div>
         <button id="next" class="primary next-button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 7h.01M17 7h.01M12 12h.01M7 17h.01M17 17h.01"/></svg><span id="next-label">Next number</span><span aria-hidden="true">→</span></button>
-        <div class="image-share-actions"><button id="share-image" class="image-share-button" aria-describedby="image-share-hint number-share-hint" disabled><span id="share-image-label">Share board image</span></button><button id="preview-image" class="number-copy-button" aria-label="Preview board image" disabled>Preview</button></div>
+        <div class="image-share-actions"><button id="share-image" class="image-share-button" aria-describedby="image-share-hint number-share-hint" disabled><span id="share-image-label">Share full summary</span></button><button id="preview-image" class="number-copy-button" aria-label="Preview full summary image" disabled>Preview</button></div>
         <p id="image-share-hint" class="helper">Current number + last 10 calls + full board · PNG</p>
         <div class="number-share-actions"><button id="share-number" class="number-share-button" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg> <span id="share-number-label">Share number</span></button><button id="copy-number" class="number-copy-button" aria-label="Copy number message" disabled>Copy</button></div>
         <div class="audio-share-actions"><button id="share-audio" class="number-share-button" disabled>Share audio clip</button><a id="download-audio" class="text-button" hidden>Download MP3</a></div>
@@ -58,7 +58,7 @@
       </section>
 
       <section class="board-card card" aria-labelledby="board-heading">
-        <div class="section-top"><div><span class="eyebrow">EVERY NUMBER, AT A GLANCE</span><h2 id="board-heading">The Tambola board</h2></div><span class="range-tag">1–90</span></div>
+        <div class="section-top"><div><span class="eyebrow">1–90 · EVERY NUMBER, AT A GLANCE</span><h2 id="board-heading">The Tambola board</h2></div><button id="share-board-image" class="section-share" aria-label="Share board as PNG" title="Share board as PNG" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg></button></div>
         <div id="board" class="board" role="list" aria-label="Numbers 1 to 90"></div>
         <div class="board-legend"><span><i class="legend-current"></i> Latest</span><span><i class="legend-called"></i> Called</span><span><i class="legend-waiting"></i> Waiting</span></div>
         <div class="progress-track" role="progressbar" aria-label="Numbers called" aria-valuemin="0" aria-valuemax="90" aria-valuenow="0" id="progress"><div id="progress-fill"></div></div>
@@ -66,8 +66,8 @@
       </section>
 
       <section class="recent-card card" aria-labelledby="recent-heading">
-        <div class="section-top"><h2 id="recent-heading">Recently called</h2><button id="history" class="text-button" disabled>View all <span aria-hidden="true">↗</span></button></div>
-        <p class="helper align-left">Latest first · your last 10 numbers</p>
+        <div class="section-top"><h2 id="recent-heading">Recently called</h2><button id="share-recent-image" class="section-share" aria-label="Share recent numbers as PNG" title="Share recent numbers as PNG" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg></button></div>
+        <div class="recent-meta"><p class="helper align-left">Latest first · your last 10 numbers</p><button id="history" class="text-button" disabled>View all <span aria-hidden="true">↗</span></button></div>
         <ol id="recent" class="recent-list" aria-label="Last ten numbers, latest first"></ol>
       </section>
 
