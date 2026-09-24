@@ -1,6 +1,7 @@
 import { CLAIMS, TOTAL_NUMBERS, newGame, drawNumber, undoNumber, recordClaim, removeClaim, numberWords, parseGame } from './game.js';
 import { STORAGE_KEY, loadGame, saveGame } from './storage.js';
 import { createVoice } from './voice.js';
+import { numberMessage, whatsappMessageUrl, openNumberShare, copyText } from './sharing.js';
 
 const $ = (id) => document.getElementById(id);
 let storage;
@@ -11,6 +12,7 @@ let drawLocked = false;
 let toastTimer;
 let pendingConfirmation;
 let activeClaim;
+let sharingNumber = false;
 
 function notice(id, message) { $(id).textContent = message; $(id).hidden = false; }
 function toast(message) {
@@ -53,6 +55,10 @@ function render() {
   $('round-status').textContent = complete ? 'ALL 90 CALLED' : count ? 'GAME IN FULL SWING' : 'READY WHEN YOU ARE';
   $('next').disabled = complete || drawLocked;
   $('next-label').textContent = complete ? 'All 90 called!' : 'Next number';
+  $('share-number').disabled = !count || sharingNumber;
+  $('share-number').setAttribute('aria-busy', String(sharingNumber));
+  $('share-number-label').textContent = sharingNumber ? 'Opening…' : 'Share number';
+  $('copy-number').disabled = !count || sharingNumber;
   $('undo').disabled = !count;
   $('repeat').disabled = !count || !voice.supported;
   $('history').disabled = !count;
@@ -196,17 +202,49 @@ function renderHistory() {
   });
 }
 $('history').addEventListener('click', () => { renderHistory(); $('history-dialog').showModal(); });
+
+function showNumberMessage(text) {
+  $('number-message').value = text;
+  $('open-whatsapp').href = whatsappMessageUrl(text);
+  $('number-copy-status').textContent = '';
+  $('number-share-dialog').showModal();
+}
+$('share-number').addEventListener('click', async () => {
+  const message = numberMessage(state);
+  if (!message || sharingNumber) return;
+  sharingNumber = true;
+  render();
+  voice.stop();
+  const result = await openNumberShare(message);
+  sharingNumber = false;
+  render();
+  if (result === 'fallback') showNumberMessage(message);
+  // Cancellation is quiet. A resolved share is not proof the message was sent.
+});
+$('copy-number').addEventListener('click', async () => {
+  const message = numberMessage(state);
+  if (!message) return;
+  if (await copyText(message)) toast('Number message copied. Paste it into your WhatsApp group.');
+  else showNumberMessage(message);
+});
+$('copy-number-message').addEventListener('click', async () => {
+  const copied = await copyText($('number-message').value);
+  $('number-copy-status').textContent = copied
+    ? 'Copied. Paste the message into your WhatsApp group.'
+    : 'Press and hold the selected message, then choose Copy.';
+  if (!copied) { $('number-message').focus(); $('number-message').select(); }
+});
+
 $('share').addEventListener('click', () => {
   $('share-url').value = new URL('./', location.href).href;
   $('share-local-note').hidden = !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   $('share-dialog').showModal();
 });
 $('copy-link').addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText($('share-url').value);
+  if (await copyText($('share-url').value)) {
     $('share-dialog').close();
     toast('App link copied. Paste it into your group chat.');
-  } catch {
+  } else {
     $('share-url').focus();
     $('share-url').select();
     $('copy-link').textContent = 'Select and copy the link';

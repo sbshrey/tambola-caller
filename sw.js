@@ -1,7 +1,7 @@
 const CACHE_PREFIX = `tambola-caller-${self.registration.scope}-`;
-const CACHE = `${CACHE_PREFIX}v1.0.1`;
+const CACHE = `${CACHE_PREFIX}v1.1.0`;
 const ASSETS = ['./', './index.html', './styles.css', './src/app.js', './src/game.js',
-  './src/storage.js', './src/voice.js', './manifest.webmanifest', './icon.svg',
+  './src/storage.js', './src/voice.js', './src/sharing.js', './manifest.webmanifest', './icon.svg',
   './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {

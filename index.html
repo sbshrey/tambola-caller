@@ -43,6 +43,8 @@
         </div>
         <div class="call-stats"><span><span class="green-dot" aria-hidden="true"></span> <strong id="called-count">0</strong> called</span><span><strong id="remaining-count">90</strong> to go</span></div>
         <button id="next" class="primary next-button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 7h.01M17 7h.01M12 12h.01M7 17h.01M17 17h.01"/></svg><span id="next-label">Next number</span><span aria-hidden="true">→</span></button>
+        <div class="number-share-actions"><button id="share-number" class="number-share-button" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg> <span id="share-number-label">Share number</span></button><button id="copy-number" class="number-copy-button" aria-label="Copy number message" disabled>Copy</button></div>
+        <p id="number-share-hint" class="helper">Choose WhatsApp → your group → Send</p>
         <div class="secondary-actions"><button id="undo" class="undo-button" disabled><span aria-hidden="true">↶</span> Undo last</button><button id="new-game" class="new-button"><span aria-hidden="true">↻</span> New game</button></div>
         <p id="caller-hint" class="helper">Gather your tickets. We’ll take care of the numbers.</p>
       </section>
@@ -81,6 +83,13 @@
   </dialog>
   <dialog id="history-dialog" aria-labelledby="history-title"><div class="section-top"><div><span class="eyebrow">FROM THE VERY FIRST CALL</span><h2 id="history-title">All called numbers</h2></div><form method="dialog"><button aria-label="Close history" class="close-button">×</button></form></div><p id="history-description" class="helper align-left"></p><ol id="history-list" class="history-list"></ol></dialog>
   <dialog id="share-dialog" aria-labelledby="share-title"><form method="dialog"><h2 id="share-title">A little Tambola, together</h2><p>Share this app with a friend. Each device starts its own game; this won’t share your live board.</p><label for="share-url">App link</label><input id="share-url" readonly><p id="share-local-note" class="helper align-left" hidden>This is a local preview. Deploy the app to get a link your friends can open.</p><div class="dialog-actions"><button value="close">Close</button><button type="button" id="copy-link" class="primary">Copy link</button></div></form></dialog>
+  <dialog id="number-share-dialog" aria-labelledby="number-share-title" aria-describedby="number-share-description">
+    <div class="section-top"><h2 id="number-share-title">Share this number</h2><form method="dialog"><button class="close-button" aria-label="Close number sharing">×</button></form></div>
+    <p id="number-share-description">Open WhatsApp, choose your group, then tap Send. You can also copy the message and paste it into the group.</p>
+    <label for="number-message">Your message</label><textarea id="number-message" rows="4" readonly spellcheck="false"></textarea>
+    <div class="dialog-actions"><a id="open-whatsapp" class="primary action-link" target="_blank" rel="noopener noreferrer">Open WhatsApp <span class="sr-only">(opens a new tab or app)</span></a><button id="copy-number-message">Copy message</button></div>
+    <p id="number-copy-status" class="helper align-left" role="status"></p>
+  </dialog>
   <noscript><p class="notice">Please enable JavaScript to use the Tambola caller.</p></noscript>
 </body>
 </html>

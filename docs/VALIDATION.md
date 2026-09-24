@@ -47,6 +47,15 @@ The preview was left with a fresh game, voice enabled, and normal network/viewpo
 - The Share app dialog provided the public HTTPS URL. The live test game was reset and voice was re-enabled afterward.
 - The 18 regression tests and the static build passed locally before publication. GitHub's branch deployment publishes the site but does not run this test suite.
 
+## V1.1 number sharing — 24 September 2026
+
+- `npm test`: **26 passed**, including eight sharing tests. `npm run build` and JavaScript syntax checks passed.
+- Sharing tests cover exact message content, recent-call order, first/last calls, undo, reset, correctly encoded WhatsApp links, immediate native sharing invocation, cancellation, unavailable/denied sharing, and clipboard failures.
+- Browser checks on a separate local test game confirmed disabled sharing before the first call, enabled controls after drawing, the copy-success UI, sharing controls at 320px without horizontal overflow, and offline reopening with the new sharing module.
+- An isolated browser fixture with native sharing disabled and clipboard writes rejected exercised the fallback dialog and manual selection. The preview and decoded WhatsApp link matched exactly; undo updated both, and reset disabled sharing.
+- The WhatsApp link was inspected without sending a message. Real phone share-sheet selection and actual WhatsApp delivery remain unverified; adapter tests simulate native results and do not establish delivery.
+- The service-worker cache version was advanced to `v1.1.0` and includes `src/sharing.js`. Existing games retain the same storage schema.
+
 ## Not established by these checks
 
 - Actual sound output, installed voices, and offline voice availability on a physical Android phone or iPhone.

@@ -16,7 +16,7 @@ async function worker() {
   vm.runInNewContext(await readFile(new URL('../sw.js', import.meta.url), 'utf8'), {
     URL, self: { registration: { scope }, clients: { async claim() { claimed = true; } },
       addEventListener: (name, handler) => { listeners[name] = handler; } },
-    caches: { async open() { return cache; }, async keys() { return [`tambola-caller-${scope}-old`, `tambola-caller-${scope}-v1.0.1`, 'another-app']; },
+    caches: { async open() { return cache; }, async keys() { return [`tambola-caller-${scope}-old`, `tambola-caller-${scope}-v1.1.0`, 'another-app']; },
       async delete(key) { deleted.push(key); } },
     fetch: async () => { throw new Error('offline'); },
   });
@@ -29,6 +29,7 @@ test('offline install precaches every asset and each asset exists', async () => 
   await done;
   assert.ok(w.assets.includes('./index.html'));
   assert.ok(w.assets.includes('./src/game.js'));
+  assert.ok(w.assets.includes('./src/sharing.js'));
   for (const file of w.assets) await access(new URL(`../${file}`, import.meta.url));
 });
 test('activation only removes this app scope’s older caches', async () => {

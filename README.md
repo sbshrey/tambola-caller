@@ -26,12 +26,25 @@ npm run build # copies only the static app to dist/
 - Tap **Next number** for a random 1–90 number, without repeats. A short double-tap guard prevents accidental rapid calls.
 - **Voice on** announces each number using the device's speech engine, preferring installed Indian English, then installed English voices. **Say it again** repeats the latest number even if automatic voice is off.
 - The board distinguishes the latest number from earlier calls. The last ten calls appear latest first; **View all** shows complete chronological history.
+- **Share number** prepares the latest number and its spelling, the call count, and the five most recent calls. Choose **WhatsApp → your group → Send** in your phone's sharing menu. If that menu is unavailable, the app offers **Open WhatsApp** with the message prefilled, or **Copy message**. The **Copy** button beside Share number copies the same text directly. Sharing never draws another number and cancelling it keeps the game unchanged. You confirm sending in WhatsApp; the app cannot confirm delivery or send automatically.
 - **Undo last** returns the latest number to the pool. Claims recorded on that call are also removed, with confirmation.
 - **New game** asks for confirmation before clearing numbers and claims. It keeps the voice preference.
 - After checking a paper ticket, record **Early 5**, **Top line**, **Middle line**, **Bottom line**, or **Full house**. A winner name is optional and can contain several names for a tie. Tap a recorded claim to edit or remove it. Claims unlock at the earliest possible call (5 or 15); the app does not verify tickets.
 - Games and voice settings are saved in this browser. Refreshing resumes the game without speaking unexpectedly. Other tabs on the same origin pick up saved changes; use one host tab to avoid simultaneous draws.
 - Once **Ready for offline play** appears, the cached app can reopen offline. Actual offline speech depends on the voices installed on the device. Browsers may evict site data; clearing it removes the saved game and offline cache.
 - **Share app** copies the app URL for you to send. Each device runs an independent game; it does not share the host's live board. Keep everyone together, or use your usual group call to hear the host.
+
+For remote play, only the host draws numbers. Other players can stay in WhatsApp, read the shared messages, and mark their paper tickets. Sharing a number sends only the call information, without winner names or the app link. Undo and New game do not change messages already sent to WhatsApp; tell your group about corrections or a new round. The app and message preparation work offline after caching, but WhatsApp needs connectivity to deliver messages.
+
+Example number message:
+
+```text
+🎱 *47 — Forty seven*
+Call 12 of 90
+Recent: 47, 82, 13, 66, 5
+```
+
+After an update, close all open Tambola tabs and reopen the app so the new offline version can activate. If needed, reopen online once, close it, then open it again. Saved progress stays on the same browser and device.
 
 ## Deploy
 
