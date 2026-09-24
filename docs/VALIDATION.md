@@ -35,9 +35,21 @@ Tested against the local HTTP app in the Chromium-based Codex browser:
 
 The preview was left with a fresh game, voice enabled, and normal network/viewport settings restored.
 
+## GitHub Pages deployment
+
+- Repository: [sbshrey/tambola-caller](https://github.com/sbshrey/tambola-caller).
+- Public app: [https://sbshrey.github.io/tambola-caller/](https://sbshrey.github.io/tambola-caller/).
+- Application commit: `c862c08382e06c938adb887670abc874a22b6bf3`.
+- [Initial Pages build and deployment](https://github.com/sbshrey/tambola-caller/actions/runs/35946586055): **successful**.
+- Pages publishes `main`, `/ (root)`, with HTTPS enforced. The built-in branch deployment does not require uploading a custom workflow.
+- All 11 deployed app assets returned HTTP 200 and matched the committed files by SHA-256, including scripts, stylesheet, manifest, service worker, and icons.
+- Live-browser checks passed: five calls marked five board cells; a named Early 5 claim and game state survived reload; offline reload restored the game and allowed another call.
+- The Share app dialog provided the public HTTPS URL. The live test game was reset and voice was re-enabled afterward.
+- The 18 regression tests and the static build passed locally before publication. GitHub's branch deployment publishes the site but does not run this test suite.
+
 ## Not established by these checks
 
 - Actual sound output, installed voices, and offline voice availability on a physical Android phone or iPhone.
 - Home-screen installation and mobile Safari behavior on real devices.
-- Public hosting, GitHub push, or Vercel deployment.
+- Vercel deployment (GitHub Pages is the selected host).
 - Remote multiplayer and automatic ticket verification, which are outside V1.
