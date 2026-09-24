@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Test editor in a separate task, mirroring a chat app. Never shipped in release. -->
+        <activity android:name=".KeyboardEditorActivity" android:exported="false"
+            android:taskAffinity="io.github.sbshrey.tambola.keyboard.testeditor" android:windowSoftInputMode="adjustResize" />
+    </application>
+</manifest>

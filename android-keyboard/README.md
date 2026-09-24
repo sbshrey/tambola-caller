@@ -1,8 +1,8 @@
-# Tambola Keyboard 1.1 for Android
+# Tambola Keyboard 1.1.1 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-**[Download Tambola Keyboard 1.1.0](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.1.0/Tambola-Keyboard-1.1.0.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over v1.0 to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.1.0).
+**[Download Tambola Keyboard 1.1.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.1.1/Tambola-Keyboard-1.1.1.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.1.1).
 
 ## Set up once
 
@@ -21,7 +21,7 @@ Open the right WhatsApp group, tap its message box, and select Tambola Keyboard.
 - **ABC** opens Android's keyboard picker for normal typing.
 - **Board** shows all 90 numbers. Pink means called; dark pink marks the latest.
 - **Voice** chooses English, Hindi or Hinglish, and turns automatic speech on/off. All 270 AI-generated recordings are bundled for offline use. No API key or new audio generation is needed. Button labels remain in English.
-- If a draft already contains text, the keyboard says **Send or clear the current message first** and does not overwrite it or draw another number.
+- If a draft already contains text, the keyboard says **Send or clear the current message first** and does not overwrite it or draw another number. Send it, or tap **Clear unsent message… → Yes, clear message**, then **Next number**. Clearing asks for confirmation and does not change called numbers or sent messages.
 
 The keyboard and its setup app use one saved live round. Practice is separate. The website still runs its own independent game; use one caller for the whole round. Saved progress records generated calls, not confirmed delivery.
 
@@ -50,7 +50,9 @@ Tap **Winners → Players & prize amounts**, or open that screen from the app. A
 
 ## Undo and new game
 
-**Board → Undo / New game** opens the full board. Both actions ask for confirmation. Undo returns the last number to the pool and clears awards recorded on that call. New game clears numbers and winners while keeping players, prize settings and voice preferences. Messages already sent to WhatsApp remain unchanged. Share results before starting another game.
+**Board → Start a new game → Yes, start new game** resets the round inside the keyboard and returns to **Next number**, keeping you in the chat. New game clears numbers and winners while keeping players, prize settings and voice preferences. An unsent draft is kept until you send it or explicitly clear it. Messages already sent to WhatsApp remain unchanged. Share results before starting another game.
+
+**Board → Undo / Full board** opens the app. Undo asks for confirmation, returns the last number to the pool and clears awards recorded on that call. You can also start a new live game here. Return to your chat and tap its message box to continue. The keyboard refreshes when saved calls change and when the editor reopens, including after all 90 numbers were called. In practice, **Board → Reset practice round** resets only practice.
 
 ## Privacy and compatibility
 

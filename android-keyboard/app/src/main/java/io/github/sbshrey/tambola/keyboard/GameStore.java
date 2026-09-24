@@ -9,6 +9,8 @@ final class GameStore {
         preferences = context.getSharedPreferences(practice ? "practice-round" : "tambola-round", Context.MODE_PRIVATE);
     }
     Game load() { return Game.decode(preferences.getString("called-v1", "")); }
+    void observe(SharedPreferences.OnSharedPreferenceChangeListener listener) { preferences.registerOnSharedPreferenceChangeListener(listener); }
+    void stopObserving(SharedPreferences.OnSharedPreferenceChangeListener listener) { preferences.unregisterOnSharedPreferenceChangeListener(listener); }
     PrizeBook prizes() { return PrizeJson.decode(preferences.getString("prizes-v1", null)); }
     void prizes(PrizeBook book) { commit(preferences.edit().putString("prizes-v1", PrizeJson.encode(book))); }
     void newRound() { round(Game.empty(), prizes().newRound()); }

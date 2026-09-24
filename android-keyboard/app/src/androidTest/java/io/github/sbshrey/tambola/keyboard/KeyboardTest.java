@@ -49,8 +49,10 @@ public class KeyboardTest {
         onMain(() -> {
             input.setPrivateImeOptions(practice ? TambolaInputMethod.PRACTICE : null); input.setInputType(type); input.requestFocus();
             InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.restartInput(input); manager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+            manager.restartInput(input);
         });
+        device.waitForIdle();
+        onMain(() -> ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(input, InputMethodManager.SHOW_IMPLICIT));
         assertNotNull(device.wait(Until.findObject(By.text("Call")), 10000));
         device.waitForIdle();
     }
@@ -104,6 +106,45 @@ public class KeyboardTest {
         assertFalse(device.hasObject(By.desc("Next number")));
         assertTrue(device.hasObject(By.text("Use your normal keyboard here")));
         assertEquals(0, new GameStore(context, false).load().count());
+    }
+    @Test public void newRoundRefreshesAnAlreadyVisibleCompletedKeyboard() throws Exception {
+        StringBuilder all = new StringBuilder(); for (int i = 1; i <= 90; i++) { if (i > 1) all.append(','); all.append(i); }
+        GameStore live = new GameStore(context, false); live.save(Game.decode(all.toString()));
+        focus(false, InputType.TYPE_CLASS_TEXT);
+        assertFalse(device.findObject(By.desc("Next number")).isEnabled());
+        // The app can reset the shared round while Android retains the keyboard view.
+        onMain(live::newRound);
+        assertTrue(device.wait(Until.hasObject(By.desc("Next number").enabled(true)), 5000));
+        tap("Next number"); assertTrue(device.wait(Until.hasObject(By.text("1 / 90")), 5000));
+        assertEquals(1, live.load().count()); assertEquals(Game.emoji(live.load().latest()), message());
+    }
+    @Test public void inKeyboardNewGamePreservesSetupAndOffersConfirmedDraftRecovery() throws Exception {
+        GameStore live = new GameStore(context, false); live.save(Game.decode("1,2,3,4,5"));
+        java.util.LinkedHashMap<String, String> names = new java.util.LinkedHashMap<>(); names.put("a", "Asha"); names.put("b", "Bina");
+        live.prizes(new PrizeBook(names, PrizeBook.defaults().schemes).award("prize-0", java.util.Arrays.asList("a", "b"), 10, 5));
+        new GameStore(context, true).save(Game.decode("47"));
+        focus(false, InputType.TYPE_CLASS_TEXT);
+        onMain(() -> { input.setText(Game.emoji(5)); input.selectAll(); });
+        device.findObject(By.text("Board")).click(); device.waitForIdle();
+        visible(By.text("Start a new game")).click(); device.waitForIdle();
+        visible(By.text("Keep playing")).click(); device.waitForIdle();
+        assertEquals(5, live.load().count()); assertTrue(live.prizes().hasWinners());
+        device.findObject(By.text("Board")).click(); device.waitForIdle();
+        visible(By.text("Start a new game")).click(); device.waitForIdle();
+        visible(By.text("Yes, start new game")).click(); device.waitForIdle();
+        assertEquals(0, live.load().count()); assertFalse(live.prizes().hasWinners()); assertEquals(2, live.prizes().players.size());
+        assertEquals(10, live.prizes().scheme("prize-0").rupees); assertEquals("47", new GameStore(context, true).load().encode());
+        assertEquals(Game.emoji(5), message()); tap("Next number"); assertEquals(0, live.load().count());
+        visible(By.text("Clear unsent message…")).click(); device.waitForIdle();
+        visible(By.text("Keep message")).click(); device.waitForIdle(); assertEquals(Game.emoji(5), message());
+        visible(By.text("Clear unsent message…")).click(); device.waitForIdle();
+        visible(By.text("Yes, clear message")).click();
+        assertTrue(device.wait(Until.hasObject(By.text("Message cleared. Tap Next number.")), 5000));
+        assertEquals("", message()); assertEquals(0, live.load().count());
+        tap("Next number"); assertTrue(device.wait(Until.hasObject(By.text("1 / 90")), 5000));
+        assertEquals(1, live.load().count());
+        assertEquals(Game.emoji(live.load().latest()), message());
+        assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), "new-game-recovered.png")));
     }
     @Test public void completedRoundStopsNextButCanReinsertAndCorruptionDoesNotReset() throws Exception {
         StringBuilder all = new StringBuilder(); for (int i = 1; i <= 90; i++) { if (i > 1) all.append(','); all.append(i); }

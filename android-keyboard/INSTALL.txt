@@ -1,9 +1,9 @@
-TAMBOLA KEYBOARD 1.1 - ANDROID 8 OR NEWER
+TAMBOLA KEYBOARD 1.1.1 - ANDROID 8 OR NEWER
 
 ONE PHONE. TWO TAPS PER NUMBER.
 
 SET UP ONCE
-1. Open Tambola-Keyboard-1.1.0.apk on the phone with WhatsApp. Install it.
+1. Open Tambola-Keyboard-1.1.1.apk on the phone with WhatsApp. Install it.
    If updating, install over the old app. Do not uninstall it first.
 2. Open Tambola Keyboard. Tap Help me set it up.
 3. Tap Enable Tambola Keyboard. Turn it on, then return.
@@ -41,7 +41,10 @@ Tap Save winners. Use Insert announcement, then WhatsApp Send.
 At the end: Winners -> Insert all results -> WhatsApp Send.
 
 NEW GAME
-Board -> Undo / New game -> Start a new live game.
+On the keyboard: Board -> Start a new game -> Yes, start new game.
+You stay in WhatsApp. Tap Next number for the first call.
+If an old message is still in the box, send it or tap
+Clear unsent message -> Yes, clear message. Then tap Next number.
 Share results first. Player names and prize settings are kept.
 Undo and New game do not remove WhatsApp messages already sent.
 

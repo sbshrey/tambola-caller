@@ -1,4 +1,24 @@
-# Tambola Keyboard 1.1.0 validation
+# Tambola Keyboard 1.1.1 validation
+
+Validated on 24 September 2026. Package version code 3; the website remains unchanged.
+
+## Reset fix and checks
+
+- Reproduced on v1.1.0: after all 90 numbers were called, resetting the shared round while retaining the visible keyboard left Next number disabled. The added regression failed before the fix and passes with it.
+- The keyboard now observes saved-round changes and refreshes on editor/window lifecycle callbacks. A reset restores the Call panel and enabled Next number, cancels an old pending media handoff, and clears the draw debounce.
+- Added **Board → Start a new game** with confirmation inside the keyboard. Added **Clear unsent message** with a separate confirmation when an existing draft blocks calling. Neither action sends a message or deletes sent messages.
+- **14 Android instrumented tests passed** on the dedicated Android 11/API 30 emulator, including the retained-view regression, cancellation and confirmation of a new round, selected-draft preservation and explicit clearing, first call after reset, player/prize preservation, practice isolation, and a trip from a separate-task editor to the full app's New game and back. Existing winner, image, audio, privacy and persistence checks also passed.
+- The new-game/draft-recovery flow also passed at **130% system font size on a 360dp-wide emulator**. Its resulting keyboard screen was visually inspected.
+- **10 JVM tests passed**; debug and release lint reported **no issues found**. The signed v1.1.1 APK verifies with the existing signing certificate and installs over signed v1.1.0 successfully. The updated activity launched successfully. This update-install check does not independently prove saved-data retention; shared-store regression tests cover preservation of player/prize setup on reset.
+- Release inspection confirmed version `1.1.1`, version code `3`, minimum SDK 26, target SDK 35, unchanged permissions, and no debug editor fixture in the release DEX files.
+
+Release files and SHA-256 checksum are in the ignored `releases/1.1.1/` directory. Website code was unchanged, so its prior 69-test result below was not rerun for this Android-only fix.
+
+The user reported that v1.1.0 worked on their phone before the reset problem. **The exact failing WhatsApp/phone state and v1.1.1 on that phone have not been independently tested.** The emulator regression establishes the retained-view bug and recovery flows, not the root cause of every possible failed call. Try the update in your own chat: call/send, start a new round, call/send again. If an unsent draft remains, send it or explicitly clear it first.
+
+---
+
+# Previous version: 1.1.0 validation
 
 Validated on 24 September 2026. Java 17, Gradle 8.9, AGP 8.7.3, compile/target SDK 35, minimum SDK 26. Website gameplay remains v1.6.
 
