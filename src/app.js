@@ -2,7 +2,9 @@ import { TOTAL_NUMBERS, newGame, restartGame, drawNumber, undoNumber, numberWord
 import { STORAGE_KEY, loadGame, saveGame } from './storage.js';
 import { createVoice } from './voice.js';
 import { numberMessage, whatsappMessageUrl, openNumberShare, copyText, shareFile } from './sharing.js';
-import { clipUrl, createClipLoader } from './audio.js';
+import { clipUrl, clipFileName, createClipLoader } from './audio.js';
+import { LANGUAGES, normalizeLanguage } from './languages.js';
+import { getCall } from './calls.js';
 import { createImagePreparer } from './board-image.js';
 import { createPrizeUI } from './prize-ui.js';
 
@@ -48,6 +50,8 @@ function renderImage() {
     : 'Current number + last 10 calls + full board · PNG';
 }
 let audioNumber;
+let audioLanguage;
+let audioRequest = 0;
 let audioFile;
 let audioPreparing = false;
 const loadClip = createClipLoader();
@@ -57,18 +61,20 @@ function renderAudio() {
   $('share-audio').textContent = sharingAudio ? 'Opening…' : audioPreparing ? 'Preparing audio…' : 'Share audio clip';
   $('download-audio').hidden = !audioNumber;
   if (audioNumber) {
-    $('download-audio').href = clipUrl(audioNumber);
-    $('download-audio').download = `Tambola-${String(audioNumber).padStart(2, '0')}-AI-voice.mp3`;
+    $('download-audio').href = clipUrl(audioNumber, audioLanguage);
+    $('download-audio').download = clipFileName(audioNumber, audioLanguage);
   } else $('download-audio').removeAttribute('href');
 }
-function prepareAudio(number) {
-  if (number !== audioNumber) {
+function prepareAudio(number, language) {
+  if (number !== audioNumber || language !== audioLanguage) {
     audioNumber = number;
+    audioLanguage = language;
+    const request = ++audioRequest;
     audioFile = null;
     audioPreparing = Boolean(number);
-    $('audio-share-status').textContent = 'AI-generated Indian English voice · choose WhatsApp to share';
-    if (number) loadClip(number).then((file) => {
-      if (audioNumber !== number) return;
+    $('audio-share-status').textContent = `AI-generated ${LANGUAGES[language].label} voice · choose WhatsApp to share`;
+    if (number) loadClip(number, language).then((file) => {
+      if (request !== audioRequest) return;
       audioFile = file;
       audioPreparing = false;
       if (!file) $('audio-share-status').textContent = 'Audio clip unavailable. Reconnect and reopen, or share the number as text.';
@@ -106,7 +112,12 @@ function render() {
   const called = new Set(state.called);
   $('current-number').textContent = latest ?? '—';
   $('number-label').textContent = latest ? 'NUMBER CALLED' : 'YOUR FIRST NUMBER AWAITS';
-  $('number-words').textContent = latest ? numberWords(latest) : 'Ready, set, Tambola!';
+  $('call-language').value = state.callLanguage;
+  $('number-words').textContent = latest ? numberWords(latest, state.callLanguage) : 'Ready, set, Tambola!';
+  $('number-words').lang = state.callLanguage === 'hi' ? 'hi' : 'en-IN';
+  $('call-phrase').textContent = latest ? getCall(latest, state.callLanguage).phrase : '';
+  $('call-phrase').lang = state.callLanguage === 'hi' ? 'hi' : state.callLanguage === 'hinglish' ? 'hi-Latn' : 'en-IN';
+  $('call-phrase').hidden = !latest;
   $('called-count').textContent = count;
   $('remaining-count').textContent = TOTAL_NUMBERS - count;
   $('round-status').textContent = complete ? 'ALL 90 CALLED' : count ? 'GAME IN FULL SWING' : 'READY WHEN YOU ARE';
@@ -116,7 +127,7 @@ function render() {
   $('share-number').setAttribute('aria-busy', String(sharingNumber));
   $('share-number-label').textContent = sharingNumber && !sharingAudio && !sharingImage ? 'Opening…' : 'Share number';
   $('copy-number').disabled = !count || sharingNumber;
-  prepareAudio(latest);
+  prepareAudio(latest, state.callLanguage);
   prepareImage(state);
   renderImage();
   $('undo').disabled = !count;
@@ -176,7 +187,7 @@ $('next').addEventListener('click', () => {
   commit(drawNumber(state));
   const latest = state.called.at(-1);
   $('announcement').textContent = `Number ${latest}, ${numberWords(latest)}. ${state.called.length} of 90 called.`;
-  if (state.voiceEnabled) voice.announce(latest);
+  if (state.voiceEnabled) voice.announce(latest, state.callLanguage);
   // Absorb accidental double taps without delaying the number announcement.
   setTimeout(() => { drawLocked = false; render(); }, 650);
 });
@@ -204,8 +215,15 @@ $('voice-toggle').addEventListener('click', () => {
   else voice.stop();
 });
 $('repeat').addEventListener('click', () => {
-  if (state.called.length) { $('voice-warning').hidden = true; voice.announce(state.called.at(-1)); }
+  if (state.called.length) { $('voice-warning').hidden = true; voice.announce(state.called.at(-1), state.callLanguage); }
 });
+$('call-language').addEventListener('change', () => {
+  voice.stop();
+  $('voice-warning').hidden = true;
+  commit({ ...state, callLanguage: normalizeLanguage($('call-language').value) });
+  toast(`Call language: ${LANGUAGES[state.callLanguage].label}. ${state.called.length ? 'Tap Say it again to hear this number.' : 'Ready for your next call.'}`);
+});
+$('preview-voice').addEventListener('click', () => { $('voice-warning').hidden = true; voice.announce(22, state.callLanguage); });
 
 function renderHistory() {
   $('history-description').textContent = `${state.called.length} numbers, in the order they were called.`;
@@ -260,7 +278,7 @@ $('share').addEventListener('click', () => {
 
 $('share-audio').addEventListener('click', async () => {
   if (!audioFile || sharingNumber) return;
-  const number = audioNumber;
+  const request = audioRequest;
   const file = audioFile;
   sharingAudio = true;
   sharingNumber = true;
@@ -270,7 +288,7 @@ $('share-audio').addEventListener('click', async () => {
   sharingAudio = false;
   sharingNumber = false;
   render();
-  if (result === 'fallback' && audioNumber === number) {
+  if (result === 'fallback' && request === audioRequest) {
     $('audio-share-status').textContent = 'This browser can’t share audio files. Download the MP3, then attach it in WhatsApp, or use Share number.';
   }
 });
@@ -352,8 +370,8 @@ async function prepareOffline() {
       registration.active?.postMessage({ type: 'offline-version' }, [channel.port2]);
     });
     const updateStatus = () => {
-      $('offline-status').textContent = pack?.version === '1.4.0' && pack.audioClips === 90
-        ? (navigator.onLine ? 'App + 90 voice clips ready offline' : 'Offline · 90 voice clips ready')
+      $('offline-status').textContent = pack?.version === '1.5.0' && pack.audioClips === 270
+        ? (navigator.onLine ? 'v1.5 · All 3 languages ready offline' : 'v1.5 · Offline · All 3 languages ready')
         : 'App update: reopen online, then close all Tambola tabs and reopen';
     };
     updateStatus();

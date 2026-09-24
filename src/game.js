@@ -1,11 +1,13 @@
+import { normalizeLanguage } from './languages.js';
+export { numberWords } from './languages.js';
 import { defaultSetup, validateSetup, validPrize } from './prizes.js';
 export { CLAIMS } from './prizes.js';
 export const TOTAL_NUMBERS = 90;
 
 export function newGame(voiceEnabled = true) {
-  return { version: 2, called: [], claims: {}, voiceEnabled, ...defaultSetup() };
+  return { version: 2, called: [], claims: {}, voiceEnabled, callLanguage: 'en', ...defaultSetup() };
 }
-export function restartGame(state) { return { ...newGame(state.voiceEnabled), players: state.players, schemes: state.schemes }; }
+export function restartGame(state) { return { ...newGame(state.voiceEnabled), players: state.players, schemes: state.schemes, callLanguage: normalizeLanguage(state.callLanguage) }; }
 
 // Rejection sampling avoids bias when 2^32 is not divisible by the pool size.
 export function randomIndex(size) {
@@ -80,15 +82,5 @@ export function parseGame(raw) {
       claims[type] = { winnerIds: [...claim.winnerIds], prize: claim.prize, at: claim.at, ...(claim.legacyWinner ? { legacyWinner: claim.legacyWinner } : {}) };
     }
   }
-  return { version: 2, called: [...state.called], claims, voiceEnabled: state.voiceEnabled, ...setup };
-}
-
-const ONES = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight',
-  'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
-  'Seventeen', 'Eighteen', 'Nineteen'];
-const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-export function numberWords(number) {
-  if (!Number.isInteger(number) || number < 1 || number > TOTAL_NUMBERS) return '';
-  return number < 20 ? ONES[number]
-    : `${TENS[Math.floor(number / 10)]}${number % 10 ? ` ${ONES[number % 10].toLowerCase()}` : ''}`;
+  return { version: 2, called: [...state.called], claims, voiceEnabled: state.voiceEnabled, callLanguage: normalizeLanguage(state.callLanguage), ...setup };
 }

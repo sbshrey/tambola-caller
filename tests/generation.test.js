@@ -4,7 +4,8 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { calls } from '../scripts/calls.mjs';
+import { calls, callsForLanguage } from '../scripts/calls.mjs';
+import { LANGUAGES } from '../src/languages.js';
 import { generate, hash, requestFor, selectCalls } from '../scripts/generate-audio.mjs';
 
 test('generation requires an explicit bounded selection', () => {
@@ -40,14 +41,14 @@ test('generation resumes without rebilling unchanged clips and does not store th
     await rm(folder, { recursive: true, force: true });
   }
 });
-test('published pack has all 90 clips, correct scripts and matching hashes', async () => {
-  const manifest = JSON.parse(await readFile(new URL('../audio/manifest.json', import.meta.url), 'utf8'));
+for (const [language, { folder }] of Object.entries(LANGUAGES)) test(`${language} pack has all 90 clips, correct scripts and matching hashes`, async () => {
+  const manifest = JSON.parse(await readFile(new URL(`../audio/${folder}manifest.json`, import.meta.url), 'utf8'));
   assert.equal(Object.keys(manifest.clips).length, 90);
-  for (const call of calls) {
+  for (const call of callsForLanguage(language)) {
     const entry = manifest.clips[call.number];
     assert.equal(entry.text, call.text);
     assert.equal(entry.fingerprint, hash(JSON.stringify(requestFor(call))));
-    const bytes = await readFile(new URL(`../audio/${entry.file}`, import.meta.url));
+    const bytes = await readFile(new URL(`../audio/${folder}${entry.file}`, import.meta.url));
     assert.equal(hash(bytes), entry.sha256);
     assert.ok(bytes.length > 1000);
   }

@@ -1,9 +1,9 @@
 const CACHE_PREFIX = `tambola-caller-${self.registration.scope}-`;
-const CACHE = `${CACHE_PREFIX}v1.4.0`;
+const CACHE = `${CACHE_PREFIX}v1.5.0`;
 const ASSETS = ['./', './index.html', './styles.css', './src/app.js', './src/game.js',
-  './src/storage.js', './src/voice.js', './src/sharing.js', './src/audio.js', './src/board-image.js', './src/prizes.js', './src/prize-ui.js', './manifest.webmanifest', './icon.svg',
+  './src/storage.js', './src/voice.js', './src/sharing.js', './src/audio.js', './src/board-image.js', './src/prizes.js', './src/prize-ui.js', './src/languages.js', './src/calls.js', './src/call-phrases.js', './manifest.webmanifest', './icon.svg',
   './icons/icon-192.png', './icons/icon-512.png',
-  ...Array.from({ length: 90 }, (_, index) => `./audio/numbers/${String(index + 1).padStart(2, '0')}.mp3`)];
+  ...['', 'hi/', 'hinglish/'].flatMap((folder) => Array.from({ length: 90 }, (_, index) => `./audio/${folder}numbers/${String(index + 1).padStart(2, '0')}.mp3`))];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
@@ -18,7 +18,7 @@ self.addEventListener('activate', (event) => {
   })());
 });
 self.addEventListener('message', (event) => {
-  if (event.data?.type === 'offline-version') event.ports[0]?.postMessage({ version: '1.4.0', audioClips: 90 });
+  if (event.data?.type === 'offline-version') event.ports[0]?.postMessage({ version: '1.5.0', audioClips: 270 });
 });
 
 // Mobile media players can request byte ranges even for short cached clips.

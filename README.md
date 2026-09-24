@@ -24,7 +24,8 @@ npm run build # copies only the static app to dist/
 ## Play
 
 - Tap **Next number** for a random 1–90 number, without repeats. A short double-tap guard prevents accidental rapid calls.
-- **Voice on** plays a prerecorded AI voice clip: Indian English, familiar short Tambola calls where appropriate, individual digits and the full number. All 90 MP3s are included. **Say it again** repeats the latest number even if automatic voice is off. If a clip fails, the device speech engine is the fallback. Dynamic winner names and voice-toggle messages still use device speech.
+- Choose **Call language → English (India), हिन्दी, or Hinglish** before or during play. Each has all 90 sayings and prerecorded AI voice clips. Hindi uses Hindi sayings and numbers; Hinglish combines Hindi sayings with English digits and number names. **Try voice** previews 22 without drawing a number. The choice is saved and kept for the next round. Sayings, number messages, shared MP3s, and number words on PNGs follow the selection; interface and winner-management controls stay in English. See the [90-number catalog and references](docs/CALLS.md); Hindi includes familiar Indian references and labelled adaptations, since groups use different calling traditions.
+- **Voice on** plays the selected language's clip with the saying, individual digits and full number. **Say it again** repeats the latest number even if automatic voice is off. If a clip fails, the device speech engine is the fallback; Hindi/Hinglish fallback depends on available Hindi voices. Dynamic winner names and voice-toggle messages still use device speech.
 - **Share board image** prepares a PNG containing the current number and spelling, last ten calls (latest first), call count, remaining count, and full 1–90 board. Called numbers are marked and the latest number is highlighted. Tap it, then choose **WhatsApp → your group → Send**. The PNG is prepared after each draw so the share menu can open directly from your tap. **Preview** lets you inspect it or **Download PNG** to attach in WhatsApp. If native image sharing is unavailable, the preview/download opens automatically. Images contain no winner names and are generated entirely on the device, including offline.
 - The board distinguishes the latest number from earlier calls. The last ten calls appear latest first; **View all** shows complete chronological history.
 - **Share number** prepares the latest number and its spelling, the call count, and the five most recent calls. Choose **WhatsApp → your group → Send** in your phone's sharing menu. If that menu is unavailable, the app offers **Open WhatsApp** with the message prefilled, or **Copy message**. The **Copy** button beside Share number copies the same text directly. Sharing never draws another number and cancelling it keeps the game unchanged. You confirm sending in WhatsApp; the app cannot confirm delivery or send automatically.
@@ -36,7 +37,7 @@ npm run build # copies only the static app to dist/
 - Editing a scheme's default prize affects future awards. To revise a recorded payout, edit that claim directly. Renaming a player updates their results; assigned players and claimed schemes cannot be removed until their winner assignments or claims are removed.
 - **New game** asks for confirmation before clearing numbers and claims. It keeps players, schemes, prize defaults and the voice preference for the next round. Share the results before starting a new round.
 - Games, setup and voice settings are saved in this browser. Refreshing resumes the game without speaking unexpectedly. Existing saves upgrade automatically: calls and free-text winner notes are preserved, and the original save remains as a backup. Choose players on an old claim to include it in payout totals. Other tabs on the same origin pick up saved changes; use one host tab to avoid simultaneous draws.
-- Once **App + 90 voice clips ready offline** appears, the app and roughly 6.6 MB voice pack can reopen and play offline. Initial caching needs connectivity; keep the page open until ready. Fallback speech and winner names depend on installed device voices. Browsers may evict site data; clearing it removes the saved game and offline cache.
+- Once **v1.5 · All 3 languages ready offline** appears, the app and roughly 24 MB of voice clips (270 MP3s) can reopen and play offline. Initial caching needs connectivity; keep the page open until ready. Fallback speech and winner names depend on installed device voices. Browsers may evict site data; clearing it removes the saved game and offline cache.
 - **Share app** copies the app URL for you to send. Each device runs an independent game; it does not share the host's live board. Keep everyone together, or use your usual group call to hear the host.
 
 For remote play, only the host draws numbers. Other players can stay in WhatsApp, read the shared messages, and mark their paper tickets. Sharing a number sends only the call information, without winner names or the app link. Undo and New game do not change messages already sent to WhatsApp; tell your group about corrections or a new round. The app and message preparation work offline after caching, but WhatsApp needs connectivity to deliver messages.
@@ -57,17 +58,17 @@ After an update, close all open Tambola tabs and reopen the app so the new offli
 
 The website never calls OpenAI. The local generator reads `OPENAI_API_KEY` from the process environment; no key is written to metadata, copied by the build, or needed in GitHub Pages settings. Keep keys out of source and chat. Local `.env*` files are ignored but are not automatically loaded.
 
-Edit `scripts/calls.mjs` for wording, voice and instructions. The default is `gpt-4o-mini-tts`, voice `coral`, prompted as a warm female host with natural Indian English. Accent and perceived voice character should be auditioned; they are not guaranteed by a preset name. Nicknames vary across groups, so many calls use only a clear number instead of a forced rhyme.
+Edit `src/call-phrases.js` for sayings, `src/calls.js` for spoken script assembly, and `scripts/calls.mjs` for voice instructions. The default is `gpt-4o-mini-tts`, voice `coral`, prompted as a warm female Indian host with language-specific instructions. Accent and perceived voice character should be auditioned; they are not guaranteed by a preset name. English uses traditional Tambola/bingo calls, Hindi uses familiar references and adaptations, and Hinglish uses the Hindi saying followed by English numbers.
 
 ```sh
-node scripts/generate-audio.mjs --samples       # 7, 22, 90
-node scripts/generate-audio.mjs --all           # complete/resume 1–90
-node scripts/generate-audio.mjs --numbers 22    # regenerate if script/settings changed
+node scripts/generate-audio.mjs --samples --language hi     # 7, 22, 90
+node scripts/generate-audio.mjs --all --language hinglish   # complete/resume 1–90
+node scripts/generate-audio.mjs --numbers 22 --language en  # only if changed/missing
 ```
 
-Generation and retakes incur API usage. Unchanged, intact clips are skipped using request fingerprints and file hashes in `audio/manifest.json`. Failures stop without automatic billable retries; rerunning resumes. To intentionally retake an unchanged clip, delete that clip locally, then select its number. The manifest records the script, voice/model and generation time without credentials. The app discloses that number voices are AI-generated.
+Generation and retakes incur API usage. Language defaults to `en`. English lives under `audio/`, Hindi under `audio/hi/`, and Hinglish under `audio/hinglish/`; each has its own `numbers/` and `manifest.json`. Unchanged, intact clips are skipped using request fingerprints and file hashes. Failures stop without automatic billable retries; rerunning resumes. To intentionally retake an unchanged clip, delete that clip locally, then select its number and language. Manifests record the script, voice/model and generation time without credentials. The app discloses that number voices are AI-generated.
 
-After changing clips, run tests/build, bump the service-worker cache version and publish. The build requires all 90 clips. See the official [OpenAI text-to-speech documentation](https://developers.openai.com/api/docs/guides/text-to-speech).
+The optional `scripts/validate-audio.mjs` uses the same number/language flags for a paid transcription audit without the expected script. Reports record hashes and number detections; they do not replace human listening. After changing clips, run tests/build, bump the service-worker cache version and publish. The build requires all 270 clips. See the official [OpenAI text-to-speech documentation](https://developers.openai.com/api/docs/guides/text-to-speech).
 
 ## Deploy
 
@@ -94,7 +95,8 @@ When releasing changed app assets, increment the cache version in **sw.js**. An 
 - `src/audio.js`: clip URLs and audio file preparation.
 - `src/board-image.js`: PNG rendering and preparation tied to the current called-number sequence.
 - `src/sharing.js`: reusable text/file sharing and copy fallbacks for PNGs and audio.
-- `audio/numbers/`, `audio/manifest.json`: 90 reusable MP3s and generation provenance.
+- `src/languages.js`, `src/call-phrases.js`, `src/calls.js`: shared language choices, number names, sayings and speech scripts.
+- `audio/`, `audio/hi/`, `audio/hinglish/`: 90 reusable MP3s and a provenance manifest per language.
 - `scripts/`: dependency-free local server, static build and local audio generator.
 - `tests/`: Node's built-in test runner; speech tests use a fake device adapter, not real audio.
 

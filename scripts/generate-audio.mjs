@@ -1,12 +1,22 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
-import { calls, speechSettings } from './calls.mjs';
+import { callsForLanguage, settingsFor } from './calls.mjs';
+import { LANGUAGES, languageFolder } from '../src/languages.js';
 
 const root = new URL('../audio/', import.meta.url);
 export const hash = (data) => createHash('sha256').update(data).digest('hex');
-export const requestFor = (call) => ({ ...speechSettings, input: call.text });
+export const requestFor = (call) => ({ ...settingsFor(call.language), input: call.text });
 export function selectCalls(args) {
+  args = [...args];
+  let language = 'en';
+  const languageIndex = args.indexOf('--language');
+  if (languageIndex >= 0) {
+    language = args[languageIndex + 1];
+    if (!Object.hasOwn(LANGUAGES, language)) throw Error('Choose --language en, hi, or hinglish.');
+    args.splice(languageIndex, 2);
+  }
+  const calls = callsForLanguage(language);
   if (!args.length || args.includes('--help')) return [];
   if (args.length === 1 && args[0] === '--all') return calls;
   if (args.length === 1 && args[0] === '--samples') return calls.filter(({ number }) => [7, 22, 90].includes(number));
@@ -19,6 +29,10 @@ export function selectCalls(args) {
 
 export async function generate(selected, { directory = root, apiKey = process.env.OPENAI_API_KEY, fetcher = fetch, log = console.log } = {}) {
   if (!apiKey) throw new Error('Set OPENAI_API_KEY in your local environment. Never put it in the website or Git.');
+  if (!selected.length) return;
+  const language = selected[0].language ?? 'en';
+  if (!Object.hasOwn(LANGUAGES, language) || selected.some((call) => (call.language ?? 'en') !== language)) throw Error('Generate one valid language at a time.');
+  directory = new URL(languageFolder(language), directory);
   await mkdir(new URL('numbers/', directory), { recursive: true });
   const manifestUrl = new URL('manifest.json', directory);
   let manifest;
@@ -62,7 +76,7 @@ export async function generate(selected, { directory = root, apiKey = process.en
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     const selected = selectCalls(process.argv.slice(2));
-    if (!selected.length) console.log('Generate AI voice clips locally (uses paid OpenAI API):\n  node scripts/generate-audio.mjs --samples\n  node scripts/generate-audio.mjs --all\n  node scripts/generate-audio.mjs --numbers 22\nUnchanged clips are reused. Edit scripts/calls.mjs to change wording or voice.');
+    if (!selected.length) console.log('Generate AI voice clips locally (uses paid OpenAI API):\n  node scripts/generate-audio.mjs --samples --language hi\n  node scripts/generate-audio.mjs --all --language hinglish\n  node scripts/generate-audio.mjs --numbers 22 --language en\nUnchanged clips are reused. Language defaults to en. Edit src/call-phrases.js for sayings.');
     else await generate(selected);
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

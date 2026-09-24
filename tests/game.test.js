@@ -11,7 +11,7 @@ function gameWith(count) {
 }
 
 test('a fresh game has voice on and an empty board', () => {
-  assert.deepEqual(newGame(), { version: 2, called: [], claims: {}, voiceEnabled: true, ...defaultSetup() });
+  assert.deepEqual(newGame(), { version: 2, called: [], claims: {}, voiceEnabled: true, callLanguage: 'en', ...defaultSetup() });
   assert.equal(newGame(false).voiceEnabled, false);
 });
 test('each of 90 numbers is called exactly once and the game then stops', () => {

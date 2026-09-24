@@ -1,4 +1,5 @@
-import { numberWords } from './game.js';
+import { getCall } from './calls.js';
+import { LANGUAGES, normalizeLanguage } from './languages.js';
 import { clipUrl } from './audio.js';
 
 export function createVoice(onError, browser = window, player = null) {
@@ -20,19 +21,20 @@ export function createVoice(onError, browser = window, player = null) {
       browser.speechSynthesis.cancel();
     }
   }
-  function speak(text) {
+  function speak(text, language = 'en') {
     stop();
     if (!speechSupported) return;
     try {
       const utterance = new browser.SpeechSynthesisUtterance(text);
       const voices = browser.speechSynthesis.getVoices();
-      // Prefer a local English voice so announcements can work offline.
-      const voice = voices.find((v) => v.localService && /^en[-_]IN$/i.test(v.lang))
-        ?? voices.find((v) => v.localService && /^en\b/i.test(v.lang))
-        ?? voices.find((v) => /^en[-_]IN$/i.test(v.lang))
-        ?? voices.find((v) => /^en\b/i.test(v.lang));
+      const locale = LANGUAGES[normalizeLanguage(language)].locale;
+      const matches = (v) => v.lang.toLowerCase().replace('_', '-').startsWith(locale.slice(0, 2) + '-');
+      // Prefer a local voice in the chosen language for offline fallback.
+      const voice = voices.find((v) => v.localService && v.lang.replace('_', '-') === locale)
+        ?? voices.find((v) => v.localService && matches(v))
+        ?? voices.find((v) => matches(v));
       if (voice) utterance.voice = voice;
-      utterance.lang = voice?.lang ?? 'en-IN';
+      utterance.lang = voice?.lang ?? locale;
       utterance.rate = 0.85;
       utterance.onerror = (event) => {
         if (current === utterance && !['interrupted', 'canceled'].includes(event.error)) onError();
@@ -41,18 +43,18 @@ export function createVoice(onError, browser = window, player = null) {
       browser.speechSynthesis.speak(utterance);
     } catch { onError(); }
   }
-  function announce(number) {
-    const text = `Number ${number}. ${numberWords(number)}.`;
-    if (!audio) { speak(text); return; }
+  function announce(number, language = 'en') {
+    const text = getCall(number, language).text;
+    if (!audio) { speak(text, language); return; }
     stop();
     const token = playback;
     const fallback = () => {
       if (token !== playback) return;
-      if (speechSupported) speak(text);
+      if (speechSupported) speak(text, language);
       else { stop(); onError(); }
     };
     audio.onerror = fallback;
-    audio.src = clipUrl(number);
+    audio.src = clipUrl(number, language);
     // Start directly inside the Next / Repeat gesture, including on iOS.
     try { Promise.resolve(audio.play()).catch(fallback); } catch { fallback(); }
   }

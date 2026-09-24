@@ -35,11 +35,14 @@
     <div class="game-layout">
       <section id="caller" class="caller card" aria-labelledby="caller-label" tabindex="-1">
         <div class="section-top"><h2 id="caller-label">Let’s play Tambola</h2><span id="round-status" class="tag">READY WHEN YOU ARE</span></div>
+        <div class="language-control"><label for="call-language">Call language<select id="call-language" aria-describedby="language-help"><option value="en">English (India)</option><option value="hi" lang="hi">हिन्दी</option><option value="hinglish">Hinglish</option></select></label><button id="preview-voice" class="text-button" aria-label="Preview voice with number 22">Try voice</button></div>
+        <p id="language-help" class="helper align-left">Changes calls, number words and shared MP3s. Try voice previews 22 without drawing. Controls stay in English.</p>
         <div class="number-stage">
           <span class="spark spark-one" aria-hidden="true">✦</span><span class="spark spark-two" aria-hidden="true">✧</span>
           <p id="number-label" class="eyebrow">YOUR FIRST NUMBER AWAITS</p>
           <div id="current-number" class="current-number">—</div>
           <p id="number-words" class="number-words">Ready, set, Tambola!</p>
+          <p id="call-phrase" class="call-phrase" hidden></p>
           <button id="repeat" class="repeat-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Zm4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg> Say it again</button>
         </div>
         <div class="call-stats"><span><span class="green-dot" aria-hidden="true"></span> <strong id="called-count">0</strong> called</span><span><strong id="remaining-count">90</strong> to go</span></div>
@@ -48,7 +51,7 @@
         <p id="image-share-hint" class="helper">Current number + last 10 calls + full board · PNG</p>
         <div class="number-share-actions"><button id="share-number" class="number-share-button" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg> <span id="share-number-label">Share number</span></button><button id="copy-number" class="number-copy-button" aria-label="Copy number message" disabled>Copy</button></div>
         <div class="audio-share-actions"><button id="share-audio" class="number-share-button" disabled>Share audio clip</button><a id="download-audio" class="text-button" hidden>Download MP3</a></div>
-        <p id="audio-share-status" class="helper" role="status">AI-generated Indian English voice · ready when you call</p>
+        <p id="audio-share-status" class="helper" role="status">AI-generated voice · ready when you call</p>
         <p id="number-share-hint" class="helper">Choose WhatsApp → your group → Send</p>
         <div class="secondary-actions"><button id="undo" class="undo-button" disabled><span aria-hidden="true">↶</span> Undo last</button><button id="new-game" class="new-button"><span aria-hidden="true">↻</span> New game</button></div>
         <p id="caller-hint" class="helper">Gather your tickets. We’ll take care of the numbers.</p>

@@ -1,0 +1,475 @@
+{
+  "note": "Automated transcription without expected wording. Number detection is not a human accent or full-phrase quality assessment. Failed detections require review; reruns reuse matching hashes.",
+  "clips": {
+    "en:9": {
+      "number": 9,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "7fa815adc45867642ee5127e875dd3d6b9db64dfd909f7a815a9b083beda5ee8",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Doctor's orders, single number nine, nine.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:39.262Z"
+    },
+    "en:17": {
+      "number": 17,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "29973a4dbae478965da8eb25debed27024a3fbad8ead47c8f8e53b86d3100250",
+      "model": "whisper-1",
+      "transcript": "Dancing Queen, number one, seven, 17.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:55.576Z"
+    },
+    "en:23": {
+      "number": 23,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "1a09e23b2d8d1a39752b719e41bd53a0f0984dc1fea634a2340ea789a73e777f",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "You and Me, number 23, 23.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:40.906Z"
+    },
+    "en:27": {
+      "number": 27,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "5089183b2cf62303c4579ea6d2c3ac58bde91dedd1d05ed9ef36fa08cb9f41e2",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Gateway to Heaven, Number 27, 27.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:41.744Z"
+    },
+    "en:28": {
+      "number": 28,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "d2b143fdae098b65837a0e63c24bbe4ce3408b3fee4bb240506f154072ddd429",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "In a state, number 28.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:42.441Z"
+    },
+    "en:29": {
+      "number": 29,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "b9463a4edbe59f59bdefc5d105825836df15ef6445426503b8e66998f23d2fe4",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "In your prime, number 29, the number is 29.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:36.287Z"
+    },
+    "en:30": {
+      "number": 30,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "99a08250665ff8c1d9994358a81b53854ca9b734c392ad39000612e58815a70b",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Flirty Thirty, number three, zero, thirty.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:44.011Z"
+    },
+    "en:31": {
+      "number": 31,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "f94415cac861edb77ff0805501aedc4db1b62dab9b68e5c3c4f691b447357ce6",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Get up and run. Number 31. 31.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:44.641Z"
+    },
+    "en:34": {
+      "number": 34,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "5b8f45a157f4e94be232245291fee5c65135935758c67bc926b7c3fffc6433e5",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Ask for more. Number 3-4-34.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:45.418Z"
+    },
+    "en:35": {
+      "number": 35,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "3a311561a77131ad031570b5e5abe0ed4c16eeeffd6c124136de74efa885423d",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Jump and jive. Number three, five, thirty-five.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:46.126Z"
+    },
+    "en:37": {
+      "number": 37,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "cb8dce2e5c0498e0c00cf73ee0d68deea0f9a76882b0776b2cff7c81a3ddbf12",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Mixed luck. Number three, seven, thirty-seven.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:47.174Z"
+    },
+    "en:38": {
+      "number": 38,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "67295c738a9430428ed2135d13b8c116aa42333d0a0b14a6a6c8d278b61ae23c",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Christmas cake, number three, eight, thirty-eight.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:48.043Z"
+    },
+    "en:39": {
+      "number": 39,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "2e5be42e1d8d6d843ac5c3b8b5f3330cec4d0456e4a34f81a4a9b5fef027d6a9",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Those famous steps, number 3, 9, 39.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:48.617Z"
+    },
+    "en:41": {
+      "number": 41,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "0dad18c4c85c9d016c59801f2712be4ef6354d89ee0cde854caae0e5f5db967e",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Time for Fun, number four, 1:41.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:49.358Z"
+    },
+    "en:42": {
+      "number": 42,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "88cf7d9d24a460acbd027aa932d9e893411b390c4bcb4e30d625676280c47d6d",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Winnie the Pooh, number 4-2-42.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:50.242Z"
+    },
+    "en:43": {
+      "number": 43,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "94cf2418f0030e48a4534c6efa2b467c8c469e2f39d54ad39708a0dd1ebbc5f6",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Down on your knees. Number four, three, forty-three.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:51.047Z"
+    },
+    "en:46": {
+      "number": 46,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "511f5485fda15a3d9798a1954fcee81b25f60c0d11f9deaf970ea73da726ca47",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Up to tricks, number four six, forty-six.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:52.227Z"
+    },
+    "en:47": {
+      "number": 47,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "5fb7fe84c6537f9c9bbd460b680d65d31825e91c70811c42e8c55d6e91a97cfc",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Year of Independence, number four-seven, forty-seven.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:53.061Z"
+    },
+    "en:49": {
+      "number": 49,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "b349ccdfbd8ae32c16c3bf81a23ff8bb310ad953579c6b156667edd48474e904",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Rise and shine, number four-nine, forty-nine.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:54.412Z"
+    },
+    "en:51": {
+      "number": 51,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "c76704c1e5cb3421d7bb46b5c8ed7198d0460975625c745aeada41b72d33d0e8",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Charity begins, number 5151.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:55.173Z"
+    },
+    "en:53": {
+      "number": 53,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "f8a54ef2e258ba7b8b6f9164442276b2e16121c68d2064c648b9669176347665",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Pack with a Joker, number five, three, fifty-three.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:55.933Z"
+    },
+    "en:54": {
+      "number": 54,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "626a58badf0ae457fdf9bf8e281c597bb5df371baf6691bc5c0c80240ca9a5b9",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Clean the floor. Number five, four, fifty-four.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:56.695Z"
+    },
+    "en:56": {
+      "number": 56,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "190d5b9cd097c428999e6694f226797e9fa22b7e403fddd258be511b377b725e",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Pick up sticks, number five-six, fifty-six.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:57.516Z"
+    },
+    "en:57": {
+      "number": 57,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "4e8e2f96d08c2e037627a85bdced9010053eb2191075c1ad5e4805cce09c0eb6",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Heinz Varieties, number 5, 7, 57.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:58.294Z"
+    },
+    "en:58": {
+      "number": 58,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "8e33ad5b83c0249d44108037b9b852982163af37bd2330897838a307cd2dad53",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Make them wait. Number five-eight, fifty-eight.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:58.857Z"
+    },
+    "en:59": {
+      "number": 59,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "0aa9d83d4fda97818c4ce5bf591edb1b9c171bc30c7aa84094252958b8d36411",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Write in line, number five-nine, fifty-nine.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:14:59.814Z"
+    },
+    "en:61": {
+      "number": 61,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "09ffe833a7250c0d926963dc094bf3ec36b96c8ff61bc265b741d39cc7a4c5e6",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Baker's bun, number 6161.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:00.685Z"
+    },
+    "en:62": {
+      "number": 62,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "d5d11ea81b1630f5eb388f0232676a7b6aed2ff3fc41753a28890a66e93e3806",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Turn the screw. Number six to sixty-two.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:02.066Z"
+    },
+    "en:63": {
+      "number": 63,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "c2ca782d36dd3c28bb9ca450b58ee9732772bcb2fb59c90ff5666bed77598bfc",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Tickle Me, number 63, 63.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:02.916Z"
+    },
+    "en:64": {
+      "number": 64,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "10ff1400ecf9ac6b126c88bba50b3fd97bf4e89fb8fc7befc02c5948ae8c73e0",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "red raw number six four sixty-four",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:03.711Z"
+    },
+    "en:65": {
+      "number": 65,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "f3b0d2f4f918c1b54f93982312aad6808d3f2d8cc7a3119e033ec46b2ac7d169",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Old Age Pension, number 65.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:04.853Z"
+    },
+    "en:67": {
+      "number": 67,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "15cb359024c805d7adc45fa230ae64fe1566373d2f98d05d6b3fc4513ff2628f",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Made in Heaven, number 6767.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:05.384Z"
+    },
+    "en:68": {
+      "number": 68,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "157dd4edc4279567437f11f9e5d43d5c1528b46b99aff51b494994ae1ebeb142",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Saving brace number 68.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:06.258Z"
+    },
+    "en:69": {
+      "number": 69,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "f25092c2c1fafabc276f3474b392bae023185fe7bee75b9725db9b50c8c2b60e",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Either way up, number 6, 9, 69.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:06.983Z"
+    },
+    "en:70": {
+      "number": 70,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "18e5cbca9b24e908b73cf11f1983dc56b0fa696676cc519ebbaa9984c6bdd465",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "three score and ten. Number seven zero. Seventy.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:07.793Z"
+    },
+    "en:71": {
+      "number": 71,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "8e4f2c011c4d695404f96d315ad11173dff2915994512597889aacb5c94c4740",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Bang on the Drum, Number 7-1-71.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:08.653Z"
+    },
+    "en:73": {
+      "number": 73,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "9c507018038d72b7951bb2dc97a0512c5905b03b0d8a739ef771d7b8af826e04",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Queen Bee, number 7373.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:09.289Z"
+    },
+    "en:74": {
+      "number": 74,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "ca829bd53633f75581a8fdce96bdfb659de9c94427a7955edb4b018b31d70563",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Hit the floor. Number seven, four, seventy-four.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:10.060Z"
+    },
+    "en:76": {
+      "number": 76,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "0025ec45d669b38b3199f49f533eb08e463d5dc793c4d80fc43ac730f086dd9c",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Trombones, number seven, six, seventy-six.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:10.910Z"
+    },
+    "en:78": {
+      "number": 78,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "ade9871248bfed37fa94058f737a7940933edd1dac677634de603e05f9bda9cd",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Heaven's Gate, number 78.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:11.650Z"
+    },
+    "en:79": {
+      "number": 79,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "002264ca4ee2e2688f0cef31da9f0e5f5f71a9d15abbd5a88d039fcddaed91bb",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "One more time, number seven-nine, seventy-nine.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:12.634Z"
+    },
+    "en:80": {
+      "number": 80,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "3cc9d9e2e0720187a8f0756582705cec60abd1c4a33958723ec7ce13a17b70c8",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Gandhi's breakfast, number eight zero. The number is eighty.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:37.056Z"
+    },
+    "en:81": {
+      "number": 81,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "819a328f60d4ecdb871561aa267c6e4efdc860379d2a9d17d43ad6f0eed00629",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Stop and run, number 8181.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:14.320Z"
+    },
+    "en:82": {
+      "number": 82,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "87e523d09b1b3693ca5e5f482e53392ffb03a4085339c77aab284c0120c74fa4",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Straight on through. Number 82.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:15.051Z"
+    },
+    "en:85": {
+      "number": 85,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "c4f79070d372e71c176eb19ec785ea2995fb4ef364a7c1865183ec6f1f067f7c",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Staying Alive, number 8585.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:15.689Z"
+    },
+    "en:86": {
+      "number": 86,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "97a0b7ea8765debdea4d50422fabf23b66c3ba3daa90910b5650adc60b23b21a",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Between the sticks, number 8-6-86.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:16.588Z"
+    },
+    "en:87": {
+      "number": 87,
+      "language": "en",
+      "languageHint": "en",
+      "sha256": "c54dde557628bb8657ea664620e53bb1c3a5f7cdfdf82eae3f28ff666c13cae2",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Last of luck, number 8-7-87.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:17.367Z"
+    }
+  }
+}

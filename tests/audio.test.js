@@ -16,7 +16,7 @@ test('clip preparation reuses the current file and changes it for a new number',
   });
   const [a, b] = await Promise.all([load(22), load(22)]);
   assert.equal(a, b);
-  assert.equal(a.name, 'Tambola-22-AI-voice.mp3');
+  assert.equal(a.name, 'Tambola-22-English-AI-voice.mp3');
   assert.equal(a.type, 'audio/mpeg');
   assert.equal(await a.text(), 'audio bytes');
   const c = await load(23);

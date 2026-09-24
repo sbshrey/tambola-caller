@@ -8,7 +8,7 @@ const flush = () => new Promise((resolve) => setImmediate(resolve));
 test('image data includes the latest number, last ten calls and full board without player names', () => {
   const state = { ...newGame(), called: [1, 2, 3, 4, 6, 7, 8, 5, 66, 13, 82, 47], claims: { early5: { winner: 'Private player', at: 5 } } };
   const data = imageSummary(state);
-  assert.deepEqual(data, { latest: 47, count: 12, remaining: 78, called: state.called, recent: [47, 82, 13, 66, 5, 8, 7, 6, 4, 3] });
+  assert.deepEqual(data, { language: 'en', latest: 47, count: 12, remaining: 78, called: state.called, recent: [47, 82, 13, 66, 5, 8, 7, 6, 4, 3] });
   assert.equal(JSON.stringify(data).includes('Private player'), false);
   state.called.push(90);
   assert.equal(data.count, 12);

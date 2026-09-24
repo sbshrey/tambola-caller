@@ -1,9 +1,12 @@
 import { numberWords, TOTAL_NUMBERS } from './game.js';
+import { getCall } from './calls.js';
 
 export function numberMessage(state) {
   const latest = state.called.at(-1);
   if (latest === undefined) return '';
   const recent = state.called.slice(-5).reverse().join(', ');
+  if (state.callLanguage === 'hi') return `🎱 *${latest} — ${numberWords(latest, 'hi')}*\n${getCall(latest, 'hi').phrase}\nबुलावा ${state.called.length} / ${TOTAL_NUMBERS}\nहाल के नंबर: ${recent}`;
+  if (state.callLanguage === 'hinglish') return `🎱 *${latest} — ${numberWords(latest)}*\n${getCall(latest, 'hinglish').phrase}\nCall ${state.called.length} of ${TOTAL_NUMBERS}\nRecent: ${recent}`;
   return `🎱 *${latest} — ${numberWords(latest)}*\nCall ${state.called.length} of ${TOTAL_NUMBERS}\nRecent: ${recent}`;
 }
 

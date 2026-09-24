@@ -1,0 +1,904 @@
+{
+  "note": "Automated transcription without expected wording. Number detection is not a human accent or full-phrase quality assessment. Failed detections require review; reruns reuse matching hashes.",
+  "clips": {
+    "hinglish:9": {
+      "number": 9,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "d722987fffa776a77afb745a5cc90c48113806c60db1a72b8abcbd7fcbacf306",
+      "model": "gpt-4o-transcribe",
+      "transcript": "डॉक्टर की सलाह: सिंगल नंबर 9.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:12:17.290Z"
+    },
+    "hinglish:22": {
+      "number": 22,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "0c66a3a98d529893563fed3fab694cf4e75a8ccac5dd4ea9ee0019edff3640e2",
+      "model": "whisper-1",
+      "transcript": "Do choti battakhein. Number two, two. Twenty-two.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:12:37.497Z"
+    },
+    "hinglish:47": {
+      "number": 47,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "cffc988ca35e4724fc121fd12d96d7bf2d60ba05f68ec387b2f4baf125e97dde",
+      "model": "whisper-1",
+      "transcript": "Azadi Ghassan, number 4747.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:12:39.866Z"
+    },
+    "hinglish:56": {
+      "number": 56,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "fc086c70d94095cd84f829b757928f2310ae29cfb14d373f7d5bb4c2fbcd351b",
+      "model": "whisper-1",
+      "transcript": "Chakban Phog, No. 5656.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:12:41.380Z"
+    },
+    "hinglish:60": {
+      "number": 60,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "d374b92d2a954b967ed937d615bf26f29cdb474739e75609ee247c31faa5b47e",
+      "model": "gpt-4o-transcribe",
+      "transcript": "पूरे पाँच दर्जन। The number is 60.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:12:20.375Z"
+    },
+    "hinglish:66": {
+      "number": 66,
+      "language": "hinglish",
+      "sha256": "fb0104714de2ec619c8ac90f735bded6542dbdeea3acaaf6e13ce421007c035f",
+      "model": "gpt-4o-mini-transcribe",
+      "transcript": "Chuck it a chucka. Number six, six. The number is sixty-six.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:11:59.071Z"
+    },
+    "hinglish:90": {
+      "number": 90,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "b6123a8324b35c88d1e8d5e4c5b368077a9dfd9c6b1df9eda6a6d09c6b2fd4f7",
+      "model": "whisper-1",
+      "transcript": "subse uncha number number nine zero ninety",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:12:42.285Z"
+    },
+    "hinglish:1": {
+      "number": 1,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "51f46ffa010c776e380adcb8ca0f3955dc9c7f5d9797d05e803d30d0b548af8c",
+      "model": "whisper-1",
+      "transcript": "Khel ki shurwaat Single number 1 1",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:54.669Z"
+    },
+    "hinglish:2": {
+      "number": 2,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "2463ba9a5d9eb7e7a6879d6914bde140cefca46dcdb033fc3bf638b5b72b6f82",
+      "model": "whisper-1",
+      "transcript": "ek choti batakh single number two two",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:55.688Z"
+    },
+    "hinglish:3": {
+      "number": 3,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "badae23aafd990baa9226898353efda512b1d7d24b5ecb3ac025e0bda341ea1f",
+      "model": "whisper-1",
+      "transcript": "Chota Sukhi Parivar Single number three",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:57.187Z"
+    },
+    "hinglish:4": {
+      "number": 4,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "008f360350977836156296c4331b931c0c0ecf519c930eec5ff0e98ff3c8f23a",
+      "model": "whisper-1",
+      "transcript": "Hum Do Humare Do Single number 4 4",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:57.968Z"
+    },
+    "hinglish:5": {
+      "number": 5,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "b6a9696368c876c05f35d399dd03d98668bb9eb625ca12daa03eac24c18bdfab",
+      "model": "whisper-1",
+      "transcript": "Punjab ke paanch dariya. Symbol number five.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:15:59.383Z"
+    },
+    "hinglish:6": {
+      "number": 6,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "32ddae87ea32cd120c3b1ddc2c6b6c3bd23f7e4d33458e1c7fb9f2fc247cb266",
+      "model": "whisper-1",
+      "transcript": "Yeh laga chakta. Single number 6. 6.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:00.875Z"
+    },
+    "hinglish:7": {
+      "number": 7,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "052e8def509b046e83ce7db944c7072fc0559b8d7164f51fb1fe3150d2ceef17",
+      "model": "whisper-1",
+      "transcript": "Indra Dhanushka run single number seven seven",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:02.762Z"
+    },
+    "hinglish:8": {
+      "number": 8,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "88b1e2978eec40ac2f445b53a545b69131c2a46e61048b0ce525d72ab94b6675",
+      "model": "whisper-1",
+      "transcript": "Bagiche ka bhatak Single number eight Eight",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:04.287Z"
+    },
+    "hinglish:10": {
+      "number": 10,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "66aab646dd33aff08dbb58029e3a39d687f1f142026ee5a9b850c7a29f722cff",
+      "model": "whisper-1",
+      "transcript": "The first number of the decimals, number 1, 0, 10.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:05.277Z"
+    },
+    "hinglish:11": {
+      "number": 11,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "e9e17fccfd6872f19d739303ae255107acbe3815ad7b8136d06e37d4c8398918",
+      "model": "whisper-1",
+      "transcript": "eek aur eek, gyaara, number one, one, eleven",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:06.901Z"
+    },
+    "hinglish:12": {
+      "number": 12,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "7d55d0bdf62621c6354e6393ed697fd1052a518b117792b7505b5f08673e1c76",
+      "model": "whisper-1",
+      "transcript": "Pura Ek Darjan, number 1, 2, 12.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:07.974Z"
+    },
+    "hinglish:13": {
+      "number": 13,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "d884dde1e58cb0b0700661d35f5d91a23f4e73e6b26f113760fd39e1fea1b27b",
+      "model": "whisper-1",
+      "transcript": "Dekar ka darjan, number 1, T, 13.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:09.255Z"
+    },
+    "hinglish:14": {
+      "number": 14,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "7fb41f401f3d9a8cc7b5bcde05d5add65e09f4a46a617644006233f37aa4b093",
+      "model": "whisper-1",
+      "transcript": "Ram Ka Vanvas, No. 14, 14.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:10.218Z"
+    },
+    "hinglish:15": {
+      "number": 15,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "4dfc36c1c08e55718b615c28a7386f04d21c57d4906e99933c3f6dccfaa9ea0e",
+      "model": "whisper-1",
+      "transcript": "Swatantrata Divas number 1, 5, 15",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:11.390Z"
+    },
+    "hinglish:16": {
+      "number": 16,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "fccefd4f69707730f6bf43a84c27afa7f6c52cdd675e169809ac697bd3c2d26b",
+      "model": "whisper-1",
+      "transcript": "Sone Shingar, No. 1, 6, 16.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:13.045Z"
+    },
+    "hinglish:17": {
+      "number": 17,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a425a2d7c73e7986cba31f39222579d55b6a195ee51f2b756287ae3ed2fdaad9",
+      "model": "whisper-1",
+      "transcript": "Naach Ki Rani No. 1, 7, 17",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:13.779Z"
+    },
+    "hinglish:18": {
+      "number": 18,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "dbc22d9c8ad516672b56bed1a8365c5d5a4e78289e456c05b5096737e2a604e9",
+      "model": "whisper-1",
+      "transcript": "Vote Dene Ki Umar No. 1, 8, 18",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:14.712Z"
+    },
+    "hinglish:19": {
+      "number": 19,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a87d0d2acad7a75c45c9d91ba3d670f541d9fec20549f514a7b5d8963d209e87",
+      "model": "whisper-1",
+      "transcript": "Kishore Omri ki Vidaai, No. 1, 9, 19",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:16.465Z"
+    },
+    "hinglish:20": {
+      "number": 20,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "f035d8f8ab9c6cab6a34e61a35ece8439a2ce6b047fccb8e237cfebc8daf8e8a",
+      "model": "whisper-1",
+      "transcript": "do dahai puri number two zero twenty",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:17.197Z"
+    },
+    "hinglish:21": {
+      "number": 21,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "8d396cd2c4555bcf979fc84d1110b3e2f7d4ce539179ab34afac9a54b2927d08",
+      "model": "whisper-1",
+      "transcript": "Toponki salami, number 2, 1, 21.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:18.909Z"
+    },
+    "hinglish:23": {
+      "number": 23,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "67ffd07882b6692ccae380255a71073d474cbf188860de6b516d81bda712eb95",
+      "model": "whisper-1",
+      "transcript": "Tum aur hum. Number two, three. Twenty-three.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:19.678Z"
+    },
+    "hinglish:24": {
+      "number": 24,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "ead15bbc4cdbd150d2561cad6f89a9b6478fb469a25214d1972efa4178dff563",
+      "model": "whisper-1",
+      "transcript": "PURE DO DARJAN NUMBER DO PACH TWENTY FOUR",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:20.500Z"
+    },
+    "hinglish:25": {
+      "number": 25,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "42fe38fdf091f3dcb6777c4dbdf1e71a5a04de38a780ca1d081582e9269f66ba",
+      "model": "whisper-1",
+      "transcript": "Shandhi ki saalgirah. Number two, five. Twenty-five.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:21.659Z"
+    },
+    "hinglish:26": {
+      "number": 26,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "34c0c154ee237eff28d0ebdbb1d4235f57a3890c886ec7c4a9ff34a05e7d4bf8",
+      "model": "whisper-1",
+      "transcript": "Gana Tantra Divas, No. 2626.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:23.518Z"
+    },
+    "hinglish:27": {
+      "number": 27,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "74da37f68e147280c445178325b2358a684fda406eb3c50ea4434a8980db0d09",
+      "model": "whisper-1",
+      "transcript": "Swarg Kheedah, number 2, 7, 27.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:24.755Z"
+    },
+    "hinglish:28": {
+      "number": 28,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "6713ceb8daf42ef4fd9d89f5992dfea0384e1b33be0b7a443c06f687a93fe46a",
+      "model": "whisper-1",
+      "transcript": "Farwari ke din number two eight twenty-eight",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:27.058Z"
+    },
+    "hinglish:29": {
+      "number": 29,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "cd0a094b94b713a8bcb427fd9c475f9b70f2fcf78905f0b5dcecd661d7e77f9a",
+      "model": "whisper-1",
+      "transcript": "Jawaani Ki Bahar, No. 2, 9, 29.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:27.791Z"
+    },
+    "hinglish:30": {
+      "number": 30,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "840ff85c7b3e358d0b3cfd598edca9588b0400b1146dfc8d05c8ef0e43591f75",
+      "model": "whisper-1",
+      "transcript": "30 Markha Number 30 30",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:28.586Z"
+    },
+    "hinglish:31": {
+      "number": 31,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a3540a9b0da9a217aa73db9471090027422c13070e5e42162669ceb0f5f4c54e",
+      "model": "whisper-1",
+      "transcript": "Utho aur dauro. No. 3, 1 31",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:31.220Z"
+    },
+    "hinglish:32": {
+      "number": 32,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "699b02a0c54d301c2b0ef6eade96b2210ae3ef0134bd15e4ff0168787c08d5d5",
+      "model": "whisper-1",
+      "transcript": "Bhattisi dikhaal, number 3-2-32.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:32.376Z"
+    },
+    "hinglish:33": {
+      "number": 33,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "ad032ed5542b8b810a022ff6e111176d2ee69617da7e691d955fc26f4b86a9fd",
+      "model": "whisper-1",
+      "transcript": "3 ki jori. Number 3, 3. The number is 33.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:22:32.460Z"
+    },
+    "hinglish:34": {
+      "number": 34,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "9b1df5790e21eb2c4268c96b2b624db008e38ccc28f2cd2e45ef843b6098a7c9",
+      "model": "whisper-1",
+      "transcript": "Dil Mange Aur. Number three, four. 34.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:35.976Z"
+    },
+    "hinglish:35": {
+      "number": 35,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a04e5ccfeeb66c665becfb0d93f88206929a2d079cfcfd69d8de06a4afd820d6",
+      "model": "whisper-1",
+      "transcript": "Jumo or nacho number three five thirty five",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:37.690Z"
+    },
+    "hinglish:36": {
+      "number": 36,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "e279609cb0ee246a5f5661d2b32f31c7cf1bcd772202e1851a9d93b35aecc189",
+      "model": "whisper-1",
+      "transcript": "36 ka aankhda number three six The number is 36",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:22:33.967Z"
+    },
+    "hinglish:37": {
+      "number": 37,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "bae966a6f067bfeea9d5695ce77e412723e3d2b56aa9c2f88c2b313f0a9635e7",
+      "model": "whisper-1",
+      "transcript": "Kismat Ka Khel No. 3, 7 37",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:40.384Z"
+    },
+    "hinglish:38": {
+      "number": 38,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "2a352f4686f9a1c1f8136c7a17d3a928af8d91b6598ac9edab84b4431f28428e",
+      "model": "whisper-1",
+      "transcript": "Christmas cake, number 3838.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:16:41.321Z"
+    },
+    "hinglish:39": {
+      "number": 39,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "9cbe81dcd9ce5ca637923ca97f7d4e9b2359852781035b73e3a8f124e8fc366a",
+      "model": "whisper-1",
+      "transcript": "Masha'hud Sidhiyon, number 3939.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:20:51.963Z"
+    },
+    "hinglish:40": {
+      "number": 40,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "2a2b68f526bc589978b96d6ce74186f2c1a3ae35880762d452c6816e65af3725",
+      "model": "whisper-1",
+      "transcript": "Sindagi ki Nai Shuruaat, No. 4040",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:20:52.853Z"
+    },
+    "hinglish:41": {
+      "number": 41,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "b19cdfb3de1841d1f82c1a6eb25319249046261ec045b370961d03849e289117",
+      "model": "whisper-1",
+      "transcript": "Masti Ka Samay, No. 4141.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:20:53.830Z"
+    },
+    "hinglish:42": {
+      "number": 42,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "d299f104b9caacddcc33c2fbbf8b5c8c1b3f78eb6910b644f7c1f7d2a2f6358a",
+      "model": "whisper-1",
+      "transcript": "Bharat Chhodo Aadolan No. 42 42",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:20:55.555Z"
+    },
+    "hinglish:43": {
+      "number": 43,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "147fe818f94f0b46f89e67275b2f50f26f8c0f45c5578e4c1d1d2c9084c453c9",
+      "model": "whisper-1",
+      "transcript": "Ghutno Ke Bal, No. 4343.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:20:56.356Z"
+    },
+    "hinglish:44": {
+      "number": 44,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "35ad316d8b0c1df2cdec3b72e5da362bd89869172b7eb3ef466cebcbe518a3de",
+      "model": "whisper-1",
+      "transcript": "Chaad ki jodi. Number 4, 4. The number is 44.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:22:34.757Z"
+    },
+    "hinglish:45": {
+      "number": 45,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "8556e8163d3c6cdc1477928fd5984140841d2c0ec64fb6ec97a6a3a41c253386",
+      "model": "whisper-1",
+      "transcript": "Adha Safar Pura, No. 4545.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:20:59.155Z"
+    },
+    "hinglish:46": {
+      "number": 46,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "6f6970547dad5643e0a604b86898ebf2c866d8ae1f3a63a6db5a951e62186839",
+      "model": "whisper-1",
+      "transcript": "Shararat Ta Samay, No. 4646.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:00.893Z"
+    },
+    "hinglish:48": {
+      "number": 48,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "2117b3f25731e1619f580b4b47b404264c9d99a77e40e090d3f2d2e78fd0d072",
+      "model": "whisper-1",
+      "transcript": "Poore Chaar Darjan, No. 4848.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:03.280Z"
+    },
+    "hinglish:49": {
+      "number": 49,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "8ffc27f7f2aa8a023177f48b4924c61378d750a03df202d1370917a021235b0f",
+      "model": "whisper-1",
+      "transcript": "Jagu aur Chamko, No. 4949.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:04.870Z"
+    },
+    "hinglish:50": {
+      "number": 50,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "86c2b9946e40c5afd7af6ebbc8a5f68df6787840825e1bae345dc039102f8f90",
+      "model": "whisper-1",
+      "transcript": "Aadhaan Shatak Poora, No. 50",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:05.947Z"
+    },
+    "hinglish:51": {
+      "number": 51,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "547b833bdf9328c3ca8f6c67c6ab186fc49d153b82906e77767521421eca2c56",
+      "model": "whisper-1",
+      "transcript": "Shabun Ki Rakam No. 5, 1 51",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:07.563Z"
+    },
+    "hinglish:52": {
+      "number": 52,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "6583902a6ca60d7955323098539f268d54e3281204605f57fa6825bb7f40373e",
+      "model": "whisper-1",
+      "transcript": "Tash ke patte, number 5252.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:08.703Z"
+    },
+    "hinglish:53": {
+      "number": 53,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "c94c81c4881499986da1e87d544984e5532163b4a9a748fce20b73cdd712c289",
+      "model": "whisper-1",
+      "transcript": "Tash mein ek joker. No. 5, 3, 53.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:09.869Z"
+    },
+    "hinglish:54": {
+      "number": 54,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "293e8eb04491cf3489dd6d032dab4681fa7057aab575cb5c91330befad1a5055",
+      "model": "whisper-1",
+      "transcript": "Tash main do joker number five four fifty four",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:10.552Z"
+    },
+    "hinglish:55": {
+      "number": 55,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "401db13375a56276f0c8703b40b6365f11ad354ddf0174c3b773e9c92d9127cd",
+      "model": "whisper-1",
+      "transcript": "Bhaj Ki Jodi No. 5555",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:12.794Z"
+    },
+    "hinglish:57": {
+      "number": 57,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "2d24fa051e133a401cde81456bd29f808a0cd23984c23235985a308728afd72a",
+      "model": "whisper-1",
+      "transcript": "Sattavan Ki Kranti, No. 5757.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:15.178Z"
+    },
+    "hinglish:58": {
+      "number": 58,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "7946900a3e95f58daf68a84013a1f98fac8393a0995364a0e1ee1d542b92aa1d",
+      "model": "whisper-1",
+      "transcript": "Zara intazaar karo. Number 5858.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:16.124Z"
+    },
+    "hinglish:59": {
+      "number": 59,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "5d77379f5f9133f99927d9e6f8bd6d52d84f923dd500df6eeff1c791c4256470",
+      "model": "whisper-1",
+      "transcript": "Pachaas ka aakhri number, number five, nine, fifty-nine.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:17.065Z"
+    },
+    "hinglish:61": {
+      "number": 61,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "ea00056e9db4e3f94a762f3daf30067841c560b067525bc41f36929e9e4c89a5",
+      "model": "whisper-1",
+      "transcript": "Dekar ki roti, number six, one, sixty-one.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:18.015Z"
+    },
+    "hinglish:62": {
+      "number": 62,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "3c7b82fd3ec695c926050ac46faf54aa79943d6797304f2c109fd2d9b236d280",
+      "model": "whisper-1",
+      "transcript": "Page Ghomao, No. 6262",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:19.538Z"
+    },
+    "hinglish:63": {
+      "number": 63,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "bb5869ca4f1c500f6bacce59310a2fb27953a345635c14a336c9f9e107fdbe39",
+      "model": "whisper-1",
+      "transcript": "Gudgudi karo. Number six, three. Sixty-three.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:21.067Z"
+    },
+    "hinglish:64": {
+      "number": 64,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a716ae57308cbafd77ebe9b99aab73b5201cc3debc51ad8d0fcc9b4d93b7bb65",
+      "model": "whisper-1",
+      "transcript": "Laal Surkh Rang, number 64, 64.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:21.861Z"
+    },
+    "hinglish:65": {
+      "number": 65,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "8bc7b9ec26cb940faf36c48c69354f73ea906fad68f5401180d74095aab17c35",
+      "model": "whisper-1",
+      "transcript": "Pension ka samay. Number 6, 5. The number is 65.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:22:36.576Z"
+    },
+    "hinglish:67": {
+      "number": 67,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a308141266f1213d4179c710dd6f592c012c5c778afee132f3bbb38caa838e6a",
+      "model": "whisper-1",
+      "transcript": "Upar wale ki jodi No. 67 67",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:24.616Z"
+    },
+    "hinglish:68": {
+      "number": 68,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "2dca232c4f650d0e66f8cb542fb025c797fef235a1bb3c5c2bdd3e104b0ccfec",
+      "model": "whisper-1",
+      "transcript": "Large bach gayi. Number six eight. Sixty eight.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:26.055Z"
+    },
+    "hinglish:69": {
+      "number": 69,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "04e6188494b41170023f35a2ee796f90697a4ce072cfc103487e1f9759a15846",
+      "model": "whisper-1",
+      "transcript": "ULTA-PULTA No. 6969",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:26.742Z"
+    },
+    "hinglish:70": {
+      "number": 70,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "818f0a91450bff2a8a0b769a6a8315d842c98cd3e7d440651ba13323d9b70676",
+      "model": "whisper-1",
+      "transcript": "Saath Dahai Poori No. 7070",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:27.424Z"
+    },
+    "hinglish:71": {
+      "number": 71,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "82be4c2d677b18c38040bbe4c360ead30847f3cdd7947f3ec4c62f07d25027b6",
+      "model": "whisper-1",
+      "transcript": "Dhol Bajao No. 7171",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:28.069Z"
+    },
+    "hinglish:72": {
+      "number": 72,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "47e46e59c0680c29576139d974b05bfbf6c7022d2f0c856afb8ea8de5dd0c77f",
+      "model": "whisper-1",
+      "transcript": "Poore Chah Darjan number seven to 72",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:29.646Z"
+    },
+    "hinglish:73": {
+      "number": 73,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "035810816ff30b06bc19c744ea42f1e3cd69504999dc0589a69740e0e48742f9",
+      "model": "whisper-1",
+      "transcript": "Madhu Makhiyon Ki Rani No. 7 3 73",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:30.431Z"
+    },
+    "hinglish:74": {
+      "number": 74,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a6eed3ab69d387c4a7d26bcb266691ebbcc97f523ad691ec0e970a3d5beabb55",
+      "model": "whisper-1",
+      "transcript": "Nha Tranh Eo, number 7474.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:31.481Z"
+    },
+    "hinglish:75": {
+      "number": 75,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "f2d2e289a204a73617b7bc0d1dfa2ea2e7a41e0c116355dbc8c0ee7283ef77cc",
+      "model": "whisper-1",
+      "transcript": "Heerak Jayanti, No. 75, 75.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:33.798Z"
+    },
+    "hinglish:76": {
+      "number": 76,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "c3fff421f6105f1de72cae6669efa5dcfb4e666de5e702eacd03420fbc13ad8e",
+      "model": "whisper-1",
+      "transcript": "Band Bajao, No. 7676.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:35.258Z"
+    },
+    "hinglish:77": {
+      "number": 77,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "dfaa5013da0514fbd20a084298edd9d885abade5db7c9f02adbaa5fb9fdaa0a8",
+      "model": "whisper-1",
+      "transcript": "Doh Hockey Stick No. 77-77",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:36.775Z"
+    },
+    "hinglish:78": {
+      "number": 78,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "7b1526f91ee914c8ca7f28957e3480039a20020e503b890afa255e6fc452e76b",
+      "model": "whisper-1",
+      "transcript": "Swarga Ka Darwaza No. 7878",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:37.760Z"
+    },
+    "hinglish:79": {
+      "number": 79,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "54ae48da960be1cc721dfcf3cdc02809a07f89f87deb84f3e34b425f583023f2",
+      "model": "whisper-1",
+      "transcript": "8 bar or number 7 9 79",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:38.562Z"
+    },
+    "hinglish:80": {
+      "number": 80,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "9cb49661f22c9f4f1287f3e502f6f15ccf34dc4c404f1e1e2c59ee3dccbeec68",
+      "model": "whisper-1",
+      "transcript": "Aseeti Lassi, number 8080.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:41.115Z"
+    },
+    "hinglish:81": {
+      "number": 81,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "a7ef10ea3d4502c39cb04c3b65656562550a54ba1a6daad9b65a20393e9f5545",
+      "model": "whisper-1",
+      "transcript": "Vuko Thir Doro number 8 1 81",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:41.793Z"
+    },
+    "hinglish:82": {
+      "number": 82,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "cd580127c2858066f94faa1c4cfbd4540402cd0a642a959c718e3812584df7ae",
+      "model": "whisper-1",
+      "transcript": "Seedhe Chalte Jao. No. 8, 2, 82.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:43.266Z"
+    },
+    "hinglish:83": {
+      "number": 83,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "adc2b8a10137153fac6d5296daa1f0adc33aee5006f13a5a5324f6fcd8f2be6f",
+      "model": "whisper-1",
+      "transcript": "Bharat ki Vishwakabjeet, No. 8, 3, 83",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:44.171Z"
+    },
+    "hinglish:84": {
+      "number": 84,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "98ae6d4a10f7ad031158ef12e4761c9f6d1a63fb7ac68a5cdbe4e5606a0f2017",
+      "model": "whisper-1",
+      "transcript": "Poore saath darjan. Number eight four eighty four.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:46.267Z"
+    },
+    "hinglish:85": {
+      "number": 85,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "d1ee7c04b3c73229ff5308412fc0bca25581f890f2b62079324791648cf1bce9",
+      "model": "whisper-1",
+      "transcript": "Khushi Se Jeete Raho. No. 8, 5, 85.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:47.219Z"
+    },
+    "hinglish:86": {
+      "number": 86,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "eae82a89d84acadc30c3e3bd80131e06635e2e434aec98fdc6792b18b6fa394a",
+      "model": "whisper-1",
+      "transcript": "akhiri chakka number eight six eighty six",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:48.989Z"
+    },
+    "hinglish:87": {
+      "number": 87,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "8f55e66ccde3f694bf4139f74470cbcc6eff9c27380f15dbd52a6672983ee338",
+      "model": "whisper-1",
+      "transcript": "Dadaji ka number. Number 87. The number is 87.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:22:38.278Z"
+    },
+    "hinglish:88": {
+      "number": 88,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "30f30a4087c6c88b7c0aaecdda06a3f5b0646da1bf72059a689be0f1cc10a266",
+      "model": "whisper-1",
+      "transcript": "Doh Gol Ladoo, No. 88",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:51.210Z"
+    },
+    "hinglish:89": {
+      "number": 89,
+      "language": "hinglish",
+      "languageHint": "en",
+      "sha256": "eb5a7c62e8ecebdf874ad8860e656efb1533417d2f92ac7b3acf73ff06fca5d7",
+      "model": "whisper-1",
+      "transcript": "Bus ek baki. Number eight, nine. 89.",
+      "expectedNumberDetected": true,
+      "checkedAt": "2026-09-24T04:21:52.889Z"
+    }
+  }
+}

@@ -1,11 +1,12 @@
 import { numberWords, TOTAL_NUMBERS } from './game.js';
+import { normalizeLanguage } from './languages.js';
 
 export const IMAGE_SIZE = { width: 1080, height: 1540 };
 
 export function imageSummary(state) {
   const called = [...state.called];
   if (!called.length) return null;
-  return { called, latest: called.at(-1), count: called.length,
+  return { called, language: normalizeLanguage(state.callLanguage), latest: called.at(-1), count: called.length,
     recent: called.slice(-10).reverse(), remaining: TOTAL_NUMBERS - called.length };
 }
 
@@ -44,7 +45,7 @@ export function drawBoardImage(canvas, summary) {
   box(56, 144, 968, 344, '#fff4ce', '#ecdc9c', 28);
   text('LATEST NUMBER', 540, 192, 25, '#796535', 700, 'center');
   text(summary.latest, 540, 318, 190, ink, 800, 'center');
-  text(numberWords(summary.latest), 540, 444, 38, ink, 600, 'center');
+  text(numberWords(summary.latest, summary.language), 540, 444, 38, ink, 600, 'center');
   text('RECENT CALLS', 56, 538, 27, ink, 700);
   text('Latest first', 1024, 538, 25, muted, 400, 'right');
   for (let index = 0; index < 10; index++) {
@@ -89,13 +90,13 @@ export function createImagePreparer(onChange, makeFile = createBoardImage) {
   let revision = 0;
   return (state) => {
     const summary = imageSummary(state);
-    const key = state.called.join(',');
+    const key = `${normalizeLanguage(state.callLanguage)}:${state.called.join(',')}`;
     if (key === lastKey) return;
     lastKey = key;
     const request = ++revision;
     onChange({ file: null, summary, pending: Boolean(summary), error: false });
     if (!summary) return;
-    Promise.resolve().then(() => makeFile({ called: summary.called })).then((file) => {
+    Promise.resolve().then(() => makeFile({ called: summary.called, callLanguage: summary.language })).then((file) => {
       if (!file) throw new Error('PNG unavailable');
       if (request === revision) onChange({ file, summary, pending: false, error: false });
     }).catch(() => {

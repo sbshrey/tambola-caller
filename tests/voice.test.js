@@ -15,10 +15,10 @@ test('speech prefers an installed Indian English voice and cancels stale announc
   voice.announce(47);
   assert.equal(browser.calls[0], 'cancel');
   assert.equal(browser.calls[1].voice, local);
-  assert.equal(browser.calls[1].text, 'Number 47. Forty seven.');
+  assert.equal(browser.calls[1].text, 'Year of Independence. Number four, seven. forty seven.');
   voice.announce(12);
   assert.equal(browser.calls[2], 'cancel');
-  assert.equal(browser.calls[3].text, 'Number 12. Twelve.');
+  assert.equal(browser.calls[3].text, 'One dozen. Number one, two. twelve.');
 });
 
 function withAudio(browser = browserWith()) {
@@ -60,7 +60,7 @@ test('a failed clip falls back once; stale failures cannot interrupt a newer num
   pending[1].reject(Error('offline'));
   currentError();
   await Promise.resolve();
-  assert.deepEqual(browser.calls.filter((call) => call.text).map((call) => call.text), ['Number 23. Twenty three.']);
+  assert.deepEqual(browser.calls.filter((call) => call.text).map((call) => call.text), ['You and me. Number two, three. twenty three.']);
 });
 test('audio works without device speech, and a failed current clip reports the error', () => {
   const { browser, player } = withAudio({});
