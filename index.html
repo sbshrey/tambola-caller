@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#a91e59">
+  <meta name="description" content="Your friendly Tambola caller. Big numbers, spoken calls, and a board that remembers. Free, simple, and ready for your next get-together.">
+  <title>Tambola — Let the good times roll</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#caller">Skip to caller</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./" aria-label="Tambola home">
+        <img src="./icon.svg" width="48" height="48" alt="">
+        <span>tambola<span class="brand-dot">.</span><small>LET THE GOOD TIMES ROLL</small></span>
+      </a>
+      <div class="header-actions">
+        <button id="voice-toggle" class="header-button" aria-pressed="true"><span aria-hidden="true">♫</span> <span id="voice-label">Voice on</span></button>
+        <button id="share" class="header-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg> Share app</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="welcome"><div><span class="eyebrow">THE GANG’S ALL HERE</span><h1>A little luck. A lot of fun.</h1></div><span id="save-status" class="status-pill">Saved on this device</span></div>
+    <p id="storage-warning" class="notice" role="status" hidden></p>
+    <p id="voice-warning" class="notice" role="status" hidden></p>
+    <div class="game-layout">
+      <section id="caller" class="caller card" aria-labelledby="caller-label" tabindex="-1">
+        <div class="section-top"><h2 id="caller-label">Let’s play Tambola</h2><span id="round-status" class="tag">READY WHEN YOU ARE</span></div>
+        <div class="number-stage">
+          <span class="spark spark-one" aria-hidden="true">✦</span><span class="spark spark-two" aria-hidden="true">✧</span>
+          <p id="number-label" class="eyebrow">YOUR FIRST NUMBER AWAITS</p>
+          <div id="current-number" class="current-number">—</div>
+          <p id="number-words" class="number-words">Ready, set, Tambola!</p>
+          <button id="repeat" class="repeat-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Zm4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg> Say it again</button>
+        </div>
+        <div class="call-stats"><span><span class="green-dot" aria-hidden="true"></span> <strong id="called-count">0</strong> called</span><span><strong id="remaining-count">90</strong> to go</span></div>
+        <button id="next" class="primary next-button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 7h.01M17 7h.01M12 12h.01M7 17h.01M17 17h.01"/></svg><span id="next-label">Next number</span><span aria-hidden="true">→</span></button>
+        <div class="secondary-actions"><button id="undo" class="undo-button" disabled><span aria-hidden="true">↶</span> Undo last</button><button id="new-game" class="new-button"><span aria-hidden="true">↻</span> New game</button></div>
+        <p id="caller-hint" class="helper">Gather your tickets. We’ll take care of the numbers.</p>
+      </section>
+
+      <section class="board-card card" aria-labelledby="board-heading">
+        <div class="section-top"><div><span class="eyebrow">EVERY NUMBER, AT A GLANCE</span><h2 id="board-heading">The Tambola board</h2></div><span class="range-tag">1–90</span></div>
+        <div id="board" class="board" role="list" aria-label="Numbers 1 to 90"></div>
+        <div class="board-legend"><span><i class="legend-current"></i> Latest</span><span><i class="legend-called"></i> Called</span><span><i class="legend-waiting"></i> Waiting</span></div>
+        <div class="progress-track" role="progressbar" aria-label="Numbers called" aria-valuemin="0" aria-valuemax="90" aria-valuenow="0" id="progress"><div id="progress-fill"></div></div>
+        <p class="board-note" id="board-note">A fresh board. Who’s feeling lucky?</p>
+      </section>
+
+      <section class="recent-card card" aria-labelledby="recent-heading">
+        <div class="section-top"><h2 id="recent-heading">Recently called</h2><button id="history" class="text-button" disabled>View all <span aria-hidden="true">↗</span></button></div>
+        <p class="helper align-left">Latest first · your last 10 numbers</p>
+        <ol id="recent" class="recent-list" aria-label="Last ten numbers, latest first"></ol>
+      </section>
+
+      <section class="claims-card card" aria-labelledby="claims-heading">
+        <div class="section-top"><div class="claims-title"><span class="trophy" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 0 1-10 0V3Zm0 2H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4M12 14v6m-4 1h8"/></svg></span><div><h2 id="claims-heading">Someone won?</h2><p class="helper align-left">Check their ticket, then celebrate!</p></div></div><span class="tag claim-tag">HOST CONFIRMED</span></div>
+        <div id="claims" class="claim-buttons"></div>
+        <p class="claim-note">Claims are checked by you. Everyone plays with their own paper ticket.</p>
+      </section>
+    </div>
+    <footer><span>Made for good company <span class="heart" aria-hidden="true">♥</span></span><span id="offline-status">Getting ready for offline play…</span><button id="fullscreen" class="text-button" hidden>Full screen ↗</button></footer>
+    <p class="hosting-note">One device calls the numbers. Share the app for a new game; boards don’t sync between devices.</p>
+  </main>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-description">
+    <form method="dialog"><span class="dialog-symbol" aria-hidden="true">↻</span><h2 id="confirm-title">Start a fresh game?</h2><p id="confirm-description"></p><div class="dialog-actions"><button value="cancel" autofocus>Keep playing</button><button id="confirm-action" class="primary" value="confirm">Start new game</button></div></form>
+  </dialog>
+  <dialog id="claim-dialog" aria-labelledby="claim-title" aria-describedby="claim-description">
+    <form id="claim-form"><span class="dialog-symbol" aria-hidden="true">✦</span><h2 id="claim-title"></h2><p id="claim-description">Check the player’s paper ticket against the board before recording this claim.</p><label for="winner-name">Winner’s name <span class="optional">(optional)</span></label><input id="winner-name" name="winner" maxlength="60" autocomplete="off" placeholder="Who are we cheering for?"><p id="claim-at" class="helper align-left"></p><div class="dialog-actions"><button type="button" id="claim-cancel">Cancel</button><button type="submit" class="primary">Record claim</button></div><button id="claim-remove" type="button" class="text-button remove-claim" hidden>Remove this claim</button></form>
+  </dialog>
+  <dialog id="history-dialog" aria-labelledby="history-title"><div class="section-top"><div><span class="eyebrow">FROM THE VERY FIRST CALL</span><h2 id="history-title">All called numbers</h2></div><form method="dialog"><button aria-label="Close history" class="close-button">×</button></form></div><p id="history-description" class="helper align-left"></p><ol id="history-list" class="history-list"></ol></dialog>
+  <dialog id="share-dialog" aria-labelledby="share-title"><form method="dialog"><h2 id="share-title">A little Tambola, together</h2><p>Share this app with a friend. Each device starts its own game; this won’t share your live board.</p><label for="share-url">App link</label><input id="share-url" readonly><p id="share-local-note" class="helper align-left" hidden>This is a local preview. Deploy the app to get a link your friends can open.</p><div class="dialog-actions"><button value="close">Close</button><button type="button" id="copy-link" class="primary">Copy link</button></div></form></dialog>
+  <noscript><p class="notice">Please enable JavaScript to use the Tambola caller.</p></noscript>
+</body>
+</html>
