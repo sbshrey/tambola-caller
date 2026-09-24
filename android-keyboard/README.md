@@ -2,7 +2,7 @@
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-Android 8.0 or newer. Install the signed `Tambola-Keyboard-1.1.0.apk` supplied with this update. Install over v1.0 to keep the saved game; do not uninstall first. A release APK is built locally; a public GitHub download must not be assumed until its release is published.
+**[Download Tambola Keyboard 1.1.0](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.1.0/Tambola-Keyboard-1.1.0.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over v1.0 to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.1.0).
 
 ## Set up once
 
