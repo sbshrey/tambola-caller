@@ -9,6 +9,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
@@ -28,8 +30,9 @@ public class KeyboardTest {
     @Before public void prepare() throws Exception {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        new GameStore(context, false).save(Game.empty()); new GameStore(context, true).save(Game.empty());
-        rule.launchActivity(new Intent());
+        new GameStore(context, false).save(Game.empty()); new GameStore(context, false).prizes(PrizeBook.defaults()); new GameStore(context, true).save(Game.empty());
+        new Preferences(context).voice(false);
+        rule.launchActivity(new Intent().putExtra("section", "practice"));
         onMain(() -> input = (EditText) findInput(rule.getActivity().findViewById(android.R.id.content)));
         focus(true, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
     }
@@ -48,13 +51,13 @@ public class KeyboardTest {
             InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             manager.restartInput(input); manager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
         });
-        assertNotNull(device.wait(Until.findObject(By.desc("Next number")), 10000));
+        assertNotNull(device.wait(Until.findObject(By.text("Call")), 10000));
         device.waitForIdle();
     }
     private void clear() throws Exception { onMain(() -> input.setText("")); Thread.sleep(750); }
     private String message() { final String[] value = {null}; onMain(() -> value[0] = input.getText().toString()); return value[0]; }
     private void tap(String description) {
-        UiObject2 button = device.wait(Until.findObject(By.desc(description)), 5000); assertNotNull(button); button.click(); device.waitForIdle();
+        UiObject2 button = visible(By.desc(description)); button.click(); device.waitForIdle();
     }
     @Test public void practiceInsertsKeycapsBlocksDraftsAndNeverChangesLiveRound() throws Exception {
         tap("Next number");
@@ -64,10 +67,12 @@ public class KeyboardTest {
         assertTrue(device.hasObject(By.text("Send or clear the current message first.")));
         clear(); tap("Insert current number again"); assertEquals(Game.emoji(game.latest()), message());
         assertEquals(1, new GameStore(context, true).load().count()); assertEquals(0, new GameStore(context, false).load().count());
+        visible(By.desc("Clear practice draft")).click(); device.waitForIdle(); assertEquals("", message()); assertEquals(1, new GameStore(context, true).load().count());
     }
     @Test public void liveCallsPersistAcrossEditorRestartAndRespectExistingSelection() throws Exception {
         focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         tap("Next number"); Game first = new GameStore(context, false).load(); assertEquals(1, first.count()); assertEquals(Game.emoji(first.latest()), message());
+        assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), "keyboard-live.png")));
         clear(); focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         tap("Insert current number again"); assertEquals(Game.emoji(first.latest()), message()); assertEquals(1, new GameStore(context, false).load().count());
         onMain(() -> { input.setText("Do not replace this draft"); input.selectAll(); });
@@ -75,10 +80,29 @@ public class KeyboardTest {
         clear(); tap("Next number"); Game second = new GameStore(context, false).load(); assertEquals(2, second.count()); assertNotEquals(first.latest(), second.latest());
         assertEquals(Game.emoji(second.latest()), message());
     }
+    private UiObject2 visible(BySelector selector) {
+        UiObject2 item = device.findObject(selector);
+        for (int tries = 0; item == null && tries < 6; tries++) { UiObject2 panel = device.findObject(By.desc("Tambola controls")); assertNotNull(panel); panel.scroll(Direction.DOWN, 0.65f); device.waitForIdle(); item = device.findObject(selector); }
+        assertNotNull(item); return item;
+    }
+    @Test public void winnersCanBeChosenAndResultsInsertedWithoutDrawing() throws Exception {
+        java.util.LinkedHashMap<String, String> names = new java.util.LinkedHashMap<>(); names.put("a", "Asha"); names.put("b", "Bina");
+        GameStore store = new GameStore(context, false); store.save(Game.decode("1,2,3,4,5")); store.prizes(new PrizeBook(names, PrizeBook.defaults().schemes));
+        focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        device.findObject(By.text("Winners")).click(); device.waitForIdle();
+        visible(By.textStartsWith("Early 5 ·")).click(); device.waitForIdle();
+        visible(By.desc("First winner")).click(); device.waitForIdle();
+        UiObject2 asha = device.wait(Until.findObject(By.text("Asha")), 3000); assertNotNull(asha); asha.click(); device.waitForIdle();
+        visible(By.desc("Second winner")).click(); device.waitForIdle(); UiObject2 bina = device.wait(Until.findObject(By.text("Bina")), 3000); assertNotNull(bina); bina.click(); device.waitForIdle();
+        visible(By.text("Save winners")).click(); device.waitForIdle();
+        assertTrue(device.wait(Until.hasObject(By.textStartsWith("Winners saved.")), 5000));
+        assertEquals(500, store.prizes().scheme("prize-0").eachPaise());
+        visible(By.text("Insert all results")).click(); assertTrue(device.wait(Until.hasObject(By.text("Ready · tap WhatsApp Send")), 5000)); assertTrue(message().contains("Asha & Bina")); assertTrue(message().contains("₹5 each")); assertEquals(5, store.load().count());
+    }
     @Test public void passwordFieldsDisableGameButtons() {
         focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        assertFalse(device.findObject(By.desc("Next number")).isEnabled());
-        assertFalse(device.findObject(By.desc("Insert current number again")).isEnabled());
+        assertFalse(device.hasObject(By.desc("Next number")));
+        assertTrue(device.hasObject(By.text("Use your normal keyboard here")));
         assertEquals(0, new GameStore(context, false).load().count());
     }
     @Test public void completedRoundStopsNextButCanReinsertAndCorruptionDoesNotReset() throws Exception {
@@ -89,9 +113,8 @@ public class KeyboardTest {
         tap("Insert current number again"); assertEquals(Game.emoji(90), message());
         context.getSharedPreferences("tambola-round", Context.MODE_PRIVATE).edit().putString("called-v1", "47,47").commit();
         clear(); focus(false, InputType.TYPE_CLASS_TEXT);
-        assertFalse(device.findObject(By.desc("Next number")).isEnabled());
-        assertFalse(device.findObject(By.desc("Insert current number again")).isEnabled());
+        assertFalse(device.hasObject(By.desc("Next number")));
         assertEquals("47,47", context.getSharedPreferences("tambola-round", Context.MODE_PRIVATE).getString("called-v1", ""));
-        assertTrue(device.hasObject(By.text("Saved round is unreadable. Open Board & setup.")));
+        assertTrue(device.hasObject(By.text("Saved details need attention. Open help & setup.")));
     }
 }

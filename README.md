@@ -8,7 +8,7 @@ Built from the [shared V1 discussion and design reference](https://chatgpt.com/s
 
 ## Android keyboard for WhatsApp hosts
 
-**[Download Tambola Keyboard v1.0.0](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.0.0)** (Android 8+). Enable it once, open your WhatsApp group, then tap **Next number → WhatsApp Send**. The keyboard inserts numbers such as **4️⃣7️⃣**, saves the round, and includes recent calls and a board. Players keep using their paper tickets. It works offline and does not send messages automatically.
+**[Tambola Keyboard v1.1.0: installation and usage](android-keyboard/README.md)** (Android 8+). Enable it once, open your WhatsApp group, then tap **Next number → WhatsApp Send**. Large **Call · Board · Winners** tabs provide emoji numbers, saved progress, offline English/Hindi/Hinglish voices, number/recent/board pictures, and optional players/prizes with two-winner splits. Players keep using paper tickets. Sending stays under the host's control.
 
 The keyboard runs its own game, separately from this website; use one caller for the whole round. It includes a separate practice area. See the [installation guide](android-keyboard/README.md) and [validation notes](android-keyboard/VALIDATION.md).
 

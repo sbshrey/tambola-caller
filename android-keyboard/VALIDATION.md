@@ -1,4 +1,39 @@
-# Tambola Keyboard 1.0.0 validation
+# Tambola Keyboard 1.1.0 validation
+
+Validated on 24 September 2026. Java 17, Gradle 8.9, AGP 8.7.3, compile/target SDK 35, minimum SDK 26. Website gameplay remains v1.6.
+
+## Current checks
+
+- **10 JVM tests passed:** no-repeat draws, save/undo, exact digit emojis, invalid save rejection, optional prize tracking, two-winner limits, exact ₹10/₹5 and odd-rupee splits, stable winner IDs, prize snapshots and award invalidation on undo/new game.
+- **11 Android instrumented tests passed** on a dedicated Android 11/API 30 Google APIs x86 emulator. These cover actual keyboard text insertion, existing/selected draft protection, saved progress, practice isolation/clearing, password protection, all-90 exhaustion, corrupt-save blocking, both winner dropdowns inside the keyboard, results insertion without drawing, shared store/JSON round trips, picture dimensions, read-only sharing URIs/path rejection, recipient MIME negotiation, all 270 packaged recordings, decoding sample clips in each language, and the playback service starting and stopping after a clip.
+- Debug and release Android lint: **no issues found**. Signed release builds succeeded. APK signatures verified with the existing v1.0 certificate.
+- **69 existing website tests passed**, including all voice-pack hashes; `npm run build` succeeded. The Android build independently checks every bundled clip against its manifest SHA-256.
+- A focused practice-flow test also passed at **130% system font size on a 360dp-wide emulator**. Portrait keyboard, winner selections and each PNG type were visually inspected. Secondary controls scroll; Call returns to the main button.
+- Installed signed v1.0, generated practice number **29**, upgraded in place to signed v1.1, and verified that **29 / 1 of 90** was retained. The live/practice CSV keys remain unchanged; new prize data is additive.
+
+## Release and privacy
+
+Package `io.github.sbshrey.tambola.keyboard`, version name `1.1.0`, version code `2`. Install over the existing app to preserve rounds. Exported installers, checksums, guide and preview files are kept outside Git in `android-keyboard/releases/1.1.0/`. The checksum identifies the exact built APK; a local build does not imply publication of a GitHub release.
+
+The manifest requests only `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_MEDIA_PLAYBACK`, both for the short-lived voice playback service. It requests no Internet, microphone, contacts, storage or accessibility permissions. The IME is protected by the system's `BIND_INPUT_METHOD`; playback service and file provider are non-exported. Shared files receive individual read-only URI grants. No signing secrets or test APKs are part of the release.
+
+The playback service supports [Android 15 audio-focus requirements](https://developer.android.com/media/optimize/audio-focus). Android documents an [exception for the current input method](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) to background foreground-service start restrictions. This path was exercised on API 30; Android 15 device behavior has not been runtime-tested here.
+
+## Remaining phone acceptance checks
+
+**No physical phone or WhatsApp delivery was tested.** Rich-content tests use an instrumented editor fixture and verify attachment negotiation, not a WhatsApp-specific handoff. The emulator had audio output disabled: audio decoding and playback lifecycle passed, but speaker volume/accent quality were not auditioned in this run. Android 8–10, Android 12+, landscape use, and OEM differences remain outside this runtime validation.
+
+1. Install the APK, enable/select the keyboard and try Practice safely.
+2. In your own WhatsApp chat, call two numbers and tap Send after each. Confirm the expected digit emojis arrive.
+3. Try Hear again, all three spoken languages, each picture type and a voice clip. If the share chooser opens, select WhatsApp and the chat. Verify the received files.
+4. Add two fictional players, award a ₹10 prize to both, and insert the result. Confirm ₹5 each. Switch keyboards and reopen the app to check saved progress.
+5. Start a new live game before group play. Keep player names/prizes only if they are the real setup you want.
+
+The keyboard cannot choose a group, confirm delivery or validate a paper ticket. Generation, local playback, attachment preparation and sending are separate actions. Playing a voice clip aloud does not transmit it to WhatsApp.
+
+---
+
+# Previous version: 1.0.0 validation
 
 Validated on 24 September 2026 using Java 17, Gradle 8.9, Android Gradle Plugin 8.7.3 and SDK/build tools 35.
 

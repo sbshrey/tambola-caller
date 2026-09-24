@@ -26,8 +26,18 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Release checks failed.' }
     $apk = Join-Path $PSScriptRoot 'app\build\outputs\apk\release\app-release.apk'
     if (!(Test-Path -LiteralPath $apk)) { throw 'Signed APK not found.' }
-    Write-Output "Signed APK: $apk"
-    Get-FileHash -LiteralPath $apk -Algorithm SHA256
+    $metadata = Get-Content -LiteralPath (Join-Path (Split-Path $apk) 'output-metadata.json') -Raw | ConvertFrom-Json
+    $version = $metadata.elements[0].versionName
+    if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Unexpected APK version.' }
+    $releaseDirectory = Join-Path $PSScriptRoot "releases\$version"
+    New-Item -ItemType Directory -Force -Path $releaseDirectory | Out-Null
+    $releaseApk = Join-Path $releaseDirectory "Tambola-Keyboard-$version.apk"
+    Copy-Item -LiteralPath $apk -Destination $releaseApk
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'INSTALL.txt') -Destination (Join-Path $releaseDirectory 'INSTALL.txt')
+    $hash = (Get-FileHash -LiteralPath $releaseApk -Algorithm SHA256).Hash.ToLowerInvariant()
+    Set-Content -LiteralPath (Join-Path $releaseDirectory 'SHA256SUMS.txt') -Encoding ascii -Value "$hash  Tambola-Keyboard-$version.apk"
+    Write-Output "Signed APK: $releaseApk"
+    Write-Output "SHA256: $hash"
 } finally {
     $env:TAMBOLA_KEYSTORE_PATH = $previousKey
     $env:TAMBOLA_KEYSTORE_PASSWORD = $previousPassword

@@ -9,8 +9,14 @@ final class GameStore {
         preferences = context.getSharedPreferences(practice ? "practice-round" : "tambola-round", Context.MODE_PRIVATE);
     }
     Game load() { return Game.decode(preferences.getString("called-v1", "")); }
+    PrizeBook prizes() { return PrizeJson.decode(preferences.getString("prizes-v1", null)); }
+    void prizes(PrizeBook book) { commit(preferences.edit().putString("prizes-v1", PrizeJson.encode(book))); }
+    void newRound() { round(Game.empty(), prizes().newRound()); }
+    void undo() { Game next = load().undo(); round(next, prizes().afterUndo(next.count())); }
+    private void round(Game game, PrizeBook book) { commit(preferences.edit().putString("called-v1", game.encode()).putString("prizes-v1", PrizeJson.encode(book))); }
     void save(Game game) {
         // Persist before inserting. A failed editor handoff can be retried with Insert again.
-        if (!preferences.edit().putString("called-v1", game.encode()).commit()) throw new IllegalStateException("Could not save. Try again.");
+        commit(preferences.edit().putString("called-v1", game.encode()));
     }
+    private void commit(SharedPreferences.Editor edit) { if (!edit.commit()) throw new IllegalStateException("Could not save. Try again."); }
 }

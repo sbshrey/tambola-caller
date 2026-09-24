@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">Tambola Keyboard</string>
     <string name="keyboard_language">Tambola emoji numbers</string>
-    <string name="recent_numbers">Recent: %1$s</string>
-    <string name="recent_latest_first">Recent, latest first: %1$s</string>
-    <string name="keyboard_progress">%1$s\n%2$d / 90 called</string>
-    <string name="live_progress">%1$d / 90 called · %2$s</string>
-    <string name="latest_number">Latest %1$s</string>
-    <string name="ready">Ready to play</string>
-    <string name="unreadable_live">Saved round is unreadable. Start a new live game when ready.</string>
+    <string name="use_prize">Use this prize</string>
+    <string name="prize_amount_invalid">Enter a whole-rupee amount.</string>
+    <string name="prize_total">%1$s total</string>
+    <string name="prize_split">%1$s total · %2$s each</string>
 </resources>

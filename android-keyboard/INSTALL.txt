@@ -1,34 +1,55 @@
-TAMBOLA KEYBOARD 1.0.0 - ANDROID 8 OR NEWER
+TAMBOLA KEYBOARD 1.1 - ANDROID 8 OR NEWER
 
-ONE-TIME SETUP (on the phone with WhatsApp)
-1. Download and open Tambola-Keyboard-1.0.0.apk.
-2. If Android asks, allow installation from the browser/files app you used.
-3. Open Tambola Keyboard. Tap "1. Enable Tambola Keyboard" and turn it on.
-   Android shows its standard warning for all keyboards. This app has no
-   Internet permission and does not save your message text.
-4. Return and tap "2. Choose Tambola Keyboard". Select Tambola Keyboard.
-5. Tap the practice message box, then "Next number" on the keyboard.
-   "Clear practice message" lets you try again. Practice does not affect
-   the live game or send anything to WhatsApp.
+ONE PHONE. TWO TAPS PER NUMBER.
 
-PLAY IN YOUR WHATSAPP GROUP
-Open the right group, tap its empty message box, and select Tambola Keyboard.
-Tap "Next number", then WhatsApp's Send button. Repeat for each call.
-The number appears as digit emojis. Nobody else needs to install anything.
+SET UP ONCE
+1. Open Tambola-Keyboard-1.1.0.apk on the phone with WhatsApp. Install it.
+   If updating, install over the old app. Do not uninstall it first.
+2. Open Tambola Keyboard. Tap Help me set it up.
+3. Tap Enable Tambola Keyboard. Turn it on, then return.
+4. Tap Choose Tambola Keyboard. Select it.
+5. Tap Practice safely. Tap the message box, then Next number.
+   Tap Clear practice message to try again. Nothing is sent in practice.
 
-"Insert again" repeats the latest call without drawing another number.
-Send or clear an existing draft before calling the next number.
-"ABC" opens the keyboard picker so you can type a normal message.
-"Board & setup" shows recent calls, the board, Undo and New game.
-Called numbers are saved on this phone. Nothing is sent automatically.
+PLAY
+Open your WhatsApp group. Tap the message box. Choose Tambola Keyboard.
+Tap NEXT NUMBER, then WhatsApp SEND. Repeat for every call.
+The number appears as digit emojis. Players mark their paper tickets.
+Only the host needs this app.
 
-This keyboard runs a separate round from the Tambola website.
-Use the keyboard as the only caller for the whole game.
-Try your own WhatsApp chat first, then start a new live game for the group.
-Undo/New game do not remove messages already sent to WhatsApp.
+USEFUL BUTTONS
+Call: return to Next number.
+Hear again: hear the same number on this phone.
+Insert again: put the same number in an empty message box.
+ABC: change to your normal keyboard to type a message.
+Board: see all called numbers.
+Voice: choose English, Hindi or Hinglish; turn speech on/off.
+Swipe up inside the keyboard if a button is lower down.
 
-Updates: install a newer signed APK over this app to keep the saved game.
-Uninstalling or clearing app data removes saved rounds.
+SHARE A PICTURE OR VOICE CLIP
+Send the current message first. Tap Share in the keyboard.
+Choose Number picture, Recent numbers picture, Board picture or Voice clip.
+If a chooser appears: choose WhatsApp, your group, then Send.
+Otherwise check the attachment preview and tap Send.
+Playing sound aloud does not send it to the group.
 
+WINNERS (OPTIONAL)
+Tap Winners, then Players & prize amounts. Add names once.
+After checking the paper ticket, choose the prize and up to two winners.
+Default total prize: Rs 10. Two winners receive Rs 5 each.
+Tap Save winners. Use Insert announcement, then WhatsApp Send.
+At the end: Winners -> Insert all results -> WhatsApp Send.
+
+NEW GAME
+Board -> Undo / New game -> Start a new live game.
+Share results first. Player names and prize settings are kept.
+Undo and New game do not remove WhatsApp messages already sent.
+
+NUMBERS ARE SAVED ON THIS PHONE
+Use this keyboard as the only caller for the whole game.
+The website runs a separate game. Practice is separate too.
+Try your own WhatsApp chat first, then start a new game for group play.
+
+No Internet, contacts or microphone permission. No automatic sending.
+Android displays its standard warning when enabling a keyboard.
 Guide: https://github.com/sbshrey/tambola-caller/tree/main/android-keyboard
-Downloads: https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.0.0
