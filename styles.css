@@ -55,6 +55,11 @@ h1 { font-size: clamp(25px, 3vw, 32px); font-weight: 750; letter-spacing: -1.1px
 .next-button { padding: 0 22px; }
 #next-label { white-space: nowrap; }
 .number-share-actions { display: flex; gap: 10px; margin: 16px 0 6px; }
+.image-share-actions { display: flex; gap: 10px; margin: 18px 0 6px; }
+.image-share-button { flex: 1; min-height: 52px; background: #a91e59; color: #fff; font-size: 16px; padding: 10px; }
+#image-preview { display: block; width: 100%; height: auto; max-height: 52dvh; object-fit: contain; border-radius: 10px; background: #fcf8f1; }
+.download-image { color: #842044; background: #f7e6ee; font-size: 14px; }
+#image-share-dialog .dialog-actions { margin-top: 16px; }
 .number-share-button { flex: 1; min-height: 50px; background: #e0f2e8; border-color: #b3d9c5; color: #176c49; font-size: 16px; }
 .number-share-button svg { width: 20px; height: 20px; margin-right: 4px; }
 .number-copy-button { min-width: 64px; min-height: 50px; background: #f4f2f0; font-size: 14px; }

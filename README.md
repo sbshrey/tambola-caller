@@ -25,6 +25,7 @@ npm run build # copies only the static app to dist/
 
 - Tap **Next number** for a random 1–90 number, without repeats. A short double-tap guard prevents accidental rapid calls.
 - **Voice on** plays a prerecorded AI voice clip: Indian English, familiar short Tambola calls where appropriate, individual digits and the full number. All 90 MP3s are included. **Say it again** repeats the latest number even if automatic voice is off. If a clip fails, the device speech engine is the fallback. Dynamic winner names and voice-toggle messages still use device speech.
+- **Share board image** prepares a PNG containing the current number and spelling, last ten calls (latest first), call count, remaining count, and full 1–90 board. Called numbers are marked and the latest number is highlighted. Tap it, then choose **WhatsApp → your group → Send**. The PNG is prepared after each draw so the share menu can open directly from your tap. **Preview** lets you inspect it or **Download PNG** to attach in WhatsApp. If native image sharing is unavailable, the preview/download opens automatically. Images contain no winner names and are generated entirely on the device, including offline.
 - The board distinguishes the latest number from earlier calls. The last ten calls appear latest first; **View all** shows complete chronological history.
 - **Share number** prepares the latest number and its spelling, the call count, and the five most recent calls. Choose **WhatsApp → your group → Send** in your phone's sharing menu. If that menu is unavailable, the app offers **Open WhatsApp** with the message prefilled, or **Copy message**. The **Copy** button beside Share number copies the same text directly. Sharing never draws another number and cancelling it keeps the game unchanged. You confirm sending in WhatsApp; the app cannot confirm delivery or send automatically.
 - **Share audio clip** opens the phone’s file sharing menu. Choose WhatsApp, the group, then Send. If file sharing is unavailable, use **Download MP3** and attach the saved file in WhatsApp. The clip is an audio attachment; it is not guaranteed to appear as a WhatsApp voice note. Text sharing remains available.
@@ -36,6 +37,8 @@ npm run build # copies only the static app to dist/
 - **Share app** copies the app URL for you to send. Each device runs an independent game; it does not share the host's live board. Keep everyone together, or use your usual group call to hear the host.
 
 For remote play, only the host draws numbers. Other players can stay in WhatsApp, read the shared messages, and mark their paper tickets. Sharing a number sends only the call information, without winner names or the app link. Undo and New game do not change messages already sent to WhatsApp; tell your group about corrections or a new round. The app and message preparation work offline after caching, but WhatsApp needs connectivity to deliver messages.
+
+A shared image is a snapshot of that call, not a live board. Undo rebuilds the image and New game clears it until the first new number. Older image encodes cannot replace the latest board, and obsolete in-memory image URLs are released. PNGs are 1080 × 1540 pixels (typically around 200 KB), independent of screen size. They use the browser’s Canvas API without external image/font downloads or a server. The app cannot preselect a WhatsApp group or confirm delivery; the sender chooses the group and taps Send.
 
 Example number message:
 
@@ -84,7 +87,9 @@ When releasing changed app assets, increment the cache version in **sw.js**. An 
 - `src/app.js`: DOM interactions, confirmation dialogs, and state coordination.
 - `src/storage.js`, `src/voice.js`: browser adapters with graceful failure.
 - `sw.js`, `manifest.webmanifest`, `icons/`: offline app and home-screen metadata.
-- `src/audio.js`: clip URLs, file preparation and mobile file sharing.
+- `src/audio.js`: clip URLs and audio file preparation.
+- `src/board-image.js`: PNG rendering and preparation tied to the current called-number sequence.
+- `src/sharing.js`: reusable text/file sharing and copy fallbacks for PNGs and audio.
 - `audio/numbers/`, `audio/manifest.json`: 90 reusable MP3s and generation provenance.
 - `scripts/`: dependency-free local server, static build and local audio generator.
 - `tests/`: Node's built-in test runner; speech tests use a fake device adapter, not real audio.

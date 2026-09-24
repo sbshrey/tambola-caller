@@ -16,7 +16,7 @@ async function worker() {
   vm.runInNewContext(await readFile(new URL('../sw.js', import.meta.url), 'utf8'), {
     URL, Response, self: { registration: { scope }, clients: { async claim() { claimed = true; } },
       addEventListener: (name, handler) => { listeners[name] = handler; } },
-    caches: { async open() { return cache; }, async keys() { return [`tambola-caller-${scope}-old`, `tambola-caller-${scope}-v1.2.0`, 'another-app']; },
+    caches: { async open() { return cache; }, async keys() { return [`tambola-caller-${scope}-old`, `tambola-caller-${scope}-v1.3.0`, 'another-app']; },
       async delete(key) { deleted.push(key); } },
     fetch: async () => { throw new Error('offline'); },
   });
@@ -31,6 +31,7 @@ test('offline install precaches every asset and each asset exists', async () => 
   assert.ok(w.assets.includes('./src/game.js'));
   assert.ok(w.assets.includes('./src/sharing.js'));
   assert.ok(w.assets.includes('./src/audio.js'));
+  assert.ok(w.assets.includes('./src/board-image.js'));
   assert.equal(w.assets.filter((file) => file.endsWith('.mp3')).length, 90);
   for (const file of w.assets) await access(new URL(`../${file}`, import.meta.url));
 });
@@ -52,7 +53,7 @@ test('worker reports the installed pack so an older worker cannot claim audio is
   const w = await worker();
   let status;
   w.listeners.message({ data: { type: 'offline-version' }, ports: [{ postMessage(value) { status = value; } }] });
-  assert.equal(status.version, '1.2.0');
+  assert.equal(status.version, '1.3.0');
   assert.equal(status.audioClips, 90);
 });
 test('activation only removes this app scope’s older caches', async () => {

@@ -32,3 +32,14 @@ export async function copyText(text, device = navigator) {
     return true;
   } catch { return false; }
 }
+
+// Images and audio use the same capability check and cancellation behavior.
+export async function shareFile(file, device = navigator) {
+  if (!file || typeof device.share !== 'function' || typeof device.canShare !== 'function') return 'fallback';
+  try {
+    const data = { files: [file] };
+    if (!device.canShare(data)) return 'fallback';
+    await device.share(data);
+    return 'opened';
+  } catch (error) { return error?.name === 'AbortError' ? 'cancelled' : 'fallback'; }
+}

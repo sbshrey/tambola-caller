@@ -1,8 +1,9 @@
 import { CLAIMS, TOTAL_NUMBERS, newGame, drawNumber, undoNumber, recordClaim, removeClaim, numberWords, parseGame } from './game.js';
 import { STORAGE_KEY, loadGame, saveGame } from './storage.js';
 import { createVoice } from './voice.js';
-import { numberMessage, whatsappMessageUrl, openNumberShare, copyText } from './sharing.js';
-import { clipUrl, createClipLoader, shareClip } from './audio.js';
+import { numberMessage, whatsappMessageUrl, openNumberShare, copyText, shareFile } from './sharing.js';
+import { clipUrl, createClipLoader } from './audio.js';
+import { createImagePreparer } from './board-image.js';
 
 const $ = (id) => document.getElementById(id);
 let storage;
@@ -15,6 +16,37 @@ let pendingConfirmation;
 let activeClaim;
 let sharingNumber = false;
 let sharingAudio = false;
+let sharingImage = false;
+let boardImage = { file: null, pending: false, error: false, summary: null };
+let imageUrl;
+const prepareImage = createImagePreparer((image) => {
+  boardImage = image;
+  if (imageUrl) URL.revokeObjectURL(imageUrl);
+  imageUrl = image.file ? URL.createObjectURL(image.file) : null;
+  if (!image.file) {
+    $('image-preview').removeAttribute('src');
+    $('download-image').removeAttribute('href');
+    if ($('image-share-dialog').open) $('image-share-dialog').close();
+  } else {
+    $('image-preview').src = imageUrl;
+    $('image-preview').alt = `Call ${image.summary.count}: ${image.summary.latest}. Last 10 calls, latest first: ${image.summary.recent.join(', ')}. ${image.summary.count} of 90 board numbers marked.`;
+    $('download-image').href = imageUrl;
+    $('download-image').download = image.file.name;
+  }
+  renderImage();
+});
+
+function renderImage() {
+  const unavailable = !boardImage.file || sharingNumber;
+  $('share-image').disabled = unavailable;
+  $('preview-image').disabled = unavailable;
+  $('share-image-preview').disabled = unavailable;
+  $('share-image').setAttribute('aria-busy', String(boardImage.pending || sharingImage));
+  $('share-image-label').textContent = sharingImage ? 'Opening…' : boardImage.pending ? 'Preparing image…' : 'Share board image';
+  $('image-share-hint').textContent = boardImage.error
+    ? 'Image unavailable. Reopen the app to retry, or share the number as text.'
+    : 'Current number + last 10 calls + full board · PNG';
+}
 let audioNumber;
 let audioFile;
 let audioPreparing = false;
@@ -89,9 +121,11 @@ function render() {
   $('next-label').textContent = complete ? 'All 90 called!' : 'Next number';
   $('share-number').disabled = !count || sharingNumber;
   $('share-number').setAttribute('aria-busy', String(sharingNumber));
-  $('share-number-label').textContent = sharingNumber && !sharingAudio ? 'Opening…' : 'Share number';
+  $('share-number-label').textContent = sharingNumber && !sharingAudio && !sharingImage ? 'Opening…' : 'Share number';
   $('copy-number').disabled = !count || sharingNumber;
   prepareAudio(latest);
+  prepareImage(state);
+  renderImage();
   $('undo').disabled = !count;
   $('repeat').disabled = !count || !voice.supported;
   $('history').disabled = !count;
@@ -282,7 +316,7 @@ $('share-audio').addEventListener('click', async () => {
   sharingNumber = true;
   render();
   voice.stop();
-  const result = await shareClip(file);
+  const result = await shareFile(file);
   sharingAudio = false;
   sharingNumber = false;
   render();
@@ -300,6 +334,31 @@ $('copy-link').addEventListener('click', async () => {
     $('copy-link').textContent = 'Select and copy the link';
   }
 });
+
+$('preview-image').addEventListener('click', () => showImagePreview());
+function showImagePreview(fallback = false) {
+  if (!boardImage.file) return;
+  $('image-share-description').textContent = fallback
+    ? 'This browser can’t share the image directly. Download the PNG, then attach it in your WhatsApp group. You can also press and hold the image to save it.'
+    : 'Choose WhatsApp → your group → Send. Or download the PNG and attach it in WhatsApp.';
+  if (!$('image-share-dialog').open) $('image-share-dialog').showModal();
+}
+async function shareBoardImage() {
+  if (!boardImage.file || sharingNumber) return;
+  const file = boardImage.file;
+  sharingImage = true;
+  sharingNumber = true;
+  render();
+  voice.stop();
+  // The PNG is already encoded: call shareFile in this tap, before any await.
+  const result = await shareFile(file);
+  sharingImage = false;
+  sharingNumber = false;
+  render();
+  if (result === 'fallback' && boardImage.file === file) showImagePreview(true);
+}
+$('share-image').addEventListener('click', shareBoardImage);
+$('share-image-preview').addEventListener('click', shareBoardImage);
 if (document.fullscreenEnabled) {
   $('fullscreen').hidden = false;
   $('fullscreen').addEventListener('click', async () => {
@@ -343,9 +402,9 @@ async function prepareOffline() {
       registration.active?.postMessage({ type: 'offline-version' }, [channel.port2]);
     });
     const updateStatus = () => {
-      $('offline-status').textContent = pack?.version === '1.2.0' && pack.audioClips === 90
+      $('offline-status').textContent = pack?.version === '1.3.0' && pack.audioClips === 90
         ? (navigator.onLine ? 'App + 90 voice clips ready offline' : 'Offline · 90 voice clips ready')
-        : 'Voice update: reopen online, then close all Tambola tabs and reopen';
+        : 'App update: reopen online, then close all Tambola tabs and reopen';
     };
     updateStatus();
     window.addEventListener('online', updateStatus);

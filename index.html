@@ -43,6 +43,8 @@
         </div>
         <div class="call-stats"><span><span class="green-dot" aria-hidden="true"></span> <strong id="called-count">0</strong> called</span><span><strong id="remaining-count">90</strong> to go</span></div>
         <button id="next" class="primary next-button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 7h.01M17 7h.01M12 12h.01M7 17h.01M17 17h.01"/></svg><span id="next-label">Next number</span><span aria-hidden="true">→</span></button>
+        <div class="image-share-actions"><button id="share-image" class="image-share-button" aria-describedby="image-share-hint number-share-hint" disabled><span id="share-image-label">Share board image</span></button><button id="preview-image" class="number-copy-button" aria-label="Preview board image" disabled>Preview</button></div>
+        <p id="image-share-hint" class="helper">Current number + last 10 calls + full board · PNG</p>
         <div class="number-share-actions"><button id="share-number" class="number-share-button" aria-describedby="number-share-hint" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6h14v-6"/></svg> <span id="share-number-label">Share number</span></button><button id="copy-number" class="number-copy-button" aria-label="Copy number message" disabled>Copy</button></div>
         <div class="audio-share-actions"><button id="share-audio" class="number-share-button" disabled>Share audio clip</button><a id="download-audio" class="text-button" hidden>Download MP3</a></div>
         <p id="audio-share-status" class="helper" role="status">AI-generated Indian English voice · ready when you call</p>
@@ -92,6 +94,12 @@
     <label for="number-message">Your message</label><textarea id="number-message" rows="4" readonly spellcheck="false"></textarea>
     <div class="dialog-actions"><a id="open-whatsapp" class="primary action-link" target="_blank" rel="noopener noreferrer">Open WhatsApp <span class="sr-only">(opens a new tab or app)</span></a><button id="copy-number-message">Copy message</button></div>
     <p id="number-copy-status" class="helper align-left" role="status"></p>
+  </dialog>
+  <dialog id="image-share-dialog" aria-labelledby="image-share-title" aria-describedby="image-share-description">
+    <div class="section-top"><h2 id="image-share-title">Share your game</h2><form method="dialog"><button class="close-button" aria-label="Close image preview">×</button></form></div>
+    <p id="image-share-description">Choose WhatsApp → your group → Send. Or download the PNG and attach it in WhatsApp.</p>
+    <img id="image-preview" alt="Current Tambola number, recent calls and board" width="1080" height="1540">
+    <div class="dialog-actions"><button id="share-image-preview" class="primary">Share image</button><a id="download-image" class="action-link download-image">Download PNG</a></div>
   </dialog>
   <noscript><p class="notice">Please enable JavaScript to use the Tambola caller.</p></noscript>
 </body>
