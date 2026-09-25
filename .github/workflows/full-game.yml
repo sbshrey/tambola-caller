@@ -59,6 +59,11 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify original sound assets
+        run: node full-game/tools/compose-sounds.mjs --check
       - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - uses: gradle/actions/setup-gradle@v4
       - name: Verify domain and Android build

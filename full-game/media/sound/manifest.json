@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "title": "A Little Game Night",
+  "provenance": "Original algorithmic score and additive synthesis authored for Tambola Together; no external samples.",
+  "sampleRate": 44100,
+  "channels": 1,
+  "bpm": 80,
+  "loopSeconds": 24,
+  "clips": {
+    "game-night.wav": {
+      "sha256": "3c1abae1913f59c6eca51a0e97df0ee7cff5cc68bc09627ca5a7da69884e3be8",
+      "bytes": 2116844,
+      "seconds": 24,
+      "peak": 0.17726,
+      "rms": 0.038403,
+      "seam": 0.001595
+    },
+    "mark.wav": {
+      "sha256": "9eb63d82cf15c133d664238e26d315eff42be069609e3e087fac74445a46bdb1",
+      "bytes": 15920,
+      "seconds": 0.18,
+      "peak": 0.326683,
+      "rms": 0.117346,
+      "seam": 0
+    },
+    "call.wav": {
+      "sha256": "81a6fb72a7156e503b274910580d79fca9c116a37bf45f8dac87d0d52e1aa817",
+      "bytes": 24742,
+      "seconds": 0.28002267573696143,
+      "peak": 0.239847,
+      "rms": 0.090411,
+      "seam": 0
+    },
+    "deal.wav": {
+      "sha256": "b90d902020bc0da2ed12a1696e7278d2aabd1ed3d8c13e59aca2d0379ca1452a",
+      "bytes": 63548,
+      "seconds": 0.72,
+      "peak": 0.269475,
+      "rms": 0.075806,
+      "seam": 0
+    },
+    "win.wav": {
+      "sha256": "e7e3d75479ec3663a6154bc599bd46645494715e0bbec5e3f0c5b16c732d5685",
+      "bytes": 132344,
+      "seconds": 1.5,
+      "peak": 0.299887,
+      "rms": 0.066274,
+      "seam": 0
+    }
+  }
+}

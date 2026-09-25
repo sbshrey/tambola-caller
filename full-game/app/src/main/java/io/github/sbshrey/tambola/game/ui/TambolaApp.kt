@@ -45,6 +45,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
             }
             if (state.loading) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             else Column(Modifier.weight(1f).verticalScroll(pageScroll).padding(horizontal = 20.dp).padding(top = 8.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(if (state.screen == Screen.GAME) 12.dp else 20.dp)) {
+                SoundNotice()
                 when (state.screen) {
                     Screen.HOME -> Home(state, model)
                     Screen.SETUP -> Setup(state, model)
@@ -203,7 +204,13 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
     GameCard {
         Text("The voice of your game", style = MaterialTheme.typography.titleLarge)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("en" to "English", "hi" to "हिन्दी", "hinglish" to "Hinglish").forEach { (id, label) -> FilterChip(selected = prefs.language == id, onClick = { model.updatePreferences(prefs.copy(language = id)) }, label = { Text(label) }) } }
-        SettingSwitch("Number voice", "AI-generated recordings, available offline.", prefs.voice) { model.updatePreferences(prefs.copy(voice = it)) }
+        SettingSwitch("Number voice", "Automatically speak each new call. AI-generated recordings, available offline.", prefs.voice) { model.updatePreferences(prefs.copy(voice = it)) }
+        SoundVolume("Voice volume", prefs.voiceVolume) { model.updatePreferences(prefs.copy(voiceVolume = it)) }
+        Text("Hear again plays a number on request, even with automatic voice off. Set voice volume to zero for silence.", color = Muted, style = MaterialTheme.typography.bodySmall)
+    }
+    SoundSettings(prefs, model::updatePreferences)
+    GameCard {
+        Text("Your pace, your comfort", style = MaterialTheme.typography.titleLarge)
         SettingSwitch("Gentle haptics", "A little feedback when you mark a number.", prefs.haptics) { model.updatePreferences(prefs.copy(haptics = it)) }
         SettingSwitch("Reduced motion", "Keep number and badge reveals still. Device animation settings also apply.", prefs.reducedMotion) { model.updatePreferences(prefs.copy(reducedMotion = it)) }
         Text("Automatic calling pace", style = MaterialTheme.typography.titleMedium)
@@ -219,7 +226,7 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
         Text("Your games and privacy", style = MaterialTheme.typography.titleLarge)
         Text("Solo and family rounds stay on this device. Online play sends your display name, tickets, calls and results to the room service; room members see names and wins, and only their own ticket numbers. Online sessions and cached history are encrypted on this device. No ads, analytics or purchases. Number recordings were generated with OpenAI.", color = Muted)
         OutlinedButton(onClick = { delete = true }, modifier = Modifier.fillMaxWidth()) { Text("Delete all saved rounds") }
-        Text("Tambola Together · ${BuildConfig.VERSION_NAME}\nHosted online release, music, and Hindi interface are still in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
+        Text("Tambola Together · ${BuildConfig.VERSION_NAME}\nHosted online release and Hindi interface are still in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
     }
     if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text("Delete saved rounds?") }, text = { Text("This removes your offline current game, player names, offline history and offline badges. This cannot be undone. Online data and sound and display settings will stay.") }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text("Delete rounds") } }, dismissButton = { TextButton(onClick = { delete = false }) { Text("Keep rounds") } })
 }

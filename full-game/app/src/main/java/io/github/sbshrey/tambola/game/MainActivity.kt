@@ -17,6 +17,7 @@ import io.github.sbshrey.tambola.game.online.OnlineViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sbshrey.tambola.game.ui.TambolaApp
 import io.github.sbshrey.tambola.game.ui.TambolaTheme
+import io.github.sbshrey.tambola.game.audio.GameAudio
 
 class MainActivity : ComponentActivity() {
     private val model: GameViewModel by viewModels()
@@ -31,6 +32,13 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(state.screen) { online.setActive(state.screen == Screen.ONLINE && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
             val playing = (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
                 (state.screen == Screen.ONLINE && onlineState.room?.round?.status == RoundStatus.PLAYING)
+            val ambient = when (state.screen) {
+                Screen.GAME -> state.round?.status == RoundStatus.PLAYING
+                Screen.ONLINE -> onlineState.room?.round == null || onlineState.room?.round?.status == RoundStatus.PLAYING
+                Screen.RESULTS, Screen.HISTORY, Screen.BADGES -> false
+                else -> true
+            }
+            LaunchedEffect(ambient) { GameAudio.get(application).setMusicEligible(ambient) }
             LaunchedEffect(playing) {
                 if (playing) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -53,5 +61,7 @@ class MainActivity : ComponentActivity() {
         }
     }
     override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen == Screen.ONLINE) }
+    override fun onResume() { super.onResume(); GameAudio.get(application).setForeground(true) }
+    override fun onPause() { GameAudio.get(application).setForeground(false); super.onPause() }
     override fun onStop() { model.setForeground(false); online.setActive(false); super.onStop() }
 }

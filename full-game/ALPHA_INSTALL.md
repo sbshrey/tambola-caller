@@ -1,17 +1,17 @@
-# Tambola Together 0.5.0-alpha05
+# Tambola Together 0.7.0-alpha07
 
 This is an internal **development alpha**, signed with an Android debug certificate. Solo and family play work offline. Native private rooms require a separately configured room service; this package targets a local test service, not a public hosted service. It is not the production release. Use fictional player names while testing. A future release signed with the production certificate may require uninstalling this alpha, which clears its local history.
 
 Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
 
-1. Copy `Tambola-Together-0.5.0-alpha05.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data.
+1. Copy `Tambola-Together-0.7.0-alpha07.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data.
 2. If Android asks, allow APK installation for the app you opened the file from.
 3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.
 4. Use **Call next number** or **Auto**. Tap **Mark ticket** for large buttons, or select assisted marking during setup.
 5. Open **Check claims** for automatically verified prizes. **Inspect** shows the required numbers, missing calls and winning tickets. Finish at the chosen house, or continue through all 90 calls when that option is enabled.
 6. **Play another round** keeps your players, ticket allowance and rules in setup; dealing starts a new round with fresh tickets. **Share these results** first shows a message preview. Player names are excluded unless you opt in.
 
-Settings include English/Hindi/Hinglish calling, voice on/off, haptics, reduced motion, and calling pace. Leaving the app pauses offline calling. Reopen and choose **Resume round** to continue. Number recordings are AI-generated and bundled. Internet permission supports private rooms; no OpenAI key is included or needed to play.
+Settings include System/Light/Dark appearance, English/Hindi/Hinglish calling, separate voice/music/effects volumes, haptics, reduced motion, and calling pace. Music defaults off. Number voice controls automatic speech; Hear again plays on request unless voice volume is zero. After an audio-device disconnect, use Resume sound when ready. Leaving the app pauses offline calling. Reopen and choose **Resume round** to continue. Number recordings are AI-generated and bundled. Internet permission supports private rooms; no OpenAI key is included or needed to play.
 
 Included now: digital tickets, solo/computer/family play, standard prizes, one/two/three house settings, 90-call play, custom pattern prizes, points and ties, local round history, pause/resume, practice undo, number board, inspected claims, rematches and controlled text result sharing.
 
@@ -41,4 +41,4 @@ Online profiles and cached rooms are encrypted on the device. **Delete online pr
 
 Shared records retain opaque player IDs, tickets, calls, scores and custom prize text until normal retention expires. Other players' downloaded copies and existing backups are not instantly erased. See [profile deletion and retention](server/PROFILE_DELETION.md) for exact behavior and outstanding backup/restore acceptance. Signing out only revokes the session and clears local online data; a recovery reset only clears local data and can discard a pending deletion confirmation. Request deletion before signing out. There is no account-recovery service in this alpha.
 
-Still in development: hosted online rooms and broader multiplayer recovery acceptance, final music/art/celebrations, Hindi interface, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.
+Still in development: hosted online rooms and broader multiplayer recovery acceptance, final listening/art/celebration acceptance, Hindi interface, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.

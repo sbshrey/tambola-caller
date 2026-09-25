@@ -2,7 +2,9 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-The alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. Native private rooms include a lobby, private tickets, host controls, encrypted sessions and reconnect flows against the local [room service](server/README.md). The interactive tutorial teaches calling/marking/verification on an isolated sample ticket, and each mode has completion/house badges. Explicit online-profile deletion includes shared-record redaction and durable confirmation retries. See [alpha05 validation](ALPHA05_VALIDATION.md) and the [native client guide](client/README.md). Final music/art, Hindi UI, hosted play and production release validation remain unfinished.
+The alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. Native private rooms include a lobby, private tickets, host controls, encrypted sessions and reconnect flows against the local [room service](server/README.md). The interactive tutorial teaches calling/marking/verification on an isolated sample ticket, and each mode has completion/house badges. Explicit online-profile deletion includes shared-record redaction and durable confirmation retries. See [alpha05 validation](ALPHA05_VALIDATION.md) and the [native client guide](client/README.md). Final presentation/audio acceptance, Hindi UI, hosted play and production release validation remain unfinished.
+
+The alpha07 audio update adds an original offline music loop and cues, independent saved volumes, call ducking and foreground/interruption handling. See [audio design and provenance](AUDIO.md) and [alpha07 validation](ALPHA07_VALIDATION.md) for behavior, executed checks and remaining device/listening acceptance.
 
 ## Build
 
@@ -17,7 +19,7 @@ JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties`
 
 The backend can build separately with `-PserverOnly=true`; its tests require an explicit isolated PostgreSQL database. See the service README for environment setup and the real-process restart smoke test.
 
-The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing Tambola Keyboard. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`; it is an internal alpha, not a signed production release. Build-time voice import checks all 270 recordings against the repository manifests. No OpenAI key is needed to build or play.
+The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing Tambola Keyboard. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`; it is an internal alpha, not a signed production release. Build-time imports check all 270 voice recordings and five original sound assets against repository manifests. `node tools/compose-sounds.mjs --check` also verifies that the PCM files reproduce exactly. No OpenAI key is needed to build or play.
 
 ## Rules and data
 
@@ -32,7 +34,7 @@ The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing 
 - Room stores rounds atomically. Preferences use DataStore. Offline history is local; deleting offline rounds requires confirmation. Online snapshots and sessions use a separate encrypted store.
 - Setup/editor drafts use the ViewModel and saved instance state to survive recreation. Rematches retain players/settings/custom prizes and produce a fresh round when dealt. Sharing starts with a preview and leaves player names out unless selected.
 
-Assets in this build: native vector/Compose graphics and the repository's previously generated AI voice recordings. No runtime AI calls, analytics, ads, payments, microphone permission, or OpenAI key are included. Internet permission supports private rooms; solo and family play remain offline.
+Assets in this build: native vector/Compose graphics, the repository's previously generated AI voice recordings, and original synthesized music/effects. No runtime AI calls, analytics, ads, payments, microphone permission, or OpenAI key are included. Internet permission supports private rooms; solo and family play remain offline.
 
 ## Test scope
 

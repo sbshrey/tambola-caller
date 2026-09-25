@@ -15,8 +15,8 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "0.6.0-alpha06"
+        versionCode = 7
+        versionName = "0.7.0-alpha07"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -31,6 +31,8 @@ android {
         }
     }
     sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/voiceAssets"))
+    sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/soundAssets"))
+    androidResources.noCompress += "wav"
     lint { abortOnError = true }
 }
 kotlin { jvmToolchain(17) }
@@ -56,7 +58,24 @@ val prepareVoices by tasks.registering(Sync::class) {
         }
     }
 }
-tasks.named("preBuild") { dependsOn(prepareVoices) }
+val prepareSounds by tasks.registering(Sync::class) {
+    from(rootProject.file("media/sound")) { include("*.wav", "manifest.json") }
+    into(layout.buildDirectory.dir("generated/soundAssets/sound"))
+    doLast {
+        val folder = destinationDir
+        val manifest = groovy.json.JsonSlurper().parse(folder.resolve("manifest.json")) as Map<*, *>
+        val clips = manifest["clips"] as Map<*, *>
+        val expected = setOf("game-night.wav", "mark.wav", "call.wav", "deal.wav", "win.wav")
+        check(clips.keys == expected) { "Incomplete sound manifest" }
+        expected.forEach { name ->
+            val clip = clips[name] as Map<*, *>
+            val bytes = folder.resolve(name).readBytes()
+            val hash = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
+            check(hash == clip["sha256"] && bytes.size.toLong() == (clip["bytes"] as Number).toLong()) { "Changed sound: $name" }
+        }
+    }
+}
+tasks.named("preBuild") { dependsOn(prepareVoices, prepareSounds) }
 dependencies {
     implementation(project(":domain"))
     implementation(project(":protocol"))

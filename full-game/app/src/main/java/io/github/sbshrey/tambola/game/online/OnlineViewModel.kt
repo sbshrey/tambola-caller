@@ -8,6 +8,7 @@ import io.github.sbshrey.tambola.domain.RoundStatus
 import io.github.sbshrey.tambola.domain.BadgeProgress
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
+import io.github.sbshrey.tambola.game.audio.SoundCue
 import io.github.sbshrey.tambola.game.data.*
 import io.github.sbshrey.tambola.protocol.*
 import kotlinx.coroutines.*
@@ -164,13 +165,13 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                     mutable.update { it.copy(connection = Connection.IDLE, sessionExpired = false,
                         notice = if (deletionConfirmed) "Online profile deleted. Its name and avatar were removed from service records. Online data on this device was cleared; offline games stay here." else null) }
                 } else if (pending is PendingOperation.Command && pending.request.action == RoomAction.Leave) {
-                    stream?.cancel(); stream = null; persist(latest.copy(room = null, marks = emptyMap(), pending = null))
+                    stream?.cancel(); stream = null; audio.stop(); persist(latest.copy(room = null, marks = emptyMap(), pending = null))
                     mutable.update { it.copy(connection = Connection.IDLE) }
                 } else {
                     val accepted = latest.accept(requireNotNull(result), live = active && mutable.value.connection == Connection.LIVE,
                         allowRoomChange = pending is PendingOperation.Create || pending is PendingOperation.Join)
                     persist(accepted.saved.copy(pending = null))
-                    accepted.announcement?.let { if (preferences.voice && active) audio.play(it, preferences.language) }
+                    announceAccepted(latest, accepted)
                 }
             }
         } catch (error: RoomApiFailure) {
@@ -207,7 +208,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                             persist(accepted.saved)
                             mutable.update { it.copy(connection = Connection.LIVE) }
                             // Silent on first snapshot and catch-up. Explicit "Hear again" remains available.
-                            accepted.announcement?.let { if (preferences.voice && active) audio.play(it, preferences.language) }
+                            announceAccepted(latest, accepted)
                             received = true; attempts = 0
                         }
                     }
@@ -230,16 +231,31 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
     }
+    private fun announceAccepted(previous: OnlineSaved, accepted: AcceptedRoom) {
+        if (!active) return
+        val nextStatus = accepted.saved.room?.round?.status
+        if (nextStatus != previous.room?.round?.status && nextStatus in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) audio.stop()
+        accepted.announcement?.let { number ->
+            val before = previous.room?.round
+            val after = accepted.saved.room?.round
+            val won = after != null && before != null &&
+                (after.awards.size > before.awards.size || after.customAwards.size > before.customAwards.size)
+            audio.play(number, preferences.language, celebration = won)
+        }
+    }
     fun reconnect() { stream?.cancel(); stream = null; connect() }
     fun mark(ticketId: String, number: Int) {
         if (saved?.pending is PendingOperation.DeleteProfile) return
         viewModelScope.launch {
-            try { mutex.withLock { saved?.let { persist(it.mark(ticketId, number)) } } }
+            try { mutex.withLock { saved?.let {
+                val next = it.mark(ticketId, number)
+                if (next != it) { persist(next); if (active) audio.effect(SoundCue.MARK) }
+            } } }
             catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
         }
     }
-    fun repeatCall() { if (active) saved?.room?.round?.called?.lastOrNull()?.let { audio.play(it, preferences.language) } }
+    fun repeatCall() { if (active) saved?.room?.round?.called?.lastOrNull()?.let { audio.repeat(it, preferences.language) } }
     /** Explicit recovery action in the UI; never called automatically on a read/decryption failure. */
     fun resetLocalData() {
         if (mutable.value.busy) return

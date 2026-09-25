@@ -19,14 +19,14 @@ The visual direction is a warm game-night table: ink, ivory paper, amber calling
 | Home/table illustration | Original code in `ui/GameArtwork.kt`, authored for this app | None |
 | Number ball, ticket paper, badge geometry | Native Compose code in the app | None |
 | 270 number recordings | Existing repository AI voice assets; build verifies manifests and SHA-256 values | Packaged offline |
-| Music, short effects and winner chimes | Still to be composed/generated, auditioned and integrated | Must ship offline |
+| Music, short effects and winner chimes | Original additive synthesis and score in `tools/compose-sounds.mjs`; manifest hashes verified at build | Packaged offline; listening/device acceptance pending |
 | Avatar set, additional table decorations and celebrations | Still to be completed as one consistent native/vector or optimized raster set | Must not replace readable controls |
 
-No paid generation or new external media was used for the appearance milestone. No developer API key is packaged. Any future generated/licensed material must add its source, prompt/model or license, date, output hashes and listening/visual QA before distribution. Native vector/code is preferred where it keeps artwork crisp and small.
+No paid generation or new external media was used for the appearance milestone. No developer API key is packaged. Any future generated/licensed material must add its source, prompt/model or license, date, output hashes and listening/visual QA before production distribution. Internal alpha assets may be supplied for that acceptance with their remaining checks explicitly recorded. Native vector/code is preferred where it keeps artwork crisp and small.
 
 ## Remaining presentation acceptance
 
-Complete music/effects with independent volumes and call ducking; finite dismissible winner celebrations; English/Hindi interface resources; avatar selection; non-color call/mark cues throughout; and a full TalkBack walk-through. Measure the resulting frame/audio behavior on physical phones. Emulator theme/motion checks are not a physical-device smoothness, pronunciation or assistive-technology sign-off.
+The audio implementation now includes independent volumes, call ducking and interruption handling; see [audio design and provenance](AUDIO.md). Remaining work includes listening/device acceptance; finite dismissible winner celebrations; English/Hindi interface resources; avatar selection; non-color call/mark cues throughout; and a full TalkBack walk-through. Measure the resulting frame/audio behavior on physical phones. Emulator theme/motion checks are not a physical-device smoothness, pronunciation or assistive-technology sign-off.
 
 ## Implementation references
 

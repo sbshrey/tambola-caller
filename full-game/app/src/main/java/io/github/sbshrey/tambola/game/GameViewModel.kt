@@ -7,6 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.audio.CallAudio
+import io.github.sbshrey.tambola.game.audio.GameAudio
+import io.github.sbshrey.tambola.game.audio.SoundCue
 import io.github.sbshrey.tambola.game.data.*
 import io.github.sbshrey.tambola.game.setup.*
 import kotlinx.coroutines.*
@@ -51,7 +53,10 @@ class GameViewModel(application: Application, private val savedState: SavedState
             try { mutable.update { it.copy(round = repository.restore(), loading = false) } }
             catch (_: Exception) { mutable.update { it.copy(loading = false, error = "The saved round could not be restored. Your saved data has been kept.") } }
         }
-        viewModelScope.launch { preferences.values.catch { mutable.update { it.copy(error = "Settings could not be loaded.") } }.collect { prefs -> mutable.update { it.copy(preferences = prefs) } } }
+        viewModelScope.launch { preferences.values.catch { mutable.update { it.copy(error = "Settings could not be loaded.") } }.collect { prefs ->
+            GameAudio.get(application).configure(prefs)
+            mutable.update { it.copy(preferences = prefs) }
+        } }
         viewModelScope.launch {
             var previousCompleted: List<SavedRound>? = null
             repository.history.catch { mutable.update { it.copy(error = "History could not be loaded.") } }.collect { rows ->
@@ -120,7 +125,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
     }
     fun removeRule(id: String) { updateSetup(mutable.value.setupDraft.let { it.copy(customPrizes = it.customPrizes.filterNot { prize -> prize.id == id }) }) }
     fun clearError() { mutable.update { it.copy(error = null) } }
-    fun tutorialCall() { if (foreground && mutable.value.preferences.voice) audio.play(7, mutable.value.preferences.language) }
+    fun tutorialCall() { if (foreground) audio.play(7, mutable.value.preferences.language) }
     fun finishTutorial(completed: Boolean) {
         viewModelScope.launch {
             try { preferences.finishTutorial(completed); navigate(Screen.HOME) }
@@ -143,13 +148,14 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     repository.replaceActive(mutable.value.round, round)
                     audio.stop(); stopTimer(); lastDrawAt = -1_000
                     mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null) }
+                    if (foreground) audio.effect(SoundCue.DEAL)
                 } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "The round could not be saved. Please try again.") } }
                 finally { mutable.update { it.copy(saving = false) } }
             }
         }
     }
 
-    private fun mutate(speak: Boolean = false, transform: (Round) -> Round) {
+    private fun mutate(speak: Boolean = false, markSound: Boolean = false, transform: (Round) -> Round) {
         viewModelScope.launch {
             mutex.withLock {
                 val previous = mutable.value.round ?: return@withLock
@@ -158,7 +164,9 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     if (next == previous) return@withLock
                     repository.save(next)
                     mutable.update { it.copy(round = next) }
-                    if (foreground && speak && next.latest != null && next.called.size > previous.called.size && mutable.value.preferences.voice) audio.play(next.latest!!, mutable.value.preferences.language)
+                    if (foreground && speak && next.latest != null && next.called.size > previous.called.size) audio.play(next.latest!!, mutable.value.preferences.language,
+                        celebration = next.awards.size > previous.awards.size || next.customAwards.size > previous.customAwards.size)
+                    if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
                 } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "Progress could not be saved. Please try again.") } }
             }
@@ -171,13 +179,13 @@ class GameViewModel(application: Application, private val savedState: SavedState
         lastDrawAt = now
         mutate(speak = true) { it.draw() }
     }
-    fun toggleMark(ticketId: String, number: Int) = mutate { it.toggleMark(ticketId, number) }
+    fun toggleMark(ticketId: String, number: Int) = mutate(markSound = true) { it.toggleMark(ticketId, number) }
     fun undo() { stopTimer(); audio.stop(); mutate { it.undo() } }
     fun resume() { mutate { it.start() } }
     fun pause() { stopTimer(); audio.stop(); mutate { audio.stop(); it.pause() } }
     fun setForeground(value: Boolean) { foreground = value; if (!value) pause() }
     fun finish() { stopTimer(); audio.stop(); mutate { it.cancel() } }
-    fun repeatCall() { mutable.value.round?.latest?.let { audio.play(it, mutable.value.preferences.language) } }
+    fun repeatCall() { if (foreground) mutable.value.round?.latest?.let { audio.repeat(it, mutable.value.preferences.language) } }
     fun auto() {
         if (mutable.value.auto) { stopTimer(); return }
         if (mutable.value.round?.status != RoundStatus.PLAYING) return
@@ -192,7 +200,6 @@ class GameViewModel(application: Application, private val savedState: SavedState
     }
     private fun stopTimer() { timer?.cancel(); timer = null; mutable.update { it.copy(auto = false) } }
     fun updatePreferences(value: Preferences) {
-        if (!value.voice) audio.stop()
         viewModelScope.launch { try { preferences.update(value) } catch (_: Exception) { mutable.update { it.copy(error = "Settings could not be saved.") } } }
     }
     fun openHistory(saved: SavedRound) {
