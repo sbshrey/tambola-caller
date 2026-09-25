@@ -228,7 +228,7 @@ Initial implementation order (delivered through the alpha milestones in the exec
 
 Current continuation order after tutorial/badge, profile-deletion and local recovery acceptance:
 
-1. Finish original/licensed music and effects, decorative assets, celebrations, light theme and Hindi interface. Audit pronunciation, audio focus, motion and TalkBack without blocking core play on generated content.
+1. Finish original/licensed music and effects, avatars/additional decorative assets, celebrations and Hindi interface. Saved light/dark/system appearance and native home artwork are implemented in alpha06; complete the broader pronunciation, audio focus, motion and TalkBack audit without blocking core play on generated content.
 2. Extend the passing two-emulator native game and cold-process pending draw/deletion checks to network loss/switching, expired sessions and recovery under broader faults. Verify large retained-history deletion and restoration from backups without resurrecting deleted identities. Local process termination and two independent native UIs are now verified; physical networks and backup behavior are separate gates.
 3. Run the remaining API/device/tablet matrix, upgrades, long sessions, performance and security checks. Fix observed failures and preserve exact candidate evidence.
 4. After provider/project/budget selection, deploy the room service with TLS, constrained credentials, monitoring, retention, backups and tested restore/rollback. Complete two-physical-phone acceptance on different networks.

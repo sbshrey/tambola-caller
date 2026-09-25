@@ -9,6 +9,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const args = process.argv.slice(2);
 const online = args.includes('--online');
 const faultProxy = args.includes('--fault-proxy');
+const animations = args.includes('--animations');
 function option(name, fallback) {
   const index = args.indexOf(name);
   return index < 0 ? fallback : args[index + 1];
@@ -43,7 +44,7 @@ for (const value of previous.values()) assert.match(value, /^(null|\d+(?:\.\d+)?
 let output = '';
 let exitCode;
 try {
-  for (const name of scales) run('shell', 'settings', 'put', 'global', name, '0');
+  for (const name of scales) run('shell', 'settings', 'put', 'global', name, animations && name === 'animator_duration_scale' ? '1' : '0');
   const command = ['shell', 'am', 'instrument', '-w'];
   if (online) command.push('-e', 'tambolaOnline', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');

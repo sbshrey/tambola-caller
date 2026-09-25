@@ -242,7 +242,7 @@ private fun RoomSettingsEditor(room: RoomView, enabled: Boolean, save: (RoomOpti
     var originalRule by rememberSaveable { mutableStateOf<String?>(null) }
     val rule = remember(rawRule) { rawRule?.let { WireJson.decodeFromString<CustomRuleDraft>(it) } }
     Dialog(onDismissRequest = dismiss, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Surface(Modifier.fillMaxSize(), color = Ink) {
+        Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column(Modifier.fillMaxSize().safeDrawingPadding()) {
                 TextButton(onClick = dismiss) { Text("‹ Lobby") }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {

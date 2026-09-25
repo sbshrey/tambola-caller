@@ -8,6 +8,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.isSystemInDarkTheme
+import io.github.sbshrey.tambola.game.data.Appearance
 import androidx.lifecycle.Lifecycle
 import android.view.WindowManager
 import io.github.sbshrey.tambola.domain.RoundStatus
@@ -33,7 +35,21 @@ class MainActivity : ComponentActivity() {
                 if (playing) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
-            TambolaTheme { TambolaApp(state, model, onlineState, online) }
+            val dark = when (state.preferences.appearance) {
+                Appearance.SYSTEM -> isSystemInDarkTheme()
+                Appearance.LIGHT -> false
+                Appearance.DARK -> true
+            }
+            LaunchedEffect(dark) {
+                val transparent = android.graphics.Color.TRANSPARENT
+                val lightBar = android.graphics.Color.rgb(255, 249, 240)
+                val darkBar = android.graphics.Color.rgb(18, 29, 43)
+                enableEdgeToEdge(
+                    statusBarStyle = if (dark) SystemBarStyle.dark(transparent) else SystemBarStyle.light(transparent, transparent),
+                    navigationBarStyle = if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
+                )
+            }
+            TambolaTheme(dark) { TambolaApp(state, model, onlineState, online) }
         }
     }
     override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen == Screen.ONLINE) }

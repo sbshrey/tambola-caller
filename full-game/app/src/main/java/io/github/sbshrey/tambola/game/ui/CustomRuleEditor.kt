@@ -37,7 +37,7 @@ fun CustomRuleEditor(draft: CustomRuleDraft, original: CustomRuleDraft?, tickets
     val back = { if (draft != original) discard = true else cancel() }
     Dialog(onDismissRequest = back, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         val focus = LocalFocusManager.current
-        Surface(Modifier.fillMaxSize(), color = Ink) {
+        Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = back) { Text("‹ Setup") }
@@ -185,7 +185,7 @@ private fun RulePlayground(prize: CustomPrize, count: Int) {
                 ticket.row(row).forEach { number ->
                     val active = number in called
                     OutlinedButton(onClick = { called = if (active) called - number else called + number },
-                        colors = ButtonDefaults.outlinedButtonColors(containerColor = if (active) Jade else Ink, contentColor = if (active) Ink else Ivory),
+                        colors = ButtonDefaults.outlinedButtonColors(containerColor = if (active) Jade else MaterialTheme.colorScheme.surfaceContainerHighest, contentColor = if (active) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface),
                         contentPadding = PaddingValues(10.dp), shape = RoundedCornerShape(12.dp), modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)
                             .semantics { contentDescription = "Sample number $number"; stateDescription = if (active) "Called" else "Not called" }) { Text("$number") }
                 }

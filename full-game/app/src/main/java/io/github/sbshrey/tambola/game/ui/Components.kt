@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -12,12 +13,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import io.github.sbshrey.tambola.game.R
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,12 +44,21 @@ fun PrimaryAction(text: String, modifier: Modifier = Modifier, enabled: Boolean 
 
 @Composable
 fun NumberBall(number: Int?, reducedMotion: Boolean, compact: Boolean = false) {
-    var appeared by remember(number) { mutableStateOf(false) }
-    LaunchedEffect(number) { appeared = true }
-    val scale by animateFloatAsState(if (appeared) 1f else .82f, tween(if (reducedMotion) 0 else 350), label = "number reveal")
+    val reveal = remember { Animatable(1f) }
+    LaunchedEffect(number, reducedMotion) {
+        if (reducedMotion || number == null) reveal.snapTo(1f)
+        else {
+            reveal.snapTo(0f)
+            reveal.animateTo(1f, tween(420, easing = FastOutSlowInEasing))
+        }
+    }
     Box(Modifier.fillMaxWidth().height(if (compact) 116.dp else 200.dp), contentAlignment = Alignment.Center) {
         Box(Modifier.size(if (compact) 114.dp else 194.dp).background(Brush.radialGradient(listOf(Saffron.copy(alpha = .18f), Color.Transparent)), CircleShape))
-        Box(Modifier.size(if (compact) 98.dp else 156.dp).scale(scale).background(Brush.linearGradient(listOf(Color(0xFFFFDAA5), Saffron, Color(0xFFF3A456))), CircleShape), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(if (compact) 98.dp else 156.dp).graphicsLayer {
+            val progress = if (reducedMotion) 1f else reveal.value
+            scaleX = .86f + .14f * progress; scaleY = scaleX
+            translationY = (1f - progress) * -16.dp.toPx(); rotationZ = (1f - progress) * -10f
+        }.background(Brush.linearGradient(listOf(Color(0xFFFFE1B3), Color(0xFFFFC078), Color(0xFFF3A456))), CircleShape), contentAlignment = Alignment.Center) {
             Box(Modifier.size(if (compact) 82.dp else 128.dp).border(1.dp, Ink.copy(alpha = .15f), CircleShape))
             Text(number?.toString() ?: "90", fontSize = if (compact) 46.sp else 70.sp, fontWeight = FontWeight.Black, color = Ink,
                 modifier = Modifier.semantics { contentDescription = number?.let { "Current number $it" } ?: "Ready to call numbers"; liveRegion = LiveRegionMode.Polite })
@@ -98,7 +110,7 @@ fun TicketCard(ticket: Ticket, round: TableRound, haptics: Boolean, onMark: (Str
     }
     if (edit) {
         val feedback = LocalHapticFeedback.current
-        AlertDialog(onDismissRequest = { edit = false }, title = { Text("${player.name}'s ticket") }, text = {
+        AlertDialog(onDismissRequest = { edit = false }, title = { Text(if (player.name == "You") stringResource(R.string.your_ticket) else stringResource(R.string.named_ticket, player.name)) }, text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(if (round.settings.assistedMarking || player.computer) "Numbers are marked automatically." else "Tap a called number to mark or unmark it. Amber numbers have been called.", style = MaterialTheme.typography.bodyMedium)
                 (0..2).forEach { row ->
@@ -109,10 +121,10 @@ fun TicketCard(ticket: Ticket, round: TableRound, haptics: Boolean, onMark: (Str
                             val active = number in called
                             val enabled = active && !round.settings.assistedMarking && !player.computer && !round.finished
                             Box(Modifier.sizeIn(minWidth = 52.dp, minHeight = 52.dp).clip(RoundedCornerShape(12.dp))
-                                .background(if (isMarked) Jade else if (active) Saffron else Ink)
+                                .background(if (isMarked) Jade else if (active) Saffron else MaterialTheme.colorScheme.surfaceContainerHighest)
                                 .clickable(enabled = enabled, role = Role.Checkbox) { if (haptics) feedback.performHapticFeedback(HapticFeedbackType.ToggleOn); onMark(ticket.id, number) }
                                 .semantics { contentDescription = "Number $number"; stateDescription = if (isMarked) "Marked" else if (active) "Called, unmarked" else "Not called" }, contentAlignment = Alignment.Center) {
-                                Text(number.toString(), color = if (active) Ink else Muted, fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp))
+                                Text(number.toString(), color = if (isMarked) MaterialTheme.colorScheme.onSecondary else if (active) MaterialTheme.colorScheme.onPrimary else Muted, fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp))
                             }
                         }
                     }

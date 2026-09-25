@@ -86,8 +86,8 @@ private fun RuleDetails(round: TableRound, rule: VisibleRule, initialTicket: Tic
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         detail.selected.forEach { n ->
                             val active = n in called
-                            Text("$n", color = if (active) Ink else Ivory,
-                                modifier = Modifier.background(if (active) Jade else Ink, RoundedCornerShape(8.dp)).padding(10.dp)
+                            Text("$n", color = if (active) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.background(if (active) Jade else MaterialTheme.colorScheme.surfaceContainerHighest, RoundedCornerShape(8.dp)).padding(10.dp)
                                     .semantics { contentDescription = "Number $n, ${if (active) "called" else "not called"}" })
                         }
                     }

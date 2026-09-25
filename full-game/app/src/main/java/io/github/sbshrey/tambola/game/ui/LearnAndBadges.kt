@@ -132,8 +132,8 @@ fun BadgeCollection(progress: BadgeProgress, reducedMotion: Boolean) {
         val scale by animateFloatAsState(if (shown || !earned) 1f else .85f, tween(if (reducedMotion) 0 else 200), label = "badge reveal")
         GameCard(Modifier.testTag("badge-${badge.name}").semantics(mergeDescendants = true) { stateDescription = if (earned) "Earned" else "Not yet earned" }) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(Modifier.size(58.dp).scale(scale).background(if (earned) Saffron else Ink, CircleShape).clearAndSetSemantics {}, contentAlignment = Alignment.Center) {
-                    Text(badge.symbol, color = if (earned) Ink else Muted, fontSize = 24.sp, fontWeight = FontWeight.Black)
+                Box(Modifier.size(58.dp).scale(if (reducedMotion) 1f else scale).background(if (earned) Saffron else MaterialTheme.colorScheme.surfaceContainerHighest, CircleShape).clearAndSetSemantics {}, contentAlignment = Alignment.Center) {
+                    Text(badge.symbol, color = if (earned) MaterialTheme.colorScheme.onPrimary else Muted, fontSize = 24.sp, fontWeight = FontWeight.Black)
                 }
                 Column(Modifier.weight(1f)) {
                     Text(badge.title, style = MaterialTheme.typography.titleLarge)

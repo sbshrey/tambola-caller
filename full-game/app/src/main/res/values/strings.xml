@@ -1,0 +1,24 @@
+<resources>
+    <string name="your_ticket">Your ticket</string>
+    <string name="named_ticket">%1$s\'s ticket</string>
+    <plurals name="numbers_called">
+        <item quantity="one">%d number called</item>
+        <item quantity="other">%d numbers called</item>
+    </plurals>
+    <plurals name="player_count">
+        <item quantity="one">%d player</item>
+        <item quantity="other">%d players</item>
+    </plurals>
+    <plurals name="ticket_count">
+        <item quantity="one">%d ticket</item>
+        <item quantity="other">%d tickets</item>
+    </plurals>
+    <plurals name="call_count">
+        <item quantity="one">%d call</item>
+        <item quantity="other">%d calls</item>
+    </plurals>
+    <plurals name="prize_count">
+        <item quantity="one">%d prize</item>
+        <item quantity="other">%d prizes</item>
+    </plurals>
+</resources>

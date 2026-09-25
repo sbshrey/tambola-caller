@@ -12,17 +12,19 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.*
+import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.data.SavedRound
+import io.github.sbshrey.tambola.game.data.Appearance
 import io.github.sbshrey.tambola.game.online.*
 import java.text.DateFormat
 import java.util.Date
@@ -33,11 +35,11 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
     val pageScroll = key(state.screen, state.round?.id,
         onlineState.room?.roomId.takeIf { state.screen == Screen.ONLINE },
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
-    Surface(Modifier.fillMaxSize(), color = Ink) {
+    Surface(Modifier.fillMaxSize().testTag("app-background"), color = MaterialTheme.colorScheme.background) {
         Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 if (state.screen != Screen.HOME) TextButton(onClick = { model.navigate(Screen.HOME) }) { Text("‹ Home") }
-                else Box(Modifier.size(36.dp).background(Saffron, CircleShape), contentAlignment = Alignment.Center) { Text("T", fontWeight = FontWeight.Black, color = Ink, fontSize = 22.sp) }
+                else Box(Modifier.size(36.dp).background(Saffron, CircleShape), contentAlignment = Alignment.Center) { Text("T", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onPrimary, fontSize = 22.sp) }
                 Text(if (state.screen == Screen.HOME) "  tambola together" else state.screen.name.lowercase().replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 if (state.screen != Screen.SETTINGS) TextButton(onClick = { model.navigate(Screen.SETTINGS) }) { Text("Settings", fontSize = 12.sp) }
             }
@@ -74,20 +76,12 @@ private fun Home(state: GameUiState, model: GameViewModel) {
         PrimaryAction("Learn with a sample ticket") { model.navigate(Screen.TUTORIAL) }
         TextButton(onClick = { model.finishTutorial(false) }) { Text("Maybe later") }
     }
-    Box(Modifier.fillMaxWidth().height(156.dp).clip(RoundedCornerShape(26.dp)).background(Brush.linearGradient(listOf(Color(0xFF314B49), Panel))), contentAlignment = Alignment.Center) {
-        Row(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalAlignment = Alignment.CenterVertically) {
-            listOf(7 to Jade, 22 to Saffron, 90 to Coral).forEachIndexed { index, (number, color) ->
-                Box(Modifier.size(if (index == 1) 94.dp else 68.dp).background(color, CircleShape).border(7.dp, Color.White.copy(alpha = .12f), CircleShape), contentAlignment = Alignment.Center) {
-                    Text(number.toString(), color = Ink, fontSize = if (index == 1) 36.sp else 26.sp, fontWeight = FontWeight.Black)
-                }
-            }
-        }
-        Text("A FULL HOUSE OF POSSIBILITIES", color = Jade.copy(alpha = .8f), fontSize = 9.sp, letterSpacing = 2.sp, modifier = Modifier.align(Alignment.BottomCenter).padding(12.dp))
-    }
+    GameNightArtwork()
     state.round?.takeIf { !it.finished }?.let { round ->
         GameCard {
             Eyebrow("YOUR TABLE IS WAITING", Saffron)
-            Text("${round.called.size} numbers called · ${round.players.size} players", style = MaterialTheme.typography.titleMedium)
+            Text(pluralStringResource(R.plurals.numbers_called, round.called.size, round.called.size) + " · " +
+                pluralStringResource(R.plurals.player_count, round.players.size, round.players.size), style = MaterialTheme.typography.titleMedium)
             PrimaryAction("Resume round") { model.navigate(Screen.GAME) }
         }
     }
@@ -148,13 +142,16 @@ private fun Results(round: Round, model: GameViewModel) {
     var sharing by remember { mutableStateOf(false) }
     Eyebrow(if (round.status == RoundStatus.CANCELLED) "RESULTS SO FAR" else "THAT WAS A LOVELY ROUND")
     Text(if (round.status == RoundStatus.CANCELLED) "Until next time." else "A round of applause!", style = MaterialTheme.typography.headlineLarge)
-    Text("${round.called.size} calls · ${round.awards.size + round.customAwards.size} prizes · ${round.players.size} players", color = Muted)
+    val prizeCount = round.awards.size + round.customAwards.size
+    Text(pluralStringResource(R.plurals.call_count, round.called.size, round.called.size) + " · " +
+        pluralStringResource(R.plurals.prize_count, prizeCount, prizeCount) + " · " +
+        pluralStringResource(R.plurals.player_count, round.players.size, round.players.size), color = Muted)
     GameCard {
         val topScore = round.players.maxOf { round.score(it.id) }
         round.players.sortedByDescending { round.score(it.id) }.forEach { player ->
             val leading = topScore > 0 && round.score(player.id) == topScore
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(42.dp).background(if (leading) Saffron else Ink, CircleShape), contentAlignment = Alignment.Center) { Text(player.name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = if (leading) Ink else Ivory) }
+                Box(Modifier.size(42.dp).background(if (leading) Saffron else MaterialTheme.colorScheme.surfaceContainerHighest, CircleShape), contentAlignment = Alignment.Center) { Text(player.name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = if (leading) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface) }
                 Column(Modifier.weight(1f).padding(horizontal = 12.dp)) { Text(player.name, style = MaterialTheme.typography.titleMedium); if (player.computer) Text("Computer player", color = Muted, fontSize = 12.sp) }
                 Text("${round.score(player.id)} pts", color = Jade, fontWeight = FontWeight.Bold)
             }
@@ -195,11 +192,20 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
     Eyebrow("MAKE YOURSELF COMFORTABLE")
     Text("Just your style.", style = MaterialTheme.typography.headlineLarge)
     GameCard {
+        Text("Your table, day or night", style = MaterialTheme.typography.titleLarge)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Appearance.entries.forEach { choice ->
+                FilterChip(selected = prefs.appearance == choice, onClick = { model.updatePreferences(prefs.copy(appearance = choice)) }, label = { Text(choice.label) })
+            }
+        }
+        Text("System follows your device's light or dark setting. Your choice is saved for every game.", color = Muted)
+    }
+    GameCard {
         Text("The voice of your game", style = MaterialTheme.typography.titleLarge)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("en" to "English", "hi" to "हिन्दी", "hinglish" to "Hinglish").forEach { (id, label) -> FilterChip(selected = prefs.language == id, onClick = { model.updatePreferences(prefs.copy(language = id)) }, label = { Text(label) }) } }
         SettingSwitch("Number voice", "AI-generated recordings, available offline.", prefs.voice) { model.updatePreferences(prefs.copy(voice = it)) }
         SettingSwitch("Gentle haptics", "A little feedback when you mark a number.", prefs.haptics) { model.updatePreferences(prefs.copy(haptics = it)) }
-        SettingSwitch("Reduced motion", "Keep number reveals still.", prefs.reducedMotion) { model.updatePreferences(prefs.copy(reducedMotion = it)) }
+        SettingSwitch("Reduced motion", "Keep number and badge reveals still. Device animation settings also apply.", prefs.reducedMotion) { model.updatePreferences(prefs.copy(reducedMotion = it)) }
         Text("Automatic calling pace", style = MaterialTheme.typography.titleMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf(5, 10, 15, 20, 30).forEach { seconds -> FilterChip(selected = prefs.interval == seconds, onClick = { model.updatePreferences(prefs.copy(interval = seconds)) }, label = { Text("${seconds}s") }) } }
         Text("Calls wait for the recording to finish. Leaving the app pauses offline calling.", color = Muted, style = MaterialTheme.typography.bodyMedium)
@@ -233,6 +239,7 @@ fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.dat
     var board by remember { mutableStateOf(false) }
     var claims by remember { mutableStateOf(false) }
     val index = selected.coerceIn(round.tickets.indices)
+    val numberChipSize = 34.dp * LocalDensity.current.fontScale.coerceAtLeast(1f)
     Eyebrow(if (round.finished) "ROUND ${if (round.status == RoundStatus.COMPLETED) "COMPLETE" else "CANCELLED"}" else if (round.status == RoundStatus.PAUSED) "TAKE A BREATHER · PAUSED" else "LET THE GOOD TIMES ROLL")
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.width(120.dp)) { NumberBall(round.latest, preferences.reducedMotion, compact = true) }
@@ -244,14 +251,14 @@ fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.dat
     }
     LinearProgressIndicator(progress = { round.called.size / 90f }, modifier = Modifier.fillMaxWidth(), color = Jade, trackColor = Panel)
     if (round.called.isNotEmpty()) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("RECENT", fontSize = 10.sp, color = Muted, modifier = Modifier.weight(1f))
-            round.called.takeLast(5).reversed().forEachIndexed { i, n -> Box(Modifier.size(34.dp).background(if (i == 0) Saffron else Panel, CircleShape), contentAlignment = Alignment.Center) { Text("$n", fontSize = 14.sp, color = if (i == 0) Ink else Ivory, fontWeight = FontWeight.Bold) } }
+        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("RECENT CALLS", fontSize = 10.sp, color = Muted, modifier = Modifier.fillMaxWidth())
+            round.called.takeLast(5).reversed().forEachIndexed { i, n -> Box(Modifier.size(numberChipSize).background(if (i == 0) Saffron else Panel, CircleShape), contentAlignment = Alignment.Center) { Text("$n", fontSize = 14.sp, lineHeight = 18.sp, color = if (i == 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) } }
         }
     }
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("Your table", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-        Text("${round.tickets.size} tickets", color = Muted, fontSize = 12.sp)
+        Text(pluralStringResource(R.plurals.ticket_count, round.tickets.size, round.tickets.size), color = Muted, fontSize = 12.sp)
     }
     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         round.tickets.forEachIndexed { i, ticket -> FilterChip(selected = index == i, onClick = { selected = i }, label = { Text(round.ticketLabel(ticket.id)) }) }
@@ -263,7 +270,7 @@ fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.dat
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("${round.called.size} called · ${90 - round.called.size} to go", color = Muted)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                (1..90).forEach { n -> Box(Modifier.size(36.dp).background(if (n == round.latest) Saffron else if (n in round.called) Jade else Ink, RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text("$n", color = if (n in round.called) Ink else Muted, fontWeight = FontWeight.Bold) } }
+                (1..90).forEach { n -> Box(Modifier.size(numberChipSize + 2.dp).background(if (n == round.latest) Saffron else if (n in round.called) Jade else MaterialTheme.colorScheme.surfaceContainerHighest, RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text("$n", color = if (n == round.latest) MaterialTheme.colorScheme.onPrimary else if (n in round.called) MaterialTheme.colorScheme.onSecondary else Muted, fontWeight = FontWeight.Bold) } }
             }
             Text("Call history", style = MaterialTheme.typography.titleMedium)
             Text(round.called.joinToString(" → ").ifEmpty { "No numbers yet" }, color = Muted)
