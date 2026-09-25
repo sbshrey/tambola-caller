@@ -13,3 +13,11 @@ android-keyboard/local.properties
 android-keyboard/releases/
 android-keyboard/*.jks
 android-keyboard/*.keystore
+full-game/.gradle/
+full-game/.kotlin/
+full-game/**/build/
+full-game/local.properties
+full-game/releases/
+full-game/.test-workspace/
+full-game/**/*.jks
+full-game/**/*.keystore
