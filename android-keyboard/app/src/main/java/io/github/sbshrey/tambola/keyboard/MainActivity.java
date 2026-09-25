@@ -51,6 +51,7 @@ public final class MainActivity extends Activity {
                 case "practice": practice(); break;
                 case "board": board(); break;
                 case "players": players(); break;
+                case "catalog": catalog(); break;
                 case "voice": voice(); break;
                 case "results": results(); break;
                 case "award": action("‹ All prizes", Ui.PAPER, () -> go("players")); PrizeViews.award(page, store, awardId, true, () -> go("players"), this::toast); break;
@@ -119,6 +120,7 @@ public final class MainActivity extends Activity {
     private EditText input(String hint, String initial, int type) { EditText field = new EditText(this); field.setTextSize(20); field.setHint(hint); field.setText(initial); field.setInputType(type); field.setMinHeight(Ui.dp(this, 56)); field.setPrivateImeOptions("tambola-settings"); return field; }
     private void players() {
         PrizeBook book = store.prizes(); text("Players & prizes", 28); text("Optional. You can set this up before or during a game.", 19);
+        action("Choose prize schemes", Ui.PINK, () -> go("catalog"));
         action("Add player names", Ui.GREEN, this::addPlayers); action("Use normal keyboard to type names", Ui.PAPER, this::chooseKeyboard);
         for (Map.Entry<String, String> person : book.players.entrySet()) action(person.getValue() + " · edit", Ui.PAPER, () -> editPlayer(person.getKey()));
         text("Prizes", 26); text("Default total ₹10. Two winners receive ₹5 each. Tap a prize to choose winners after checking their tickets.", 19);
@@ -127,6 +129,33 @@ public final class MainActivity extends Activity {
             action("Change " + item.name + (item.enabled ? "" : " (off)"), Ui.PAPER, () -> editScheme(item.id));
         }
         action("Add another prize", Ui.PAPER, () -> editScheme(null)); action("See / share results", Ui.GREEN, () -> go("results"));
+    }
+    private void catalog() {
+        text("Choose prize schemes", 28);
+        text("Tap a group, tick the prizes you want, then Add selected. New prizes start at ₹10. Two winners share ₹5 each.", 20);
+        text("Your current prizes and winners stay. Check tickets using your group's rules.", 18);
+        for (String group : PrizeCatalog.GROUPS) {
+            int count = 0; for (PrizeCatalog.Preset item : PrizeCatalog.ALL) if (item.group.equals(group)) count++;
+            action(group + " · " + count + " choices", Ui.PAPER, () -> choosePresets(group));
+        }
+        action("Add all 41 schemes", Ui.PINK, () -> confirm("Add all 41 schemes?", "All listed prizes will turn on. New prizes start at ₹10 each. Existing amounts and winners stay. You can switch unused prizes off under Players & prizes.", () -> { store.prizes(store.prizes().addPresets(PrizeCatalog.allIds())); go("players"); toast("Prize schemes added. Your game continues."); }));
+        action("‹ Players & prizes", Ui.PAPER, () -> go("players"));
+    }
+    private void choosePresets(String group) {
+        PrizeBook book = store.prizes(); LinearLayout box = dialogBox(); Set<String> selected = new LinkedHashSet<>();
+        Ui.add(box, Ui.text(this, "Tick prizes to add. Already active prizes are kept.", 18), -2);
+        for (PrizeCatalog.Preset preset : PrizeCatalog.ALL) if (preset.group.equals(group)) {
+            PrizeBook.Scheme current = PrizeCatalog.existing(book, preset); boolean active = current != null && current.enabled;
+            CheckBox choice = new CheckBox(this); choice.setTextSize(20); choice.setMinHeight(Ui.dp(this, 56));
+            choice.setText(active ? getString(R.string.prize_already_active, preset.name) : preset.name); choice.setContentDescription(preset.name);
+            choice.setChecked(active); choice.setEnabled(!active);
+            choice.setOnCheckedChangeListener((button, checked) -> { if (checked) selected.add(preset.id); else selected.remove(preset.id); });
+            Ui.add(box, choice, -2);
+        }
+        editDialog(group, box, "Add selected", () -> {
+            if (selected.isEmpty()) throw new IllegalArgumentException("Tick at least one prize to add, or tap Cancel.");
+            store.prizes(store.prizes().addPresets(selected)); toast("Selected prizes added. Your game continues.");
+        });
     }
     private void addPlayers() {
         LinearLayout box = dialogBox(); Ui.add(box, Ui.text(this, "One name per line, or use commas. Names must be different.", 18), -2);

@@ -1,4 +1,19 @@
-# Tambola Keyboard 1.1.1 validation
+# Tambola Keyboard 1.2.0 validation
+
+Validated on 25 September 2026. Package version code 4; this update changes the Android keyboard only.
+
+- Added all **41 host-supplied prize names** as optional presets in five groups, plus a confirmed **Add all 41 schemes** action. Existing matching entries are reused; recorded winners and prize amounts stay. The limit is now 60 schemes. Five original defaults plus the full list produce 45 entries because Early 5 is shared and the four other originals remain.
+- **14 JVM tests passed**, covering the complete catalog, repeated additions without duplicates, existing custom/renamed prize reuse, preserved payouts, Early 10/House minimum calls, two-winner splitting, new-round preservation, invalid selections and the 60-scheme boundary.
+- **16 Android instrumented tests passed** on the dedicated Android 11/API 30 emulator. New UI tests cover cancel/confirm, choosing individual schemes, protecting active prizes, adding all 41, persisted JSON round trips beyond the former 20-scheme limit, and keeping calls/players/winners. Existing keyboard, new-game, media and winner tests also passed.
+- A focused scheme-selection/cancel test passed at **130% text size and 360dp width**; the selection dialog was visually inspected. An initial existing practice-test timing failure was addressed by waiting for the rendered call count before asserting, followed by the passing full run.
+- Debug and release lint: **no issues found**. Release signature verified with the existing certificate. Signed v1.2.0 installed over signed v1.1.1, reported version code 4 and launched successfully. This installation check verifies upgrade compatibility; it does not independently prove user-data retention across a physical-device upgrade.
+- Minimum SDK 26, target SDK 35, and the two existing media-playback permissions are unchanged. The website code was unchanged and its tests were not rerun for this release.
+
+The scheme names come from the user, with obvious spelling/spacing corrections. They are manual tracking options, not inferred regional rules or automatic ticket verification. See [SCHEMES.md](SCHEMES.md) for all names and minimum-call behavior. **No physical-phone WhatsApp session was tested for this update.** APK, guide, checksum and local test logs are in ignored `releases/1.2.0/`.
+
+---
+
+# Previous version: 1.1.1 validation
 
 Validated on 24 September 2026. Package version code 3; the website remains unchanged.
 

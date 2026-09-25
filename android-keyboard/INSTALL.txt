@@ -1,9 +1,9 @@
-TAMBOLA KEYBOARD 1.1.1 - ANDROID 8 OR NEWER
+TAMBOLA KEYBOARD 1.2.0 - ANDROID 8 OR NEWER
 
 ONE PHONE. TWO TAPS PER NUMBER.
 
 SET UP ONCE
-1. Open Tambola-Keyboard-1.1.1.apk on the phone with WhatsApp. Install it.
+1. Open Tambola-Keyboard-1.2.0.apk on the phone with WhatsApp. Install it.
    If updating, install over the old app. Do not uninstall it first.
 2. Open Tambola Keyboard. Tap Help me set it up.
 3. Tap Enable Tambola Keyboard. Turn it on, then return.
@@ -34,6 +34,10 @@ Otherwise check the attachment preview and tap Send.
 Playing sound aloud does not send it to the group.
 
 WINNERS (OPTIONAL)
+Tap Winners -> Choose prize schemes.
+To use the full list: Add all 41 schemes -> Yes, continue.
+Or open a group, tick the schemes needed, then Add selected.
+Your current numbers, players, prize amounts and winners stay.
 Tap Winners, then Players & prize amounts. Add names once.
 After checking the paper ticket, choose the prize and up to two winners.
 Default total prize: Rs 10. Two winners receive Rs 5 each.

@@ -168,7 +168,9 @@ public final class TambolaInputMethod extends InputMethodService {
     }
     private void winners(Game game) {
         if (practice) { Ui.add(body, Ui.text(this, "Winners are for your live game. Practice does not change them.", 20), -2); return; }
-        PrizeBook book = store.prizes(); Ui.add(body, Ui.text(this, "Winners (optional)", 23), -2); Ui.action(body, "Players & prize amounts", Ui.PAPER, () -> open("players"));
+        PrizeBook book = store.prizes(); Ui.add(body, Ui.text(this, "Winners (optional)", 23), -2);
+        Ui.action(body, "Choose prize schemes", Ui.PAPER, () -> open("catalog"));
+        Ui.action(body, "Players & prize amounts", Ui.PAPER, () -> open("players"));
         if (book.players.isEmpty()) { Ui.add(body, Ui.text(this, "Add names once above. You can keep calling numbers without this.", 18), -2); return; }
         if (book.hasWinners()) Ui.action(body, "Insert all results", Ui.GREEN, () -> insertText(store.prizes().results(store.load().count())));
         for (PrizeBook.Scheme item : book.schemes) if (item.enabled) {

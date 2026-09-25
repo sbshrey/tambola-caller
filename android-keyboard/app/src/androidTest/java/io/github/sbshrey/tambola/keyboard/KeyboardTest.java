@@ -63,6 +63,7 @@ public class KeyboardTest {
     }
     @Test public void practiceInsertsKeycapsBlocksDraftsAndNeverChangesLiveRound() throws Exception {
         tap("Next number");
+        assertTrue(device.wait(Until.hasObject(By.text("PRACTICE\n1 / 90")), 5000));
         Game game = new GameStore(context, true).load(); assertEquals(1, game.count()); assertEquals(Game.emoji(game.latest()), message());
         assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), "keyboard-practice.png")));
         tap("Next number"); assertEquals(1, new GameStore(context, true).load().count()); assertEquals(Game.emoji(game.latest()), message());
@@ -73,13 +74,15 @@ public class KeyboardTest {
     }
     @Test public void liveCallsPersistAcrossEditorRestartAndRespectExistingSelection() throws Exception {
         focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        tap("Next number"); Game first = new GameStore(context, false).load(); assertEquals(1, first.count()); assertEquals(Game.emoji(first.latest()), message());
+        tap("Next number"); assertTrue(device.wait(Until.hasObject(By.text("1 / 90")), 5000));
+        Game first = new GameStore(context, false).load(); assertEquals(1, first.count()); assertEquals(Game.emoji(first.latest()), message());
         assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), "keyboard-live.png")));
         clear(); focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         tap("Insert current number again"); assertEquals(Game.emoji(first.latest()), message()); assertEquals(1, new GameStore(context, false).load().count());
         onMain(() -> { input.setText("Do not replace this draft"); input.selectAll(); });
         tap("Next number"); assertEquals("Do not replace this draft", message()); assertEquals(1, new GameStore(context, false).load().count());
-        clear(); tap("Next number"); Game second = new GameStore(context, false).load(); assertEquals(2, second.count()); assertNotEquals(first.latest(), second.latest());
+        clear(); tap("Next number"); assertTrue(device.wait(Until.hasObject(By.text("2 / 90")), 5000));
+        Game second = new GameStore(context, false).load(); assertEquals(2, second.count()); assertNotEquals(first.latest(), second.latest());
         assertEquals(Game.emoji(second.latest()), message());
     }
     private UiObject2 visible(BySelector selector) {

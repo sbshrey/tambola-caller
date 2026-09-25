@@ -5,4 +5,5 @@
     <string name="prize_amount_invalid">Enter a whole-rupee amount.</string>
     <string name="prize_total">%1$s total</string>
     <string name="prize_split">%1$s total · %2$s each</string>
+    <string name="prize_already_active">%1$s · already active</string>
 </resources>

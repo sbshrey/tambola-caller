@@ -1,8 +1,8 @@
-# Tambola Keyboard 1.1.1 for Android
+# Tambola Keyboard 1.2.0 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-**[Download Tambola Keyboard 1.1.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.1.1/Tambola-Keyboard-1.1.1.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.1.1).
+**[Download Tambola Keyboard 1.2.0](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.2.0/Tambola-Keyboard-1.2.0.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.2.0).
 
 ## Set up once
 
@@ -41,12 +41,13 @@ Pictures and audio can also be shared from the app's **See board / New game** sc
 
 Tap **Winners → Players & prize amounts**, or open that screen from the app. Add names one per line or separated by commas. Use **ABC** / the normal keyboard picker to type names, then choose Tambola Keyboard again when returning to WhatsApp.
 
+- **Winners → Choose prize schemes** offers [all 41 supplied prize names](SCHEMES.md), grouped into quick prizes, lines, boxes, special prizes and houses. Tick choices and tap **Add selected**, or use **Add all 41 schemes** and confirm. Current calls and winners stay. Already-active choices cannot be accidentally unticked here; turn unwanted prizes off under Players & prizes after clearing any winners. Existing matching prizes are reused with their amounts and awards.
 - Early 5, Top line, Middle line, Bottom line and Full house start at **₹10 total**. Add custom prizes, change names/amounts, or turn unused prizes off before or during the game.
 - After checking a paper ticket, tap a prize and choose one or two players from the dropdowns. The split is shown before **Save winners**: one winner receives ₹10; two receive ₹5 each. Odd amounts split to paise, for example ₹11 gives ₹5.50 each.
 - Standard line/Early 5 prizes require at least five calls; Full house requires fifteen. Custom prizes require one. These limits do not verify a physical ticket: the host checks it.
 - Tap **Insert [prize] announcement** or **Insert all results** in the keyboard, then WhatsApp Send. Alternatively, the app's **Results to share** screen opens the share chooser.
 - Rename players without losing their awards. Clear wins before removing a winning player or turning off an awarded prize. Editing a default prize changes future awards; edit its winners in the full app to change a recorded payout.
-- Player names are entered manually; the app does not read contacts or WhatsApp group members. Limits: 100 players, 20 prize schemes, 2 winners per scheme, ₹0–₹100000 per prize. No payments are made.
+- Player names are entered manually; the app does not read contacts or WhatsApp group members. Limits: 100 players, 60 prize schemes, 2 winners per scheme, ₹0–₹100000 per prize. No payments are made.
 
 ## Undo and new game
 
