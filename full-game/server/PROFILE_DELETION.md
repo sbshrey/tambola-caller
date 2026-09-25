@@ -1,0 +1,53 @@
+# Online-profile deletion
+
+This describes the implemented local service and Android behavior. Public hosting, backup expiry, deletion after a backup restore and high-volume deletion acceptance remain release gates.
+
+## What a player can do
+
+In Play online, choose **Delete online profile**, read the confirmation, then choose **Delete profile permanently**. This works from a lobby or an active/finished room. Cancelling the dialog does nothing. Offline games are independent.
+
+The service removes the guest profile, its bearer access, creation receipts and personal command responses. It removes current memberships and replaces the profile's stored name with **Deleted player** and its avatar with the default in current rounds, archived results and other players' retry responses. It then clears that profile's local encrypted tickets, history and badges after the app receives confirmation. Device cleanup checks that the atomic file and its backup/new-file siblings are actually gone; a filesystem failure is not reported as successful cleanup.
+
+If the deleted player hosted a room, control moves to a remaining player, preferring one who was recently connected, then earliest join time/ID. A room with no members closes and an unfinished round is cancelled. Other players can finish an active round with the originally agreed tickets, draw order, prizes and scores.
+
+Shared game records retain opaque participant IDs, ticket numbers, calls, scores, rule/prize text and timestamps until normal room retention expires. Redaction targets the deleted identity's profile fields; it does not replace another person's matching name or search/alter arbitrary shared prize text. Copies already downloaded or shared by others are outside this request, and an existing backup is not instantly rewritten. This is profile deletion with stated shared-record retention, not a claim that every copy of all game content is erased.
+
+Signing out only revokes access and clears this device's online data. **Reset online data** only clears local data. Neither substitutes for confirmed service deletion. Request deletion before signing out if that is the desired outcome. A new profile cannot reclaim an old profile's cards/history/badges.
+
+## Protocol and uncertain outcomes
+
+`POST /v1/guests/me/delete` accepts `DeleteProfileRequest { id }` and a bearer header. The ID is a canonical UUID generated and encrypted on the device **before** HTTP. The endpoint responds with `DeleteProfileReceipt { id, deletedAt, confirmUntil }`. The client verifies the response ID and timestamp ordering.
+
+The mutation and receipt commit in one PostgreSQL transaction. A confirmation key is SHA-256 of a versioned string containing the token and request ID. The receipt table contains only that hash and deletion/expiry times, not the profile ID, display name or raw token. Presenting the same token plus request ID returns the original receipt for **30 days**, even though that token can no longer access any room. A different ID does not prove a previous deletion. There are 30 deletion attempts per minute per socket peer address; production ingress enforcement remains separate.
+
+If connectivity fails, Android retains the encrypted original intent, blocks other mutations, suspends room streaming and offers **Retry pending action**. A recreated/restored session can retry the same intent. HTTP 401, local reset, a timeout or a missing room is never interpreted as deletion success. Resetting while deletion is pending explicitly warns that it discards the details needed to confirm that request. If the service confirmed deletion but local cleanup failed, the app distinguishes those outcomes and offers local cleanup recovery.
+
+Newly expired but **unrevoked** credentials may request deletion only; they cannot read rooms or play. Revoked/signed-out tokens cannot initiate deletion. An already-issued matching confirmation remains retrievable until its expiry. There is no general account recovery or proof-of-identity support flow in this alpha.
+
+## Stored records, locking and migration
+
+Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Migration 001 stays unchanged. Startup applies ordered migrations under the existing advisory lock and verifies their immutable checksums.
+
+The participant index covers current members/round players, past audits and command/create receipt actors. Backfill includes former members who no longer appear in the current lobby. Every later save records known guest participants. Deleted profiles are excluded from future index inserts even when their opaque player ID remains in an ongoing round.
+
+Version-1 logout records cannot be distinguished from ordinary expired sessions. The migration conservatively treats tokens already expired at upgrade as revoked; it does not grant those old tokens new destructive authority. Fresh unrevoked expirations use the explicit new policy above.
+
+Authentication holds a shared guest-row lock until its room transaction finishes. Deletion exclusively locks the guest, then affected rooms in ID order. This prevents a join/command authorized just before deletion from restoring the old name afterward. Worker room locks also use ID order within their fairness-selected batch. Room/profile edits, audit/receipt redaction and confirmation all roll back on failure. Other players' command IDs and request hashes are preserved while their historical response profile fields are redacted.
+
+Rooms close 24 hours after creation; room records and audits expire 30 days later. Expired guest rows are removed after 30 days, and deletion confirmations are removed at `confirmUntil`. Short-lived rate records contain hashed socket addresses or opaque profile IDs. There is no deployed backup policy yet. Before public release, define backup expiry, retain an appropriate deletion-suppression record outside any restore point, and test that restoring a backup cannot make deleted profiles available again.
+
+## Local fault fixture
+
+Run the isolated test service on loopback **8081** and start `node tools/room-fault-proxy.mjs` from `full-game/`. The fixture binds only loopback: **8080** forwards HTTP/WebSockets to 8081; **8082** controls the test. It never logs request headers, tokens or bodies and is not part of the APK/server distribution.
+
+After installing both debug APKs on the dedicated test emulator:
+
+```powershell
+adb -s emulator-5582 reverse tcp:8080 tcp:8080
+adb -s emulator-5582 reverse tcp:8082 tcp:8082
+node tools/android-smoke.mjs --online --fault-proxy --label deletion-tests
+```
+
+The opt-in deletion journey arms the fixture to drop every successful deletion response after the upstream transaction commits, including transparent transport retries. It asserts that the app keeps its original encrypted request, recreates the activity, allows responses again, retries, checks local cleanup and continuing peer host control, and verifies the existing offline round's ID/cards/calls/marks. The fixture's counters contain no player/request identifiers. Stop the owned fixture/server processes and remove these two emulator mappings after testing.
+
+This is a real loopback HTTP response-loss test with activity recreation. It does not establish cold process-death recovery, mobile network switching, separate physical UIs, TLS, large-history deletion latency/memory bounds or backup restoration. Those remain explicit acceptance work.

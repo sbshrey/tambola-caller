@@ -40,6 +40,7 @@ interface RoomApi : AutoCloseable {
     suspend fun read(token: String, code: String, after: Long? = null): RoomUpdate
     suspend fun command(token: String, code: String, request: CommandRequest): RoomUpdate
     suspend fun logout(token: String)
+    suspend fun deleteProfile(token: String, request: DeleteProfileRequest): DeleteProfileReceipt
     fun events(token: String, code: String, after: Long?): Flow<RoomUpdate>
 }
 
@@ -77,6 +78,11 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     }
     override suspend fun command(token: String, code: String, request: CommandRequest): RoomUpdate = WireJson.decodeFromString(text(roomPath(code) + "/commands", token, WireJson.encodeToString(request), true))
     override suspend fun logout(token: String) { text("/v1/guests/me/logout", token, post = true) }
+    override suspend fun deleteProfile(token: String, request: DeleteProfileRequest): DeleteProfileReceipt {
+        val receipt = WireJson.decodeFromString<DeleteProfileReceipt>(text("/v1/guests/me/delete", token, WireJson.encodeToString(request), true))
+        if (receipt.id != request.id || receipt.deletedAt < 0 || receipt.confirmUntil <= receipt.deletedAt) throw InvalidRoomResponse()
+        return receipt
+    }
     override fun events(token: String, code: String, after: Long?): Flow<RoomUpdate> = channelFlow {
         require(after == null || after >= 0)
         val url = base.replaceFirst("http", "ws") + roomPath(code) + "/events" + (after?.let { "?after=$it" } ?: "")

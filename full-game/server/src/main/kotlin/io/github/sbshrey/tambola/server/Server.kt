@@ -68,6 +68,10 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                 call.respond(HttpStatusCode.Created, result)
             }
             post("/guests/me/logout") { withContext(Dispatchers.IO) { service.revoke(call.bearer()) }; call.respond(HttpStatusCode.NoContent) }
+            post("/guests/me/delete") {
+                val body = call.body<DeleteProfileRequest>()
+                call.respond(withContext(Dispatchers.IO) { service.deleteProfile(call.bearer(), body, call.request.local.remoteHost) })
+            }
             post("/rooms") {
                 val body = call.body<CreateRoomRequest>()
                 call.respond(HttpStatusCode.Created, withContext(Dispatchers.IO) { service.create(call.bearer(), body) })

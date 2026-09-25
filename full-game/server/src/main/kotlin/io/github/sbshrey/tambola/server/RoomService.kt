@@ -15,14 +15,60 @@ class RoomService(private val database: Database, private val clock: () -> Long 
         rate("guest:${digest(source)}", 60)
         val token = secret()
         val credentials = GuestCredentials(UUID.randomUUID().toString(), token, clock() + SESSION_LIFETIME)
-        database.transaction { it.execute("INSERT INTO guests VALUES (?, ?, ?, ?, ?)", credentials.playerId, name, request.avatar, digest(token), credentials.expiresAt) }
+        database.transaction { it.execute("INSERT INTO guests (id, name, avatar, token_hash, expires_at) VALUES (?, ?, ?, ?, ?)", credentials.playerId, name, request.avatar, digest(token), credentials.expiresAt) }
         return credentials
     }
 
     fun revoke(token: String) = database.transaction { connection ->
-        val guest = authenticate(connection, token)
-        connection.execute("UPDATE guests SET expires_at = ? WHERE id = ?", clock(), guest.id)
+        val guest = authenticate(connection, token, lock = true)
+        connection.execute("UPDATE guests SET expires_at = ?, revoked_at = ? WHERE id = ?", clock(), clock(), guest.id)
         Unit
+    }
+
+    /** Profile removal and shared-record redaction are atomic with a retryable confirmation. */
+    fun deleteProfile(token: String, request: DeleteProfileRequest, source: String): DeleteProfileReceipt {
+        validId(request.id)
+        validToken(token)
+        rate("delete:${digest(source)}", 30)
+        val proof = digest("tambola-delete-v1\n$token\n${request.id}")
+        return database.transaction { connection ->
+            fun receipt() = connection.query("SELECT deleted_at, expires_at FROM deletion_receipts WHERE confirmation_hash = ? AND expires_at > ?", proof, clock()) {
+                DeleteProfileReceipt(request.id, it.getLong(1), it.getLong(2))
+            }.singleOrNull()
+            receipt()?.let { return@transaction it }
+            // An expired but unrevoked token may delete its own profile, never read/play again.
+            val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND revoked_at IS NULL FOR UPDATE", digest(token)) {
+                Guest(it.getString(1), it.getString(2), it.getInt(3))
+            }.singleOrNull() ?: return@transaction (receipt() ?: fail(401, "unauthorized", "Deletion could not be confirmed with this session. Local reset does not delete server data."))
+            val now = clock()
+            val rooms = connection.query("SELECT payload FROM rooms WHERE id IN (SELECT room_id FROM room_participants WHERE player_id = ?) ORDER BY id FOR UPDATE", guest.id) { decode(it.getString(1)) }
+            rooms.forEach { original ->
+                val redacted = original.redact(guest.id)
+                val remaining = redacted.members.filterNot { it.id == guest.id }
+                val successor = remaining.minWithOrNull(compareBy<Member> { now - it.lastSeen >= PRESENCE_TIMEOUT }.thenBy { it.joinedAt }.thenBy { it.id })
+                val next = redacted.copy(members = remaining,
+                    hostId = if (original.hostId == guest.id) successor?.id.orEmpty() else original.hostId,
+                    phase = if (remaining.isEmpty()) RoomPhase.CLOSED else original.phase,
+                    round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
+                    nextDrawAt = if (remaining.isEmpty()) null else redacted.nextDrawAt)
+                changed(connection, next, "profile_deleted", now)
+                connection.query("SELECT round_id, payload FROM finished_rounds WHERE room_id = ? FOR UPDATE", original.id) { it.getString(1) to decode(it.getString(2)) }.forEach { (id, archive) ->
+                    connection.execute("UPDATE finished_rounds SET payload = ? WHERE room_id = ? AND round_id = ?", WireJson.encodeToString(archive.redact(guest.id)), original.id, id)
+                }
+                connection.query("SELECT actor, command_id, response FROM command_receipts WHERE room_id = ? AND actor <> ? FOR UPDATE", original.id, guest.id) {
+                    Triple(it.getString(1), it.getString(2), WireJson.decodeFromString<RoomUpdate>(it.getString(3)))
+                }.forEach { (actor, id, response) ->
+                    connection.execute("UPDATE command_receipts SET response = ? WHERE room_id = ? AND actor = ? AND command_id = ?", WireJson.encodeToString(response.redact(guest.id)), original.id, actor, id)
+                }
+            }
+            connection.execute("DELETE FROM command_receipts WHERE actor = ?", guest.id)
+            connection.execute("DELETE FROM room_participants WHERE player_id = ?", guest.id)
+            listOf("create", "join", "read", "command").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:${guest.id}") }
+            connection.execute("DELETE FROM guests WHERE id = ?", guest.id)
+            val result = DeleteProfileReceipt(request.id, now, now + 30 * ROOM_LIFETIME)
+            connection.execute("INSERT INTO deletion_receipts VALUES (?, ?, ?)", proof, result.deletedAt, result.confirmUntil)
+            result
+        }
     }
 
     fun create(token: String, request: CreateRoomRequest): RoomUpdate {
@@ -103,7 +149,7 @@ class RoomService(private val database: Database, private val clock: () -> Long 
     /** Short row locks are scheduler ownership; SKIP LOCKED makes concurrent workers safe. */
     fun tick(): Int = database.transaction { connection ->
         val now = clock()
-        val rooms = connection.query("SELECT payload FROM rooms WHERE phase <> 'CLOSED' ORDER BY checked_at, id LIMIT 64 FOR UPDATE SKIP LOCKED") { decode(it.getString(1)) }
+        val rooms = connection.query("SELECT payload FROM rooms WHERE id IN (SELECT id FROM rooms WHERE phase <> 'CLOSED' ORDER BY checked_at, id LIMIT 64) ORDER BY id FOR UPDATE SKIP LOCKED") { decode(it.getString(1)) }
         rooms.forEach { original ->
             var room = original
             var event = "presence"
@@ -132,8 +178,9 @@ class RoomService(private val database: Database, private val clock: () -> Long 
 
     fun cleanup() = database.transaction { connection ->
         val now = clock()
-        connection.execute("DELETE FROM rooms WHERE expires_at < ?", now - 30 * ROOM_LIFETIME)
         connection.execute("DELETE FROM guests WHERE expires_at < ?", now - 30 * ROOM_LIFETIME)
+        connection.execute("DELETE FROM rooms WHERE id IN (SELECT id FROM rooms WHERE expires_at < ? ORDER BY id FOR UPDATE)", now - 30 * ROOM_LIFETIME)
+        connection.execute("DELETE FROM deletion_receipts WHERE expires_at <= ?", now)
         connection.execute("DELETE FROM rate_limits WHERE window_start < ?", now / 60_000 - 2)
         Unit
     }
@@ -202,8 +249,8 @@ class RoomService(private val database: Database, private val clock: () -> Long 
     }
 
     private fun authenticate(connection: Connection, token: String, lock: Boolean = false): Guest {
-        demand(token.matches(Regex("[A-Za-z0-9_-]{43}")), 401, "unauthorized", "A valid guest session is required.")
-        return connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ?${if (lock) " FOR UPDATE" else ""}", digest(token), clock()) {
+        validToken(token)
+        return connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else " FOR SHARE"}", digest(token), clock()) {
             Guest(it.getString(1), it.getString(2), it.getInt(3))
         }.singleOrNull() ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
     }
@@ -237,6 +284,10 @@ class RoomService(private val database: Database, private val clock: () -> Long 
 
     private fun save(connection: Connection, room: RoomRecord) {
         connection.execute("UPDATE rooms SET phase = ?, expires_at = ?, payload = ? WHERE id = ?", room.phase.name, room.expiresAt, WireJson.encodeToString(room), room.id)
+        val ids = (room.members.map { it.id } + room.round?.players.orEmpty().map { it.id }).distinct()
+        val array = connection.createArrayOf("text", ids.toTypedArray())
+        try { connection.execute("INSERT INTO room_participants SELECT ?, id FROM guests WHERE id = ANY(?) ON CONFLICT DO NOTHING", room.id, array) }
+        finally { array.free() }
     }
 
     private fun update(connection: Connection, room: RoomRecord, actor: String, after: Long?): RoomUpdate {
@@ -259,6 +310,7 @@ class RoomService(private val database: Database, private val clock: () -> Long 
     }
 
     private fun validId(id: String) = demand(runCatching { UUID.fromString(id).toString() == id }.getOrDefault(false), 400, "invalid_id", "Use a canonical UUID for each new command.")
+    private fun validToken(token: String) = demand(token.matches(Regex("[A-Za-z0-9_-]{43}")), 401, "unauthorized", "A valid guest session is required.")
     private fun decode(payload: String): RoomRecord = WireJson.decodeFromString(payload)
     private fun actionName(action: RoomAction): String = when (action) {
         is RoomAction.Ready -> "ready"; is RoomAction.Configure -> "configured"; is RoomAction.Lock -> "locked"

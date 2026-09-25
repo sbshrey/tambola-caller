@@ -11,6 +11,7 @@ import java.security.MessageDigest
     @Serializable @SerialName("join") data class Join(val code: String) : PendingOperation()
     @Serializable @SerialName("command") data class Command(val code: String, val request: CommandRequest) : PendingOperation()
     @Serializable @SerialName("logout") data object Logout : PendingOperation()
+    @Serializable @SerialName("delete_profile") data class DeleteProfile(val request: DeleteProfileRequest) : PendingOperation()
 }
 
 @Serializable data class OnlineSaved(

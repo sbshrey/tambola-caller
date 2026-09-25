@@ -53,7 +53,11 @@ class OnlineStore(context: Context) {
         WireJson.decodeFromString<OnlineSaved>(cipher.doFinal(bytes.copyOfRange(13, bytes.size)).decodeToString(throwOnInvalidSequence = true))
     }
     suspend fun write(saved: OnlineSaved?) = withContext(Dispatchers.IO) {
-        if (saved == null) { file.delete(); return@withContext }
+        if (saved == null) {
+            file.delete()
+            check(listOf(file.baseFile, File(file.baseFile.path + ".bak"), File(file.baseFile.path + ".new")).none { it.exists() }) { "Online data could not be removed" }
+            return@withContext
+        }
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key(true)); cipher.updateAAD(aad)
         val bytes = byteArrayOf(1) + cipher.iv + cipher.doFinal(WireJson.encodeToString(saved).toByteArray(Charsets.UTF_8))

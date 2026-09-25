@@ -37,13 +37,16 @@ class Database(url: String, user: String, password: String, schema: String = "pu
     fun migrate() = transaction { connection ->
         connection.query("SELECT pg_advisory_xact_lock(749023801)") { true }
         connection.execute("CREATE TABLE IF NOT EXISTS schema_migrations (version integer PRIMARY KEY, checksum text NOT NULL)")
-        val sql = requireNotNull(javaClass.getResource("/db/001_rooms.sql")).readText()
-        val checksum = digest(sql)
-        val installed = connection.query("SELECT checksum FROM schema_migrations WHERE version = 1") { it.getString(1) }.singleOrNull()
-        if (installed == null) {
-            connection.createStatement().use { it.execute(sql) }
-            connection.execute("INSERT INTO schema_migrations VALUES (1, ?)", checksum)
-        } else check(installed == checksum) { "Installed migration checksum differs from source" }
+        listOf("001_rooms.sql", "002_profile_deletion.sql").forEachIndexed { index, file ->
+            val version = index + 1
+            val sql = requireNotNull(javaClass.getResource("/db/$file")).readText()
+            val checksum = digest(sql)
+            val installed = connection.query("SELECT checksum FROM schema_migrations WHERE version = ?", version) { it.getString(1) }.singleOrNull()
+            if (installed == null) {
+                connection.createStatement().use { it.execute(sql) }
+                connection.execute("INSERT INTO schema_migrations VALUES (?, ?)", version, checksum)
+            } else check(installed == checksum) { "Installed migration checksum differs from source" }
+        }
     }
 
     fun healthy(): Boolean = transaction { it.query("SELECT 1") { row -> row.getInt(1) }.single() == 1 }

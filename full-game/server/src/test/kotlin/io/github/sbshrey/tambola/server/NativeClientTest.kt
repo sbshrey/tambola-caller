@@ -35,6 +35,12 @@ class NativeClientTest : PostgresTest() {
             assertTrue(drawn.round!!.ownTickets.all { it.playerId == peer.playerId })
             assertNull(drawn.round!!.revealedOrder)
             command(host.token, RoomAction.End).validateFor(host.playerId)
+            val deletion = DeleteProfileRequest(UUID.randomUUID().toString())
+            val receipt = api.deleteProfile(host.token, deletion)
+            assertEquals(receipt, api.deleteProfile(host.token, deletion))
+            val remaining = api.read(peer.token, room.code).snapshot
+            assertEquals("Deleted player", remaining.round!!.players.first { it.id == host.playerId }.name)
+            remaining.validateFor(peer.playerId)
         } finally { api.close(); server.stop(0, 2_000) }
     }
 }

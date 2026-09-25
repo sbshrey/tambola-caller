@@ -14,6 +14,19 @@ import org.junit.Test
 import java.util.UUID
 
 class HttpTest : PostgresTest() {
+    @Test fun `profile deletion authenticates validates and confirms the same request after access is removed`() = testApplication {
+        application { roomsModule(database, service, runWorker = false) }
+        val guest = service.register(GuestRequest("Delete via HTTP"), "http-delete")
+        val deletion = WireJson.encodeToString(DeleteProfileRequest(UUID.randomUUID().toString()))
+        assertEquals(HttpStatusCode.Unauthorized, client.post("/v1/guests/me/delete") { contentType(ContentType.Application.Json); setBody(deletion) }.status)
+        assertEquals(HttpStatusCode.BadRequest, client.post("/v1/guests/me/delete") { bearerAuth(guest.token); contentType(ContentType.Application.Json); setBody("{\"id\":\"invalid\"}") }.status)
+        suspend fun remove() = client.post("/v1/guests/me/delete") { bearerAuth(guest.token); contentType(ContentType.Application.Json); setBody(deletion) }
+        val response = remove()
+        assertEquals(HttpStatusCode.OK, response.status); assertEquals("no-store", response.headers[HttpHeaders.CacheControl])
+        assertEquals(response.bodyAsText(), remove().bodyAsText())
+        assertFalse(response.bodyAsText().contains(guest.token))
+        assertEquals(HttpStatusCode.Unauthorized, client.post("/v1/guests/me/logout") { bearerAuth(guest.token) }.status)
+    }
     @Test fun `HTTP validates requests authentication and health without exposing secrets`() = testApplication {
         application { roomsModule(database, service, runWorker = false) }
         assertEquals(HttpStatusCode.OK, client.get("/health/ready").status)

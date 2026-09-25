@@ -35,6 +35,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     var configure by rememberSaveable { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
     var logout by remember { mutableStateOf(false) }
+    var deleteProfile by remember { mutableStateOf(false) }
     var leave by remember { mutableStateOf(false) }
     var history by rememberSaveable { mutableStateOf(false) }
     var selectedHistory by rememberSaveable { mutableStateOf<String?>(null) }
@@ -49,6 +50,13 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     if (!state.available) {
         GameCard { Text("Online rooms aren't available in this build yet."); Text("You can play solo or with everyone on one device from Home.", color = Muted) }
         return
+    }
+    state.notice?.let { message -> GameCard { Text(message, color = Jade); TextButton(onClick = model::clearNotice) { Text("Dismiss notice") } } }
+    if (state.pending) GameCard {
+        Text(if (state.deletingProfile) "Profile deletion is waiting for confirmation" else "An action is waiting for confirmation", style = MaterialTheme.typography.titleMedium)
+        Text(if (state.deletingProfile) "Retry the same request to confirm its outcome. Your encrypted confirmation details stay here until the service confirms deletion and device cleanup succeeds."
+            else "Retry safely to recover the original result. Other changes wait until this action is resolved.", color = Muted)
+        PrimaryAction(if (state.busy) "Checking…" else "Retry pending action", enabled = !state.busy && !state.storageFailure) { model.retry() }
     }
     if (state.storageFailure || state.sessionExpired) {
         GameCard {
@@ -66,11 +74,6 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
         }
     } else {
         Text("Playing as ${state.name}", color = Jade)
-        if (state.pending) GameCard {
-            Text("An action is waiting for confirmation", style = MaterialTheme.typography.titleMedium)
-            Text("Retry safely to recover the original result. Other changes wait until this action is resolved.", color = Muted)
-            PrimaryAction(if (state.busy) "Checking…" else "Retry pending action", enabled = !state.busy) { model.retry() }
-        }
         if (room == null) {
             GameCard {
                 Text("Bring your people together", style = MaterialTheme.typography.titleLarge)
@@ -141,6 +144,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
         }
         if (room == null) TextButton(onClick = { logout = true }, enabled = enabled) { Text("Sign out of online play") }
     }
+    if (state.name != null && !state.storageFailure) TextButton(onClick = { deleteProfile = true }, enabled = !state.busy && !state.pending) { Text("Delete online profile") }
     if (configure && room != null && host && room.phase == RoomPhase.LOBBY) RoomSettingsEditor(room,
         enabled && state.connection == Connection.LIVE, save = { model.command(RoomAction.Configure(it)); configure = false }, dismiss = { configure = false })
     state.history.firstOrNull { it.round?.id == selectedHistory }?.toTable(emptyMap())?.let { table ->
@@ -148,7 +152,8 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) { OnlineResults(table); RuleList(table) }
         }, confirmButton = { TextButton(onClick = { selectedHistory = null }) { Text("Back") } })
     }
-    if (reset) ConfirmOnline("Reset online data?", "This removes your local online profile, cached history and online badges. It does not delete server records, which expire under the room service's retention policy.", "Reset online data", { reset = false; model.resetLocalData() }) { reset = false }
+    if (reset) ConfirmOnline("Reset online data?", "This removes your local online profile, cached history and online badges. It does not delete server records. If deletion is waiting for confirmation, resetting also discards the details needed to retry that request.", "Reset online data", { reset = false; model.resetLocalData() }) { reset = false }
+    if (deleteProfile) ConfirmOnline("Delete your online profile?", "This permanently removes your service profile and access, and replaces its name/avatar in rooms, saved results and retry records with Deleted player. You leave every room; another player can host and finish an active game. Shared tickets, calls, scores and prize text stay until room retention expires. Copies already saved or shared by others and backups are not erased by this request.\n\nAfter confirmation, this device's online tickets, history and badges are cleared. Offline games stay. This cannot be undone.", "Delete profile permanently", { deleteProfile = false; model.deleteProfile() }, dismissLabel = "Keep profile") { deleteProfile = false }
     if (logout) ConfirmOnline("Sign out?", "Your online session will be revoked. This device's online tickets, history and badges will be removed. Offline rounds stay here.", "Sign out", { logout = false; model.logout() }) { logout = false }
     if (leave) ConfirmOnline("Leave this room?", "Your completed results stay in online history. You can join another room after leaving.", "Leave room", { leave = false; model.command(RoomAction.Leave) }) { leave = false }
     state.error?.let { message -> AlertDialog(onDismissRequest = model::clearError, title = { Text("Online play") }, text = { Text(message) }, confirmButton = { TextButton(onClick = model::clearError) { Text("Got it") } }) }
@@ -156,6 +161,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
 
 @Composable
 fun OnlineControls(state: OnlineUiState, model: OnlineViewModel) {
+    if (state.deletingProfile) return
     val room = state.room ?: return
     val me = room.members.firstOrNull { it.playerId == state.playerId } ?: return
     val enabled = state.connection == Connection.LIVE && !state.pending && !state.busy && !state.sessionExpired && !state.storageFailure
@@ -216,9 +222,9 @@ private fun OnlineResults(table: TableRound) {
 }
 
 @Composable
-private fun ConfirmOnline(title: String, message: String, action: String, confirm: () -> Unit, dismiss: () -> Unit) {
-    AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { Text(message) },
-        confirmButton = { TextButton(onClick = confirm) { Text(action) } }, dismissButton = { TextButton(onClick = dismiss) { Text("Keep playing") } })
+private fun ConfirmOnline(title: String, message: String, action: String, confirm: () -> Unit, dismissLabel: String = "Keep playing", dismiss: () -> Unit) {
+    AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { Text(message, modifier = Modifier.verticalScroll(rememberScrollState())) },
+        confirmButton = { TextButton(onClick = confirm) { Text(action) } }, dismissButton = { TextButton(onClick = dismiss) { Text(dismissLabel) } })
 }
 
 @Composable

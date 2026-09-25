@@ -26,7 +26,12 @@ class OnlineGameTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
     private val model get() = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
     private fun tap(text: String) = compose.tapText(text)
-    private fun type(tag: String, value: String) { compose.onNodeWithTag(tag).performScrollTo().performTextReplacement(value); compose.waitForIdle() }
+    private fun type(tag: String, value: String) {
+        val input = compose.onNodeWithTag(tag)
+        input.performScrollTo().performTextReplacement(value)
+        input.performImeAction()
+        compose.waitForIdle()
+    }
     private fun until(predicate: () -> Boolean) {
         try { compose.waitUntil(20_000, predicate) }
         catch (error: ComposeTimeoutException) {
@@ -48,6 +53,77 @@ class OnlineGameTest {
         until { model.state.value.name == null && !model.state.value.loading }
         until { compose.hasTextNow("Play online") }
         tap("Play online")
+    }
+
+    @Test fun profileDeletionConfirmsAfterLostResponseAndKeepsOfflineGame() = runBlocking<Unit> {
+        assumeTrue("Needs the isolated drop-response proxy", InstrumentationRegistry.getArguments().getString("tambolaFaultProxy") == "true")
+        suspend fun control(path: String) = withContext(Dispatchers.IO) {
+            val connection = java.net.URL("http://127.0.0.1:8082/$path").openConnection() as java.net.HttpURLConnection
+            try { connection.requestMethod = "POST"; connection.connectTimeout = 3_000; connection.readTimeout = 3_000; check(connection.responseCode == 200) }
+            finally { connection.disconnect() }
+        }
+        tap("‹ Home"); tap("Play solo"); tap("Just me"); tap("Deal the tickets")
+        if (compose.hasTextNow("Start new round")) tap("Start new round")
+        until { compose.hasTextNow("Call next number") }
+        tap("Call next number"); until { compose.hasTextNow("Call 1 of 90") }
+        val offlineBefore = ViewModelProvider(compose.activity)[GameViewModel::class.java].state.value.round!!
+        tap("‹ Home"); tap("Play online")
+        type("online-name", "Delete fixture Asha"); tap("Continue online")
+        until { compose.hasTextNow("Create private room") }
+        tap("Create private room"); until { model.state.value.room != null }; connected()
+        val original = saved()
+        val peerApi = HttpRoomApi(BuildConfig.ROOM_API_URL, true)
+        val peer = peerApi.guest(GuestRequest("Remaining Bina"))
+        val code = original.room!!.code
+        try {
+            tap("Edit room rules"); tap("Automatic online calling"); tap("Save room rules")
+            until { !model.state.value.busy && model.state.value.room?.options?.automaticCalling == false }
+            val joined = peerApi.join(peer.token, code).snapshot
+            peerApi.command(peer.token, code, CommandRequest(UUID.randomUUID().toString(), joined.revision, RoomAction.Ready(true)))
+            until { model.state.value.room!!.members.size == 2 }
+            until { model.state.value.room!!.members.last().ready }
+            tap("I'm ready"); until { !model.state.value.busy && model.state.value.room!!.members.all { it.ready } }
+            tap("Start online round"); until { model.state.value.room?.phase == RoomPhase.ACTIVE }
+            tap("Call next online number"); until { model.state.value.room?.round?.called?.size == 1 && !model.state.value.busy }
+            tap("Delete online profile")
+            compose.onNodeWithText("Delete your online profile?").assertExists()
+            tap("Keep profile")
+            assertEquals(original.credentials.playerId, model.state.value.playerId)
+            control("arm-delete-drop")
+            tap("Delete online profile"); captureTestScreen("delete-confirmation")
+            tap("Delete profile permanently")
+            compose.waitUntil(35_000) { model.state.value.deletingProfile && !model.state.value.busy && model.state.value.error != null }
+            val pending = saved().pending as PendingOperation.DeleteProfile
+            assertEquals(original.credentials, saved().credentials)
+            assertEquals(Connection.SUSPENDED, model.state.value.connection)
+            assertEquals(RoomPhase.ACTIVE, saved().room!!.phase)
+            compose.onNodeWithText("Call next online number").assertDoesNotExist()
+            tap("Got it")
+            compose.onNodeWithText("Profile deletion is waiting for confirmation").performScrollTo().assertIsDisplayed()
+            captureTestScreen("delete-awaiting-confirmation")
+            compose.onNodeWithText("Retry pending action").performScrollTo().assertIsDisplayed()
+            captureTestScreen("delete-retry")
+            compose.activityRule.scenario.recreate()
+            until { !model.state.value.loading && model.state.value.deletingProfile }
+            assertEquals(pending, saved().pending)
+            control("allow-deletes")
+            tap("Retry pending action")
+            until { model.state.value.name == null && !model.state.value.busy }
+            assertNull(OnlineStore(context).read())
+            assertTrue(model.state.value.notice!!.startsWith("Online profile deleted."))
+            val remaining = peerApi.read(peer.token, code).snapshot
+            assertEquals(peer.playerId, remaining.hostId)
+            assertTrue(remaining.members.none { it.playerId == original.credentials.playerId })
+            assertEquals("Deleted player", remaining.round!!.players.first { it.id == original.credentials.playerId }.name)
+            assertEquals(2, peerApi.command(peer.token, code, CommandRequest(UUID.randomUUID().toString(), remaining.revision, RoomAction.Draw)).snapshot.round!!.called.size)
+            val receipt = peerApi.deleteProfile(original.credentials.token, pending.request)
+            assertEquals(pending.request.id, receipt.id)
+            tap("‹ Home"); tap("Resume round")
+            compose.onNodeWithText("Call 1 of 90").assertExists()
+            val offlineAfter = ViewModelProvider(compose.activity)[GameViewModel::class.java].state.value.round!!
+            assertEquals(offlineBefore.id, offlineAfter.id); assertEquals(offlineBefore.tickets, offlineAfter.tickets)
+            assertEquals(offlineBefore.called, offlineAfter.called); assertEquals(offlineBefore.marks, offlineAfter.marks)
+        } finally { control("allow-deletes"); peerApi.close() }
     }
 
     @Test fun nativeHostPlaysNinetyCallsWithPrivatePeerAndRestoresEncryptedSession() = runBlocking<Unit> {

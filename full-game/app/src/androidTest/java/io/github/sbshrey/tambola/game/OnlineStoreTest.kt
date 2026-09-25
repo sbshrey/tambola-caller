@@ -11,6 +11,19 @@ import org.junit.Test
 import java.io.File
 
 class OnlineStoreTest {
+    @Test fun failedDeviceCleanupDoesNotPretendThatOnlineDataWasRemoved() = runBlocking<Unit> {
+        val target = InstrumentationRegistry.getInstrumentation().targetContext
+        val directory = File(target.noBackupFilesDir, "store-delete-failure-fixture").apply { mkdirs() }
+        val context = object : ContextWrapper(target) { override fun getNoBackupFilesDir() = directory }
+        val blocked = File(directory, "private-rooms.enc").apply { mkdirs() }
+        val retained = File(blocked, "retained-fixture").apply { writeText("fictional fixture") }
+        try {
+            var failed = false
+            try { OnlineStore(context).write(null) } catch (_: IllegalStateException) { failed = true }
+            assertTrue("Cleanup must report the retained file", failed)
+            assertTrue(retained.exists())
+        } finally { retained.delete(); blocked.delete(); directory.delete() }
+    }
     @Test fun keystoreRoundTripUsesFreshCiphertextAndRejectsTamperingWithoutDeletingData() = runBlocking<Unit> {
         val target = InstrumentationRegistry.getInstrumentation().targetContext
         val context = object : ContextWrapper(target) {

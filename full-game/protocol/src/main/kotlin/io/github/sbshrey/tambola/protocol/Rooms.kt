@@ -10,6 +10,8 @@ val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
 @Serializable data class GuestCredentials(val playerId: String, val token: String, val expiresAt: Long)
+@Serializable data class DeleteProfileRequest(val id: String)
+@Serializable data class DeleteProfileReceipt(val id: String, val deletedAt: Long, val confirmUntil: Long)
 @Serializable data class ApiError(val code: String, val message: String)
 @Serializable data class Health(val status: String, val protocolVersion: Int = PROTOCOL_VERSION)
 @Serializable enum class RoomPhase { LOBBY, ACTIVE, FINISHED, CLOSED }

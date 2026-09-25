@@ -1,10 +1,10 @@
-# Tambola Together 0.4.0-alpha04
+# Tambola Together 0.5.0-alpha05
 
 This is an internal **development alpha**, signed with an Android debug certificate. Solo and family play work offline. Native private rooms require a separately configured room service; this package targets a local test service, not a public hosted service. It is not the production release. Use fictional player names while testing. A future release signed with the production certificate may require uninstalling this alpha, which clears its local history.
 
 Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
 
-1. Copy `Tambola-Together-0.4.0-alpha04.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data.
+1. Copy `Tambola-Together-0.5.0-alpha05.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data.
 2. If Android asks, allow APK installation for the app you opened the file from.
 3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.
 4. Use **Call next number** or **Auto**. Tap **Mark ticket** for large buttons, or select assisted marking during setup.
@@ -37,6 +37,8 @@ With a reachable configured service, select **Play online**, choose a display na
 
 Calls and prizes are server-confirmed. Host controls support pause/resume, ending and rematches. The room can continue while you leave the app; returning catches up without replaying old announcements. If an action cannot be confirmed, **Retry pending action** checks its original result rather than creating a second action. Completed results have a private sharing preview and encrypted local online history.
 
-Online profiles and cached rooms are encrypted on the device. Signing out revokes the session and removes local online data; an explicit recovery reset removes local data only. Server-side account deletion and recovery remain unfinished. The room service has a separate retention policy; offline-round deletion does not delete server records.
+Online profiles and cached rooms are encrypted on the device. **Delete online profile** removes the profile and room memberships, replaces its stored display name/avatar in shared game records, and clears this device's online data after service confirmation. If the reply is lost, **Retry pending action** checks the original request, including after recreating the screen. Deleting a host transfers control to a remaining player; offline games stay intact.
+
+Shared records retain opaque player IDs, tickets, calls, scores and custom prize text until normal retention expires. Other players' downloaded copies and existing backups are not instantly erased. See [profile deletion and retention](server/PROFILE_DELETION.md) for exact behavior and outstanding backup/restore acceptance. Signing out only revokes the session and clears local online data; a recovery reset only clears local data and can discard a pending deletion confirmation. Request deletion before signing out. There is no account-recovery service in this alpha.
 
 Still in development: hosted online rooms and broader multiplayer recovery acceptance, final music/art/celebrations, Hindi interface, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.

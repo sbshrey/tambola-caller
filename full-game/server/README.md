@@ -1,6 +1,6 @@
 # Private room service: local development candidate
 
-Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha03 APK connects to it through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha03 validation](../ALPHA03_VALIDATION.md).
+Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha05 APK connects to it through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha05 validation](../ALPHA05_VALIDATION.md).
 
 ## Run and test
 
@@ -32,6 +32,7 @@ All bodies and responses use strict JSON. Session credentials are opaque bearer 
 | `GET /health/live` / `GET /health/ready` | Process / database readiness |
 | `POST /v1/guests` | Name (1–40 characters), avatar (0–7); returns guest ID and bearer token |
 | `POST /v1/guests/me/logout` | Revoke the current token; this is not data deletion |
+| `POST /v1/guests/me/delete` | Delete the authenticated profile and redact its stored profile fields; retry the original UUID to confirm |
 | `POST /v1/rooms` | Create a private lobby with UUID `id` and frozen-at-start `options` |
 | `POST /v1/rooms/{code}/join` | Join an unlocked lobby; existing members can reconnect |
 | `GET /v1/rooms/{code}?after=N` | Personalized snapshot plus events after a revision |
@@ -42,7 +43,7 @@ Canonical DTOs are in `protocol/.../Rooms.kt`. Actions are `ready`, `configure`,
 
 Two to 32 humans can play, with one to six tickets each. Everyone must be ready and recently connected before the host starts. Configuration resets readiness. Starting freezes tickets/rules. The host can pause/resume/end or call numbers in a manual room. Automatic rooms use only server-owned scheduling. No client claim/mark can award points. Standard/custom rules, ties and scoring use the same domain engine as offline play.
 
-Membership changes are limited to the lobby/finished room. A player may disconnect during play and rejoin with the same stored session, while their tickets remain eligible. Ending a round records cancellation, rather than pretending it completed. Rematch returns to the lobby and clears readiness. Removing a lobby member revokes their read/stream access; knowing a room code is insufficient to read its state.
+Ordinary membership changes are limited to the lobby/finished room; explicit profile deletion can remove membership during play. A player may disconnect during play and rejoin with the same stored session, while their tickets remain eligible. Ending a round records cancellation, rather than pretending it completed. Rematch returns to the lobby and clears readiness. Removing a lobby member revokes their read/stream access; knowing a room code is insufficient to read its state.
 
 ## Consistency, privacy and recovery
 
@@ -52,7 +53,7 @@ Membership changes are limited to the lobby/finished room. A player may disconne
 - Public snapshots contain only the viewer's tickets, calls, awards and scores. The private domain `Round` is never a response DTO. Future draw order and nonce remain private until completion/cancellation.
 - The pre-round commitment is SHA-256 of UTF-8 `tambola-draw-v1\n<roundId>\n<nonce>\n<comma-separated draw order>`. At the end, order and nonce allow a client to check that the order did not change. This establishes consistency with the published commitment; it does not independently prove an unbiased server.
 - Activity updates presence at most every 15 seconds. After 45 seconds without activity, host controls move to the earliest joined connected member (ID breaks timestamp ties). A former host does not automatically reclaim controls. Automatic calling continues even if all players disconnect.
-- Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Expired guest credentials/profiles are deleted after 30 days. Rate buckets are short lived. Backup retention and explicit user data deletion are still deployment/release work; logout does not claim to erase history.
+- Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Expired guest credentials/profiles are deleted after 30 days. Rate buckets are short lived. Explicit [profile deletion](PROFILE_DELETION.md) removes access and redacts stored profile fields while preserving shared game records; its confirmation expires after 30 days. Backup retention/deletion-after-restore remain deployment work; logout does not claim to erase history.
 
 ## Resource limits and remaining release work
 
@@ -60,7 +61,7 @@ JSON request bodies are capped at 32 KiB with a 10-second read timeout; WebSocke
 
 Persisted minute buckets limit guest creation to 60 per socket peer address and authenticated create/join/command/read requests to 10/20/180/300 per profile. A profile can own at most five unexpired open rooms. Authentication happens before creating profile rate buckets. The service does not trust forwarded address headers; proxy-aware rate enforcement and connection/body limits must be configured and tested with the actual ingress provider. These initial quotas are not a complete abuse/DoS defense.
 
-Native Android session storage/lobby/game/reconnect flows are implemented in the [client](../client/README.md); the alpha03 host and guest emulator journeys pass against this service. Still required: invite links, data deletion, production identity/recovery decisions, hosting/TLS/secrets, least-privilege migration/runtime roles, metrics/alerts, backup/restore, dependency/advisory review, 10-room concurrent load and latency measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
+Native Android session storage/lobby/game/reconnect flows and explicit profile deletion are implemented in the [client](../client/README.md). Still required: invite links, production identity/recovery decisions, hosting/TLS/secrets, least-privilege migration/runtime roles, metrics/alerts, backup/restore with deletion suppression, dependency/advisory review, 10-room concurrent load and large-history deletion measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
 
 See [service validation](VALIDATION.md) and the repository execution ledger for observed evidence.
 
