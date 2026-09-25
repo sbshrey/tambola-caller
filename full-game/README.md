@@ -2,7 +2,7 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-This first offline alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, verified standard prizes, ties, points, pause/resume, local history, and three offline voice languages. Private online rooms, custom regional rules, badges, final music/art, Hindi UI, and production release validation remain planned work.
+The offline alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, verified standard prizes, ties, points, pause/resume, local history, and three offline voice languages. The shared engine now supports [explicit custom rules](domain/CUSTOM_RULES.md), and the [private-room service](server/README.md) is implemented for local testing. Neither feature is connected to the alpha UI yet. Badges, final music/art, Hindi UI, hosted online play and production release validation remain unfinished.
 
 ## Build
 
@@ -12,6 +12,8 @@ JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties`
 .\gradlew.bat :domain:test :app:assembleDebug :app:lintDebug
 .\gradlew.bat :app:connectedDebugAndroidTest
 ```
+
+The backend can build separately with `-PserverOnly=true`; its tests require an explicit isolated PostgreSQL database. See the service README for environment setup and the real-process restart smoke test.
 
 The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing Tambola Keyboard. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`; it is an internal alpha, not a signed production release. Build-time voice import checks all 270 recordings against the repository manifests. No OpenAI key is needed to build or play.
 

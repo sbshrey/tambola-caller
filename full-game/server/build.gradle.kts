@@ -1,0 +1,19 @@
+plugins { application; alias(libs.plugins.kotlin.jvm); alias(libs.plugins.kotlin.serialization) }
+kotlin { jvmToolchain(17) }
+application { mainClass.set("io.github.sbshrey.tambola.server.ServerKt") }
+dependencies {
+    implementation(project(":domain")); implementation(project(":protocol")); implementation(libs.serialization.json)
+    implementation(libs.ktor.server.core); implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.websockets); implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.status.pages); implementation(libs.ktor.json)
+    implementation(libs.postgres); implementation(libs.hikari); implementation(libs.logback)
+    testImplementation(libs.junit); testImplementation(libs.ktor.test.host)
+    testImplementation(libs.ktor.client.content.negotiation); testImplementation(libs.ktor.client.websockets)
+}
+tasks.test {
+    maxHeapSize = "1024m"
+    // Integration tests require an explicitly supplied isolated PostgreSQL database.
+    environment("TAMBOLA_DATABASE_URL", System.getenv("TAMBOLA_TEST_DATABASE_URL") ?: "")
+    environment("TAMBOLA_DATABASE_USER", System.getenv("TAMBOLA_TEST_DATABASE_USER") ?: "")
+    environment("TAMBOLA_DATABASE_PASSWORD", System.getenv("TAMBOLA_TEST_DATABASE_PASSWORD") ?: "")
+}

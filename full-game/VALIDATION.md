@@ -2,6 +2,8 @@
 
 Date: 25 September 2026. Package `io.github.sbshrey.tambola.game`, version code 1, min SDK 26, target SDK 36. This is an internal debug-signed offline alpha, not a production release.
 
+This report describes the packaged APK at source commit `a5ab345`. Later source development is tracked in [the execution ledger](../docs/FULL_GAME_PROGRESS.md) and [service validation](server/VALIDATION.md); it does not retroactively add online/custom-rule UI features to this APK.
+
 ## Build and domain evidence
 
 - `gradlew.bat :domain:test :app:assembleDebug :app:assembleDebugAndroidTest :app:lintDebug` succeeded.

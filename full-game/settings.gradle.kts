@@ -4,4 +4,5 @@ dependencyResolutionManagement {
     repositories { google(); mavenCentral() }
 }
 rootProject.name = "TambolaTogether"
-include(":app", ":domain")
+include(":domain", ":protocol", ":server")
+if (!providers.gradleProperty("serverOnly").map(String::toBoolean).getOrElse(false)) include(":app")

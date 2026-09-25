@@ -2,7 +2,7 @@
 
 Date: 25 September 2026. Development branch: `shrey/full-tambola-game`.
 Starting commit: `76b6a2c5da5a4729a7dbcd28fac83878780ac9d8`.
-Status: plan prepared; the new game APK has not been implemented or released.
+Status: execution in progress. An internal offline alpha APK and a locally tested room-service candidate exist. See [FULL_GAME_PROGRESS.md](FULL_GAME_PROGRESS.md) for current evidence; the production release gates below remain unchanged.
 
 ## 1. Intended outcome
 
@@ -189,12 +189,12 @@ Proposed entities: `GuestSession`, `PlayerProfile`, `Room`, `RoomMember`, `Round
 - A join code finds a room but is not an authorization token. Rate-limit discovery/joins, expire inactive rooms, and support a lobby lock and host removal before the round starts.
 - Validate role, membership, round status, expected revision, and idempotency key for every command. Bound all text, ticket counts, room sizes, frame sizes, and request rates.
 - Draw, award creation, command receipt, and event-log append occur in one database transaction with per-round serialization. Publish only after commit; use an outbox so restarts cannot lose committed notifications.
-- A persisted `nextDrawAt` and renewable worker lease drive online autoplay. Duplicate workers and a restarting process cannot produce two calls. A late worker schedules the next interval without flooding clients with catch-up calls.
+- A persisted `nextDrawAt` and exclusive database ownership of each transition drive online autoplay. The initial service uses short row transactions with `FOR UPDATE SKIP LOCKED` rather than a separate renewable lease. Duplicate workers and a restarting process cannot produce two calls. A late worker schedules the next interval without flooding clients with catch-up calls. Measure and revisit the bounded batch size under the planned load.
 - Clients acknowledge event sequence numbers. On reconnect, request missing events or a versioned snapshot; ignore duplicates and reject stale state. Do not queue offline draw/award commands and replay them blindly.
 - An offline player can inspect cached tickets/history and local marks, but online results require authoritative resync. Eligibility is still computed server-side while they are disconnected.
 - Keep host role and game authority separate: the service continues calling after a host disconnects. Transfer host controls through a persisted, deterministic succession rule after a visible grace period; never create a second round authority.
 - Prevent future-number access even for the host. Commit a hash of the secret shuffled order plus a nonce before the round, then reveal them after completion for optional replay verification. This detects later order changes; it is not a claim of externally audited randomness.
-- Use TLS, redacted structured logs, database backups, guest/data deletion, and explicit retention. Proposed defaults: inactive lobbies expire after 24 hours; online completed rounds after 30 days; local history remains until deleted. Document backup-expiry behavior too.
+- Use TLS, redacted structured logs, database backups, guest/data deletion, and explicit retention. Initial service behavior: rooms close 24 hours after creation; their records and audits are removed 30 days after that expiry. Expired guest sessions/profiles are removed after 30 days. Local history remains until deleted. Reconcile these retention windows with the final privacy notice and document backup expiry before release; explicit user data deletion is still required.
 - Preset reactions can be included with rate limits; unrestricted public chat/matchmaking is deferred.
 
 Deployment assumption: containerized Ktor service plus managed PostgreSQL, hosted in a region suitable for the initial users. Milestone M4 includes a deployment spike to select the available provider/project, price a 32-player room workload, configure TLS/backups/secrets, and verify WebSocket/connection limits. Provider access and a hosting budget are external inputs to a live release, not reasons to postpone local implementation. Do not silently provision an unbounded paid service.

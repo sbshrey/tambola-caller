@@ -20,9 +20,9 @@ Branch: `shrey/full-tambola-game`.
 | --- | --- | --- |
 | M0: plan and branch | Complete | Plan and baseline checks above |
 | M1: native foundation and design | Complete for the initial prototype | Native Compose APK installs beside keyboard; normal/200% text UI reviewed; API 36 tooling, dependency verification, CI definition |
-| M2: shared ticket/rules engine | In progress | Standard tickets/rules/ties/points/persistence validation pass 11 tests, including 100,000 tickets; custom regional rules remain |
+| M2: shared ticket/rules engine | In progress | 17 tests pass, including 100,000 tickets, bounded custom rules and v1-save migration; custom-rule UI/catalog acceptance remains |
 | M3: complete offline alpha | In progress | Solo/computer/family UI, saved rounds, marking, voices, results; four emulator journeys pass; broader device/recovery acceptance remains |
-| M4: room service and hosting spike | Pending | — |
+| M4: room service and hosting spike | In progress | 16 real PostgreSQL/HTTP/WebSocket tests, 32-player correctness and actual Java-process restart pass; hosting/TLS/operations remain |
 | M5: online Android experience | Pending | — |
 | M6: final art/audio/accessibility | Pending | — |
 | M7: production validation | Pending | — |
@@ -45,6 +45,21 @@ Branch: `shrey/full-tambola-game`.
 - Packaged candidate: `full-game/releases/0.1.0-alpha01/Tambola-Together-0.1.0-alpha01.apk`, SHA-256 `c6dc6e079cb946c8186bff8bbcc3e4ec9ce921b455588fce255d18e1fc216119`. APK signature verification passed (debug certificate, v2 scheme); size 37,824,919 bytes.
 - This is a debug-signed internal alpha. Private online rooms, configurable regional rules, badges, final music/art/celebrations, Hindi interface, physical-phone testing, production signing, and deployment remain unfinished.
 
-Next implementation slice after the alpha checks: complete the configurable rule model and persistence/recovery coverage, then introduce the public command/event protocol and room service while continuing the UI/audio work. See the plan for the full unchanged production scope.
+## 25 September 2026: custom rule engine and local room service
+
+- Added bounded versioned custom rules: rows, columns, numeric ranges, populated positions, count thresholds, AND/OR combinations, selected ticket ordinals and multiple-ticket requirements. Empty selections cannot win. Scoring, ties, undo and replay validation include custom awards. No executable meaning was guessed from existing regional prize names.
+- Round format v2 reads and upgrades the checked-in first-alpha v1 fixture without changing its calls, marks or status. **17 domain tests pass** in total, including the prior 100,000-ticket test. The APK setup/rules/results UI still needs custom-rule integration.
+- Added the public `protocol` and PostgreSQL-backed `server` modules. Implemented opaque guest sessions, hash-only token storage, private lobby membership/readiness/settings, server-owned calling, host succession, personalized snapshots, durable revision events, replay/resync, command idempotency, audit records and rematches.
+- Database mutations, receipts and events commit atomically. Row locks with `SKIP LOCKED` coordinate workers; the plan now records this concrete alternative to a separate renewable lease. Future calls and the nonce are excluded from public DTOs until completion/cancellation. A published draw commitment can then be verified.
+- Created an isolated PostgreSQL 16.9 test cluster on loopback port 55432 with a separate test database and random credential held outside source. Every JUnit case uses an isolated generated schema. The installed PostgreSQL service and other databases were not modified.
+- **16 backend tests pass**: 13 PostgreSQL service cases and three HTTP/WebSocket cases. Coverage includes concurrent duplicate/stale commands, two scheduler workers, lost-host succession, injected transaction rollback, permissions, private ticket data, token revocation/expiry, room/rate limits, full two-player and **32-player / 192-ticket** 90-call rounds, audit/rematch, and replay cursor recovery.
+- The separate real-process smoke test passed: start the Netty server, create two sessions, call a number, kill the owned process, restart against the same DB, recover the same state/event, retry the original command without a second draw, end the round and stop the process. This is local process-restart evidence, not hosted failover proof.
+- `gradlew.bat -PserverOnly=true :server:test :server:installDist --no-daemon --console=plain` passed with normal dependency verification. Added a PostgreSQL CI job and smoke script; hosted CI execution remains unverified.
+- Android `assembleDebug` and `lintDebug` passed after the shared-domain changes. The current lint report has **0 errors and 1 KAPT/KSP migration warning**. No warning suppression was added; the earlier alpha's available-version warnings are not reproduced in this lint run.
+- The current-source `:app:connectedDebugAndroidTest` run passed **4/4** on the dedicated API 30 emulator, covering complete offline play, recreation, family tickets and active-round/history isolation. The Gradle run completed in 2 minutes 8 seconds. This regression run does not establish native online or real APK-update migration behavior.
+- Added [service run/protocol documentation](../full-game/server/README.md), [service validation](../full-game/server/VALIDATION.md), and [custom rule format documentation](../full-game/domain/CUSTOM_RULES.md). The prior packaged APK and its evidence retain their original offline-only scope.
+- No cloud resources were provisioned. Provider/project/budget selection remains open; local implementation is proceeding. Android online UX, explicit data deletion, hosting/TLS/secrets, monitoring/backups/restore, load/security/device acceptance, final media and production signing remain unfinished.
+
+Next slice: expose the custom/terminal rule options in Android, build native private-room/session/reconnect flows against the tested protocol, and continue product UI/audio/accessibility work. See the full plan for the unchanged production scope.
 
 Update this ledger after each milestone with exact commands, app/service revisions, artifact hashes, observed behavior, and remaining limitations. The broader APK goal remains unfinished until the production gates in the plan are satisfied.

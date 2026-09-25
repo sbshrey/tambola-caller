@@ -8,6 +8,46 @@ on:
 permissions:
   contents: read
 jobs:
+  room-service:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: tambola_test
+          POSTGRES_USER: tambola_test
+          POSTGRES_PASSWORD: isolated-ci-test-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U tambola_test -d tambola_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TAMBOLA_TEST_DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/tambola_test
+      TAMBOLA_TEST_DATABASE_USER: tambola_test
+      TAMBOLA_TEST_DATABASE_PASSWORD: isolated-ci-test-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify PostgreSQL service and process restart
+        working-directory: full-game
+        run: |
+          bash gradlew -PserverOnly=true :domain:test :server:test :server:installDist --no-daemon --console=plain
+          node tools/server-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tambola-room-service-tests
+          path: |
+            full-game/server/build/reports/tests/
+            full-game/domain/build/reports/tests/
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30

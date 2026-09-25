@@ -7,7 +7,7 @@ import java.security.SecureRandom
 import java.util.Random
 import java.util.UUID
 
-@Serializable enum class GameMode { PRACTICE, FAMILY }
+@Serializable enum class GameMode { PRACTICE, FAMILY, ONLINE }
 @Serializable enum class RoundStatus { READY, PLAYING, PAUSED, COMPLETED, CANCELLED }
 @Serializable data class Player(val id: String, val name: String, val computer: Boolean = false) {
     init { require(id.isNotBlank() && name.isNotBlank() && name.length <= 40) }
@@ -46,6 +46,7 @@ data class RoundSettings(
     val assistedMarking: Boolean = false,
     val prizes: List<Prize> = Prize.defaults,
     val playAllNumbers: Boolean = false,
+    val customPrizes: List<CustomPrize> = emptyList(),
 ) {
     init {
         require(ticketsPerPlayer in 1..6)
@@ -53,6 +54,8 @@ data class RoundSettings(
         require(!(Prize.FULL_HOUSE in prizes && prizes.any { it.isRankedHouse }))
         require(Prize.HOUSE_TWO !in prizes || Prize.HOUSE_ONE in prizes)
         require(Prize.HOUSE_THREE !in prizes || Prize.HOUSE_TWO in prizes)
+        require(customPrizes.size <= 12 && customPrizes.map { it.id }.distinct().size == customPrizes.size)
+        require(customPrizes.all { it.minimumTickets <= ticketsPerPlayer && it.ticketOrdinals.all { ordinal -> ordinal <= ticketsPerPlayer } })
     }
 }
 
@@ -61,7 +64,7 @@ data class Award(val prize: Prize, val drawIndex: Int, val ticketIds: List<Strin
 
 @Serializable
 data class Round(
-    val version: Int = 1,
+    val version: Int = 2,
     val id: String,
     val createdAt: Long,
     val settings: RoundSettings,
@@ -72,10 +75,12 @@ data class Round(
     val marks: Map<String, Set<Int>> = emptyMap(),
     val awards: List<Award> = emptyList(),
     val status: RoundStatus = RoundStatus.READY,
+    val customAwards: List<CustomAward> = emptyList(),
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
-    fun score(playerId: String): Int = awards.filter { playerId in it.playerIds }.sumOf { it.prize.points }
+    fun score(playerId: String): Int = awards.filter { playerId in it.playerIds }.sumOf { it.prize.points } +
+        customAwards.filter { playerId in it.playerIds }.sumOf { award -> settings.customPrizes.first { it.id == award.prizeId }.points }
     fun start(): Round = when (status) {
         RoundStatus.READY, RoundStatus.PAUSED -> copy(status = RoundStatus.PLAYING)
         else -> this
@@ -87,12 +92,13 @@ data class Round(
         if (status != RoundStatus.PLAYING || called.size == 90) return this
         val next = called + drawOrder[called.size]
         val nextAwards = awardsFor(next)
-        val done = next.size == 90 || (!settings.playAllNumbers && terminalAward(nextAwards))
+        val nextCustomAwards = customAwardsFor(next)
+        val done = next.size == 90 || (!settings.playAllNumbers && terminalAward(nextAwards, nextCustomAwards))
         val nextMarks = marks.toMutableMap()
         tickets.filter { settings.assistedMarking || players.first { p -> p.id == it.playerId }.computer }.forEach { ticket ->
             nextMarks[ticket.id] = ticket.numbers.filter { it in next }.toSet()
         }
-        return copy(called = next, awards = nextAwards, marks = nextMarks.toMap(), status = if (done) RoundStatus.COMPLETED else status)
+        return copy(called = next, awards = nextAwards, customAwards = nextCustomAwards, marks = nextMarks.toMap(), status = if (done) RoundStatus.COMPLETED else status)
     }
 
     fun toggleMark(ticketId: String, number: Int): Round {
@@ -109,13 +115,23 @@ data class Round(
         if (called.isEmpty() || status == RoundStatus.CANCELLED) return this
         val next = called.dropLast(1)
         return copy(called = next, awards = awards.filter { it.drawIndex <= next.size },
+            customAwards = customAwards.filter { it.drawIndex <= next.size },
             marks = marks.mapValues { (_, values) -> values.intersect(next.toSet()) }, status = RoundStatus.PAUSED)
     }
 
-    private fun terminalAward(results: List<Award>): Boolean {
+    private fun terminalAward(results: List<Award>, customResults: List<CustomAward>): Boolean {
         val finalPrize = settings.prizes.filter { it.isRankedHouse }.maxByOrNull { it.ordinal }
             ?: settings.prizes.firstOrNull { it == Prize.FULL_HOUSE }
-        return if (finalPrize != null) results.any { it.prize == finalPrize } else results.size == settings.prizes.size
+        return if (finalPrize != null) results.any { it.prize == finalPrize }
+        else results.size == settings.prizes.size && customResults.size == settings.customPrizes.size
+    }
+
+    private fun customAwardsFor(next: List<Int>): List<CustomAward> {
+        val calledSet = next.toSet()
+        return customAwards + settings.customPrizes.filter { prize -> customAwards.none { it.prizeId == prize.id } }.mapNotNull { prize ->
+            val matching = players.flatMap { player -> prize.eligibleTickets(tickets.filter { it.playerId == player.id }, calledSet) }
+            if (matching.isEmpty()) null else CustomAward(prize.id, prize.version, next.size, matching.map { it.id }, matching.map { it.playerId }.distinct())
+        }
     }
 
     private fun awardsFor(next: List<Int>): List<Award> {
@@ -132,9 +148,11 @@ data class Round(
 
     /** Validate untrusted persistence at the boundary, including awards by replay. */
     fun validated(): Round {
-        require(version == 1 && id.isNotBlank() && createdAt >= 0)
+        require(version in 1..2 && id.isNotBlank() && createdAt >= 0)
+        require(version != 1 || (settings.customPrizes.isEmpty() && customAwards.isEmpty()))
         require(players.size in 1..32 && players.map { it.id }.distinct().size == players.size)
         require(settings.mode != GameMode.FAMILY || (players.size in 2..8 && players.none { it.computer }))
+        require(settings.mode != GameMode.ONLINE || (players.size in 2..32 && players.none { it.computer }))
         require(tickets.size == players.size * settings.ticketsPerPlayer)
         require(tickets.map { it.id }.distinct().size == tickets.size && tickets.map { it.fingerprint }.distinct().size == tickets.size)
         require(tickets.all { t -> players.any { it.id == t.playerId } })
@@ -143,12 +161,13 @@ data class Round(
         require(called.size <= 90 && called == drawOrder.take(called.size))
         require(marks.all { (id, values) -> tickets.any { it.id == id && it.numbers.containsAll(values) } && called.containsAll(values) })
         require(status != RoundStatus.READY || called.isEmpty())
-        var replay = copy(called = emptyList(), awards = emptyList(), marks = emptyMap(), status = RoundStatus.PLAYING)
+        var replay = copy(called = emptyList(), awards = emptyList(), customAwards = emptyList(), marks = emptyMap(), status = RoundStatus.PLAYING)
         repeat(called.size) {
             require(!replay.finished) { "Saved round contains draws after completion" }
             replay = replay.draw()
         }
         require(replay.awards == awards) { "Saved awards disagree with ticket rules" }
+        require(replay.customAwards == customAwards) { "Saved custom awards disagree with ticket rules" }
         require(status != RoundStatus.COMPLETED || replay.status == RoundStatus.COMPLETED)
         require(replay.status != RoundStatus.COMPLETED || finished)
         return this
@@ -166,6 +185,6 @@ object RoundCodec {
     fun encode(round: Round): String = json.encodeToString(round)
     fun decode(value: String): Round {
         require(value.length <= 1_000_000) { "Saved round is too large" }
-        return json.decodeFromString<Round>(value).validated()
+        return json.decodeFromString<Round>(value).validated().copy(version = 2)
     }
 }
