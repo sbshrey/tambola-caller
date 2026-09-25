@@ -2,7 +2,7 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-The offline alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, verified standard prizes, ties, points, pause/resume, local history, and three offline voice languages. The shared engine now supports [explicit custom rules](domain/CUSTOM_RULES.md), and the [private-room service](server/README.md) is implemented for local testing. Neither feature is connected to the alpha UI yet. Badges, final music/art, Hindi UI, hosted online play and production release validation remain unfinished.
+The offline alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. The [private-room service](server/README.md) is implemented for local testing, with Android online integration still ahead. Badges, final music/art, Hindi UI, hosted play and production release validation remain unfinished.
 
 ## Build
 
@@ -21,11 +21,14 @@ The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing 
 
 - Tickets have 3 rows, 9 columns, and 15 unique numbers. Each row has 5; columns follow the standard 1–9, 10–19, …, 80–90 ranges and ascend vertically.
 - The shared Kotlin domain module owns ticket validation, secure random draws, standard prize rules, same-draw ties, points, round status, and save validation by replay. A mark is a player's visual aid; it cannot forge a winning ticket.
-- The first full house ends the alpha UI's round. Domain support also covers 90-call games and three ranked houses, pending configuration UI.
+- Setup can end the round at the first, second or third house, or continue through all 90 calls. Ranked houses replace standalone full-house points; previously winning tickets cannot win a later rank.
+- The custom-prize editor supports AND/OR groups, row/column/range/position selectors, count thresholds, specific owned tickets and multiple-ticket requirements. Live sample examples use separate illustrative tickets. Invalid/impossible counts and incompatible ticket allowances are explained before dealing.
+- Prize inspection keeps the locked definition visible and shows actual selected numbers, missing calls, winning tickets and the award call. All eligibility is independent of manual marking.
 - Every winning ticket appears in an award. Players receive points once per prize even with multiple winning tickets; tied players each get full points.
 - Leaving the foreground pauses offline play and audio. Restoring a round does not automatically speak or draw.
 - Calling controls remain at the bottom of the game screen while the tickets scroll. The large-number marking sheet supports smaller screens; at large system text sizes the ticket overview switches to wrapping row layouts.
 - Room stores rounds atomically. Preferences use DataStore. History is local; deleting rounds requires confirmation.
+- Setup/editor drafts use the ViewModel and saved instance state to survive recreation. Rematches retain players/settings/custom prizes and produce a fresh round when dealt. Sharing starts with a preview and leaves player names out unless selected.
 
 Assets in this build: native vector/Compose graphics and the repository's previously generated AI voice recordings. No runtime AI calls, analytics, ads, payments, microphone permission, or network permission are included in the offline alpha.
 

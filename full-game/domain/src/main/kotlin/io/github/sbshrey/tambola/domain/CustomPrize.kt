@@ -31,7 +31,10 @@ sealed class NumberSelection {
     @Serializable @SerialName("positions") data class Positions(val positions: List<Int>) : NumberSelection() {
         init { require(positions.size in 1..15 && positions.distinct().size == positions.size && positions.all { it in 0..14 }) }
         override fun numbers(ticket: Ticket) = positions.sorted().map { ticket.numbers[it] }
-        override fun describe() = "populated positions " + positions.sorted().joinToString { "row ${it / 5 + 1}, number ${it % 5 + 1}" }
+        override fun describe() = if (positions.toSet() == setOf(0, 4, 10, 14)) "the four corners" else
+            "populated positions " + positions.sorted().groupBy { it / 5 }.entries.joinToString("; ") { (row, values) ->
+                listOf("top", "middle", "bottom")[row] + " " + values.joinToString { "${it % 5 + 1}" }
+            }
     }
 }
 
@@ -78,7 +81,7 @@ data class CustomPrize(
         }
         return if (matches.size >= minimumTickets) matches else emptyList()
     }
-    fun describe(): String = pattern.describe() + "; on at least $minimumTickets ticket(s)" +
+    fun describe(): String = pattern.describe() + "; on at least $minimumTickets owned ${if (minimumTickets == 1) "ticket" else "tickets"}" +
         if (ticketOrdinals.isEmpty()) "." else " among tickets ${ticketOrdinals.sorted().joinToString()}."
 }
 

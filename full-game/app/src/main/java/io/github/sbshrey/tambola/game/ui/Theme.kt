@@ -21,7 +21,14 @@ fun TambolaTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = darkColorScheme(primary = Saffron, onPrimary = Ink, secondary = Jade, onSecondary = Ink,
             background = Ink, onBackground = Ivory, surface = Panel, onSurface = Ivory,
-            surfaceVariant = Color(0xFF2B3B4D), onSurfaceVariant = Muted, error = Coral),
+            surfaceVariant = Color(0xFF2B3B4D), onSurfaceVariant = Muted, error = Coral,
+            primaryContainer = Color(0xFF60441F), onPrimaryContainer = Color(0xFFFFDEAD),
+            secondaryContainer = Color(0xFF214E42), onSecondaryContainer = Color(0xFFB6EFD5),
+            tertiary = Coral, onTertiary = Ink, tertiaryContainer = Color(0xFF633F40), onTertiaryContainer = Color(0xFFFFDAD7),
+            surfaceContainerLowest = Color(0xFF0D1723), surfaceContainerLow = Color(0xFF182636),
+            surfaceContainer = Panel, surfaceContainerHigh = Color(0xFF293C4F), surfaceContainerHighest = Color(0xFF31465B),
+            surfaceBright = Color(0xFF34475D), surfaceDim = Ink, surfaceTint = Saffron,
+            outline = Color(0xFF7F92A6), outlineVariant = Color(0xFF425467)),
         typography = Typography(
             headlineLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 36.sp, lineHeight = 42.sp),
             headlineMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 34.sp),

@@ -20,8 +20,8 @@ Branch: `shrey/full-tambola-game`.
 | --- | --- | --- |
 | M0: plan and branch | Complete | Plan and baseline checks above |
 | M1: native foundation and design | Complete for the initial prototype | Native Compose APK installs beside keyboard; normal/200% text UI reviewed; API 36 tooling, dependency verification, CI definition |
-| M2: shared ticket/rules engine | In progress | 17 tests pass, including 100,000 tickets, bounded custom rules and v1-save migration; custom-rule UI/catalog acceptance remains |
-| M3: complete offline alpha | In progress | Solo/computer/family UI, saved rounds, marking, voices, results; four emulator journeys pass; broader device/recovery acceptance remains |
+| M2: shared ticket/rules engine | Core implementation verified | 20 domain tests, 100,000 generated tickets, bounded custom rules, real v1→v2 APK save migration; optional six-ticket strips remain a separate extension |
+| M3: complete offline alpha | In progress | Solo/computer/family UI, custom editor/claims, ranked/90-call games, rematches, voices and results; alpha02 device/recovery evidence below; broader acceptance remains |
 | M4: room service and hosting spike | In progress | 16 real PostgreSQL/HTTP/WebSocket tests, 32-player correctness and actual Java-process restart pass; hosting/TLS/operations remain |
 | M5: online Android experience | Pending | — |
 | M6: final art/audio/accessibility | Pending | — |
@@ -60,6 +60,19 @@ Branch: `shrey/full-tambola-game`.
 - Added [service run/protocol documentation](../full-game/server/README.md), [service validation](../full-game/server/VALIDATION.md), and [custom rule format documentation](../full-game/domain/CUSTOM_RULES.md). The prior packaged APK and its evidence retain their original offline-only scope.
 - No cloud resources were provisioned. Provider/project/budget selection remains open; local implementation is proceeding. Android online UX, explicit data deletion, hosting/TLS/secrets, monitoring/backups/restore, load/security/device acceptance, final media and production signing remain unfinished.
 
-Next slice: expose the custom/terminal rule options in Android, build native private-room/session/reconnect flows against the tested protocol, and continue product UI/audio/accessibility work. See the full plan for the unchanged production scope.
+## 25 September 2026: Android custom rules and alpha02
+
+- Exposed the shared rule model through an Android editor with field validation, all selectors, bounded AND/OR groups, chosen owned tickets and minimum matching-ticket counts. Added a separate illustrative-ticket playground with positive/incomplete examples. The UI does not assign guessed definitions to regional names.
+- Setup now offers one/two/three houses and all-90-call play. It keeps incompatible custom rules visible when ticket allowance changes and prevents an invalid deal. Saved instance state retains draft edits across recreation; rematches retain the previous setup and deal a fresh round.
+- Claim inspection keeps rule definitions visible, displays actual selected/missing numbers, identifies all awarded tickets and explains why later matches cannot change an earlier award. Results count custom prizes and treat tied leaders equally. A sharing preview leaves names out by default and lets the player choose what to include.
+- Unified the standard engine/inspection selectors. **20 domain tests and four Android JVM setup tests pass**, including 250 varied compound/multi-ticket positive examples. **16 backend regression tests passed** after that engine reuse change. No hosted or native online claim is made.
+- The updated seven-journey emulator suite passed, including a complete **90-call** custom two-ticket prize game, saved results, editor recreation, configuration correction/discard and retained rematch options. A focused preview/inspection journey also passed at **360dp / 200% text** with Wi-Fi/mobile data disabled. See [alpha02 validation](../full-game/ALPHA02_VALIDATION.md) for exact scope and timings.
+- Direct instrumentation on the **final APK candidate** subsequently passed **8/8 in 182.416 seconds** at normal text size, including the new focused column-rule journey. These are eight unique Android journeys; the large-font run is an additional configuration check, not another distinct test case.
+- Visual review found and fixed a keyboard obscuring sample feedback. Input Done, selector and preview actions clear focus; normal and large-font screenshots were inspected. Surface/chip/dialog colors now consistently use the game's native palette.
+- Performed a real **alpha01→alpha02 APK update** on the dedicated emulator without clearing data between versions. A genuine version-1 round retained its identity, tickets, rules, five calls and two marks; a sixth call saved successfully as format version 2 and remained paused afterward. Added a guarded emulator snapshot utility for repeatable evidence.
+- Candidate **0.2.0-alpha02 / code 2** remains offline and debug signed. Its SHA-256 is `801f9655556dfa572af1618ff657bfcca240d5db24bbf0ac256cec8403d0a34d`; size 37,690,400 bytes. Signature identity matches alpha01. No Internet/API key is included in the app, and no paid generation or infrastructure provisioning occurred.
+- Build/lint pass with **0 errors and 1 KAPT/KSP warning**. Source and dependency checks pass. Cloud CI, physical phones, TalkBack, broad upgrade/fault/device/performance cases and production signing remain unverified.
+
+Next slice: build native private-room/session/reconnect flows against the tested protocol, then continue the planned badges, onboarding, UI/audio/accessibility and release work. Keep the table awake during active play and keep computer identities clear in every ticket/award view as part of the gameplay review. The hosting choice remains open; local work can continue. See the full plan for the unchanged production scope.
 
 Update this ledger after each milestone with exact commands, app/service revisions, artifact hashes, observed behavior, and remaining limitations. The broader APK goal remains unfinished until the production gates in the plan are satisfied.

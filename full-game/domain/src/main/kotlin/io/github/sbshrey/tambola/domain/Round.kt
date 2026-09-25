@@ -24,15 +24,7 @@ import java.util.UUID
     HOUSE_TWO("House two", 75, "The next group of newly completed tickets after House one."),
     HOUSE_THREE("House three", 50, "The next group of newly completed tickets after House two.");
 
-    fun matches(ticket: Ticket, called: Set<Int>): Boolean = when (this) {
-        EARLY_FIVE -> ticket.numbers.count { it in called } >= 5
-        EARLY_TEN -> ticket.numbers.count { it in called } >= 10
-        TOP_LINE -> ticket.row(0).all { it in called }
-        MIDDLE_LINE -> ticket.row(1).all { it in called }
-        BOTTOM_LINE -> ticket.row(2).all { it in called }
-        CORNERS -> ticket.corners.all { it in called }
-        else -> ticket.numbers.all { it in called }
-    }
+    fun matches(ticket: Ticket, called: Set<Int>): Boolean = condition().matches(ticket, called)
     val isRankedHouse: Boolean get() = this in setOf(HOUSE_ONE, HOUSE_TWO, HOUSE_THREE)
     companion object {
         val defaults = listOf(EARLY_FIVE, TOP_LINE, MIDDLE_LINE, BOTTOM_LINE, FULL_HOUSE)

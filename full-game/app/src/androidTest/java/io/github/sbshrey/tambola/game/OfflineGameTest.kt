@@ -2,7 +2,6 @@ package io.github.sbshrey.tambola.game
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.test.platform.app.InstrumentationRegistry
 import io.github.sbshrey.tambola.game.data.PreferenceStore
@@ -15,16 +14,8 @@ import org.junit.Test
 class OfflineGameTest {
     @get:Rule val compose = createAndroidComposeRule<MainActivity>()
 
-    private fun exists(text: String) = compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
-    private fun tap(text: String) {
-        val node = compose.onNodeWithText(text)
-        var ancestor = node.fetchSemanticsNode().parent
-        while (ancestor != null && !ancestor.config.contains(SemanticsActions.ScrollBy)) ancestor = ancestor.parent
-        // A partly visible chip may count as displayed while its center is offscreen.
-        if (ancestor != null) node.performScrollTo()
-        node.performClick()
-        compose.waitForIdle()
-    }
+    private fun exists(text: String) = compose.hasTextNow(text)
+    private fun tap(text: String) = compose.tapText(text)
 
     @Before fun reset() {
         runBlocking { PreferenceStore(InstrumentationRegistry.getInstrumentation().targetContext).update(Preferences(voice = false, reducedMotion = true)) }

@@ -3,20 +3,27 @@ package io.github.sbshrey.tambola.game
 import android.app.Application
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.audio.CallAudio
 import io.github.sbshrey.tambola.game.data.*
+import io.github.sbshrey.tambola.game.setup.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 enum class Screen { HOME, SETUP, GAME, RESULTS, HISTORY, SETTINGS }
 data class GameUiState(
     val loading: Boolean = true,
     val screen: Screen = Screen.HOME,
-    val setupMode: GameMode = GameMode.PRACTICE,
+    val setupDraft: SetupDraft = SetupDraft(),
+    val ruleDraft: CustomRuleDraft? = null,
+    val originalRuleDraft: CustomRuleDraft? = null,
+    val saving: Boolean = false,
     val round: Round? = null,
     val viewedResult: Round? = null,
     val history: List<SavedRound> = emptyList(),
@@ -25,7 +32,8 @@ data class GameUiState(
     val auto: Boolean = false,
 )
 
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+class GameViewModel(application: Application, private val savedState: SavedStateHandle) : AndroidViewModel(application) {
+    private val draftJson = Json { encodeDefaults = true }
     private val database = GameDatabase.open(application)
     private val repository = LocalGameRepository(database)
     private val preferences = PreferenceStore(application)
@@ -50,25 +58,69 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         if (screen != Screen.GAME) pause()
         mutable.update { it.copy(screen = screen, viewedResult = null) }
     }
-    fun setup(mode: GameMode) { pause(); mutable.update { it.copy(screen = Screen.SETUP, setupMode = mode) } }
+    fun setup(mode: GameMode) {
+        pause()
+        val draft = savedState.get<String>("setup_$mode")?.let { runCatching { draftJson.decodeFromString<SetupDraft>(it) }.getOrNull() } ?: SetupDraft.fresh(mode)
+        val editor = savedState.get<String>("rule_$mode")?.let { runCatching { draftJson.decodeFromString<CustomRuleDraft>(it) }.getOrNull() }
+        mutable.update { it.copy(screen = Screen.SETUP, setupDraft = draft, ruleDraft = editor, originalRuleDraft = editor) }
+    }
+    fun rematch(round: Round) {
+        pause()
+        val draft = SetupDraft.from(round)
+        updateSetup(draft)
+        cancelRule()
+        mutable.update { it.copy(screen = Screen.SETUP) }
+    }
+    fun updateSetup(draft: SetupDraft) {
+        savedState["setup_${draft.mode}"] = draftJson.encodeToString(draft)
+        mutable.update { it.copy(setupDraft = draft) }
+    }
+    fun editRule(prize: CustomPrize? = null) {
+        if (prize == null && mutable.value.setupDraft.customPrizes.size >= 12) return
+        val draft = prize?.let(CustomRuleDraft::from) ?: CustomRuleDraft()
+        updateRule(draft)
+        mutable.update { it.copy(originalRuleDraft = draft) }
+    }
+    fun updateRule(draft: CustomRuleDraft) {
+        savedState["rule_${mutable.value.setupDraft.mode}"] = draftJson.encodeToString(draft)
+        mutable.update { it.copy(ruleDraft = draft) }
+    }
+    fun cancelRule() {
+        savedState.remove<String>("rule_${mutable.value.setupDraft.mode}")
+        mutable.update { it.copy(ruleDraft = null, originalRuleDraft = null) }
+    }
+    fun saveRule() {
+        val state = mutable.value
+        val draft = state.ruleDraft ?: return
+        try {
+            val prize = draft.prize(state.setupDraft.tickets)
+            val existing = state.setupDraft.customPrizes
+            val rules = if (existing.any { it.id == prize.id }) existing.map { if (it.id == prize.id) prize else it } else existing + prize
+            require(rules.size <= 12)
+            updateSetup(state.setupDraft.copy(customPrizes = rules))
+            cancelRule()
+        } catch (error: IllegalArgumentException) { mutable.update { it.copy(error = error.message ?: "Check your prize settings.") } }
+    }
+    fun removeRule(id: String) { updateSetup(mutable.value.setupDraft.let { it.copy(customPrizes = it.customPrizes.filterNot { prize -> prize.id == id }) }) }
     fun clearError() { mutable.update { it.copy(error = null) } }
 
-    fun create(names: List<String>, count: Int, assisted: Boolean, prizes: List<Prize>, bots: Int) {
+    fun create() {
+        if (mutable.value.saving) return
+        val draft = mutable.value.setupDraft
+        mutable.update { it.copy(saving = true) }
         viewModelScope.launch {
             mutex.withLock {
                 try {
-                    val mode = mutable.value.setupMode
-                    require(names.isNotEmpty() && names.all { it.isNotBlank() && it.trim().length <= 40 }) { "Enter names of 1–40 characters." }
-                    require(mode != GameMode.FAMILY || names.size in 2..8) { "Family play needs 2–8 players." }
-                    require(mode != GameMode.PRACTICE || (names.size == 1 && bots in 0..5))
-                    val players = names.mapIndexed { i, name -> Player("p$i", name.trim()) } +
-                        if (mode == GameMode.PRACTICE) (1..bots).map { Player("bot$it", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[it - 1], true) } else emptyList()
-                    val round = withContext(Dispatchers.Default) { Round.create(players, RoundSettings(mode, count, assisted, prizes)).start() }
+                    val settings = draft.settings()
+                    val players = draft.playerNames.mapIndexed { i, name -> Player("p$i", name) } +
+                        if (draft.mode == GameMode.PRACTICE) (1..draft.bots).map { Player("bot$it", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[it - 1], true) } else emptyList()
+                    val round = withContext(Dispatchers.Default) { Round.create(players, settings).start() }
                     // Keep any previous in-progress round as a cancelled history entry.
                     repository.replaceActive(mutable.value.round, round)
                     audio.stop(); stopTimer(); lastDrawAt = -1_000
                     mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null) }
                 } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "The round could not be saved. Please try again.") } }
+                finally { mutable.update { it.copy(saving = false) } }
             }
         }
     }

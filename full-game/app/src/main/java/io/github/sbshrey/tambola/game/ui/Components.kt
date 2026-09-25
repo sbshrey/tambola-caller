@@ -121,19 +121,3 @@ fun TicketCard(ticket: Ticket, round: Round, haptics: Boolean, onMark: (String, 
         }, confirmButton = { TextButton(onClick = { edit = false }) { Text("Done") } })
     }
 }
-
-@Composable
-fun RuleList(round: Round) {
-    round.settings.prizes.forEach { prize ->
-        val award = round.awards.firstOrNull { it.prize == prize }
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(prize.title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                Text("${prize.points} pts", color = Saffron, style = MaterialTheme.typography.labelLarge)
-            }
-            Text(award?.let { a -> a.playerIds.joinToString { id -> round.players.first { it.id == id }.name } + " · call ${a.drawIndex}" } ?: prize.explanation,
-                color = if (award != null) Jade else Muted, style = MaterialTheme.typography.bodyMedium)
-        }
-        HorizontalDivider(color = Muted.copy(alpha = .15f))
-    }
-}
