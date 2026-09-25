@@ -3,6 +3,8 @@ package io.github.sbshrey.tambola.game.setup
 import io.github.sbshrey.tambola.domain.*
 import kotlinx.serialization.Serializable
 import java.util.UUID
+import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.game.presentation.requireUi
 
 @Serializable enum class SelectionKind(val title: String) { ALL("Whole ticket"), ROW("Row"), COLUMN("Column"), RANGE("Number range"), POSITIONS("Positions") }
 
@@ -22,10 +24,10 @@ import java.util.UUID
             SelectionKind.COLUMN -> NumberSelection.Column(index)
             SelectionKind.RANGE -> {
                 val low = first.toIntOrNull(); val high = last.toIntOrNull()
-                require(low != null && high != null && low in 1..90 && high in low..90) { "Use a range from 1 to 90, with the smaller number first." }
+                requireUi(low != null && high != null && low in 1..90 && high in low..90, R.string.error_range)
                 NumberSelection.Range(low, high)
             }
-            SelectionKind.POSITIONS -> { require(positions.isNotEmpty()) { "Select at least one populated position." }; NumberSelection.Positions(positions) }
+            SelectionKind.POSITIONS -> { requireUi(positions.isNotEmpty(), R.string.error_positions); NumberSelection.Positions(positions) }
         }
         val maximum = when (selection) {
             NumberSelection.All -> 15
@@ -35,7 +37,7 @@ import java.util.UUID
             is NumberSelection.Range -> (0..8).sumOf { columnRange(it).count { n -> n in selection.first..selection.last }.coerceAtMost(3) }.coerceAtMost(15)
         }
         val count = minimum.toIntOrNull()
-        require(all || (count != null && count in 1..maximum)) { "Choose a called count from 1 to $maximum for this selection." }
+        requireUi(all || (count != null && count in 1..maximum), R.string.error_called_count, maximum)
         return RuleCondition(selection, if (all) null else count)
     }
     companion object {
@@ -61,11 +63,11 @@ import java.util.UUID
     val ticketOrdinals: List<Int> = emptyList(),
 ) {
     fun prize(tickets: Int): CustomPrize {
-        require(title.isNotBlank() && title.trim().length <= 40 && title.none(Char::isISOControl)) { "Give your prize a name of 1–40 characters." }
+        requireUi(title.isNotBlank() && title.trim().length <= 40 && title.none(Char::isISOControl), R.string.error_prize_name)
         val score = points.toIntOrNull()
-        require(score != null && score in 1..1000) { "Choose 1–1,000 points." }
-        require(minimumTickets in 1..tickets && ticketOrdinals.all { it in 1..tickets }) { "This prize needs more tickets than each player receives." }
-        require(ticketOrdinals.isEmpty() || minimumTickets <= ticketOrdinals.size) { "Select at least $minimumTickets tickets, or use all owned tickets." }
+        requireUi(score != null && score in 1..1000, R.string.error_prize_points)
+        requireUi(minimumTickets in 1..tickets && ticketOrdinals.all { it in 1..tickets }, R.string.error_prize_needs_tickets)
+        requireUi(ticketOrdinals.isEmpty() || minimumTickets <= ticketOrdinals.size, R.string.error_select_tickets, minimumTickets)
         return CustomPrize(id, title.trim(), score, TicketPattern(groups.map { group -> group.map { it.condition() } }),
             minimumTickets = minimumTickets, ticketOrdinals = ticketOrdinals)
     }

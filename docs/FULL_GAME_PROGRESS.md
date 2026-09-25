@@ -24,7 +24,7 @@ Branch: `shrey/full-tambola-game`.
 | M3: complete offline alpha | In progress | Solo/computer/family UI, custom editor/claims, ranked/90-call games, rematches, voices, results, interactive tutorial and mode-specific badges; alpha04/05 evidence below; broader acceptance remains |
 | M4: room service and hosting spike | In progress | 27 PostgreSQL/HTTP/WebSocket tests, production-client integration, profile deletion/redaction/migration, 32-player correctness and actual Java-process restart pass; hosting/TLS/operations remain |
 | M5: online Android experience | In progress | Two independent native emulator UIs complete 90 calls and rematch; private tickets, matching awards/audit, cold-process pending draw/deletion retry and offline isolation verified; physical networks and broader recovery remain |
-| M6: final art/audio/accessibility | In progress | Light/dark/system appearance, native home illustration, finite number motion and contrast checks added in alpha06; final media, Hindi and broader accessibility/performance remain |
+| M6: final art/audio/accessibility | In progress | Light/dark/system appearance, native home illustration, finite number motion and contrast checks added in alpha06; alpha09 adds independent English/Hindi resources and retained-state language changes; editorial/device review and broader accessibility/performance remain |
 | M7: production validation | Pending | — |
 | M8: signed release and handoff | Pending | — |
 
@@ -147,3 +147,13 @@ Branch: `shrey/full-tambola-game`.
 Next slice: Hindi and broader accessibility work, additional table/deal/mark presentation, then network fault and device acceptance. Large-history deletion performance and deletion suppression after backup restore also remain. Hosting/TLS/operations, physical-device acceptance and production signing remain release gates. The hosting choice remains open; local work can continue. The full plan preserves this complete production scope.
 
 Update this ledger after each milestone with exact commands, app/service revisions, artifact hashes, observed behavior, and remaining limitations. The broader APK goal remains unfinished until the production gates in the plan are satisfied.
+
+## 26 September 2026: alpha09 interface localization
+
+- Added Android English/Hindi resources for the complete interface, accessibility text, standard/structural custom rules, setup validation, notices and results/sharing. The catalog contains 608 resources with matching keys, plural forms and formatting arguments; a CI check prevents catalog drift.
+- App language is independent of the recorded English/Hindi/Hinglish caller. Player names and custom titles stay as entered. AppCompat handles per-app locales and older-device persistence; Android 13+ locale configuration is declared. No protocol, database or save-format change was made.
+- Typed presentation messages resolve when displayed, including after Activity recreation. Stable online error codes map to localized explanations without displaying arbitrary service prose. Pending action identity/retry behavior stays unchanged.
+- Hindi visual review also exposed light icons in a light full-screen editor; both separate editor windows now synchronize their system-bar icon appearance.
+- Final candidate: `0.9.0-alpha09`, code 9, APK SHA-256 `0b0423bf200f1a3e5dc1d06a40e10658a9822a4399284c24dbb68c92facc95ee`, 42,559,944 bytes. All 72 JVM/service tests and 28 native cases pass; the four language cases also pass at 360dp/200% text. Normal/large Hindi screenshots were reviewed, device settings restored, and owned test services/mappings removed.
+- Debug validation completed in 2m 41s; optimized unsigned APK/AAB and release lint completed in 3m 22s. Both lint reports have zero errors and two documented warnings. The APK retains the earlier debug certificate; 747 packaged entries were scanned for bounded secret patterns and all five WAVs match source. No new paid generation, production signing or cloud deployment occurred.
+- Validation and exact candidate identity: [alpha09 report](../full-game/ALPHA09_VALIDATION.md). Public hosting, production signing and the broader physical-device/accessibility/operations gates remain unfinished; the production goal is active.

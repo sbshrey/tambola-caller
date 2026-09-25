@@ -32,7 +32,7 @@ data class GameUiState(
     val history: List<SavedRound> = emptyList(),
     val badges: Map<BadgeMode, BadgeProgress> = emptyMap(),
     val preferences: Preferences = Preferences(),
-    val error: String? = null,
+    val error: UiMessage? = null,
     val auto: Boolean = false,
     val winMoment: WinMoment? = null,
 )
@@ -45,7 +45,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
     private val mutex = Mutex()
     private val mutable = MutableStateFlow(GameUiState())
     val state: StateFlow<GameUiState> = mutable.asStateFlow()
-    private val audio = CallAudio(application) { mutable.update { it.copy(error = "The recording could not play. You can keep playing and read the number on screen.") } }
+    private val audio = CallAudio(application) { mutable.update { it.copy(error = UiMessage(R.string.error_recording)) } }
     private var timer: Job? = null
     private var lastDrawAt = -1_000L
     private var foreground = false
@@ -53,15 +53,15 @@ class GameViewModel(application: Application, private val savedState: SavedState
     init {
         viewModelScope.launch {
             try { mutable.update { it.copy(round = repository.restore(), loading = false) } }
-            catch (_: Exception) { mutable.update { it.copy(loading = false, error = "The saved round could not be restored. Your saved data has been kept.") } }
+            catch (_: Exception) { mutable.update { it.copy(loading = false, error = UiMessage(R.string.error_restore_round)) } }
         }
-        viewModelScope.launch { preferences.values.catch { mutable.update { it.copy(error = "Settings could not be loaded.") } }.collect { prefs ->
+        viewModelScope.launch { preferences.values.catch { mutable.update { it.copy(error = UiMessage(R.string.error_load_settings)) } }.collect { prefs ->
             GameAudio.get(application).configure(prefs)
             mutable.update { it.copy(preferences = prefs) }
         } }
         viewModelScope.launch {
             var previousCompleted: List<SavedRound>? = null
-            repository.history.catch { mutable.update { it.copy(error = "History could not be loaded.") } }.collect { rows ->
+            repository.history.catch { mutable.update { it.copy(error = UiMessage(R.string.error_load_history)) } }.collect { rows ->
             val completed = rows.filter { it.completed }
             val badges = if (completed == previousCompleted) mutable.value.badges else withContext(Dispatchers.Default) {
                 val progress = mutableMapOf<BadgeMode, BadgeProgress>()
@@ -123,7 +123,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
             require(rules.size <= 12)
             updateSetup(state.setupDraft.copy(customPrizes = rules))
             cancelRule()
-        } catch (error: IllegalArgumentException) { mutable.update { it.copy(error = error.message ?: "Check your prize settings.") } }
+        } catch (error: IllegalArgumentException) { mutable.update { it.copy(error = error.uiMessage(R.string.error_prize_settings)) } }
     }
     fun removeRule(id: String) { updateSetup(mutable.value.setupDraft.let { it.copy(customPrizes = it.customPrizes.filterNot { prize -> prize.id == id }) }) }
     fun clearError() { mutable.update { it.copy(error = null) } }
@@ -132,7 +132,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
     fun finishTutorial(completed: Boolean) {
         viewModelScope.launch {
             try { preferences.finishTutorial(completed); navigate(Screen.HOME) }
-            catch (_: Exception) { mutable.update { it.copy(error = "Tutorial progress could not be saved. Please try again.") } }
+            catch (_: Exception) { mutable.update { it.copy(error = UiMessage(R.string.error_save_tutorial)) } }
         }
     }
 
@@ -152,7 +152,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     audio.stop(); stopTimer(); lastDrawAt = -1_000
                     mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null, winMoment = null) }
                     if (foreground) audio.effect(SoundCue.DEAL)
-                } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "The round could not be saved. Please try again.") } }
+                } catch (error: Exception) { mutable.update { it.copy(error = error.uiMessage(R.string.error_save_round)) } }
                 finally { mutable.update { it.copy(saving = false) } }
             }
         }
@@ -172,7 +172,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     if (liveCall) audio.play(next.latest!!, mutable.value.preferences.language, celebration = moment != null)
                     if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
-                } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "Progress could not be saved. Please try again.") } }
+                } catch (error: Exception) { mutable.update { it.copy(error = error.uiMessage(R.string.error_save_progress)) } }
             }
         }
     }
@@ -204,21 +204,21 @@ class GameViewModel(application: Application, private val savedState: SavedState
     }
     private fun stopTimer() { timer?.cancel(); timer = null; mutable.update { it.copy(auto = false) } }
     fun updatePreferences(value: Preferences) {
-        viewModelScope.launch { try { preferences.update(value) } catch (_: Exception) { mutable.update { it.copy(error = "Settings could not be saved.") } } }
+        viewModelScope.launch { try { preferences.update(value) } catch (_: Exception) { mutable.update { it.copy(error = UiMessage(R.string.error_save_settings)) } } }
     }
     fun openHistory(saved: SavedRound) {
         try {
             val round = RoundCodec.decode(saved.payload)
-            if (!round.finished) { mutable.update { it.copy(error = "Resume the current round from Home.") }; return }
+            if (!round.finished) { mutable.update { it.copy(error = UiMessage(R.string.error_resume_home)) }; return }
             pause()
             mutable.update { it.copy(viewedResult = round, screen = Screen.RESULTS) }
-        } catch (_: Exception) { mutable.update { it.copy(error = "This saved result could not be read. It has been kept.") } }
+        } catch (_: Exception) { mutable.update { it.copy(error = UiMessage(R.string.error_read_result)) } }
     }
     fun deleteHistory() {
         stopTimer(); audio.stop(); dismissWin()
         viewModelScope.launch { mutex.withLock {
             try { repository.deleteAll(); mutable.update { it.copy(round = null, viewedResult = null, screen = Screen.HOME) } }
-            catch (_: Exception) { mutable.update { it.copy(error = "Saved rounds could not be deleted.") } }
+            catch (_: Exception) { mutable.update { it.copy(error = UiMessage(R.string.error_delete_rounds)) } }
         } }
     }
     override fun onCleared() { audio.stop(); database.close(); super.onCleared() }

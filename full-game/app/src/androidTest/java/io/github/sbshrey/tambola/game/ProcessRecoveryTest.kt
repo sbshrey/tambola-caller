@@ -149,7 +149,7 @@ class ProcessRecoveryTest {
             val server = api.read(peer.credentials.token, witness.code).snapshot
             if (kind == "delete") {
                 assertNull(OnlineStore(context).read()); assertNull(online.state.value.name)
-                assertTrue(online.state.value.notice!!.startsWith("Online profile deleted."))
+                assertEquals(R.string.notice_profile_deleted, online.state.value.notice!!.resource)
                 assertEquals(peer.credentials.playerId, server.hostId)
                 assertEquals("Deleted player", server.round!!.players.first { it.id == witness.playerId }.name)
                 val next = api.command(peer.credentials.token, witness.code, CommandRequest(UUID.randomUUID().toString(), server.revision, RoomAction.Draw))

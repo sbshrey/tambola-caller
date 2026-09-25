@@ -1,7 +1,7 @@
 package io.github.sbshrey.tambola.game
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.SystemBarStyle
@@ -19,7 +19,7 @@ import io.github.sbshrey.tambola.game.ui.TambolaApp
 import io.github.sbshrey.tambola.game.ui.TambolaTheme
 import io.github.sbshrey.tambola.game.audio.GameAudio
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val model: GameViewModel by viewModels()
     private val online: OnlineViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {

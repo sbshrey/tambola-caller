@@ -1,5 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
+import io.github.sbshrey.tambola.game.R
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -30,6 +32,7 @@ private val lessonTicket = Ticket("lesson-ticket-1", "lesson-player", listOf(
 /** A labelled, isolated example; never creates a Round, touches game saves, or earns a badge. */
 @Composable
 fun TutorialScreen(state: GameUiState, model: GameViewModel, scrollToTop: suspend () -> Unit) {
+    val words = gameText()
     var step by rememberSaveable { mutableIntStateOf(0) }
     var called by rememberSaveable { mutableStateOf(false) }
     var markedNumbers by rememberSaveable { mutableStateOf(emptyList<Int>()) }
@@ -41,109 +44,111 @@ fun TutorialScreen(state: GameUiState, model: GameViewModel, scrollToTop: suspen
     val won = Prize.TOP_LINE.matches(lessonTicket, calls.toSet())
     val award = if (won) listOf(Award(Prize.TOP_LINE, 5, listOf(lessonTicket.id), listOf(lessonTicket.playerId))) else emptyList()
     val table = TableRound("tutorial-example", RoundSettings(prizes = listOf(Prize.TOP_LINE, Prize.FULL_HOUSE)),
-        listOf(Player(lessonTicket.playerId, "Sample player")), listOf(lessonTicket), calls,
+        listOf(Player(lessonTicket.playerId, words(R.string.ui_sample_player))), listOf(lessonTicket), calls,
         mapOf(lessonTicket.id to markedNumbers.toSet().intersect(calls.toSet())), award, emptyList(), RoundStatus.PLAYING,
         mapOf(lessonTicket.playerId to if (won) Prize.TOP_LINE.points else 0), listOf(WinningTicket(lessonTicket.id, lessonTicket.playerId, 1)))
-    Eyebrow("YOUR FIRST GAME · ${step + 1} OF 5")
+    Eyebrow(words(R.string.ui_your_first_game_of_5, step + 1))
     LinearProgressIndicator(progress = { (step + 1) / 5f }, modifier = Modifier.fillMaxWidth(), color = Jade)
-    Text(listOf("A happy place to start.", "Meet your ticket.", "Hear it. Find it. Dab it.", "Fair wins, every time.", "You're ready for game night.")[step], style = MaterialTheme.typography.headlineLarge)
-    Text("Tutorial sample · your real games and badges stay untouched.", color = Muted, style = MaterialTheme.typography.bodySmall)
+    Text(listOf(words(R.string.ui_a_happy_place_to_start), words(R.string.ui_meet_your_ticket), words(R.string.ui_hear_it_find_it_dab_it), words(R.string.ui_fair_wins_every_time), words(R.string.ui_you_re_ready_for_game_night))[step], style = MaterialTheme.typography.headlineLarge)
+    Text(words(R.string.ui_tutorial_sample_your_real_games_and_badges_stay), color = Muted, style = MaterialTheme.typography.bodySmall)
     when (step) {
         0 -> {
-            Text("Tambola is a race to complete the patterns agreed before play. Numbers are called from 1 to 90, with no repeats.", color = Muted)
+            Text(words(R.string.ui_tambola_is_a_race_to_complete_the_patterns), color = Muted)
             GameCard {
-                Text("Make yourself comfortable", style = MaterialTheme.typography.titleLarge)
-                SettingSwitch("Tutorial voice", "Hear a sample call using the same offline voice as your games.", prefs.voice) { model.updatePreferences(prefs.copy(voice = it)) }
+                Text(words(R.string.ui_make_yourself_comfortable), style = MaterialTheme.typography.titleLarge)
+                SettingSwitch(words(R.string.ui_tutorial_voice), words(R.string.ui_hear_a_sample_call_using_the_same_offline), prefs.voice) { model.updatePreferences(prefs.copy(voice = it)) }
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("en" to "English", "hi" to "हिन्दी", "hinglish" to "Hinglish").forEach { (id, label) ->
                         FilterChip(prefs.language == id, { model.updatePreferences(prefs.copy(language = id)) }, label = { Text(label) })
                     }
                 }
-                Text("Number voices are AI-generated. Sound is optional; every call appears on screen.", color = Muted)
+                Text(words(R.string.ui_number_voices_are_ai_generated_sound_is_optional), color = Muted)
             }
         }
         1 -> {
-            Text("A ticket has 15 numbers: five in each of its three rows. Empty squares are spaces, not missing numbers. The columns group numbers from small to large.", color = Muted)
+            Text(words(R.string.ui_a_ticket_has_15_numbers_five_in_each), color = Muted)
             TicketCard(lessonTicket, table, false) { _, _ -> }
-            Text("This sample ticket is only for learning. Every real round deals fresh tickets.", color = Saffron)
+            Text(words(R.string.ui_this_sample_ticket_is_only_for_learning_every), color = Saffron)
         }
         2 -> {
             NumberBall(if (called) 7 else null, prefs.reducedMotion, compact = true)
-            if (!called) PrimaryAction("Try calling a number") { called = true; model.tutorialCall() }
-            else TextButton(onClick = model::tutorialCall, enabled = prefs.voice) { Text("Hear 7 again") }
-            Text(if (!called) "Make your first sample call." else if (!marked) "Seven is on your top row. Open Mark ticket, tap 7, then tap Done." else "Nice dab! Green means marked. Only called numbers can be marked; tap again to undo a dab.", color = if (marked) Jade else Muted)
+            if (!called) PrimaryAction(words(R.string.ui_try_calling_a_number)) { called = true; model.tutorialCall() }
+            else TextButton(onClick = model::tutorialCall, enabled = prefs.voice) { Text(words(R.string.ui_hear_7_again)) }
+            Text(if (!called) words(R.string.ui_make_your_first_sample_call) else if (!marked) words(R.string.ui_seven_is_on_your_top_row_open_mark) else words(R.string.ui_nice_dab_green_means_marked_only_called_numbers), color = if (marked) Jade else Muted)
             TicketCard(lessonTicket, table, prefs.haptics) { _, number -> if (number in calls) markedNumbers = if (number in markedNumbers) markedNumbers - number else markedNumbers + number }
-            Text("Prefer a helping hand? Choose assisted marking before a real round.", color = Muted)
+            Text(words(R.string.ui_prefer_a_helping_hand_choose_assisted_marking_before), color = Muted)
         }
         3 -> {
-            Text("Let's finish the sample top line. A line wins when all five of its numbers have been called.", color = Muted)
-            if (!topLine) PrimaryAction("Try a top-line win") { topLine = true }
+            Text(words(R.string.ui_let_s_finish_the_sample_top_line_a), color = Muted)
+            if (!topLine) PrimaryAction(words(R.string.ui_try_a_top_line_win)) { topLine = true }
             TicketCard(lessonTicket, table, false) { _, number -> if (number in calls) markedNumbers = if (number in markedNumbers) markedNumbers - number else markedNumbers + number }
             if (won) GameCard {
-                Eyebrow("TOP LINE VERIFIED", Jade)
-                Text("15 points · all five numbers called", style = MaterialTheme.typography.titleLarge)
-                Text("The whole line has been called. The game verifies wins from calls, so a missed dab cannot take away a prize. Players qualifying on the same call tie and each receive full points.", color = Muted)
+                Eyebrow(words(R.string.ui_top_line_verified), Jade)
+                Text(words(R.string.ui_15_points_all_five_numbers_called), style = MaterialTheme.typography.titleLarge)
+                Text(words(R.string.ui_the_whole_line_has_been_called_the_game), color = Muted)
             }
-            Text("Read the prizes before you ready up. Full house means all 15 numbers; a custom prize can use a different agreed pattern.", color = Muted)
+            Text(words(R.string.ui_read_the_prizes_before_you_ready_up_full), color = Muted)
         }
         4 -> {
             GameCard {
-                Text("Choose your table", style = MaterialTheme.typography.titleLarge)
-                Text("Solo: take your time, with optional computer players.\n\nOne device: pass the phone around for family tickets.\n\nOnline: join a private room with a code; everyone sees their own tickets.", color = Muted)
+                Text(words(R.string.ui_choose_your_table), style = MaterialTheme.typography.titleLarge)
+                Text(words(R.string.ui_solo_take_your_time_with_optional_computer_players), color = Muted)
             }
             GameCard {
-                Text("Keep the good moments", style = MaterialTheme.typography.titleLarge)
-                Text("Completed rounds earn badges. Ending early saves a cancelled result. Results show verified prizes and points; sharing asks you what to include. A rematch keeps the rules and deals fresh tickets.", color = Muted)
+                Text(words(R.string.ui_keep_the_good_moments), style = MaterialTheme.typography.titleLarge)
+                Text(words(R.string.ui_completed_rounds_earn_badges_ending_early_saves_a), color = Muted)
             }
-            Text("Use How to play any time to try this lesson again.", color = Jade)
+            Text(words(R.string.ui_use_how_to_play_any_time_to_try), color = Jade)
         }
     }
-    if (step < 4) PrimaryAction(if (step == 0) "Show me the ticket" else "Next lesson", enabled = when (step) { 2 -> marked; 3 -> won; else -> true }) { step++ }
-    else PrimaryAction("Finish tutorial") { model.finishTutorial(true) }
+    if (step < 4) PrimaryAction(if (step == 0) words(R.string.ui_show_me_the_ticket) else words(R.string.ui_next_lesson), enabled = when (step) { 2 -> marked; 3 -> won; else -> true }) { step++ }
+    else PrimaryAction(words(R.string.ui_finish_tutorial)) { model.finishTutorial(true) }
     FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (step > 0) TextButton(onClick = { step-- }) { Text("Previous lesson") }
-        TextButton(onClick = { model.finishTutorial(false) }) { Text("Skip for now") }
+        if (step > 0) TextButton(onClick = { step-- }) { Text(words(R.string.ui_previous_lesson)) }
+        TextButton(onClick = { model.finishTutorial(false) }) { Text(words(R.string.ui_skip_for_now)) }
     }
 }
 
 @Composable
 fun BadgesScreen(state: GameUiState, online: OnlineUiState) {
+    val words = gameText()
     var mode by rememberSaveable { mutableStateOf(BadgeMode.SOLO) }
-    Eyebrow("LITTLE MILESTONES. LOVELY MEMORIES.")
-    Text("Your badges", style = MaterialTheme.typography.headlineLarge)
-    Text("Free social play, with something to smile about. Each mode has its own milestones.", color = Muted)
+    Eyebrow(words(R.string.ui_little_milestones_lovely_memories))
+    Text(words(R.string.ui_your_badges), style = MaterialTheme.typography.headlineLarge)
+    Text(words(R.string.ui_free_social_play_with_something_to_smile_about), color = Muted)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        BadgeMode.entries.forEach { item -> FilterChip(mode == item, { mode = item }, label = { Text(item.title) }) }
+        BadgeMode.entries.forEach { item -> FilterChip(mode == item, { mode = item }, label = { Text(words.badgeModeTitle(item)) }) }
     }
-    Text(mode.description, color = Muted)
-    if (mode == BadgeMode.ONLINE && online.name == null) Text("Open online play to set up a profile. Badges stay with that profile's encrypted data on this device.", color = Saffron)
-    else if (mode == BadgeMode.ONLINE) Text("Playing as ${online.name}", color = Jade)
+    Text(words.badgeModeDescription(mode), color = Muted)
+    if (mode == BadgeMode.ONLINE && online.name == null) Text(words(R.string.ui_open_online_play_to_set_up_a_profile), color = Saffron)
+    else if (mode == BadgeMode.ONLINE) Text(words(R.string.ui_playing_as, online.name), color = Jade)
     BadgeCollection(if (mode == BadgeMode.ONLINE) online.badges else state.badges[mode] ?: BadgeProgress(), state.preferences.reducedMotion)
-    Text(if (mode == BadgeMode.ONLINE) "Reconnecting or revisiting a result never counts it twice. Online badges remain when older cached results roll out of history; signing out or resetting online data removes them from this device. They are not a global leaderboard."
-        else "Badges come from your saved completed rounds. Cancelled rounds and the tutorial do not count. Deleting offline rounds also clears these offline badges.", color = Muted, style = MaterialTheme.typography.bodySmall)
+    Text(if (mode == BadgeMode.ONLINE) words(R.string.ui_reconnecting_or_revisiting_a_result_never_counts_it)
+        else words(R.string.ui_badges_come_from_your_saved_completed_rounds_cancelled), color = Muted, style = MaterialTheme.typography.bodySmall)
 }
 
 @Composable
 fun BadgeCollection(progress: BadgeProgress, reducedMotion: Boolean) {
+    val words = gameText()
     Badge.entries.forEach { badge ->
         val earned = progress.earned(badge)
         var shown by remember(badge, earned) { mutableStateOf(false) }
         LaunchedEffect(badge, earned) { shown = true }
         val scale by animateFloatAsState(if (shown || !earned) 1f else .85f, tween(if (reducedMotion) 0 else 200), label = "badge reveal")
-        GameCard(Modifier.testTag("badge-${badge.name}").semantics(mergeDescendants = true) { stateDescription = if (earned) "Earned" else "Not yet earned" }) {
+        GameCard(Modifier.testTag("badge-${badge.name}").semantics(mergeDescendants = true) { stateDescription = if (earned) words(R.string.ui_earned) else words(R.string.ui_not_yet_earned) }) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Box(Modifier.size(58.dp).scale(if (reducedMotion) 1f else scale).background(if (earned) Saffron else MaterialTheme.colorScheme.surfaceContainerHighest, CircleShape).clearAndSetSemantics {}, contentAlignment = Alignment.Center) {
                     Text(badge.symbol, color = if (earned) MaterialTheme.colorScheme.onPrimary else Muted, fontSize = 24.sp, fontWeight = FontWeight.Black)
                 }
                 Column(Modifier.weight(1f)) {
-                    Text(badge.title, style = MaterialTheme.typography.titleLarge)
-                    Text(if (earned) "Earned" else "Still to come", color = if (earned) Jade else Muted)
+                    Text(words.badgeTitle(badge), style = MaterialTheme.typography.titleLarge)
+                    Text(if (earned) words(R.string.ui_earned) else words(R.string.ui_still_to_come), color = if (earned) Jade else Muted)
                 }
             }
-            Text(badge.explanation, color = Muted)
+            Text(words.badgeExplanation(badge), color = Muted)
             if (badge == Badge.FIVE_ROUNDS && !earned) {
                 LinearProgressIndicator(progress = { progress.completedRoundIds.size / 5f }, modifier = Modifier.fillMaxWidth(), color = Jade)
-                Text("${progress.completedRoundIds.size} of 5 completed rounds", color = Jade)
+                Text(words(R.string.ui_of_5_completed_rounds, progress.completedRoundIds.size), color = Jade)
             }
         }
     }

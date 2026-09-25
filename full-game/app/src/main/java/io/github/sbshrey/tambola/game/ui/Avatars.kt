@@ -1,5 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
+import io.github.sbshrey.tambola.game.R
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
@@ -38,9 +40,10 @@ enum class GameAvatar(val label: String, val paper: Color) {
 
 @Composable
 fun AvatarBadge(id: Int, modifier: Modifier = Modifier, size: Dp = 40.dp) {
+    val words = gameText()
     val avatar = GameAvatar.from(id)
     Canvas(modifier.size(size).clip(CircleShape).background(avatar.paper)
-        .semantics { contentDescription = "${avatar.label} avatar" }) {
+        .semantics { contentDescription = words(R.string.ui_avatar, words.avatar(avatar.ordinal)) }) {
         withTransform({ scale(this@Canvas.size.width / 100f, this@Canvas.size.height / 100f, Offset.Zero) }) {
             val ink = Color(0xFF23453B)
             val amber = Color(0xFFE79A25)
@@ -128,12 +131,13 @@ fun AvatarBadge(id: Int, modifier: Modifier = Modifier, size: Dp = 40.dp) {
 
 @Composable
 fun AvatarChoice(owner: String, selected: Int, enabled: Boolean = true, choose: (Int) -> Unit) {
+    val words = gameText()
     var open by rememberSaveable(owner) { mutableStateOf(false) }
     OutlinedButton(onClick = { open = true }, enabled = enabled, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         AvatarBadge(selected)
-        Text("$owner · ${GameAvatar.from(selected).label}\nChoose avatar", modifier = Modifier.weight(1f).padding(start = 12.dp))
+        Text(words(R.string.ui_nchoose_avatar, owner, words.avatar(selected)), modifier = Modifier.weight(1f).padding(start = 12.dp))
     }
-    if (open) AlertDialog(onDismissRequest = { open = false }, title = { Text("Avatar for $owner") }, text = {
+    if (open) AlertDialog(onDismissRequest = { open = false }, title = { Text(words(R.string.ui_avatar_for, owner)) }, text = {
         val tileSize = 82.dp * LocalDensity.current.fontScale.coerceAtLeast(1f).coerceAtMost(2f)
         FlowRow(Modifier.verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             GameAvatar.entries.forEach { avatar ->
@@ -142,13 +146,13 @@ fun AvatarChoice(owner: String, selected: Int, enabled: Boolean = true, choose: 
                     .background(if (active) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest)
                     .border(if (active) 2.dp else 1.dp, if (active) Jade else Muted, RoundedCornerShape(16.dp))
                     .selectable(active, role = Role.RadioButton) { choose(avatar.ordinal); open = false }
-                    .semantics { contentDescription = "${avatar.label} avatar"; stateDescription = if (active) "Selected" else "Not selected" }
+                    .semantics { contentDescription = words(R.string.ui_avatar, words.avatar(avatar.ordinal)); stateDescription = if (active) words(R.string.ui_selected) else words(R.string.ui_not_selected) }
                     .padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     AvatarBadge(avatar.ordinal, Modifier.clearAndSetSemantics {}, size = 48.dp)
-                    Text(avatar.label, color = if (active) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface, modifier = Modifier.clearAndSetSemantics {})
+                    Text(words.avatar(avatar.ordinal), color = if (active) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface, modifier = Modifier.clearAndSetSemantics {})
                     Text(if (active) "✓" else " ", color = Jade, modifier = Modifier.clearAndSetSemantics {})
                 }
             }
         }
-    }, confirmButton = { TextButton(onClick = { open = false }) { Text("Keep current avatar") } })
+    }, confirmButton = { TextButton(onClick = { open = false }) { Text(words(R.string.ui_keep_current_avatar)) } })
 }

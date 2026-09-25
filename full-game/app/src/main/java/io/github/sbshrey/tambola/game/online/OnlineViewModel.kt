@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.sbshrey.tambola.client.*
 import io.github.sbshrey.tambola.domain.RoundStatus
 import io.github.sbshrey.tambola.domain.BadgeProgress
+import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
 import io.github.sbshrey.tambola.game.audio.SoundCue
@@ -36,8 +37,8 @@ data class OnlineUiState(
     val deletingProfile: Boolean = false,
     val sessionExpired: Boolean = false,
     val storageFailure: Boolean = false,
-    val error: String? = null,
-    val notice: String? = null,
+    val error: UiMessage? = null,
+    val notice: UiMessage? = null,
     val winMoment: WinMoment? = null,
 )
 
@@ -52,7 +53,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private var stream: Job? = null
     private var operation: Job? = null
     private var preferences = Preferences()
-    private val audio = CallAudio(application) { mutable.update { it.copy(error = "The number recording could not play. The number is still on screen.") } }
+    private val audio = CallAudio(application) { mutable.update { it.copy(error = UiMessage(R.string.error_online_recording)) } }
 
     init {
         viewModelScope.launch { PreferenceStore(application).values.catch { }.collect { preferences = it } }
@@ -64,7 +65,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 saved = restored
                 publish()
             } catch (_: Exception) {
-                mutable.update { it.copy(storageFailure = true, error = "Your saved online session could not be opened. It has been kept on this device. You can reset online data to begin again.") }
+                mutable.update { it.copy(storageFailure = true, error = UiMessage(R.string.error_online_restore)) }
             }
             mutable.update { it.copy(loading = false) }
             connect()
@@ -100,7 +101,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun register(name: String, avatar: Int = 0) {
         val trimmed = name.trim()
         if (trimmed.isEmpty() || trimmed.length > 40 || trimmed.any(Char::isISOControl) || avatar !in 0 until io.github.sbshrey.tambola.domain.AVATAR_COUNT) {
-            mutable.update { it.copy(error = "Use a name of 1–40 characters.") }; return
+            mutable.update { it.copy(error = UiMessage(R.string.error_online_name)) }; return
         }
         if (mutable.value.busy || saved != null || api == null || mutable.value.storageFailure) return
         mutable.update { it.copy(busy = true, error = null) }
@@ -116,12 +117,12 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun create(options: RoomOptions = RoomOptions()) = begin(PendingOperation.Create(CreateRoomRequest(UUID.randomUUID().toString(), options)))
     fun join(rawCode: String) {
         val code = rawCode.trim().uppercase()
-        if (!Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = "Enter the 8-character room code.") }; return }
+        if (!Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         begin(PendingOperation.Join(code))
     }
     fun command(action: RoomAction) {
         val room = saved?.room ?: return
-        if (mutable.value.connection != Connection.LIVE) { mutable.update { it.copy(error = "Reconnect before changing the room.") }; return }
+        if (mutable.value.connection != Connection.LIVE) { mutable.update { it.copy(error = UiMessage(R.string.error_reconnect)) }; return }
         begin(PendingOperation.Command(room.code, CommandRequest(UUID.randomUUID().toString(), room.revision, action)))
     }
     fun logout() = begin(PendingOperation.Logout)
@@ -129,7 +130,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private fun begin(pending: PendingOperation) {
         if (saved == null || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || (mutable.value.sessionExpired && pending !is PendingOperation.DeleteProfile)) return
         if (pending is PendingOperation.Create || pending is PendingOperation.Join) {
-            if (saved?.room != null) { mutable.update { it.copy(error = "Leave your current room before opening another.") }; return }
+            if (saved?.room != null) { mutable.update { it.copy(error = UiMessage(R.string.error_leave_first)) }; return }
         }
         if (pending is PendingOperation.DeleteProfile) { stream?.cancel(); stream = null; audio.stop() }
         mutable.update { it.copy(busy = true, error = null, notice = null,
@@ -169,7 +170,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 if (pending == PendingOperation.Logout || pending is PendingOperation.DeleteProfile) {
                     stream?.cancel(); stream = null; audio.stop(); persist(null)
                     mutable.update { it.copy(connection = Connection.IDLE, sessionExpired = false,
-                        notice = if (deletionConfirmed) "Online profile deleted. Its name and avatar were removed from service records. Online data on this device was cleared; offline games stay here." else null) }
+                        notice = if (deletionConfirmed) UiMessage(R.string.notice_profile_deleted) else null) }
                 } else if (pending is PendingOperation.Command && pending.request.action == RoomAction.Leave) {
                     stream?.cancel(); stream = null; audio.stop(); persist(latest.copy(room = null, marks = emptyMap(), pending = null))
                     mutable.update { it.copy(connection = Connection.IDLE) }
@@ -192,7 +193,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             }
             throw error
         } catch (error: LocalStorageFailure) {
-            if (deletionConfirmed) mutable.update { it.copy(notice = "The service confirmed profile deletion, but this device's data could not be cleared. Use Reset online data after resolving the storage problem.") }
+            if (deletionConfirmed) mutable.update { it.copy(notice = UiMessage(R.string.notice_deletion_storage)) }
             throw error
         }
     }
@@ -223,7 +224,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                     if (error.status == 401) { showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break }
                     if (error.code in setOf("not_member", "room_missing", "room_closed")) {
                         mutex.withLock { saved?.let { persist(it.copy(room = null, marks = emptyMap())) } }
-                        mutable.update { it.copy(connection = Connection.IDLE, error = "This room is no longer available to your profile.") }; break
+                        mutable.update { it.copy(connection = Connection.IDLE, error = UiMessage(R.string.error_room_unavailable)) }; break
                     }
                 } catch (error: LocalStorageFailure) { showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break }
                 catch (error: InvalidRoomResponse) { showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break }
@@ -274,15 +275,15 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private fun showFailure(error: Exception) {
         val message = when (error) {
             is RoomApiFailure -> when (error.status) {
-                401 -> if (saved?.pending is PendingOperation.DeleteProfile) "Profile deletion could not be confirmed. Retry the same pending request; resetting this device does not prove server deletion."
-                    else "Your online session has expired or was revoked. You can request profile deletion before resetting local online data."
-                409 -> if (error.code == "stale_revision") "The room changed. Review its latest state and try your action again." else error.userMessage
-                413 -> "This set of rules is too large for the service. Reduce the number or complexity of custom prizes and try again."
-                else -> error.userMessage
+                401 -> if (saved?.pending is PendingOperation.DeleteProfile) UiMessage(R.string.error_delete_unconfirmed)
+                    else UiMessage(R.string.error_session_expired)
+                409 -> if (error.code == "stale_revision") UiMessage(R.string.error_stale_revision) else roomFailureMessage(error)
+                413 -> UiMessage(R.string.error_rules_large)
+                else -> roomFailureMessage(error)
             }
-            is InvalidRoomResponse -> "The service returned an incompatible response. Your last confirmed data has been kept."
-            is LocalStorageFailure -> "Online progress could not be saved on this device. Your previous saved session has been kept."
-            else -> if (saved?.pending != null) "The action could not be confirmed. Retry the pending action to find out whether it completed." else "The room service could not be reached. Check your connection and try again."
+            is InvalidRoomResponse -> UiMessage(R.string.error_incompatible)
+            is LocalStorageFailure -> UiMessage(R.string.error_online_save)
+            else -> if (saved?.pending != null) UiMessage(R.string.error_action_unconfirmed) else UiMessage(R.string.error_service_unreachable)
         }
         mutable.update { it.copy(error = message, sessionExpired = it.sessionExpired || (error is RoomApiFailure && error.status == 401)) }
     }

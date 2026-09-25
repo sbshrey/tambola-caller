@@ -1,5 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
+import io.github.sbshrey.tambola.game.R
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,31 +18,34 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SoundNotice() {
+    val words = gameText()
     val mixer = GameAudio.get(LocalContext.current)
     val pause by mixer.pause.collectAsStateWithLifecycle()
     pause?.let { reason ->
         GameCard {
-            Text(reason.message, style = MaterialTheme.typography.bodyMedium)
-            if (reason != SoundPause.WAITING) TextButton(onClick = mixer::resumeSound) { Text("Resume sound") }
+            Text(words.soundPause(reason), style = MaterialTheme.typography.bodyMedium)
+            if (reason != SoundPause.WAITING) TextButton(onClick = mixer::resumeSound) { Text(words(R.string.ui_resume_sound)) }
         }
     }
 }
 
 @Composable
 fun SoundSettings(prefs: Preferences, update: (Preferences) -> Unit) {
+    val words = gameText()
     GameCard {
-        Text("Set the mood", style = MaterialTheme.typography.titleLarge)
-        SettingSwitch("Background music", "A Little Game Night · an original, gentle instrumental loop.", prefs.music) { update(prefs.copy(music = it)) }
-        SoundVolume("Music volume", prefs.musicVolume, prefs.music) { update(prefs.copy(musicVolume = it)) }
-        SettingSwitch("Game sounds", "Soft cues for new tickets, marking, calls and verified wins.", prefs.effects) { update(prefs.copy(effects = it)) }
-        SoundVolume("Effects volume", prefs.effectsVolume, prefs.effects) { update(prefs.copy(effectsVolume = it)) }
-        Text("Music softens under spoken numbers. Sound stops when you leave the app; after an audio device disconnects, choose Resume sound when you're ready.", color = Muted)
-        Text("Music and effects are original synthesized sounds, packaged for offline play.", color = Muted, style = MaterialTheme.typography.bodySmall)
+        Text(words(R.string.ui_set_the_mood), style = MaterialTheme.typography.titleLarge)
+        SettingSwitch(words(R.string.ui_background_music), words(R.string.ui_a_little_game_night_an_original_gentle_instrumental), prefs.music) { update(prefs.copy(music = it)) }
+        SoundVolume(words(R.string.ui_music_volume), prefs.musicVolume, prefs.music) { update(prefs.copy(musicVolume = it)) }
+        SettingSwitch(words(R.string.ui_game_sounds), words(R.string.ui_soft_cues_for_new_tickets_marking_calls_and), prefs.effects) { update(prefs.copy(effects = it)) }
+        SoundVolume(words(R.string.ui_effects_volume), prefs.effectsVolume, prefs.effects) { update(prefs.copy(effectsVolume = it)) }
+        Text(words(R.string.ui_music_softens_under_spoken_numbers_sound_stops_when), color = Muted)
+        Text(words(R.string.ui_music_and_effects_are_original_synthesized_sounds_packaged), color = Muted, style = MaterialTheme.typography.bodySmall)
     }
 }
 
 @Composable
 fun SoundVolume(label: String, value: Int, enabled: Boolean = true, update: (Int) -> Unit) {
+    val words = gameText()
     var draft by remember(value) { mutableFloatStateOf(value.toFloat()) }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text("$label · ${draft.roundToInt()}%", style = MaterialTheme.typography.bodyMedium, color = Muted)

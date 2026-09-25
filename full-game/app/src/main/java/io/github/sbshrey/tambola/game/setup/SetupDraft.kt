@@ -2,6 +2,8 @@ package io.github.sbshrey.tambola.game.setup
 
 import io.github.sbshrey.tambola.domain.*
 import kotlinx.serialization.Serializable
+import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.game.presentation.*
 
 @Serializable
 data class SetupDraft(
@@ -24,20 +26,20 @@ data class SetupDraft(
         require(index in seats && value in 0 until AVATAR_COUNT)
         return copy(avatars = seats.map { if (it == index) value else avatar(it) })
     }
-    val errors: List<String> get() = buildList {
-        if (playerNames.any { it.length > 40 || it.any(Char::isISOControl) }) add("Each name needs 1–40 characters without control characters.")
-        if (mode == GameMode.PRACTICE && playerNames.size != 1) add("Enter your name to begin.")
-        if (mode == GameMode.FAMILY && playerNames.size !in 2..8) add("Family play needs 2–8 players, one name per line.")
-        if (playerNames.map(String::lowercase).distinct().size != playerNames.size) add("Give each player a different name so everyone can recognise their tickets.")
-        if (tickets !in 1..6 || bots !in 0..5 || houses !in 1..3) add("Choose supported ticket, player and house counts.")
-        if (avatars.size > 8 || avatars.any { it !in 0 until AVATAR_COUNT }) add("Choose a supported avatar for each player.")
-        if (mode != GameMode.ONLINE && houses > playerCount * tickets) add("$houses houses need at least $houses tickets at the table.")
+    val errors: List<UiMessage> get() = buildList {
+        if (playerNames.any { it.length > 40 || it.any(Char::isISOControl) }) add(UiMessage(R.string.error_name_length))
+        if (mode == GameMode.PRACTICE && playerNames.size != 1) add(UiMessage(R.string.error_enter_name))
+        if (mode == GameMode.FAMILY && playerNames.size !in 2..8) add(UiMessage(R.string.error_family_count))
+        if (playerNames.map(String::lowercase).distinct().size != playerNames.size) add(UiMessage(R.string.error_unique_names))
+        if (tickets !in 1..6 || bots !in 0..5 || houses !in 1..3) add(UiMessage(R.string.error_supported_counts))
+        if (avatars.size > 8 || avatars.any { it !in 0 until AVATAR_COUNT }) add(UiMessage(R.string.error_supported_avatar))
+        if (mode != GameMode.ONLINE && houses > playerCount * tickets) add(UiMessage(R.string.error_house_tickets, listOf(houses)))
         customPrizes.filter { it.minimumTickets > tickets || it.ticketOrdinals.any { ordinal -> ordinal > tickets } }.forEach {
-            add("${it.title} needs more tickets. Edit the prize or increase tickets per player.")
+            add(UiMessage(R.string.error_prize_tickets, listOf(it.title)))
         }
     }
     fun settings(): RoundSettings {
-        require(errors.isEmpty()) { errors.first() }
+        errors.firstOrNull()?.let { throw UiMessageException(it) }
         val housePrizes = if (houses == 1) listOf(Prize.FULL_HOUSE) else listOf(Prize.HOUSE_ONE, Prize.HOUSE_TWO, Prize.HOUSE_THREE).take(houses)
         return RoundSettings(mode, tickets, assisted, prizes + housePrizes, playAllNumbers, customPrizes)
     }

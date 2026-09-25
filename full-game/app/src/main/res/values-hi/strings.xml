@@ -1,0 +1,24 @@
+<resources>
+    <string name="your_ticket">आपका टिकट</string>
+    <string name="named_ticket">%1$s का टिकट</string>
+    <plurals name="numbers_called">
+        <item quantity="one">%d नंबर पुकारा गया</item>
+        <item quantity="other">%d नंबर पुकारे गए</item>
+    </plurals>
+    <plurals name="player_count">
+        <item quantity="one">%d खिलाड़ी</item>
+        <item quantity="other">%d खिलाड़ी</item>
+    </plurals>
+    <plurals name="ticket_count">
+        <item quantity="one">%d टिकट</item>
+        <item quantity="other">%d टिकट</item>
+    </plurals>
+    <plurals name="call_count">
+        <item quantity="one">%d पुकार</item>
+        <item quantity="other">%d पुकारें</item>
+    </plurals>
+    <plurals name="prize_count">
+        <item quantity="one">%d इनाम</item>
+        <item quantity="other">%d इनाम</item>
+    </plurals>
+</resources>

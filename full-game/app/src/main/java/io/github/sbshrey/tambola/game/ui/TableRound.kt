@@ -20,13 +20,7 @@ data class TableRound(
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
     fun score(playerId: String): Int = scores[playerId] ?: 0
-    fun ticketLabel(id: String): String {
-        val owner = ticketOwners.firstOrNull { it.id == id } ?: return "Winning ticket"
-        return "${players.firstOrNull { it.id == owner.playerId }?.displayLabel() ?: "Player"} · ticket ${owner.ordinal}"
-    }
 }
-
-fun Player.displayLabel(): String = name + if (computer) " · computer" else ""
 
 fun Round.toTable(): TableRound = TableRound(id, settings, players, tickets, called, marks, awards,
     customAwards, status, players.associate { it.id to score(it.id) }, players.flatMap { player ->

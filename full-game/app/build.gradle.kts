@@ -15,9 +15,10 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "0.8.0-alpha08"
+        versionCode = 9
+        versionName = "0.9.0-alpha09"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resourceConfigurations += listOf("en", "hi")
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
@@ -77,6 +78,7 @@ val prepareSounds by tasks.registering(Sync::class) {
 }
 tasks.named("preBuild") { dependsOn(prepareVoices, prepareSounds) }
 dependencies {
+    implementation(libs.appcompat)
     implementation(project(":domain"))
     implementation(project(":protocol"))
     implementation(project(":client"))

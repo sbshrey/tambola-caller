@@ -2,7 +2,9 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-The alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. Native private rooms include a lobby, private tickets, host controls, encrypted sessions and reconnect flows against the local [room service](server/README.md). The interactive tutorial teaches calling/marking/verification on an isolated sample ticket, and each mode has completion/house badges. Explicit online-profile deletion includes shared-record redaction and durable confirmation retries. See [alpha05 validation](ALPHA05_VALIDATION.md) and the [native client guide](client/README.md). Final presentation/audio acceptance, Hindi UI, hosted play and production release validation remain unfinished.
+The alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. Native private rooms include a lobby, private tickets, host controls, encrypted sessions and reconnect flows against the local [room service](server/README.md). The interactive tutorial teaches calling/marking/verification on an isolated sample ticket, and each mode has completion/house badges. Explicit online-profile deletion includes shared-record redaction and durable confirmation retries. See [alpha05 validation](ALPHA05_VALIDATION.md) and the [native client guide](client/README.md). Final presentation/audio acceptance, Hindi editorial/device acceptance, hosted play and production release validation remain unfinished.
+
+The alpha09 language update adds an independent English/Hindi interface choice, localized rules/errors/accessibility text and result sharing. Language changes retain game and editor state; caller voice remains independent. See [localization notes](LOCALIZATION.md), [alpha09 validation](ALPHA09_VALIDATION.md) and the [installation guide](ALPHA_INSTALL.md).
 
 The alpha08 presentation update adds eight original selectable avatars and finite, dismissible celebrations for verified live wins. Choices persist through rematches; online lobby changes update the profile, and deletion redacts stored/visible identities. See [avatar and compatibility notes](AVATARS.md), [presentation direction](PRESENTATION.md) and [alpha08 validation](ALPHA08_VALIDATION.md).
 
@@ -15,6 +17,7 @@ The alpha06 appearance update adds saved System/Light/Dark themes, native home a
 JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 8.13 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update.
 
 ```powershell
+python tools/check-localization.py
 .\gradlew.bat :domain:test :app:assembleDebug :app:lintDebug
 .\gradlew.bat :app:connectedDebugAndroidTest
 ```

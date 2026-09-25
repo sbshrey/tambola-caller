@@ -110,7 +110,7 @@ class OnlineGameTest {
             tap("Retry pending action")
             until { model.state.value.name == null && !model.state.value.busy }
             assertNull(OnlineStore(context).read())
-            assertTrue(model.state.value.notice!!.startsWith("Online profile deleted."))
+            assertEquals(R.string.notice_profile_deleted, model.state.value.notice!!.resource)
             val remaining = peerApi.read(peer.token, code).snapshot
             assertEquals(peer.playerId, remaining.hostId)
             assertTrue(remaining.members.none { it.playerId == original.credentials.playerId })

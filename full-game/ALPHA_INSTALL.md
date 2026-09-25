@@ -1,17 +1,19 @@
-# Tambola Together 0.8.0-alpha08
+# Tambola Together 0.9.0-alpha09
 
 This is an internal **development alpha**, signed with an Android debug certificate. Solo and family play work offline. Native private rooms require a separately configured room service; this package targets a local test service, not a public hosted service. It is not the production release. Use fictional player names while testing. A future release signed with the production certificate may require uninstalling this alpha, which clears its local history.
 
 Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
 
-1. Copy `Tambola-Together-0.8.0-alpha08.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads earlier saved games, then writes a newer format; returning to an older APK over those saves is unsupported.
+1. Copy `Tambola-Together-0.9.0-alpha09.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
 2. If Android asks, allow APK installation for the app you opened the file from.
 3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.
 4. Use **Call next number** or **Auto**. Tap **Mark ticket** for large buttons, or select assisted marking during setup.
 5. Open **Check claims** for automatically verified prizes. **Inspect** shows the required numbers, missing calls and winning tickets. Finish at the chosen house, or continue through all 90 calls when that option is enabled.
 6. **Play another round** keeps your players, ticket allowance and rules in setup; dealing starts a new round with fresh tickets. **Share these results** first shows a message preview. Player names are excluded unless you opt in.
 
-Settings include System/Light/Dark appearance, English/Hindi/Hinglish calling, separate voice/music/effects volumes, haptics, reduced motion, and calling pace. Music defaults off. Number voice controls automatic speech; Hear again plays on request unless voice volume is zero. After an audio-device disconnect, use Resume sound when ready. Leaving the app pauses offline calling. Reopen and choose **Resume round** to continue. Number recordings are AI-generated and bundled. Internet permission supports private rooms; no OpenAI key is included or needed to play.
+Settings → **App language** chooses Device language, English or हिन्दी for the interface. It preserves the current game and unsaved prize setup; local calling pauses during the change. Player names and custom prize names stay as entered. The caller voice is a separate choice.
+
+Settings also include System/Light/Dark appearance, English/Hindi/Hinglish calling, separate voice/music/effects volumes, haptics, reduced motion, and calling pace. Music defaults off. Number voice controls automatic speech; Hear again plays on request unless voice volume is zero. After an audio-device disconnect, use Resume sound when ready. Leaving the app pauses offline calling. Reopen and choose **Resume round** to continue. Number recordings are AI-generated and bundled. Internet permission supports private rooms; no OpenAI key is included or needed to play.
 
 Included now: digital tickets, solo/computer/family play, standard prizes, one/two/three house settings, 90-call play, custom pattern prizes, points and ties, local round history, pause/resume, practice undo, number board, inspected claims, rematches and controlled text result sharing.
 
@@ -37,7 +39,7 @@ The default debug endpoint is `http://127.0.0.1:8080`. It is useful with the loc
 
 With a reachable configured service, select **Play online**, choose a display name, and create a room or join with its eight-character code. The host can change standard/custom rules before play; everyone must ready again after a change. The host starts once at least two connected players are ready and enough tickets exist for the chosen house prizes. Each player sees only their own cards.
 
-Choose a profile avatar during registration or change it in the lobby before play. A lobby avatar change resets your ready flag; it does not change other players. Use the alpha08 APK with the alpha08 service; older clients do not understand the newer snapshots. [Compatibility notes](AVATARS.md) explain save/protocol changes.
+Choose a profile avatar during registration or change it in the lobby before play. A lobby avatar change resets your ready flag; it does not change other players. Alpha09 uses the same protocol-2 service as alpha08; older protocol-1 clients do not understand these snapshots. [Compatibility notes](AVATARS.md) explain save/protocol changes.
 
 Calls and prizes are server-confirmed. Host controls support pause/resume, ending and rematches. The room can continue while you leave the app; returning catches up without replaying old announcements. If an action cannot be confirmed, **Retry pending action** checks its original result rather than creating a second action. Completed results have a private sharing preview and encrypted local online history.
 
@@ -45,4 +47,4 @@ Online profiles and cached rooms are encrypted on the device. **Delete online pr
 
 Shared records retain opaque player IDs, tickets, calls, scores and custom prize text until normal retention expires. Other players' downloaded copies and existing backups are not instantly erased. See [profile deletion and retention](server/PROFILE_DELETION.md) for exact behavior and outstanding backup/restore acceptance. Signing out only revokes the session and clears local online data; a recovery reset only clears local data and can discard a pending deletion confirmation. Request deletion before signing out. There is no account-recovery service in this alpha.
 
-Still in development: hosted online rooms and broader multiplayer recovery acceptance, final listening/art/motion acceptance, Hindi interface, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.
+Still in development: hosted online rooms and broader multiplayer recovery acceptance, final listening/art/motion acceptance, Hindi editorial review, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.

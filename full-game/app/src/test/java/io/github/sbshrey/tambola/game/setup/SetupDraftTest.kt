@@ -1,6 +1,8 @@
 package io.github.sbshrey.tambola.game.setup
 
 import io.github.sbshrey.tambola.domain.*
+import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.game.presentation.UiMessage
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Assert.*
@@ -25,7 +27,7 @@ class SetupDraftTest {
         val draft = SetupDraft(tickets = 3, customPrizes = listOf(rule))
         assertTrue(draft.errors.isEmpty())
         val fewer = draft.copy(tickets = 1)
-        assertTrue(fewer.errors.single().contains("Ticket three needs more tickets"))
+        assertEquals(UiMessage(R.string.error_prize_tickets, listOf("Ticket three")), fewer.errors.single())
         assertEquals(rule, fewer.customPrizes.single())
         assertThrows(IllegalArgumentException::class.java) { fewer.settings() }
     }
@@ -43,9 +45,9 @@ class SetupDraftTest {
         val draft = SetupDraft(houses = 3)
         assertEquals(listOf(Prize.HOUSE_ONE, Prize.HOUSE_TWO, Prize.HOUSE_THREE), draft.settings().prizes.filter { it.isRankedHouse })
         assertFalse(Prize.FULL_HOUSE in draft.settings().prizes)
-        assertTrue(draft.copy(bots = 0).errors.single().contains("at least 3 tickets"))
-        assertTrue(SetupDraft.fresh(GameMode.FAMILY).copy(names = "Asha\nasha").errors.single().contains("different name"))
-        assertTrue(SetupDraft(names = "").errors.single().contains("Enter your name"))
+        assertEquals(UiMessage(R.string.error_house_tickets, listOf(3)), draft.copy(bots = 0).errors.single())
+        assertEquals(R.string.error_unique_names, SetupDraft.fresh(GameMode.FAMILY).copy(names = "Asha\nasha").errors.single().resource)
+        assertEquals(R.string.error_enter_name, SetupDraft(names = "").errors.single().resource)
         val tooMany = SetupDraft.fresh(GameMode.FAMILY).copy(names = (1..9).joinToString("\n") { "Player $it" }).withAvatar(0, 7)
         assertEquals(8, tooMany.avatars.size)
         val corrected = tooMany.copy(names = tooMany.playerNames.take(8).joinToString("\n"))

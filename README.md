@@ -6,6 +6,10 @@ Built from the [shared V1 discussion and design reference](https://chatgpt.com/s
 
 **[Play Tambola on GitHub Pages](https://sbshrey.github.io/tambola-caller/)**
 
+## Full Android game in development
+
+Tambola Together adds digital tickets, solo/computer practice, same-device family games and native private rooms, with free points/badges, English/Hindi UI, three caller voices, avatars and win animations. The development work is on `shrey/full-tambola-game`. See the [full-game guide](full-game/README.md), [detailed production plan](docs/FULL_GAME_PLAN.md), [internal alpha installation](full-game/ALPHA_INSTALL.md) and [validation](full-game/ALPHA09_VALIDATION.md). Public online hosting and production release gates remain unfinished.
+
 ## Android keyboard for WhatsApp hosts
 
 **[Download the signed Android APK (v1.3.1)](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk)** · [Release notes](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1). Install over an existing version to keep the saved game. **Winners → Speak prize + winner** lets the host say “Early five winner Asha Sharma” or “King winners Asha aur Bina”. It saves the award and inserts a draft with the configured prize amount. Check the names, then WhatsApp Send. Optional microphone permission and a phone speech service are needed; the service may use Internet. All [41 prize schemes](android-keyboard/SCHEMES.md) and the new-game fix remain included.
