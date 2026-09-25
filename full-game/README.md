@@ -35,3 +35,5 @@ Assets in this build: native vector/Compose graphics and the repository's previo
 ## Test scope
 
 The domain suite includes 100,000 generated-ticket property cases, maximum-size unique deals, draw exhaustion, ties, marks, undo, ranked houses, corrupt saves, and standard-rule missing-number checks. Android instrumented tests exercise complete offline play, recreation/resume, family tickets, rule inspection, and cancellation. Actual results and limitations belong in the execution ledger; having tests in source is not proof they passed.
+
+The [alpha05 recovery and multiplayer addendum](RECOVERY_AND_MULTIPLAYER_VALIDATION.md) records passing cold-process recovery for uncertain draw/deletion requests and a full two-emulator native UI game with matching results and rematch. It adds repeatable fixture drivers and evidence without changing the alpha05 APK. Physical phones, network switching and hosted-service acceptance remain pending.

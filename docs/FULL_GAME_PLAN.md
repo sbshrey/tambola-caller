@@ -226,10 +226,10 @@ Initial implementation order (delivered through the alpha milestones in the exec
 5. Replace preview data with the tested domain engine in M2/M3; never ship a pretend multiplayer button.
 6. Produce the first installable debug APK and capture screenshots with fictional player names.
 
-Current continuation order after tutorial/badge and profile-deletion integration:
+Current continuation order after tutorial/badge, profile-deletion and local recovery acceptance:
 
-1. Exercise two independent native clients and real cold-process/network interruption, including an uncertain command outcome. Online-profile deletion and its lifecycle policy are implemented; expand the lost-response/activity-recreation proof to cold process death, large retained histories and restoration from backups without resurrecting deleted identities.
-2. Finish original/licensed music and effects, decorative assets, celebrations, light theme and Hindi interface. Audit pronunciation, audio focus, motion and TalkBack without blocking core play on generated content.
+1. Finish original/licensed music and effects, decorative assets, celebrations, light theme and Hindi interface. Audit pronunciation, audio focus, motion and TalkBack without blocking core play on generated content.
+2. Extend the passing two-emulator native game and cold-process pending draw/deletion checks to network loss/switching, expired sessions and recovery under broader faults. Verify large retained-history deletion and restoration from backups without resurrecting deleted identities. Local process termination and two independent native UIs are now verified; physical networks and backup behavior are separate gates.
 3. Run the remaining API/device/tablet matrix, upgrades, long sessions, performance and security checks. Fix observed failures and preserve exact candidate evidence.
 4. After provider/project/budget selection, deploy the room service with TLS, constrained credentials, monitoring, retention, backups and tested restore/rollback. Complete two-physical-phone acceptance on different networks.
 5. Produce the production-signed APK/AAB, verify exact-candidate install/update behavior and hand over privacy/support/store information plus operating instructions. The alpha milestones do not satisfy this final release gate.
