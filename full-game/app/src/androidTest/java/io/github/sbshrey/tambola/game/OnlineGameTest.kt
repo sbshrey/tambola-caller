@@ -102,6 +102,8 @@ class OnlineGameTest {
             assertTrue(peerGame.ownTickets.all { it.playerId == peer.playerId })
             assertTrue(peerGame.ownTickets.none { ticket -> hostGame.ownTickets.any { it.id == ticket.id } })
             assertEquals(1, final.history.size)
+            assertTrue(final.badges.earned(Badge.FIRST_ROUND))
+            assertEquals(hostGame.awards.hasHouseFor(setOf(final.credentials.playerId)), final.badges.earned(Badge.FIRST_HOUSE))
             tap("Check claims · ${hostGame.awards.size + hostGame.customAwards.size} verified")
             tap("Inspect Online five pair"); compose.onNodeWithText("Matching owned tickets: 2 / 2 needed").assertExists()
             captureTestScreen("online-custom-winner"); tap("Back to prizes"); tap("Back to game")
@@ -112,6 +114,8 @@ class OnlineGameTest {
             assertEquals(1, model.state.value.room!!.options.game.customPrizes.size)
             assertTrue(model.state.value.room!!.members.none { it.ready })
             assertNull(model.state.value.room!!.round)
+            tap("‹ Home"); tap("Your badges"); tap("Online profile")
+            compose.onNodeWithTag("badge-FIRST_ROUND").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned"))
         } finally { peerJob.cancelAndJoin(); peerApi.close() }
     }
 
@@ -153,6 +157,7 @@ class OnlineGameTest {
             tap("Leave room"); compose.onNode(hasText("Leave room") and hasAnyAncestor(isDialog())).performClick()
             until { model.state.value.room == null && !model.state.value.busy }
             assertEquals(1, saved().history.size)
+            assertFalse(saved().badges.earned(Badge.FIRST_ROUND))
             tap("Online history · 1")
             compose.onNodeWithText("${room.code} · ${room.round!!.called.size} calls · cancelled").assertExists()
         } finally { hostApi.close() }

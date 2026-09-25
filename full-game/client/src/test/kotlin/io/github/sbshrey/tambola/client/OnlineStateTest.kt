@@ -94,4 +94,39 @@ class OnlineStateTest {
         }
         assertThrows(IllegalArgumentException::class.java) { checkedEndpoint("http://127.0.0.1:8080") }
     }
+
+    @Test fun `online badges survive replay serialization and history eviction without counting opponents`() {
+        val ticket = round.tickets.first { it.playerId == "asha" }
+        val ordered = round.copy(drawOrder = ticket.numbers + round.drawOrder.filterNot { it in ticket.numbers },
+            settings = round.settings.copy(playAllNumbers = false))
+        val finished = (1..15).fold(ordered) { game, _ -> game.draw() }
+        var session = saved().accept(update(finished), false).saved
+        assertTrue(session.badges.earned(Badge.FIRST_HOUSE))
+        session = session.accept(update(finished), false).saved
+        assertEquals(1, session.badges.completedRoundIds.size)
+        // Later cancelled results evict the original winning snapshot, but cannot revoke its badge.
+        repeat(55) { n ->
+            val next = round.copy(id = "cancel-$n").cancel()
+            session = session.accept(RoomUpdate(view(next, 100L + n), emptyList(), true), false).saved
+        }
+        assertEquals(50, session.history.size)
+        assertTrue(session.history.none { it.round?.id == finished.id })
+        val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(session))
+        assertEquals(session.badges, restored.badgeProgress())
+        assertEquals(1, restored.badges.completedRoundIds.size)
+        val opponent = finished.copy(awards = listOf(Award(Prize.FULL_HOUSE, 15, listOf("other"), listOf("bina"))))
+        val legacy = saved().copy(history = listOf(view(opponent)))
+        assertFalse(legacy.badgeProgress().earned(Badge.FIRST_HOUSE))
+    }
+
+    @Test fun `old encrypted snapshots without badge field recover milestones from completed history`() {
+        val finished = (1..90).fold(round) { game, _ -> game.draw() }
+        val older = saved().copy(history = listOf(view(finished), view(finished)))
+        val json = WireJson.encodeToString(older)
+        val objectValue = WireJson.parseToJsonElement(json) as kotlinx.serialization.json.JsonObject
+        val withoutBadges = kotlinx.serialization.json.JsonObject(objectValue.filterKeys { it != "badges" }).toString()
+        val restored = WireJson.decodeFromString<OnlineSaved>(withoutBadges)
+        assertEquals(1, restored.badgeProgress().completedRoundIds.size)
+        assertFalse(restored.badgeProgress().earned(Badge.FIVE_ROUNDS))
+    }
 }

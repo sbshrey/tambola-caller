@@ -17,6 +17,8 @@ The Android `OnlineStore` encrypts the session, cached table, pending action, ma
 
 Persistence completes before state becomes visible. Failed decryption leaves the file intact and offers an explicit local-data reset; reset is not server-side account deletion. Signing out revokes the bearer session before removing local online data. The remaining server-side deletion workflow is a production gate.
 
+The encrypted snapshot also keeps a bounded badge ledger: at most five distinct completed-round IDs and the first qualifying house-round ID. Repeated snapshots cannot advance the same milestone twice, cancelled rounds do not count, and another player's house does not qualify. This is a milestone record rather than a lifetime-statistics counter. It persists when the 50-result cache rolls over. Older snapshots without the field recover progress from their cached completed history; signing out/resetting removes this local ledger along with the profile.
+
 The stream runs while the online page is foregrounded. Leaving it stops local audio and networking; the server can continue calling and can transfer host responsibility after absence. Returning restores the same profile and tickets. Local offline rounds use their existing Room database and remain independent. Active tables keep the display awake.
 
 ## Local verification
@@ -30,7 +32,7 @@ node tools/android-smoke.mjs --online --label android-online-smoke
 
 The runner requires Node 22+, checks the dedicated `tambola_full_game_*` AVD and loopback service, temporarily disables system transition animations, and restores and verifies their original values even after a test failure. It writes the JUnit output to ignored `.test-workspace/`. Use `--class io.github.sbshrey.tambola.game.OnlineGameTest` to run just the two online journeys; without it, all offline, online and storage journeys run. It does not install APKs or start the database/service.
 
-The online instrumentation test is opt-in and refuses a non-emulator or a non-default endpoint. Its second player uses the same production client on Android, without a second Compose UI. Two separate phone UIs, real network interruption, process death with a pending request, API 26/35/36, physical devices, TLS, load, and hosted operations need additional acceptance checks. The [alpha03 report](../ALPHA03_VALIDATION.md) records the completed 11-test run and separate 200% text check.
+The online instrumentation test is opt-in and refuses a non-emulator or a non-default endpoint. Its second player uses the same production client on Android, without a second Compose UI. Two separate phone UIs, real network interruption, process death with a pending request, API 26/35/36, physical devices, TLS, load, and hosted operations need additional acceptance checks. The [alpha04 report](../ALPHA04_VALIDATION.md) records the completed 13-test run and separate 200% tutorial/badge checks; [alpha03](../ALPHA03_VALIDATION.md) retains the earlier online large-text evidence.
 
 `NativeClientTest` connects the production client to a real ephemeral Netty listener and isolated PostgreSQL schema; it is not an in-memory HTTP-engine simulation. `client:test` separately covers bounded HTTP decoding, credential placement, durable request identity, replay/catch-up, marking, snapshots, and commitment checks. See the execution ledger for actually completed runs.
 

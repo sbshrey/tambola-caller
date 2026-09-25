@@ -53,7 +53,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     if (state.storageFailure || state.sessionExpired) {
         GameCard {
             Text(if (state.sessionExpired) "Your online session has expired." else "Your saved online data needs attention.")
-            Text("Resetting removes the online profile, cached tickets, and online history from this device. Offline rounds stay available. A new profile cannot reclaim the old profile's tickets.", color = Muted)
+            Text("Resetting removes the online profile, cached tickets, online history and online badges from this device. Offline rounds stay available. A new profile cannot reclaim the old profile's tickets.", color = Muted)
             OutlinedButton(onClick = { reset = true }) { Text("Reset online data") }
         }
     } else if (state.name == null) {
@@ -148,8 +148,8 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) { OnlineResults(table); RuleList(table) }
         }, confirmButton = { TextButton(onClick = { selectedHistory = null }) { Text("Back") } })
     }
-    if (reset) ConfirmOnline("Reset online data?", "This removes your local online profile and cached history. It does not delete server records, which expire under the room service's retention policy.", "Reset online data", { reset = false; model.resetLocalData() }) { reset = false }
-    if (logout) ConfirmOnline("Sign out?", "Your online session will be revoked. This device's online tickets and history will be removed. Offline rounds stay here.", "Sign out", { logout = false; model.logout() }) { logout = false }
+    if (reset) ConfirmOnline("Reset online data?", "This removes your local online profile, cached history and online badges. It does not delete server records, which expire under the room service's retention policy.", "Reset online data", { reset = false; model.resetLocalData() }) { reset = false }
+    if (logout) ConfirmOnline("Sign out?", "Your online session will be revoked. This device's online tickets, history and badges will be removed. Offline rounds stay here.", "Sign out", { logout = false; model.logout() }) { logout = false }
     if (leave) ConfirmOnline("Leave this room?", "Your completed results stay in online history. You can join another room after leaving.", "Leave room", { leave = false; model.command(RoomAction.Leave) }) { leave = false }
     state.error?.let { message -> AlertDialog(onDismissRequest = model::clearError, title = { Text("Online play") }, text = { Text(message) }, confirmButton = { TextButton(onClick = model::clearError) { Text("Got it") } }) }
 }
@@ -209,6 +209,7 @@ private fun OnlineResults(table: TableRound) {
         table.players.sortedByDescending { table.score(it.id) }.forEach { Text("${it.name} · ${table.score(it.id)} points", color = Jade) }
         Text("${table.called.size} calls · ${table.awards.size + table.customAwards.size} verified prizes", color = Muted)
         Text("Draw commitment checked against the revealed order.", color = Muted, style = MaterialTheme.typography.bodySmall)
+        if (table.status == RoundStatus.COMPLETED) Text("This round counts toward your online badges. Find them under Your badges on Home.", color = Jade)
         OutlinedButton(onClick = { sharing = true }) { Text("Share online results") }
     }
     if (sharing) ShareResults(table, { sharing = false }) { message -> context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, message) }, "Share results")) }

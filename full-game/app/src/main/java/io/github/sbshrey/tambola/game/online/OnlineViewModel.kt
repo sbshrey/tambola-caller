@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.sbshrey.tambola.client.*
 import io.github.sbshrey.tambola.domain.RoundStatus
+import io.github.sbshrey.tambola.domain.BadgeProgress
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
 import io.github.sbshrey.tambola.game.data.*
@@ -25,6 +26,7 @@ data class OnlineUiState(
     val room: RoomView? = null,
     val marks: Map<String, Set<Int>> = emptyMap(),
     val history: List<RoomView> = emptyList(),
+    val badges: BadgeProgress = BadgeProgress(),
     val connection: Connection = Connection.IDLE,
     val busy: Boolean = false,
     val pending: Boolean = false,
@@ -65,7 +67,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private fun publish() {
         val value = saved
         mutable.update { it.copy(name = value?.displayName, playerId = value?.credentials?.playerId,
-            room = value?.room, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(), pending = value?.pending != null) }
+            room = value?.room, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
+            badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null) }
     }
     private suspend fun persist(value: OnlineSaved?) {
         try { store.write(value) }

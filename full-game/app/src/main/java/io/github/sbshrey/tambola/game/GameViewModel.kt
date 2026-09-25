@@ -16,7 +16,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-enum class Screen { HOME, SETUP, GAME, RESULTS, HISTORY, SETTINGS, ONLINE }
+enum class Screen { HOME, SETUP, GAME, RESULTS, HISTORY, SETTINGS, ONLINE, TUTORIAL, BADGES }
 data class GameUiState(
     val loading: Boolean = true,
     val screen: Screen = Screen.HOME,
@@ -27,6 +27,7 @@ data class GameUiState(
     val round: Round? = null,
     val viewedResult: Round? = null,
     val history: List<SavedRound> = emptyList(),
+    val badges: Map<BadgeMode, BadgeProgress> = emptyMap(),
     val preferences: Preferences = Preferences(),
     val error: String? = null,
     val auto: Boolean = false,
@@ -51,7 +52,23 @@ class GameViewModel(application: Application, private val savedState: SavedState
             catch (_: Exception) { mutable.update { it.copy(loading = false, error = "The saved round could not be restored. Your saved data has been kept.") } }
         }
         viewModelScope.launch { preferences.values.catch { mutable.update { it.copy(error = "Settings could not be loaded.") } }.collect { prefs -> mutable.update { it.copy(preferences = prefs) } } }
-        viewModelScope.launch { repository.history.catch { mutable.update { it.copy(error = "History could not be loaded.") } }.collect { rows -> mutable.update { it.copy(history = rows) } } }
+        viewModelScope.launch {
+            var previousCompleted: List<SavedRound>? = null
+            repository.history.catch { mutable.update { it.copy(error = "History could not be loaded.") } }.collect { rows ->
+            val completed = rows.filter { it.completed }
+            val badges = if (completed == previousCompleted) mutable.value.badges else withContext(Dispatchers.Default) {
+                val progress = mutableMapOf<BadgeMode, BadgeProgress>()
+                completed.forEach { saved ->
+                    runCatching { RoundCodec.decode(saved.payload) }.getOrNull()?.let { round ->
+                        val mode = round.badgeMode()
+                        progress[mode] = (progress[mode] ?: BadgeProgress()).record(round)
+                    }
+                }
+                progress.toMap()
+            }
+            previousCompleted = completed
+            mutable.update { it.copy(history = rows, badges = badges) }
+        } }
     }
 
     fun navigate(screen: Screen) {
@@ -103,6 +120,13 @@ class GameViewModel(application: Application, private val savedState: SavedState
     }
     fun removeRule(id: String) { updateSetup(mutable.value.setupDraft.let { it.copy(customPrizes = it.customPrizes.filterNot { prize -> prize.id == id }) }) }
     fun clearError() { mutable.update { it.copy(error = null) } }
+    fun tutorialCall() { if (foreground && mutable.value.preferences.voice) audio.play(7, mutable.value.preferences.language) }
+    fun finishTutorial(completed: Boolean) {
+        viewModelScope.launch {
+            try { preferences.finishTutorial(completed); navigate(Screen.HOME) }
+            catch (_: Exception) { mutable.update { it.copy(error = "Tutorial progress could not be saved. Please try again.") } }
+        }
+    }
 
     fun create() {
         if (mutable.value.saving) return

@@ -22,6 +22,7 @@ import java.security.MessageDigest
     val marks: Map<String, Set<Int>> = emptyMap(),
     val pending: PendingOperation? = null,
     val history: List<RoomView> = emptyList(),
+    val badges: BadgeProgress = BadgeProgress(),
 ) {
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }
@@ -44,7 +45,14 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
     val archive = if (finished) (listOf(next) + history.filterNot { it.round?.id == next.round?.id }).take(50) else history
     val number = if (live && !update.resyncRequired && sameRound && nextGame!!.called.size == previousGame!!.called.size + 1)
         nextGame.called.last() else null
-    return AcceptedRoom(copy(room = next, marks = nextMarks, history = archive), number)
+    val progress = badgeProgress().let { current -> nextGame?.let { current.record(it.id, it.status,
+        it.awards.hasHouseFor(setOf(credentials.playerId))) } ?: current }
+    return AcceptedRoom(copy(room = next, marks = nextMarks, history = archive, badges = progress), number)
+}
+
+/** Lazily includes pre-badge cached results; later writes retain milestones beyond the 50-result cache. */
+fun OnlineSaved.badgeProgress(): BadgeProgress = history.fold(badges) { progress, entry ->
+    entry.round?.let { progress.record(it.id, it.status, it.awards.hasHouseFor(setOf(credentials.playerId))) } ?: progress
 }
 
 fun OnlineSaved.mark(ticketId: String, number: Int): OnlineSaved {

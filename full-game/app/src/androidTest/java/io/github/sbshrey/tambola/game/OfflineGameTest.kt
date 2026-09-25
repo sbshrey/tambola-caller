@@ -42,6 +42,10 @@ class OfflineGameTest {
         tap("See round results")
         compose.onNodeWithText("A round of applause!").assertExists()
         compose.onNodeWithText("Share these results").performScrollTo().assertIsEnabled()
+        tap("See your badges")
+        compose.waitUntil(10_000) { runCatching { compose.onNodeWithTag("badge-FIRST_ROUND").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned")); true }.getOrDefault(false) }
+        compose.onNodeWithTag("badge-FIRST_ROUND").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned"))
+        compose.onNodeWithTag("badge-FIRST_HOUSE").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned"))
         tap("‹ Home")
         tap("Your rounds")
         tap("View results")

@@ -217,7 +217,7 @@ Estimates are engineering effort ranges for one focused developer, not elapsed-t
 
 Allow a further 6–10 days contingency for device-specific failures, ambiguous regional rules, infrastructure setup, and beta feedback. M4 work can proceed once the shared engine is stable while M3 UI integration continues; no parallel agents are assumed or required.
 
-Implementation order within the next milestone:
+Initial implementation order (delivered through the alpha milestones in the execution ledger):
 
 1. Create the isolated `full-game/` Gradle build and ignore rules; pin compatible stable Android/Kotlin/Compose versions from official documentation.
 2. Install the missing API 36 SDK alongside existing platforms; preserve the current keyboard toolchain.
@@ -225,6 +225,14 @@ Implementation order within the next milestone:
 4. Wire Home → Practice setup → Ticket preview → Table → Results with clearly labelled preview data.
 5. Replace preview data with the tested domain engine in M2/M3; never ship a pretend multiplayer button.
 6. Produce the first installable debug APK and capture screenshots with fictional player names.
+
+Current continuation order after tutorial/badge integration:
+
+1. Exercise two independent native clients and real process/network interruption, including an uncertain command outcome. Complete online deletion and document guest-session lifecycle/recovery limits.
+2. Finish original/licensed music and effects, decorative assets, celebrations, light theme and Hindi interface. Audit pronunciation, audio focus, motion and TalkBack without blocking core play on generated content.
+3. Run the remaining API/device/tablet matrix, upgrades, long sessions, performance and security checks. Fix observed failures and preserve exact candidate evidence.
+4. After provider/project/budget selection, deploy the room service with TLS, constrained credentials, monitoring, retention, backups and tested restore/rollback. Complete two-physical-phone acceptance on different networks.
+5. Produce the production-signed APK/AAB, verify exact-candidate install/update behavior and hand over privacy/support/store information plus operating instructions. The alpha milestones do not satisfy this final release gate.
 
 ## 10. Validation strategy
 

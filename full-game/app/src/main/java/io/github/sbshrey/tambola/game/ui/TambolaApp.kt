@@ -51,6 +51,8 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
                     Screen.HISTORY -> History(state.history, model)
                     Screen.SETTINGS -> Settings(state, model)
                     Screen.ONLINE -> OnlineScreen(onlineState, online, state.preferences)
+                    Screen.TUTORIAL -> TutorialScreen(state, model) { pageScroll.scrollTo(0) }
+                    Screen.BADGES -> BadgesScreen(state, onlineState)
                 }
             }
             if (!state.loading && state.screen == Screen.GAME) state.round?.let { GameControls(it, state, model) }
@@ -66,6 +68,12 @@ private fun Home(state: GameUiState, model: GameViewModel) {
     Eyebrow("GOOD COMPANY. GREAT NUMBERS.")
     Text("Make room\nfor a little joy.", style = MaterialTheme.typography.headlineLarge)
     Text("Your tickets, your people, one happy game night.", color = Muted)
+    if (!state.preferences.tutorialDismissed && !state.preferences.tutorialCompleted) GameCard {
+        Eyebrow("NEW TO TAMBOLA?", Saffron)
+        Text("Try a ticket. Make a call. Find your first win.", style = MaterialTheme.typography.titleMedium)
+        PrimaryAction("Learn with a sample ticket") { model.navigate(Screen.TUTORIAL) }
+        TextButton(onClick = { model.finishTutorial(false) }) { Text("Maybe later") }
+    }
     Box(Modifier.fillMaxWidth().height(156.dp).clip(RoundedCornerShape(26.dp)).background(Brush.linearGradient(listOf(Color(0xFF314B49), Panel))), contentAlignment = Alignment.Center) {
         Row(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalAlignment = Alignment.CenterVertically) {
             listOf(7 to Jade, 22 to Saffron, 90 to Coral).forEachIndexed { index, (number, color) ->
@@ -99,8 +107,9 @@ private fun Home(state: GameUiState, model: GameViewModel) {
     }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         OutlinedButton(onClick = { model.navigate(Screen.HISTORY) }, modifier = Modifier.weight(1f)) { Text("Your rounds") }
-        OutlinedButton(onClick = { model.navigate(Screen.SETTINGS) }, modifier = Modifier.weight(1f)) { Text("How to play") }
+        OutlinedButton(onClick = { model.navigate(Screen.TUTORIAL) }, modifier = Modifier.weight(1f)) { Text("How to play") }
     }
+    OutlinedButton(onClick = { model.navigate(Screen.BADGES) }, modifier = Modifier.fillMaxWidth()) { Text("Your badges") }
     Text("Development alpha · Private rooms require the configured room service.", color = Muted, style = MaterialTheme.typography.bodySmall)
 }
 
@@ -152,6 +161,11 @@ private fun Results(round: Round, model: GameViewModel) {
         }
     }
     GameCard { Text("The winning moments", style = MaterialTheme.typography.titleLarge); RuleList(round.toTable()) }
+    if (round.status == RoundStatus.COMPLETED) GameCard {
+        Text("Another good memory", style = MaterialTheme.typography.titleLarge)
+        Text("This completed round counts toward ${round.badgeMode().title.lowercase()} badges. Reopening it won't count it twice.", color = Muted)
+        TextButton(onClick = { model.navigate(Screen.BADGES) }) { Text("See your badges") }
+    }
     PrimaryAction("Play another round") { model.rematch(round) }
     OutlinedButton(onClick = { sharing = true }, modifier = Modifier.fillMaxWidth()) { Text("Share these results") }
     if (sharing) ShareResults(round.toTable(), onDismiss = { sharing = false }) { message ->
@@ -192,15 +206,16 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
     }
     GameCard {
         Text("Your first game, made easy", style = MaterialTheme.typography.titleLarge)
+        OutlinedButton(onClick = { model.navigate(Screen.TUTORIAL) }) { Text("Try the interactive tutorial") }
         listOf("1. Choose players, tickets, and prizes. Everyone can see the rules before play. Try custom patterns on sample tickets.", "2. Call numbers yourself or turn on automatic calling. Each number appears only once.", "3. Tap Mark ticket and dab the called numbers, or choose assisted marking before a round.", "4. Check claims to inspect the required numbers and verified winners. Same-call winners tie and get full points.", "5. Finish at the chosen house, or play all 90 calls. Rematch keeps your players and rules; every game deals new tickets.").forEach { Text(it, color = Muted) }
     }
     GameCard {
         Text("Your games and privacy", style = MaterialTheme.typography.titleLarge)
         Text("Solo and family rounds stay on this device. Online play sends your display name, tickets, calls and results to the room service; room members see names and wins, and only their own ticket numbers. Online sessions and cached history are encrypted on this device. No ads, analytics or purchases. Number recordings were generated with OpenAI.", color = Muted)
         OutlinedButton(onClick = { delete = true }, modifier = Modifier.fillMaxWidth()) { Text("Delete all saved rounds") }
-        Text("Tambola Together · ${BuildConfig.VERSION_NAME}\nHosted online release, music, badges, and Hindi interface are still in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
+        Text("Tambola Together · ${BuildConfig.VERSION_NAME}\nHosted online release, music, and Hindi interface are still in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
     }
-    if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text("Delete saved rounds?") }, text = { Text("This removes your offline current game, player names, and offline history. This cannot be undone. Online data and sound and display settings will stay.") }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text("Delete rounds") } }, dismissButton = { TextButton(onClick = { delete = false }) { Text("Keep rounds") } })
+    if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text("Delete saved rounds?") }, text = { Text("This removes your offline current game, player names, offline history and offline badges. This cannot be undone. Online data and sound and display settings will stay.") }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text("Delete rounds") } }, dismissButton = { TextButton(onClick = { delete = false }) { Text("Keep rounds") } })
 }
 
 @Composable
