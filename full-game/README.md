@@ -6,6 +6,8 @@ The alpha implements solo/computer and shared-device family rounds, digital tick
 
 The alpha09 language update adds an independent English/Hindi interface choice, localized rules/errors/accessibility text and result sharing. Language changes retain game and editor state; caller voice remains independent. See [localization notes](LOCALIZATION.md), [alpha09 validation](ALPHA09_VALIDATION.md) and the [installation guide](ALPHA_INSTALL.md).
 
+The [device compatibility addendum](DEVICE_MATRIX_VALIDATION.md) records additional checks against the unchanged alpha09 APK, including cold-process language/round restoration and Android's per-app language integration. It identifies each instrumentation build separately from the application candidate.
+
 The alpha08 presentation update adds eight original selectable avatars and finite, dismissible celebrations for verified live wins. Choices persist through rematches; online lobby changes update the profile, and deletion redacts stored/visible identities. See [avatar and compatibility notes](AVATARS.md), [presentation direction](PRESENTATION.md) and [alpha08 validation](ALPHA08_VALIDATION.md).
 
 The alpha07 audio update adds an original offline music loop and cues, independent saved volumes, call ducking and foreground/interruption handling. See [audio design and provenance](AUDIO.md) and [alpha07 validation](ALPHA07_VALIDATION.md) for behavior, executed checks and remaining device/listening acceptance.

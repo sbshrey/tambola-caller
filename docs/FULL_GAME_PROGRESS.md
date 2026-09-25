@@ -25,7 +25,7 @@ Branch: `shrey/full-tambola-game`.
 | M4: room service and hosting spike | In progress | 27 PostgreSQL/HTTP/WebSocket tests, production-client integration, profile deletion/redaction/migration, 32-player correctness and actual Java-process restart pass; hosting/TLS/operations remain |
 | M5: online Android experience | In progress | Two independent native emulator UIs complete 90 calls and rematch; private tickets, matching awards/audit, cold-process pending draw/deletion retry and offline isolation verified; physical networks and broader recovery remain |
 | M6: final art/audio/accessibility | In progress | Light/dark/system appearance, native home illustration, finite number motion and contrast checks added in alpha06; alpha09 adds independent English/Hindi resources and retained-state language changes; editorial/device review and broader accessibility/performance remain |
-| M7: production validation | Pending | — |
+| M7: production validation | In progress | Additional API and 16 KB emulator checks in the device compatibility addendum; physical-device, hosted operations and broader release acceptance remain |
 | M8: signed release and handoff | Pending | — |
 
 ## 25 September 2026: first native offline alpha

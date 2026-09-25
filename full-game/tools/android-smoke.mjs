@@ -49,7 +49,7 @@ try {
   if (online) command.push('-e', 'tambolaOnline', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');
   if (selectedClass) command.push('-e', 'class', selectedClass);
-  else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest');
+  else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest');
   command.push('io.github.sbshrey.tambola.game.test/androidx.test.runner.AndroidJUnitRunner');
   const child = spawn(adb, ['-s', serial, ...command], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
   const append = chunk => { output += chunk.toString(); process.stdout.write(chunk); };

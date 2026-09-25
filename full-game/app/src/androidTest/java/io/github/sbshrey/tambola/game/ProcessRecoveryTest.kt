@@ -53,7 +53,7 @@ class ProcessRecoveryTest {
     @Before fun guard() {
         assumeTrue("Only the external process-recovery driver may run these cases", arguments.getString("tambolaProcessRecovery") == "true")
         check(BuildConfig.DEBUG && BuildConfig.ROOM_API_URL == "http://127.0.0.1:8080")
-        check(android.os.Build.FINGERPRINT.contains("generic") || android.os.Build.MODEL.contains("sdk"))
+        check(isAndroidEmulator())
         check(UUID.fromString(runId).toString() == runId && kind in setOf("draw", "delete"))
         until { !online.state.value.loading && !offline.state.value.loading }
     }

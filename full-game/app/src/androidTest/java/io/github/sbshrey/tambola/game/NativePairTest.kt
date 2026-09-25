@@ -51,7 +51,7 @@ class NativePairTest {
     @Test fun completeRoundAndRematchOnIndependentNativeClients() = runBlocking<Unit> {
         assumeTrue("Use the two-emulator driver", arguments.getString("tambolaNativePair") == "true")
         check(BuildConfig.DEBUG && BuildConfig.ROOM_API_URL == "http://127.0.0.1:8080")
-        check(android.os.Build.FINGERPRINT.contains("generic") || android.os.Build.MODEL.contains("sdk"))
+        check(isAndroidEmulator())
         check(UUID.fromString(runId).toString() == runId && role in setOf("host", "guest"))
         PreferenceStore(context).update(Preferences(voice = false, reducedMotion = true))
         until { !model.state.value.loading }

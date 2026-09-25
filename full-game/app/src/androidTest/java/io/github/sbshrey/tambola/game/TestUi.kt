@@ -5,6 +5,11 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 
+/** Official Google and AOSP images use different model casing; hardware must still be emulated. */
+internal fun isAndroidEmulator(): Boolean = android.os.Build.HARDWARE in setOf("ranchu", "goldfish") &&
+    (android.os.Build.FINGERPRINT.contains("generic", ignoreCase = true) ||
+        android.os.Build.FINGERPRINT.contains("sdk", ignoreCase = true) || android.os.Build.MODEL.contains("sdk", ignoreCase = true))
+
 internal fun ComposeTestRule.hasTextNow(text: String) = onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
 internal fun ComposeTestRule.tapText(text: String) = tapNode(onNodeWithText(text))
 internal fun ComposeTestRule.tapTag(tag: String) = tapNode(onNodeWithTag(tag))

@@ -17,7 +17,7 @@ class UpgradeAvatarTest {
     private val model get() = ViewModelProvider(compose.activity)[GameViewModel::class.java]
     @Test fun realVersionTwoRoundKeepsTicketsCallsAndMarksAndSavesAsVersionThree() {
         check(BuildConfig.DEBUG && BuildConfig.VERSION_NAME == "0.8.0-alpha08")
-        check(android.os.Build.FINGERPRINT.contains("generic") || android.os.Build.MODEL.contains("sdk"))
+        check(isAndroidEmulator())
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val fixture = Json.parseToJsonElement(File(context.filesDir, "alpha08-upgrade.json").readText()).jsonObject
         assertEquals("0.7.0-alpha07", fixture.getValue("appVersion").jsonPrimitive.content)

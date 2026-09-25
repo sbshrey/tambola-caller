@@ -16,4 +16,12 @@ Changing the language recreates the Activity. ViewModels retain active game and 
 
 Run `python tools/check-localization.py` to compare resource keys, plural forms, placeholders and Unicode integrity. The CI build runs this check. `LocalizationTest` covers localized rule formatting, retained messages, unsaved setup/editor state, caller independence, active-round identity/ticket/mark preservation, Hindi claim inspection and anonymous result sharing. Test screenshots support separate visual review; test success alone is not a typography or translation review.
 
+For persistence beyond Activity recreation, install the candidate and its instrumentation APK on a dedicated `tambola_full_game_*` emulator, then run:
+
+```powershell
+node tools/android-locale-recovery.mjs --serial emulator-5582 --label locale-recovery --apk releases/0.9.0-alpha09/Tambola-Together-0.9.0-alpha09.apk
+```
+
+The opt-in fixture creates a marked practice round, selects Hindi independently of the Hinglish caller, and waits for the host to terminate the actual app process. Verification requires a different process and the exact saved round. On API 33+, the driver also changes the platform's app language to English while the app is stopped, then verifies the platform locale, declared language choices, interface and saved round. It restores the original app locale and system animation scales, retains sanitized logs/screenshots under `.test-workspace/<label>`, and never exports the private round witness. It changes test game data, so its emulator guard is intentional. The general smoke runner excludes this externally coordinated fixture.
+
 This is an authored Hindi translation. Native-speaker editorial review, TalkBack review and the supported API/device matrix remain release acceptance work. See `ALPHA09_VALIDATION.md` for checks actually executed against a particular APK; this document describes behavior and test intent rather than asserting that all acceptance gates have passed.

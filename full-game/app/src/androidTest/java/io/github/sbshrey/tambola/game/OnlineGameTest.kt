@@ -46,7 +46,7 @@ class OnlineGameTest {
     @Before fun prepare() {
         assumeTrue("Opt-in local room integration", InstrumentationRegistry.getArguments().getString("tambolaOnline") == "true")
         check(BuildConfig.DEBUG && BuildConfig.ROOM_API_URL == "http://127.0.0.1:8080")
-        check(android.os.Build.FINGERPRINT.contains("generic") || android.os.Build.MODEL.contains("sdk"))
+        check(isAndroidEmulator())
         runBlocking { PreferenceStore(context).update(Preferences(voice = false, reducedMotion = true)) }
         until { !model.state.value.loading }
         compose.runOnIdle { model.resetLocalData() }

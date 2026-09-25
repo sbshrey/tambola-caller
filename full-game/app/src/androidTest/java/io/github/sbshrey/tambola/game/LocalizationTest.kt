@@ -36,8 +36,13 @@ class LocalizationTest {
         compose.waitForIdle()
     }
     @After fun resetLanguage() {
-        compose.runOnUiThread { AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList()) }
-        compose.waitForIdle()
+        // Finish the tested UI before restoring a platform setting. Recreating a live root
+        // during teardown can strand Espresso's next-frame wait on API 36.
+        compose.activityRule.scenario.close()
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+        }
+        assertTrue(AppCompatDelegate.getApplicationLocales().isEmpty)
     }
     private suspend fun prepare() {
         PreferenceStore(context).update(Preferences(language = "hinglish", voice = false, effects = false,
