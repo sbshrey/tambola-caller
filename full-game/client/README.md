@@ -10,6 +10,7 @@
 - A create/join/command/logout intent is durably saved before sending. A request with an uncertain outcome remains pending; retry uses the original UUID, expected revision, and action. Other mutations wait for resolution. A stale-revision rejection refreshes the table and asks the player to review it before issuing a new action.
 - Online marking is a local visual aid. Only owned, called numbers can be marked. Awards and scores come from the authoritative service. Completed snapshots check the revealed permutation and nonce against the original SHA-256 commitment; this establishes consistency with the commitment, not independent proof that the server chose a fair shuffle.
 - Snapshot validation rejects other players' ticket data, premature draw disclosure, invalid calls/rosters/award references/scores, and incompatible protocol versions. An immutable round roster and awarded-ticket ownership labels keep results readable after a member leaves. Unawarded opposing ticket IDs and all opposing card numbers remain private.
+- Alpha08 reads envelope 2 and legacy envelope-1 snapshots/receipts. Round-player avatar fields default to Sun for older data. Accepted lobby snapshots update the saved own-profile avatar; stale receipts cannot roll it back. Lobby avatar editing requires envelope 2. A new live verified award can display a dismissible win card; initial/catch-up/restored calls do not replay it. See [compatibility and event rules](../AVATARS.md).
 
 ## Android persistence and lifecycle
 
@@ -30,7 +31,7 @@ adb -s emulator-5582 reverse tcp:8080 tcp:8080
 node tools/android-smoke.mjs --online --label android-online-smoke
 ```
 
-The runner requires Node 22+, checks the dedicated `tambola_full_game_*` AVD and loopback service, temporarily disables system transition animations, and restores and verifies their original values even after a test failure. It writes the JUnit output to ignored `.test-workspace/`. Use `--class io.github.sbshrey.tambola.game.OnlineGameTest` to run just the two online journeys; without it, all offline, online and storage journeys run. It does not install APKs or start the database/service.
+The runner requires Node 22+, checks the dedicated `tambola_full_game_*` AVD and loopback service, temporarily disables system transition animations, and restores and verifies their original values even after a test failure. It writes the JUnit output to ignored `.test-workspace/`. Use `--class io.github.sbshrey.tambola.game.OnlineGameTest` to run the online journeys; without it, all ordinary offline, online and storage journeys run. Externally coordinated process-recovery, two-device and real-APK-upgrade classes are excluded. It does not install APKs or start the database/service.
 
 The ordinary online instrumentation test is opt-in and refuses a non-emulator or a non-default endpoint. Its second player uses the same production client on Android, without a second Compose UI. The [alpha05 report](../ALPHA05_VALIDATION.md) records the profile-deletion and lost-response checks; its local proxy requires the separate setup in [profile deletion](../server/PROFILE_DELETION.md).
 

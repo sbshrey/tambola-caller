@@ -75,6 +75,7 @@ fun TicketCard(ticket: Ticket, round: TableRound, haptics: Boolean, onMark: (Str
     val largeText = LocalDensity.current.fontScale > 1.3f
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(Ivory).padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            AvatarBadge(player.avatar, Modifier.padding(end = 8.dp), size = 32.dp)
             Text(player.name + if (player.computer) " · computer" else "", color = Ink, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             Text("${marked.size}/15", color = Color(0xFF426452), fontSize = 12.sp)
         }

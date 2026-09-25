@@ -9,6 +9,8 @@ The visual direction is a warm game-night table: ink, ivory paper, amber calling
 - The home illustration is an original native Canvas composition of ticket geometry, calling balls and table rings. It scales with layout width, needs no bitmap download and is omitted from accessibility traversal. It is decorative, not a ticket that can be played.
 - A committed number is exposed immediately. Its ball settles with a 420 ms translation/rotation/scale animation. Reduced motion snaps to the final appearance; Compose also applies Android's animation duration setting. The animation does not determine, delay or repeat a call, and does not loop.
 - Existing badge reveals stay still with reduced motion. Ticket text, ownership, called outlines and marking semantics remain native UI.
+- Eight original illustrated avatars can be chosen for family seats or an online profile. Sun, Mango, Chai, Peacock, Lotus, Ladoo, Kite and Moon use stable IDs. The picker labels every choice and marks selection with both a border and checkmark. Cards/results retain the avatar assigned at the deal; rematches retain choices. An online lobby change resets only that player's readiness and persists for future rooms.
+- Newly verified live awards show a readable, dismissible inline card with winner names, avatars, points and a link to inspect the winning tickets. Eighteen decorative particles finish within about 1.5 seconds, including slower system animation settings; motion-off and reduced motion skip them. The calling controls stay outside the scrolling card. Restoring, reconnecting, replaying a call, undoing and leaving the table do not replay an old celebration. Pausing clears it. Deleted online identities are redacted in a currently displayed win as well as stored rounds.
 - Recent calls wrap and their cells, along with number-board cells, grow with system font scale. Singular counts and the default player's ticket title use Android string/plural resources; full Hindi localization remains in progress.
 
 ## Asset inventory and provenance
@@ -20,13 +22,15 @@ The visual direction is a warm game-night table: ink, ivory paper, amber calling
 | Number ball, ticket paper, badge geometry | Native Compose code in the app | None |
 | 270 number recordings | Existing repository AI voice assets; build verifies manifests and SHA-256 values | Packaged offline |
 | Music, short effects and winner chimes | Original additive synthesis and score in `tools/compose-sounds.mjs`; manifest hashes verified at build | Packaged offline; listening/device acceptance pending |
-| Avatar set, additional table decorations and celebrations | Still to be completed as one consistent native/vector or optimized raster set | Must not replace readable controls |
+| Eight avatar illustrations | Original native Canvas geometry in `ui/Avatars.kt` | None |
+| Verified-win card and finite confetti | Native Compose/Canvas in `ui/WinCelebration.kt`; presentation reads verified awards | None; no new scoring logic |
+| Additional table decoration and deal/mark motion | Still to be completed consistently with the existing table | Must not replace readable controls |
 
 No paid generation or new external media was used for the appearance milestone. No developer API key is packaged. Any future generated/licensed material must add its source, prompt/model or license, date, output hashes and listening/visual QA before production distribution. Internal alpha assets may be supplied for that acceptance with their remaining checks explicitly recorded. Native vector/code is preferred where it keeps artwork crisp and small.
 
 ## Remaining presentation acceptance
 
-The audio implementation now includes independent volumes, call ducking and interruption handling; see [audio design and provenance](AUDIO.md). Remaining work includes listening/device acceptance; finite dismissible winner celebrations; English/Hindi interface resources; avatar selection; non-color call/mark cues throughout; and a full TalkBack walk-through. Measure the resulting frame/audio behavior on physical phones. Emulator theme/motion checks are not a physical-device smoothness, pronunciation or assistive-technology sign-off.
+The audio implementation now includes independent volumes, call ducking and interruption handling; see [audio design and provenance](AUDIO.md). Remaining work includes listening/device acceptance; English/Hindi interface resources; additional table/deal/mark presentation; non-color call/mark cues throughout; and a full TalkBack walk-through. Measure the resulting frame/audio behavior on physical phones. Emulator theme/motion checks are not a physical-device smoothness, pronunciation or assistive-technology sign-off.
 
 ## Implementation references
 

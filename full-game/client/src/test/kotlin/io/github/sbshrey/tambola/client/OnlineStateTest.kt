@@ -10,6 +10,20 @@ import java.util.Random
 import java.util.UUID
 
 class OnlineStateTest {
+    @Test fun `legacy snapshots default round avatars and accepted profile changes cannot be rolled back by receipts`() {
+        val original = view()
+        val legacy = WireJson.encodeToString(original).replace("\"protocolVersion\":2", "\"protocolVersion\":1")
+            .replace("\"computer\":false,\"avatar\":0", "\"computer\":false")
+        val restored = WireJson.decodeFromString<RoomView>(legacy)
+        restored.validateFor("asha")
+        assertTrue(restored.round!!.players.all { it.avatar == 0 })
+        val changed = original.copy(revision = 10, members = original.members.map { if (it.playerId == "asha") it.copy(avatar = 7) else it })
+        val accepted = saved().accept(RoomUpdate(changed, emptyList(), false), live = true)
+        assertEquals(7, accepted.saved.avatar); assertNull(accepted.announcement)
+        assertEquals(7, accepted.saved.accept(RoomUpdate(original, emptyList(), false), true).saved.avatar)
+        assertThrows(InvalidRoomResponse::class.java) { changed.copy(members = changed.members.map { it.copy(avatar = 8) }).validateFor("asha") }
+        assertThrows(InvalidRoomResponse::class.java) { changed.copy(protocolVersion = 999).validateFor("asha") }
+    }
     private val players = listOf(Player("asha", "Asha"), Player("bina", "Bina"))
     private val round = Round.create(players, RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 2, playAllNumbers = true), random = Random(33)).start()
     private val credentials = GuestCredentials("asha", "never-print-this-token", 99_999)

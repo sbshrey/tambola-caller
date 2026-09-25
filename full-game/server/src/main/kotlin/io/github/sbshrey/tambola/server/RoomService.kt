@@ -10,7 +10,7 @@ import java.util.UUID
 class RoomService(private val database: Database, private val clock: () -> Long = System::currentTimeMillis) {
     fun register(request: GuestRequest, source: String): GuestCredentials {
         val name = request.displayName.trim()
-        demand(name.length in 1..40 && name.none(Char::isISOControl) && request.avatar in 0..7,
+        demand(name.length in 1..40 && name.none(Char::isISOControl) && request.avatar in 0 until AVATAR_COUNT,
             400, "invalid_guest", "Use a name of 1–40 characters and a supported avatar.")
         rate("guest:${digest(source)}", 60)
         val token = secret()
@@ -126,7 +126,9 @@ class RoomService(private val database: Database, private val clock: () -> Long 
         demand(request.expectedRevision >= 0, 400, "invalid_revision", "Revision must be non-negative.")
         authenticatedRate(token, "command", 180)
         return database.transaction { connection ->
-            val guest = authenticate(connection, token)
+            // Take the profile write lock before room locks; do not upgrade a shared
+            // profile lock while a concurrent command holds it and waits on this room.
+            val guest = authenticate(connection, token, lock = request.action is RoomAction.ChooseAvatar)
             var room = load(connection, code)
             val hash = digest(WireJson.encodeToString(request))
             val receipt = connection.query("SELECT request_hash, response FROM command_receipts WHERE room_id = ? AND actor = ? AND command_id = ?", room.id, guest.id, request.id) { Receipt(it.getString(1), it.getString(2)) }.singleOrNull()
@@ -139,6 +141,7 @@ class RoomService(private val database: Database, private val clock: () -> Long 
             val now = clock()
             room = room.copy(members = room.members.map { if (it.id == guest.id) it.copy(lastSeen = now, connected = true) else it })
             val next = apply(room, guest.id, request.action, now)
+            (request.action as? RoomAction.ChooseAvatar)?.let { connection.execute("UPDATE guests SET avatar = ? WHERE id = ?", it.avatar, guest.id) }
             val saved = changed(connection, next, actionName(request.action), now)
             val response = update(connection, saved, guest.id, request.expectedRevision)
             connection.execute("INSERT INTO command_receipts VALUES (?, ?, ?, ?, ?)", room.id, guest.id, request.id, hash, WireJson.encodeToString(response))
@@ -191,6 +194,11 @@ class RoomService(private val database: Database, private val clock: () -> Long 
         fun active() = demand(room.phase == RoomPhase.ACTIVE, 409, "not_active", "There is no active round.")
         return when (action) {
             is RoomAction.Ready -> { lobby(); room.copy(members = room.members.map { if (it.id == actor) it.copy(ready = action.value) else it }) }
+            is RoomAction.ChooseAvatar -> {
+                lobby()
+                demand(action.avatar in 0 until AVATAR_COUNT, 400, "invalid_avatar", "Choose a supported avatar.")
+                room.copy(members = room.members.map { if (it.id == actor) it.copy(avatar = action.avatar, ready = false) else it })
+            }
             is RoomAction.Configure -> {
                 host(); lobby()
                 demand(action.options.capacity >= room.members.size, 409, "capacity", "Capacity cannot be smaller than the current group.")
@@ -204,7 +212,7 @@ class RoomService(private val database: Database, private val clock: () -> Long 
                 val houses = room.options.game.prizes.count { it.isRankedHouse }.coerceAtLeast(1)
                 demand(room.members.size * room.options.game.ticketsPerPlayer >= houses,
                     409, "insufficient_tickets", "$houses houses need at least $houses tickets at the table. Add players or increase tickets per player.")
-                val game = Round.create(room.members.map { Player(it.id, it.name) }, room.options.game, now = now).start()
+                val game = Round.create(room.members.map { Player(it.id, it.name, avatar = it.avatar) }, room.options.game, now = now).start()
                 val nonce = secret()
                 room.copy(phase = RoomPhase.ACTIVE, locked = true, round = game, nonce = nonce, drawCommitment = commitment(game, nonce),
                     nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { room.options.automaticCalling })
@@ -311,8 +319,14 @@ class RoomService(private val database: Database, private val clock: () -> Long 
 
     private fun validId(id: String) = demand(runCatching { UUID.fromString(id).toString() == id }.getOrDefault(false), 400, "invalid_id", "Use a canonical UUID for each new command.")
     private fun validToken(token: String) = demand(token.matches(Regex("[A-Za-z0-9_-]{43}")), 401, "unauthorized", "A valid guest session is required.")
-    private fun decode(payload: String): RoomRecord = WireJson.decodeFromString(payload)
+    private fun decode(payload: String): RoomRecord = WireJson.decodeFromString<RoomRecord>(payload).let { record ->
+        record.copy(round = record.round?.let { game ->
+            require(game.version in 1..3) { "Unsupported stored round format" }
+            game.copy(version = 3)
+        })
+    }
     private fun actionName(action: RoomAction): String = when (action) {
+        is RoomAction.ChooseAvatar -> "avatar_changed"
         is RoomAction.Ready -> "ready"; is RoomAction.Configure -> "configured"; is RoomAction.Lock -> "locked"
         RoomAction.Start -> "started"; RoomAction.Draw -> "drawn"; RoomAction.Pause -> "paused"; RoomAction.Resume -> "resumed"
         RoomAction.End -> "ended"; RoomAction.Rematch -> "rematch"; is RoomAction.Remove -> "removed"; RoomAction.Leave -> "left"

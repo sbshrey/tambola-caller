@@ -11,6 +11,7 @@ import io.github.sbshrey.tambola.game.audio.GameAudio
 import io.github.sbshrey.tambola.game.audio.SoundCue
 import io.github.sbshrey.tambola.game.data.*
 import io.github.sbshrey.tambola.game.setup.*
+import io.github.sbshrey.tambola.game.presentation.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
@@ -33,6 +34,7 @@ data class GameUiState(
     val preferences: Preferences = Preferences(),
     val error: String? = null,
     val auto: Boolean = false,
+    val winMoment: WinMoment? = null,
 )
 
 class GameViewModel(application: Application, private val savedState: SavedStateHandle) : AndroidViewModel(application) {
@@ -125,6 +127,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
     }
     fun removeRule(id: String) { updateSetup(mutable.value.setupDraft.let { it.copy(customPrizes = it.customPrizes.filterNot { prize -> prize.id == id }) }) }
     fun clearError() { mutable.update { it.copy(error = null) } }
+    fun dismissWin() { mutable.update { it.copy(winMoment = null) } }
     fun tutorialCall() { if (foreground) audio.play(7, mutable.value.preferences.language) }
     fun finishTutorial(completed: Boolean) {
         viewModelScope.launch {
@@ -141,13 +144,13 @@ class GameViewModel(application: Application, private val savedState: SavedState
             mutex.withLock {
                 try {
                     val settings = draft.settings()
-                    val players = draft.playerNames.mapIndexed { i, name -> Player("p$i", name) } +
-                        if (draft.mode == GameMode.PRACTICE) (1..draft.bots).map { Player("bot$it", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[it - 1], true) } else emptyList()
+                    val players = draft.playerNames.mapIndexed { i, name -> Player("p$i", name, avatar = draft.avatar(i)) } +
+                        if (draft.mode == GameMode.PRACTICE) (1..draft.bots).map { Player("bot$it", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[it - 1], true, it) } else emptyList()
                     val round = withContext(Dispatchers.Default) { Round.create(players, settings).start() }
                     // Keep any previous in-progress round as a cancelled history entry.
                     repository.replaceActive(mutable.value.round, round)
                     audio.stop(); stopTimer(); lastDrawAt = -1_000
-                    mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null) }
+                    mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null, winMoment = null) }
                     if (foreground) audio.effect(SoundCue.DEAL)
                 } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "The round could not be saved. Please try again.") } }
                 finally { mutable.update { it.copy(saving = false) } }
@@ -163,9 +166,10 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     val next = transform(previous)
                     if (next == previous) return@withLock
                     repository.save(next)
-                    mutable.update { it.copy(round = next) }
-                    if (foreground && speak && next.latest != null && next.called.size > previous.called.size) audio.play(next.latest!!, mutable.value.preferences.language,
-                        celebration = next.awards.size > previous.awards.size || next.customAwards.size > previous.customAwards.size)
+                    val liveCall = foreground && mutable.value.screen == Screen.GAME && speak && next.latest != null && next.called.size > previous.called.size
+                    val moment = if (liveCall) next.winMoment() else null
+                    mutable.update { it.copy(round = next, winMoment = if (next.status in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) null else moment ?: it.winMoment) }
+                    if (liveCall) audio.play(next.latest!!, mutable.value.preferences.language, celebration = moment != null)
                     if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
                 } catch (error: Exception) { mutable.update { it.copy(error = error.message ?: "Progress could not be saved. Please try again.") } }
@@ -180,11 +184,11 @@ class GameViewModel(application: Application, private val savedState: SavedState
         mutate(speak = true) { it.draw() }
     }
     fun toggleMark(ticketId: String, number: Int) = mutate(markSound = true) { it.toggleMark(ticketId, number) }
-    fun undo() { stopTimer(); audio.stop(); mutate { it.undo() } }
+    fun undo() { stopTimer(); audio.stop(); dismissWin(); mutate { it.undo() } }
     fun resume() { mutate { it.start() } }
-    fun pause() { stopTimer(); audio.stop(); mutate { audio.stop(); it.pause() } }
+    fun pause() { stopTimer(); audio.stop(); dismissWin(); mutate { audio.stop(); it.pause() } }
     fun setForeground(value: Boolean) { foreground = value; if (!value) pause() }
-    fun finish() { stopTimer(); audio.stop(); mutate { it.cancel() } }
+    fun finish() { stopTimer(); audio.stop(); dismissWin(); mutate { it.cancel() } }
     fun repeatCall() { if (foreground) mutable.value.round?.latest?.let { audio.repeat(it, mutable.value.preferences.language) } }
     fun auto() {
         if (mutable.value.auto) { stopTimer(); return }
@@ -211,7 +215,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
         } catch (_: Exception) { mutable.update { it.copy(error = "This saved result could not be read. It has been kept.") } }
     }
     fun deleteHistory() {
-        stopTimer(); audio.stop()
+        stopTimer(); audio.stop(); dismissWin()
         viewModelScope.launch { mutex.withLock {
             try { repository.deleteAll(); mutable.update { it.copy(round = null, viewedResult = null, screen = Screen.HOME) } }
             catch (_: Exception) { mutable.update { it.copy(error = "Saved rounds could not be deleted.") } }

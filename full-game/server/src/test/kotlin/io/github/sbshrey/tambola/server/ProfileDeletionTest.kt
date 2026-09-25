@@ -46,6 +46,7 @@ class ProfileDeletionTest : PostgresTest() {
         service.command(peer.token, code, oldRequest)
         command(host, code, RoomAction.Ready(true)); command(host, code, RoomAction.Start)
         val before = command(host, code, RoomAction.Draw)
+        assertEquals(6, before.round!!.players.first { it.id == host.playerId }.avatar)
         val deletion = request()
         val receipt = service.deleteProfile(host.token, deletion, "deletion-test")
         assertEquals(receipt, RoomService(database, now::get).deleteProfile(host.token, deletion, "deletion-test"))
@@ -56,6 +57,8 @@ class ProfileDeletionTest : PostgresTest() {
         assertEquals(before.round!!.scores, after.round!!.scores)
         assertEquals(before.round!!.drawCommitment, after.round!!.drawCommitment)
         assertEquals("Deleted player", after.round!!.players.first { it.id == host.playerId }.name)
+        assertEquals(0, after.round!!.players.first { it.id == host.playerId }.avatar)
+        assertEquals(6, after.round!!.players.first { it.id == peer.playerId }.avatar)
         assertTrue(after.members.none { it.playerId == host.playerId })
         assertTrue(after.round!!.ownTickets.all { it.playerId == peer.playerId })
         assertEquals(2, command(peer, code, RoomAction.Draw).round!!.called.size)
@@ -63,6 +66,13 @@ class ProfileDeletionTest : PostgresTest() {
         assertFalse(WireJson.encodeToString(retry).contains("Private Asha 2026"))
         assertTrue(retry.snapshot.members.any { it.playerId == host.playerId && it.avatar == 0 })
         assertFalse(storedText().contains("Private Asha 2026"))
+        database.transaction { connection ->
+            connection.query("SELECT payload FROM rooms UNION ALL SELECT payload FROM finished_rounds") {
+                WireJson.decodeFromString<RoomRecord>(it.getString(1))
+            }.forEach { record -> record.round?.players?.filter { it.id == host.playerId }?.forEach { assertEquals(0, it.avatar) } }
+            connection.query("SELECT response FROM command_receipts") { WireJson.decodeFromString<RoomUpdate>(it.getString(1)) }
+                .forEach { update -> update.snapshot.round?.players?.filter { it.id == host.playerId }?.forEach { assertEquals(0, it.avatar) } }
+        }
         assertEquals(0, count("guests", "id", host.playerId))
         assertEquals(0, count("command_receipts", "actor", host.playerId))
         assertEquals(0, count("create_receipts", "actor", host.playerId))

@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 1
+const val PROTOCOL_VERSION = 2
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -65,6 +65,7 @@ val WireJson = Json { encodeDefaults = true }
 @Serializable data class CommandRequest(val id: String, val expectedRevision: Long, val action: RoomAction)
 @Serializable sealed class RoomAction {
     @Serializable @SerialName("ready") data class Ready(val value: Boolean) : RoomAction()
+    @Serializable @SerialName("avatar") data class ChooseAvatar(val avatar: Int) : RoomAction()
     @Serializable @SerialName("configure") data class Configure(val options: RoomOptions) : RoomAction()
     @Serializable @SerialName("lock") data class Lock(val value: Boolean) : RoomAction()
     @Serializable @SerialName("start") data object Start : RoomAction()

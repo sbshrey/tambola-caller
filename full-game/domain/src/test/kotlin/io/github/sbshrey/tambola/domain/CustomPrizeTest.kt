@@ -60,7 +60,7 @@ class CustomPrizeTest {
     @Test fun `version one save without new fields migrates without changing calls or marks`() {
         val raw = checkNotNull(javaClass.getResource("/round-v1.json")).readText()
         val round = RoundCodec.decode(raw)
-        assertEquals(2, round.version)
+        assertEquals(3, round.version)
         assertEquals(listOf(1, 2, 3, 4), round.called)
         assertEquals(setOf(1), round.marks["p0-1"])
         assertTrue(round.settings.customPrizes.isEmpty())

@@ -10,6 +10,7 @@ import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
 import io.github.sbshrey.tambola.game.audio.SoundCue
 import io.github.sbshrey.tambola.game.data.*
+import io.github.sbshrey.tambola.game.presentation.*
 import io.github.sbshrey.tambola.protocol.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -23,6 +24,7 @@ data class OnlineUiState(
     val loading: Boolean = true,
     val available: Boolean = BuildConfig.ROOM_API_URL.isNotEmpty(),
     val name: String? = null,
+    val avatar: Int = 0,
     val playerId: String? = null,
     val room: RoomView? = null,
     val marks: Map<String, Set<Int>> = emptyMap(),
@@ -36,6 +38,7 @@ data class OnlineUiState(
     val storageFailure: Boolean = false,
     val error: String? = null,
     val notice: String? = null,
+    val winMoment: WinMoment? = null,
 )
 
 class OnlineViewModel(application: Application) : AndroidViewModel(application) {
@@ -69,10 +72,12 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     private fun publish() {
         val value = saved
-        mutable.update { it.copy(name = value?.displayName, playerId = value?.credentials?.playerId,
+        mutable.update { it.copy(name = value?.displayName, avatar = value?.avatar ?: 0, playerId = value?.credentials?.playerId,
             room = value?.room, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
             badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null,
-            deletingProfile = value?.pending is PendingOperation.DeleteProfile) }
+            deletingProfile = value?.pending is PendingOperation.DeleteProfile,
+            winMoment = it.winMoment?.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id }
+                ?.refreshPlayers(value?.room?.round?.players.orEmpty())) }
     }
     private suspend fun persist(value: OnlineSaved?) {
         try { store.write(value) }
@@ -86,22 +91,23 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         active = value
         if (value) connect() else {
             stream?.cancel(); stream = null; audio.stop()
-            mutable.update { it.copy(connection = if (saved?.room == null) Connection.IDLE else Connection.SUSPENDED) }
+            mutable.update { it.copy(connection = if (saved?.room == null) Connection.IDLE else Connection.SUSPENDED, winMoment = null) }
         }
     }
     fun clearError() { mutable.update { it.copy(error = null) } }
     fun clearNotice() { mutable.update { it.copy(notice = null) } }
-    fun register(name: String) {
+    fun dismissWin() { mutable.update { it.copy(winMoment = null) } }
+    fun register(name: String, avatar: Int = 0) {
         val trimmed = name.trim()
-        if (trimmed.isEmpty() || trimmed.length > 40 || trimmed.any(Char::isISOControl)) {
+        if (trimmed.isEmpty() || trimmed.length > 40 || trimmed.any(Char::isISOControl) || avatar !in 0 until io.github.sbshrey.tambola.domain.AVATAR_COUNT) {
             mutable.update { it.copy(error = "Use a name of 1–40 characters.") }; return
         }
         if (mutable.value.busy || saved != null || api == null || mutable.value.storageFailure) return
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {
             try {
-                val credentials = api.guest(GuestRequest(trimmed))
-                mutex.withLock { persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, trimmed)) }
+                val credentials = api.guest(GuestRequest(trimmed, avatar))
+                mutex.withLock { persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, trimmed, avatar)) }
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
             finally { mutable.update { it.copy(busy = false) } }
@@ -234,13 +240,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private fun announceAccepted(previous: OnlineSaved, accepted: AcceptedRoom) {
         if (!active) return
         val nextStatus = accepted.saved.room?.round?.status
-        if (nextStatus != previous.room?.round?.status && nextStatus in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) audio.stop()
+        if (nextStatus != previous.room?.round?.status && nextStatus in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) { audio.stop(); dismissWin() }
         accepted.announcement?.let { number ->
-            val before = previous.room?.round
-            val after = accepted.saved.room?.round
-            val won = after != null && before != null &&
-                (after.awards.size > before.awards.size || after.customAwards.size > before.customAwards.size)
-            audio.play(number, preferences.language, celebration = won)
+            val moment = accepted.saved.room?.winMoment()
+            if (moment != null) mutable.update { it.copy(winMoment = moment) }
+            audio.play(number, preferences.language, celebration = moment != null)
         }
     }
     fun reconnect() { stream?.cancel(); stream = null; connect() }

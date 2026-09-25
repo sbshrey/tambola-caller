@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -31,6 +32,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     val context = LocalContext.current
     val focus = LocalFocusManager.current
     var name by rememberSaveable { mutableStateOf("") }
+    var avatar by rememberSaveable { mutableIntStateOf(0) }
     var code by rememberSaveable { mutableStateOf("") }
     var configure by rememberSaveable { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
@@ -70,10 +72,13 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             OutlinedTextField(name, { if (it.length <= 40) name = it }, label = { Text("Online display name") }, singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done), keyboardActions = KeyboardActions(onDone = { focus.clearFocus() }), modifier = Modifier.fillMaxWidth().testTag("online-name"))
             Text("Your name, tickets, calls and results are saved by the room service. Room members see your name and wins; your ticket numbers stay private. Free social play with points only.", color = Muted)
-            PrimaryAction(if (state.busy) "Opening your profile…" else "Continue online", enabled = enabled && name.isNotBlank()) { focus.clearFocus(); model.register(name) }
+            AvatarChoice("Your profile", avatar, enabled) { focus.clearFocus(); avatar = it }
+            PrimaryAction(if (state.busy) "Opening your profile…" else "Continue online", enabled = enabled && name.isNotBlank()) { focus.clearFocus(); model.register(name, avatar) }
         }
     } else {
-        Text("Playing as ${state.name}", color = Jade)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            AvatarBadge(state.avatar); Text("Playing as ${state.name}", color = Jade, modifier = Modifier.weight(1f))
+        }
         if (room == null) {
             GameCard {
                 Text("Bring your people together", style = MaterialTheme.typography.titleLarge)
@@ -104,8 +109,14 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             if (room.phase == RoomPhase.LOBBY) {
                 GameCard {
                     Text("Who's at the table?", style = MaterialTheme.typography.titleLarge)
+                    val me = room.members.firstOrNull { it.playerId == state.playerId }
+                    if (me != null) AvatarChoice("Your profile", me.avatar, enabled && state.connection == Connection.LIVE && room.protocolVersion >= 2) {
+                        if (it != me.avatar) model.command(RoomAction.ChooseAvatar(it))
+                    }
+                    Text("Avatar changes save for your next room too. Choose before readying; avatars stay fixed during a round.", color = Muted)
                     room.members.forEach { member ->
                         Row(Modifier.fillMaxWidth()) {
+                            AvatarBadge(member.avatar, Modifier.padding(end = 8.dp), size = 36.dp)
                             Column(Modifier.weight(1f)) {
                                 Text(member.displayName + if (member.playerId == room.hostId) " · host" else "", fontWeight = FontWeight.SemiBold)
                                 Text((if (member.ready) "Ready" else "Choosing a seat") + if (member.connected) " · connected" else " · away", color = if (member.ready) Jade else Muted)
@@ -130,7 +141,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             } else {
                 val table = room.toTable(state.marks)
                 if (table != null && table.tickets.isNotEmpty()) {
-                    TablePlay(table, preferences, model::mark, model::repeatCall)
+                    TablePlay(table, preferences, model::mark, model::repeatCall, state.winMoment, model::dismissWin)
                     if (table.finished) OnlineResults(table)
                 }
             }
@@ -212,7 +223,12 @@ private fun OnlineResults(table: TableRound) {
     var sharing by remember { mutableStateOf(false) }
     GameCard {
         Eyebrow(if (table.status == RoundStatus.CANCELLED) "RESULTS SO FAR" else "A ROUND OF APPLAUSE")
-        table.players.sortedByDescending { table.score(it.id) }.forEach { Text("${it.name} · ${table.score(it.id)} points", color = Jade) }
+        table.players.sortedByDescending { table.score(it.id) }.forEach { player ->
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                AvatarBadge(player.avatar)
+                Text("${player.name} · ${table.score(player.id)} points", color = Jade, modifier = Modifier.weight(1f))
+            }
+        }
         Text("${table.called.size} calls · ${table.awards.size + table.customAwards.size} verified prizes", color = Muted)
         Text("Draw commitment checked against the revealed order.", color = Muted, style = MaterialTheme.typography.bodySmall)
         if (table.status == RoundStatus.COMPLETED) Text("This round counts toward your online badges. Find them under Your badges on Home.", color = Jade)

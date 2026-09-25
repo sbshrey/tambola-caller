@@ -1,6 +1,6 @@
 # Private room service: local development candidate
 
-Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha05 APK connects to it through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha05 validation](../ALPHA05_VALIDATION.md).
+Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha08 APK connects to it through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha08 validation](../ALPHA08_VALIDATION.md).
 
 ## Run and test
 
@@ -23,7 +23,9 @@ node tools/server-smoke.mjs
 
 The smoke script requires Node 22+, a loopback JDBC URL for `tambola_test`, and the built distribution. It starts an owned Java child process on a free loopback port, registers two fictional players, calls a number, kills that process, restarts it, verifies the saved state/event/command receipt, ends the round, and stops the owned server. Session secrets stay in process memory. The small synthetic room remains in the test database until retention cleanup; it does not write to a production database.
 
-## Protocol v1
+## Protocol envelope 2, `/v1` routes
+
+Alpha08 snapshots include immutable round-player avatars. Use the matching alpha08 client; older clients do not understand these fields. Stored older rounds/receipts remain readable by the new service/client. No SQL migration is needed for this change. See [save/protocol compatibility](../AVATARS.md) before an upgrade or rollback.
 
 All bodies and responses use strict JSON. Session credentials are opaque bearer tokens in the `Authorization` header; never put them in a URL. A guest has one active token, valid for seven days, stored as SHA-256 only. Logging out revokes it. There is no account/password recovery yet.
 
@@ -39,7 +41,7 @@ All bodies and responses use strict JSON. Session credentials are opaque bearer 
 | `POST /v1/rooms/{code}/commands` | UUID `id`, `expectedRevision`, typed `action` |
 | `WS /v1/rooms/{code}/events?after=N` | Authenticated personalized snapshot stream; inbound messages are revision acknowledgements only |
 
-Canonical DTOs are in `protocol/.../Rooms.kt`. Actions are `ready`, `configure`, `lock`, `start`, `draw`, `pause`, `resume`, `end`, `rematch`, `remove`, `leave`, encoded by the `type` discriminator. Invalid actions/settings fail with a safe error code. Commands that race a newer room revision return `409 stale_revision`; clients refresh before issuing a new command. Retrying an uncertain command must reuse **the identical UUID, revision and body**. A matching receipt returns the original response, even if later room revisions exist. Clients must never replace newer visible state with an older retry response. Creation retries return the current personalized snapshot of the originally created room.
+Canonical DTOs are in `protocol/.../Rooms.kt`. Actions are `avatar`, `ready`, `configure`, `lock`, `start`, `draw`, `pause`, `resume`, `end`, `rematch`, `remove`, `leave`, encoded by the `type` discriminator. `avatar` changes the authenticated lobby member's choice (0–7), resets only their readiness and updates their future-room profile in the same transaction. Invalid actions/settings fail with a safe error code. Commands that race a newer room revision return `409 stale_revision`; clients refresh before issuing a new command. Retrying an uncertain command must reuse **the identical UUID, revision and body**. A matching receipt returns the original response, even if later room revisions exist. Clients must never replace newer visible state with an older retry response. Creation retries return the current personalized snapshot of the originally created room.
 
 Two to 32 humans can play, with one to six tickets each. Everyone must be ready and recently connected before the host starts. Configuration resets readiness. Starting freezes tickets/rules. The host can pause/resume/end or call numbers in a manual room. Automatic rooms use only server-owned scheduling. No client claim/mark can award points. Standard/custom rules, ties and scoring use the same domain engine as offline play.
 

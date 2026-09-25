@@ -26,6 +26,7 @@ import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.data.SavedRound
 import io.github.sbshrey.tambola.game.data.Appearance
 import io.github.sbshrey.tambola.game.online.*
+import io.github.sbshrey.tambola.game.presentation.WinMoment
 import java.text.DateFormat
 import java.util.Date
 
@@ -111,7 +112,7 @@ private fun Home(state: GameUiState, model: GameViewModel) {
 @Composable
 private fun GameTable(round: Round, state: GameUiState, model: GameViewModel) {
     var cancel by remember { mutableStateOf(false) }
-    TablePlay(round.toTable(), state.preferences, model::toggleMark, model::repeatCall)
+    TablePlay(round.toTable(), state.preferences, model::toggleMark, model::repeatCall, state.winMoment, model::dismissWin)
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         if (round.settings.mode == GameMode.PRACTICE && !round.finished) TextButton(onClick = model::undo, enabled = round.called.isNotEmpty()) { Text("Undo last call") }
         if (!round.finished) TextButton(onClick = { cancel = true }) { Text("End round") }
@@ -152,7 +153,7 @@ private fun Results(round: Round, model: GameViewModel) {
         round.players.sortedByDescending { round.score(it.id) }.forEach { player ->
             val leading = topScore > 0 && round.score(player.id) == topScore
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(42.dp).background(if (leading) Saffron else MaterialTheme.colorScheme.surfaceContainerHighest, CircleShape), contentAlignment = Alignment.Center) { Text(player.name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = if (leading) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface) }
+                AvatarBadge(player.avatar, if (leading) Modifier.border(2.dp, Saffron, CircleShape) else Modifier, size = 42.dp)
                 Column(Modifier.weight(1f).padding(horizontal = 12.dp)) { Text(player.name, style = MaterialTheme.typography.titleMedium); if (player.computer) Text("Computer player", color = Muted, fontSize = 12.sp) }
                 Text("${round.score(player.id)} pts", color = Jade, fontWeight = FontWeight.Bold)
             }
@@ -241,7 +242,7 @@ fun SettingSwitch(title: String, detail: String, checked: Boolean, onChange: (Bo
 
 @Composable
 fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.data.Preferences,
-    mark: (String, Int) -> Unit, repeatCall: () -> Unit) {
+    mark: (String, Int) -> Unit, repeatCall: () -> Unit, winMoment: WinMoment? = null, dismissWin: () -> Unit = {}) {
     var selected by rememberSaveable(round.id) { mutableIntStateOf(0) }
     var board by remember { mutableStateOf(false) }
     var claims by remember { mutableStateOf(false) }
@@ -257,6 +258,7 @@ fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.dat
         }
     }
     LinearProgressIndicator(progress = { round.called.size / 90f }, modifier = Modifier.fillMaxWidth(), color = Jade, trackColor = Panel)
+    winMoment?.let { WinCelebration(it, preferences.reducedMotion, dismissWin) { claims = true } }
     if (round.called.isNotEmpty()) {
         FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("RECENT CALLS", fontSize = 10.sp, color = Muted, modifier = Modifier.fillMaxWidth())

@@ -9,8 +9,9 @@ import java.util.UUID
 
 @Serializable enum class GameMode { PRACTICE, FAMILY, ONLINE }
 @Serializable enum class RoundStatus { READY, PLAYING, PAUSED, COMPLETED, CANCELLED }
-@Serializable data class Player(val id: String, val name: String, val computer: Boolean = false) {
-    init { require(id.isNotBlank() && name.isNotBlank() && name.length <= 40) }
+const val AVATAR_COUNT = 8
+@Serializable data class Player(val id: String, val name: String, val computer: Boolean = false, val avatar: Int = 0) {
+    init { require(id.isNotBlank() && name.isNotBlank() && name.length <= 40 && avatar in 0 until AVATAR_COUNT) }
 }
 @Serializable enum class Prize(val title: String, val points: Int, val explanation: String) {
     EARLY_FIVE("Early five", 10, "Any five called numbers on one ticket."),
@@ -56,7 +57,7 @@ data class Award(val prize: Prize, val drawIndex: Int, val ticketIds: List<Strin
 
 @Serializable
 data class Round(
-    val version: Int = 2,
+    val version: Int = 3,
     val id: String,
     val createdAt: Long,
     val settings: RoundSettings,
@@ -140,7 +141,8 @@ data class Round(
 
     /** Validate untrusted persistence at the boundary, including awards by replay. */
     fun validated(): Round {
-        require(version in 1..2 && id.isNotBlank() && createdAt >= 0)
+        require(version in 1..3 && id.isNotBlank() && createdAt >= 0)
+        require(version >= 3 || players.all { it.avatar == 0 }) { "This saved format cannot contain player avatars" }
         require(version != 1 || (settings.customPrizes.isEmpty() && customAwards.isEmpty()))
         require(players.size in 1..32 && players.map { it.id }.distinct().size == players.size)
         require(settings.mode != GameMode.FAMILY || (players.size in 2..8 && players.none { it.computer }))
@@ -177,6 +179,6 @@ object RoundCodec {
     fun encode(round: Round): String = json.encodeToString(round)
     fun decode(value: String): Round {
         require(value.length <= 1_000_000) { "Saved round is too large" }
-        return json.decodeFromString<Round>(value).validated().copy(version = 2)
+        return json.decodeFromString<Round>(value).validated().copy(version = 3)
     }
 }

@@ -37,6 +37,13 @@ fun Setup(state: GameUiState, model: GameViewModel) {
         }
         SettingSwitch("Help with marking", "Automatically dab called numbers.", draft.assisted) { model.updateSetup(draft.copy(assisted = it)) }
     }
+    if (draft.playerNames.isNotEmpty()) GameCard {
+        Text("A face for every place", style = MaterialTheme.typography.titleLarge)
+        Text("Choose each player's avatar before dealing. Computer players keep their own characters.", color = Muted)
+        draft.playerNames.take(if (family) 8 else 1).forEachIndexed { index, name ->
+            AvatarChoice(name, draft.avatar(index)) { model.updateSetup(draft.withAvatar(index, it)) }
+        }
+    }
     RoundRules(draft, model::updateSetup, model::editRule, model::removeRule)
     if (draft.errors.isNotEmpty()) GameCard { draft.errors.forEach { Text(it, color = Coral) } }
     PrimaryAction(if (state.saving) "Dealing your tickets…" else "Deal the tickets", enabled = draft.errors.isEmpty() && !state.saving) {

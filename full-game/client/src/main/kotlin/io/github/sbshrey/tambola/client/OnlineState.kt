@@ -48,7 +48,8 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
         nextGame.called.last() else null
     val progress = badgeProgress().let { current -> nextGame?.let { current.record(it.id, it.status,
         it.awards.hasHouseFor(setOf(credentials.playerId))) } ?: current }
-    return AcceptedRoom(copy(room = next, marks = nextMarks, history = archive, badges = progress), number)
+    return AcceptedRoom(copy(room = next, marks = nextMarks, history = archive, badges = progress,
+        avatar = next.members.firstOrNull { it.playerId == credentials.playerId }?.avatar ?: avatar), number)
 }
 
 /** Lazily includes pre-badge cached results; later writes retain milestones beyond the 50-result cache. */
@@ -67,10 +68,11 @@ fun OnlineSaved.mark(ticketId: String, number: Int): OnlineSaved {
 /** Reject malformed or privacy-breaking snapshots at the boundary, before saving/rendering. */
 fun RoomView.validateFor(playerId: String) {
     try {
-        require(protocolVersion == PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
+        // Version-one cached receipts/snapshots predate round avatars; Player defaults them to zero.
+        require(protocolVersion in 1..PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
         require(members.size <= 32 && members.map { it.playerId }.distinct().size == members.size)
-        require(members.all { it.displayName.isNotBlank() && it.displayName.length <= 40 })
+        require(members.all { it.displayName.isNotBlank() && it.displayName.length <= 40 && it.avatar in 0 until AVATAR_COUNT })
         require(phase == RoomPhase.CLOSED || members.any { it.playerId == playerId })
         round?.let { game ->
             require(phase in setOf(RoomPhase.ACTIVE, RoomPhase.FINISHED, RoomPhase.CLOSED))

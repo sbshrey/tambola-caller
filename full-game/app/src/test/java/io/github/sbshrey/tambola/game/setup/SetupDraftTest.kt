@@ -11,10 +11,11 @@ class SetupDraftTest {
     @Test fun `rematch preserves players computers and exact custom and terminal rules`() {
         val rule = CustomRuleDraft(title = "Two top lines", groups = listOf(listOf(ConditionDraft(kind = SelectionKind.ROW, all = true))), minimumTickets = 2).prize(2)
         val settings = RoundSettings(ticketsPerPlayer = 2, assistedMarking = true, prizes = listOf(Prize.EARLY_FIVE, Prize.HOUSE_ONE, Prize.HOUSE_TWO, Prize.HOUSE_THREE), playAllNumbers = true, customPrizes = listOf(rule))
-        val round = Round.create(listOf(Player("p0", "Asha"), Player("bot1", "Mango", true)), settings, Random(2), 1)
+        val round = Round.create(listOf(Player("p0", "Asha", avatar = 7), Player("bot1", "Mango", true, 1)), settings, Random(2), 1)
         val draft = SetupDraft.from(round)
         assertEquals(settings, draft.settings())
         assertEquals(listOf("Asha"), draft.playerNames); assertEquals(1, draft.bots)
+        assertEquals(7, draft.avatar(0)); assertEquals(2, draft.withAvatar(0, 2).avatar(0))
         assertEquals(draft, Json.decodeFromString<SetupDraft>(Json.encodeToString(draft)))
         assertEquals(rule, CustomRuleDraft.from(rule).prize(2))
     }
@@ -45,5 +46,9 @@ class SetupDraftTest {
         assertTrue(draft.copy(bots = 0).errors.single().contains("at least 3 tickets"))
         assertTrue(SetupDraft.fresh(GameMode.FAMILY).copy(names = "Asha\nasha").errors.single().contains("different name"))
         assertTrue(SetupDraft(names = "").errors.single().contains("Enter your name"))
+        val tooMany = SetupDraft.fresh(GameMode.FAMILY).copy(names = (1..9).joinToString("\n") { "Player $it" }).withAvatar(0, 7)
+        assertEquals(8, tooMany.avatars.size)
+        val corrected = tooMany.copy(names = tooMany.playerNames.take(8).joinToString("\n"))
+        assertTrue(corrected.errors.isEmpty()); assertEquals(7, corrected.avatar(0))
     }
 }
