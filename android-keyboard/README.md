@@ -1,8 +1,8 @@
-# Tambola Keyboard 1.3.0 for Android
+# Tambola Keyboard 1.3.1 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-**[Download Tambola Keyboard 1.3.0](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.0/Tambola-Keyboard-1.3.0.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.0).
+**[Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
 
 ## Set up once
 
@@ -51,7 +51,7 @@ The announcement goes into the current chat draft automatically. **Check the spe
 
 Enable the prize first under **Choose prize schemes**. The command uses that prize's configured rupee amount; speak the scheme and names, not a different amount. Up to two names are accepted, separated by **and / aur / और**. Exact existing names are reused; new names are added automatically. Similar spellings or Hindi/Latin versions are not guessed to be the same person. Stay with one spelling/script or correct names under Players & prize amounts.
 
-All 41 catalog names, the original defaults and custom prize names can be spoken. Common Hindi/Hinglish aliases are included, with number words such as Early five and House one. This is a small command vocabulary, not unrestricted conversational AI. An unclear/ambiguous prize, an already-awarded prize or too few calls leaves awards unchanged. Correct existing awards using the prize's manual dropdowns. If a winner saves but insertion fails, use **Insert [prize] announcement**; do not award the prize again.
+All 41 catalog names, the original defaults and custom prize names can be spoken. Common Hindi/Hinglish aliases are included, with number words such as Early five and House one. v1.3.1 also handles joined words such as “Topline” and the speech service's observed “only 5 winner” transcription of “Early five winner”. This is a small command vocabulary, not unrestricted conversational AI. An unclear/ambiguous prize, an already-awarded prize or too few calls leaves awards unchanged. Correct existing awards using the prize's manual dropdowns. If a winner saves but insertion fails, use **Insert [prize] announcement**; do not award the prize again.
 
 Voice typing requires an enabled Android speech recognition service and may require Internet through that service. It is optional; manual winner tracking and number calls still work without microphone permission. Speech stops when the keyboard closes, the editor changes, you navigate away or cancel; a changed round, prize setup or nonempty draft prevents a pending award. Dictation is disabled in practice. No microphone recordings are stored by this app, and no OpenAI key is needed. Phone/provider recognition quality needs a real-device check.
 

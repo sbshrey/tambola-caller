@@ -1,9 +1,9 @@
-TAMBOLA KEYBOARD 1.3.0 - ANDROID 8 OR NEWER
+TAMBOLA KEYBOARD 1.3.1 - ANDROID 8 OR NEWER
 
 ONE PHONE. TWO TAPS PER NUMBER.
 
 SET UP ONCE
-1. Open Tambola-Keyboard-1.3.0.apk on the phone with WhatsApp. Install it.
+1. Open Tambola-Keyboard-1.3.1.apk on the phone with WhatsApp. Install it.
    If updating, install over the old app. Do not uninstall it first.
 2. Open Tambola Keyboard. Tap Help me set it up.
 3. Tap Enable Tambola Keyboard. Turn it on, then return.

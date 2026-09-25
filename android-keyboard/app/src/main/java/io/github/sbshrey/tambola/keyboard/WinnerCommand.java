@@ -19,12 +19,15 @@ final class WinnerCommand {
         for (PrizeBook.Scheme scheme : book.schemes) if (scheme.enabled) {
             int longest = -1; String remaining = null; boolean markedWinner = false;
             for (String alias : aliases(scheme.name)) {
-                String literal = Pattern.quote(alias).replace(" ", "\\E\\s+\\Q");
+                // Speech services can join a scheme's words, e.g. "Topline" or "Early5".
+                String literal = Pattern.quote(alias).replace(" ", "\\E\\s*\\Q");
                 Pattern start = Pattern.compile("^(?:prize\\s+)?" + literal + "(?=\\s|[:,]|$)[\\s:,]*(.*)$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
                 Pattern end = Pattern.compile("^(.*?)\\s+" + literal + "$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
                 Matcher m = start.matcher(text), tail = end.matcher(text);
                 boolean prefix = m.matches();
                 String rest = prefix ? m.group(1) : tail.matches() ? tail.group(1) : null;
+                // Observed English ASR output for "Early five". Require an explicit winner marker.
+                if (alias.startsWith("only ") && !alias.equalsIgnoreCase(scheme.name) && (rest == null || !prefix || !WINNER_MARKER.matcher(rest).find())) continue;
                 if (rest != null && alias.length() > longest) { longest = alias.length(); remaining = rest; markedWinner = prefix && WINNER_MARKER.matcher(rest).find(); }
             }
             if (remaining != null) { matches.put(scheme.id, remaining); if (markedWinner) explicit.put(scheme.id, remaining); }
@@ -67,7 +70,7 @@ final class WinnerCommand {
             result.add(spokenEnglish[i] + " " + translated);
         }
         switch (key) {
-            case "early 5": add(result, "early five|अर्ली फाइव|अर्ली 5|अर्ली पांच|अर्ली पाँच"); break;
+            case "early 5": add(result, "early five|only five|only 5|अर्ली फाइव|अर्ली 5|अर्ली पांच|अर्ली पाँच"); break;
             case "early 10": add(result, "early ten|अर्ली टेन|अर्ली 10|अर्ली दस"); break;
             case "king": add(result, "किंग"); break;
             case "queen": add(result, "क्वीन"); break;

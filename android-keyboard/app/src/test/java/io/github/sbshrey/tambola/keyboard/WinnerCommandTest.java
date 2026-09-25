@@ -56,4 +56,16 @@ public class WinnerCommandTest {
         assertEquals("🏆 Early 5: Sona & Mona\n₹5 each", WinnerCommand.prepare(all(), "Early five winners Sona and Mona", 5).announcement);
         assertEquals("🏆 King: मोना\n₹10 prize", WinnerCommand.prepare(all(), "किंग की विनर मोना।  ", 5).announcement);
     }
+    @Test public void acceptsJoinedSchemeWordsFromActualSpeechRecognition() {
+        assertEquals("🏆 Top line: Asha & BINA\n₹5 each", WinnerCommand.prepare(all(), "Topline winners Asha and BINA", 5).announcement);
+        assertEquals("🏆 Early 5: Asha\n₹10 prize", WinnerCommand.prepare(all(), "Early5 winner Asha", 5).announcement);
+        assertEquals("🏆 Photo frame: Asha\n₹10 prize", WinnerCommand.prepare(all(), "Photoframe winner Asha", 5).announcement);
+        assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(all(), "Toplines winner Asha", 5));
+    }
+    @Test public void acceptsObservedOnlyFiveTranscriptOnlyWithWinnerMarkerAndNoCollision() {
+        assertEquals("🏆 Early 5: Asha Sharma\n₹10 prize", WinnerCommand.prepare(all(), "only 5 winner Asha Sharma", 5).announcement);
+        assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(all(), "only 5 Asha Sharma", 5));
+        PrizeBook collision = all().configure(null, "Only 5", 20, true);
+        assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(collision, "only 5 winner Asha", 5));
+    }
 }

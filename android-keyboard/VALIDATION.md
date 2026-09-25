@@ -1,4 +1,24 @@
-# Tambola Keyboard 1.3.0 validation
+# Tambola Keyboard 1.3.1: actual speech-service testing
+
+Validated on 25 September 2026, version code 6. Testing the published v1.3.0 APK through the real Android Google speech service found two command-matching problems: “Early five” was transcribed as **“only 5”**, and “Top line” as **“Topline”**. Both left the award unchanged and displayed a retry message. v1.3.1 accepts joined scheme words and the observed “only 5” variant when followed by an explicit winner marker. Collisions with a custom Only 5 prize still require clarification; unknown prizes are not guessed.
+
+**24 JVM tests passed**, including new regressions using those exact transcripts, partial-name rejection and ambiguity protection. Release lint passed. The signed v1.3.1 APK was installed on the dedicated Android 11/API 30 emulator, and all three audio-to-editor cases passed using the real Google speech recognition service:
+
+| Spoken sample | Inserted result |
+| --- | --- |
+| Early five winner Asha Sharma | Early 5: Asha Sharma — ₹10 prize |
+| Top line winners Asha and Bina | Top line: Asha & BINA — ₹5 each |
+| अर्ली फाइव की विनर आशा शर्मा और बीना | Early 5: आशा शर्मा & बिना — ₹5 each |
+
+These tests used Windows Indian English/Hindi synthesized WAV samples injected into the emulator's virtual microphone through authenticated localhost gRPC, with the host microphone explicitly disabled. The speech service was **not mocked**. A separate test-chat APK hosted the message field; the caller APK retained its release signature and production permissions. The original installed v1.3.0 APK hash matched the published asset exactly. The SDK's old emulator lacked audio injection, so a newer emulator was extracted into the ignored test workspace; the shared SDK installation was not replaced.
+
+This establishes audio recognition → enabled-prize matching → winner persistence → prize-text insertion for these samples. Reopening the test editor and reinserting the saved Hindi award also passed, with five calls and the ₹5-each split retained. Initial test-harness checks needed to wait for keyboard focus and asynchronous text insertion. It does **not** establish perfect transcription: Hindi **बीना** was recognized as **बिना**, so name spelling still needs review before Send. These are synthesized samples, not a person's voice on a physical phone. No WhatsApp account, group or delivery was used. The earlier 27 instrumented tests below cover the unchanged keyboard and permission flows; they are separate from these three new production-APK audio tests.
+
+Test harness, WAVs and baseline logs: ignored `releases/1.3.0/retest/`. Candidate APK and successful audio-test logs/screenshots: ignored `releases/1.3.1/`.
+
+---
+
+# Previous version: 1.3.0 validation
 
 Validated on 25 September 2026. Package version code 5; Android-only update.
 
