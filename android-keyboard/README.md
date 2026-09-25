@@ -1,8 +1,8 @@
-# Tambola Keyboard 1.2.0 for Android
+# Tambola Keyboard 1.3.0 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-**[Download Tambola Keyboard 1.2.0](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.2.0/Tambola-Keyboard-1.2.0.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.2.0).
+**[Download Tambola Keyboard 1.3.0](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.0/Tambola-Keyboard-1.3.0.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.0).
 
 ## Set up once
 
@@ -39,6 +39,24 @@ Pictures and audio can also be shared from the app's **See board / New game** sc
 
 ## Players and prizes are optional
 
+### Speak the prize and winner
+
+In your WhatsApp group, leave the message box empty. Tap **Winners → Speak prize + winner**. Allow microphone access once, return to your chat, and tap **Speak prize + winner** again. Say:
+
+- **“Early five ki winner Asha Sharma”** → saves Asha as Early 5 winner and inserts `🏆 Early 5: Asha Sharma` with `₹10 prize`.
+- **“King ke winners Asha aur Bina”** → saves both and inserts their names with `₹5 each` for a ₹10 prize.
+- For Hindi, tap **Speech: English / Hinglish · change** before speaking: **“अर्ली फाइव की विनर आशा शर्मा और बीना”**.
+
+The announcement goes into the current chat draft automatically. **Check the spelling, then tap WhatsApp Send.** There is no automatic sending or delivery confirmation. Recognition can finish when you stop speaking, or tap **Done speaking**. **Cancel listening** discards the request.
+
+Enable the prize first under **Choose prize schemes**. The command uses that prize's configured rupee amount; speak the scheme and names, not a different amount. Up to two names are accepted, separated by **and / aur / और**. Exact existing names are reused; new names are added automatically. Similar spellings or Hindi/Latin versions are not guessed to be the same person. Stay with one spelling/script or correct names under Players & prize amounts.
+
+All 41 catalog names, the original defaults and custom prize names can be spoken. Common Hindi/Hinglish aliases are included, with number words such as Early five and House one. This is a small command vocabulary, not unrestricted conversational AI. An unclear/ambiguous prize, an already-awarded prize or too few calls leaves awards unchanged. Correct existing awards using the prize's manual dropdowns. If a winner saves but insertion fails, use **Insert [prize] announcement**; do not award the prize again.
+
+Voice typing requires an enabled Android speech recognition service and may require Internet through that service. It is optional; manual winner tracking and number calls still work without microphone permission. Speech stops when the keyboard closes, the editor changes, you navigate away or cancel; a changed round, prize setup or nonempty draft prevents a pending award. Dictation is disabled in practice. No microphone recordings are stored by this app, and no OpenAI key is needed. Phone/provider recognition quality needs a real-device check.
+
+### Choose winners manually
+
 Tap **Winners → Players & prize amounts**, or open that screen from the app. Add names one per line or separated by commas. Use **ABC** / the normal keyboard picker to type names, then choose Tambola Keyboard again when returning to WhatsApp.
 
 - **Winners → Choose prize schemes** offers [all 41 supplied prize names](SCHEMES.md), grouped into quick prizes, lines, boxes, special prizes and houses. Tick choices and tap **Add selected**, or use **Add all 41 schemes** and confirm. Current calls and winners stay. Already-active choices cannot be accidentally unticked here; turn unwanted prizes off under Players & prizes after clearing any winners. Existing matching prizes are reused with their amounts and awards.
@@ -47,7 +65,7 @@ Tap **Winners → Players & prize amounts**, or open that screen from the app. A
 - Standard line/Early 5 prizes require at least five calls; Full house requires fifteen. Custom prizes require one. These limits do not verify a physical ticket: the host checks it.
 - Tap **Insert [prize] announcement** or **Insert all results** in the keyboard, then WhatsApp Send. Alternatively, the app's **Results to share** screen opens the share chooser.
 - Rename players without losing their awards. Clear wins before removing a winning player or turning off an awarded prize. Editing a default prize changes future awards; edit its winners in the full app to change a recorded payout.
-- Player names are entered manually; the app does not read contacts or WhatsApp group members. Limits: 100 players, 60 prize schemes, 2 winners per scheme, ₹0–₹100000 per prize. No payments are made.
+- Player names are typed or dictated; the app does not read contacts or WhatsApp group members. Limits: 100 players, 60 prize schemes, 2 winners per scheme, ₹0–₹100000 per prize. No payments are made.
 
 ## Undo and new game
 
@@ -57,11 +75,11 @@ Tap **Winners → Players & prize amounts**, or open that screen from the app. A
 
 ## Privacy and compatibility
 
-No accounts, ads, analytics, Internet, microphone, contacts, external-storage or accessibility permissions. The keyboard checks the immediate draft boundary and selected text to avoid overwriting a message; message text is not stored. Password, non-text and the app's setup fields use the regular keyboard. Private game/settings data is excluded from cloud backup and device transfer. Uninstalling or clearing app data removes saved rounds.
+No accounts, ads, analytics, Internet, contacts, external-storage or accessibility permissions in this app. Optional winner dictation requests `RECORD_AUDIO` at runtime. Android's [speech recognition service](https://developer.android.com/reference/android/speech/SpeechRecognizer) may process speech on remote servers using its own connectivity; offline recognition is not guaranteed. The app does not save microphone recordings or a transcript history. Recognized winner names are saved in the local prize book. The keyboard checks the immediate draft boundary and selected text to avoid overwriting a message; chat text is not stored. Password, non-text and the app's setup fields use the regular keyboard. Private game/settings data is excluded from cloud backup and device transfer. Uninstalling or clearing app data removes saved rounds.
 
 The system-only `BIND_INPUT_METHOD` service permission lets Android bind the keyboard. The non-exported sharing provider grants read access only to a file the host chose to share. Local audio playback does not transmit sound to a group.
 
-Two normal Android permissions (`FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_MEDIA_PLAYBACK`) support a short-lived playback service while WhatsApp is open. Playback has a Stop control and ends when the clip finishes, loses audio focus, or the keyboard closes. This meets Android 15's audio-focus requirement without microphone access. No extra runtime permission prompt is needed for these service permissions.
+Two normal Android permissions (`FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_MEDIA_PLAYBACK`) support a short-lived playback service while WhatsApp is open. Playback has a Stop control and ends when the clip finishes, loses audio focus, or the keyboard closes. Number playback uses bundled recordings and needs no microphone. No extra runtime permission prompt is needed for these service permissions.
 
 WhatsApp and a physical phone still need an acceptance check. Direct attachment insertion varies by the receiving app. See [VALIDATION.md](VALIDATION.md) for tested scope and a short phone checklist.
 
@@ -83,7 +101,14 @@ To use another signing key, set `TAMBOLA_KEYSTORE_PATH` and `TAMBOLA_KEYSTORE_PA
 Instrumented tests reset both game stores. Use a dedicated emulator, never a phone with an active game. Install debug and test APKs, enable/select the IME, then run:
 
 ```text
-adb -s <emulator-serial> shell am instrument -w -r io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.WinnerSpeechTest,io.github.sbshrey.tambola.keyboard.FeaturesTest,io.github.sbshrey.tambola.keyboard.KeyboardTest,io.github.sbshrey.tambola.keyboard.NewGameNavigationTest,io.github.sbshrey.tambola.keyboard.PrizeCatalogUiTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
-Screenshots are written to the debug app's private files directory. Core logic is in `Game` and `PrizeBook`; persistence in `GameStore`/`PrizeJson`; recordings in `CallAudio`; PNGs and attachment handoff in `Sharing`/`ShareProvider`; `PrizeViews` is shared by the keyboard and full-screen app.
+Run the microphone permission UI test separately after revoking the permission on that **dedicated emulator** (revoking a permission can stop the app):
+
+```text
+adb -s <emulator-serial> shell pm revoke io.github.sbshrey.tambola.keyboard android.permission.RECORD_AUDIO
+adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.VoicePermissionTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+Screenshots are written to the debug app's private files directory. Core logic is in `Game`, `PrizeBook` and `WinnerCommand`; persistence in `GameStore`/`PrizeJson`; recordings in `CallAudio`; optional recognition in `WinnerSpeech`; PNGs and attachment handoff in `Sharing`/`ShareProvider`; `PrizeViews` is shared by the keyboard and full-screen app. `WinnerSpeechTest` selects a debug-only speech provider and restores the previous provider after each test. It tests Android's recognition callback/binder path without recording audio; the fixture is excluded from the release APK.

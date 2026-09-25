@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- No Internet, contacts, storage, microphone or accessibility permissions. -->
+    <!-- Microphone is requested only for optional, user-started winner dictation. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <queries><intent><action android:name="android.speech.RecognitionService" /></intent></queries>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <application android:allowBackup="false" android:fullBackupContent="false" android:dataExtractionRules="@xml/data_extraction_rules" android:label="@string/app_name"
@@ -14,6 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".VoicePermissionActivity" android:exported="false" android:excludeFromRecents="true"
+            android:taskAffinity="io.github.sbshrey.tambola.keyboard.winnerentry" android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <service android:name=".TambolaInputMethod" android:label="@string/app_name"
             android:exported="true" android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter><action android:name="android.view.InputMethod" /></intent-filter>

@@ -26,6 +26,9 @@ public final class TambolaInputMethod extends InputMethodService {
     private int session;
     private String panel = "Call", awardId;
     private String shownRound;
+    private WinnerSpeech winnerSpeech;
+    private int speechSession;
+    private String speechMessage = "Say the prize, then one or two names.";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRound = this::refreshSavedRound;
     private final SharedPreferences.OnSharedPreferenceChangeListener roundListener = (preferences, key) -> {
@@ -58,6 +61,7 @@ public final class TambolaInputMethod extends InputMethodService {
         if (scroll != null) scroll.post(() -> scroll.scrollTo(0, 0));
     }
     private void configureEditor(EditorInfo info) {
+        cancelWinnerSpeech();
         session++; mediaBusy = false; draftBlocked = false; panel = "Call"; shownRound = null;
         practice = getPackageName().equals(info.packageName) && PRACTICE.equals(info.privateImeOptions); store = practice ? practiceStore : liveStore;
         int variation = info.inputType & InputType.TYPE_MASK_VARIATION;
@@ -66,12 +70,19 @@ public final class TambolaInputMethod extends InputMethodService {
             && !"tambola-settings".equals(info.privateImeOptions);
     }
     @Override public void onWindowShown() { super.onWindowShown(); refreshSavedRound(); }
-    @Override public void onFinishInputView(boolean finishing) { session++; mediaBusy = false; audio.stop(); super.onFinishInputView(finishing); }
-    @Override public void onDestroy() { handler.removeCallbacks(refreshRound); liveStore.stopObserving(roundListener); practiceStore.stopObserving(roundListener); audio.stop(); super.onDestroy(); }
+    @Override public void onFinishInputView(boolean finishing) { cancelWinnerSpeech(); session++; mediaBusy = false; audio.stop(); super.onFinishInputView(finishing); }
+    @Override public void onFinishInput() { cancelWinnerSpeech(); super.onFinishInput(); }
+    @Override public void onWindowHidden() { cancelWinnerSpeech(); super.onWindowHidden(); }
+    @Override public void onDestroy() { cancelWinnerSpeech(); handler.removeCallbacks(refreshRound); liveStore.stopObserving(roundListener); practiceStore.stopObserving(roundListener); audio.stop(); super.onDestroy(); }
+    @Override public void onUpdateSelection(int oldStart, int oldEnd, int newStart, int newEnd, int candidatesStart, int candidatesEnd) {
+        super.onUpdateSelection(oldStart, oldEnd, newStart, newEnd, candidatesStart, candidatesEnd);
+        if (winnerSpeech != null && (newStart != 0 || newEnd != 0)) { cancelWinnerSpeech(); speechMessage = "Message changed. Send or clear it before speaking again."; render(); }
+    }
     private void refreshSavedRound() {
         if (store == null || body == null || !isInputViewShown()) return;
         try {
             Game game = store.load(); if (game.encode().equals(shownRound)) return;
+            if (winnerSpeech != null) { cancelWinnerSpeech(); speechMessage = "Game changed. Tap Speak again."; }
             boolean reset = shownRound != null && !shownRound.isEmpty() && game.count() == 0;
             if (reset) { session++; mediaBusy = false; lastDraw = 0; panel = "Call"; audio.stop(); }
             render();
@@ -79,8 +90,8 @@ public final class TambolaInputMethod extends InputMethodService {
         } catch (IllegalArgumentException | IllegalStateException error) { render(); }
     }
     private void chooseKeyboard() { ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showInputMethodPicker(); }
-    private void open(String section) { audio.stop(); startActivity(new Intent(this, MainActivity.class).putExtra("section", section).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)); }
-    private void navigate(String next) { panel = next; render(); scroll.scrollTo(0, 0); say(practice ? "Practice only · nothing is sent" : "You choose when to send in WhatsApp."); }
+    private void open(String section) { cancelWinnerSpeech(); audio.stop(); startActivity(new Intent(this, MainActivity.class).putExtra("section", section).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)); }
+    private void navigate(String next) { cancelWinnerSpeech(); panel = next; render(); scroll.scrollTo(0, 0); say(practice ? "Practice only · nothing is sent" : "You choose when to send in WhatsApp."); }
     private boolean render() {
         if (body == null || store == null) return false; body.removeAllViews(); tabs.removeAllViews();
         for (String name : new String[]{"Call", "Board", "Winners"}) Ui.weighted(tabs, Ui.button(this, name, panel.equals(name) ? Ui.PINK : Ui.PAPER, () -> navigate(name)));
@@ -92,6 +103,7 @@ public final class TambolaInputMethod extends InputMethodService {
             else if (panel.equals("Board")) board(game);
             else if (panel.equals("Winners")) winners(game);
             else if (panel.equals("Voice")) voice();
+            else if (panel.equals("Speak winner")) speakWinnerPanel();
             else if (panel.equals("Share")) share(game);
             else if (panel.equals("New game")) newGame();
             else if (panel.equals("Clear message")) confirmClearMessage();
@@ -169,14 +181,75 @@ public final class TambolaInputMethod extends InputMethodService {
     private void winners(Game game) {
         if (practice) { Ui.add(body, Ui.text(this, "Winners are for your live game. Practice does not change them.", 20), -2); return; }
         PrizeBook book = store.prizes(); Ui.add(body, Ui.text(this, "Winners (optional)", 23), -2);
+        Ui.action(body, "Speak prize + winner", Ui.GREEN, this::startWinnerSpeech).setEnabled(!mediaBusy);
+        Ui.action(body, "Speech: " + (preferences.dictationLanguage().equals("hi-IN") ? "Hindi" : "English / Hinglish") + " · change", Ui.PAPER, () -> { preferences.dictationLanguage(preferences.dictationLanguage().equals("hi-IN") ? "en-IN" : "hi-IN"); render(); });
+        Ui.add(body, Ui.text(this, "Say: Early five winner Asha Sharma. We save the winner and fill the message. Check it, then Send.", 18), -2);
         Ui.action(body, "Choose prize schemes", Ui.PAPER, () -> open("catalog"));
         Ui.action(body, "Players & prize amounts", Ui.PAPER, () -> open("players"));
-        if (book.players.isEmpty()) { Ui.add(body, Ui.text(this, "Add names once above. You can keep calling numbers without this.", 18), -2); return; }
+        if (book.players.isEmpty()) Ui.add(body, Ui.text(this, "Speaking adds new names automatically. Or add names above to choose manually.", 18), -2);
         if (book.hasWinners()) Ui.action(body, "Insert all results", Ui.GREEN, () -> insertText(store.prizes().results(store.load().count())));
         for (PrizeBook.Scheme item : book.schemes) if (item.enabled) {
             Ui.action(body, item.name + " · " + PrizeBook.money((item.winners.isEmpty() ? item.rupees : item.awardedRupees) * 100) + "\n" + (item.winners.isEmpty() ? "Choose winners" : book.winners(item)), Ui.PAPER, () -> { awardId = item.id; navigate("Award"); });
             if (!item.winners.isEmpty()) Ui.action(body, "Insert " + item.name + " announcement", Ui.GREEN, () -> { PrizeBook current = store.prizes(); insertText(current.announcement(current.scheme(item.id))); });
         }
+    }
+    private void cancelWinnerSpeech() {
+        speechSession++;
+        WinnerSpeech previous = winnerSpeech; winnerSpeech = null;
+        if (previous != null) previous.cancel();
+    }
+    private void speakWinnerPanel() {
+        Ui.add(body, Ui.text(this, "Speak prize + winner", 23), -2);
+        Ui.add(body, Ui.text(this, speechMessage, 20), -2);
+        if (winnerSpeech != null) {
+            Ui.action(body, "Done speaking", Ui.GREEN, () -> { if (winnerSpeech != null) winnerSpeech.stop(); });
+            Ui.action(body, "Cancel listening", Ui.PINK, () -> navigate("Winners"));
+        } else {
+            Ui.action(body, "Speak again", Ui.GREEN, this::startWinnerSpeech);
+            Ui.action(body, "‹ Back to winners", Ui.PAPER, () -> navigate("Winners"));
+        }
+        Ui.add(body, Ui.text(this, "Early five winner Asha Sharma\nKing winners Asha aur Bina\nअर्ली फाइव की विनर आशा शर्मा", 18), -2);
+        if (winnerSpeech == null) for (String code : new String[]{"en-IN", "hi-IN"}) {
+            String label = code.equals("hi-IN") ? "Hindi · हिन्दी" : "English / Hinglish";
+            Ui.action(body, label + (code.equals(preferences.dictationLanguage()) ? " ✓" : ""), Ui.PAPER, () -> { preferences.dictationLanguage(code); render(); });
+        }
+        Ui.add(body, Ui.text(this, "Uses the enabled prize's amount. Two names split it equally. Your phone's speech service may need Internet. To change a saved award, use its prize button.", 17), -2);
+    }
+    private void startWinnerSpeech() {
+        if (practice || mediaBusy || winnerSpeech != null) return;
+        InputConnection editor = emptyEditor(); if (editor == null) return;
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            audio.stop(); startActivity(new Intent(this, VoicePermissionActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP)); return;
+        }
+        panel = "Speak winner";
+        if (!android.speech.SpeechRecognizer.isRecognitionAvailable(this)) { speechMessage = "Voice typing is not available on this phone. Enable a speech recognition service in Android settings, or choose winners manually."; render(); return; }
+        audio.stop(); cancelWinnerSpeech();
+        int request = speechSession, editorSession = session;
+        String round = store.load().encode(), prizes = PrizeJson.encode(store.prizes());
+        speechMessage = "Starting microphone…";
+        try {
+            winnerSpeech = new WinnerSpeech(this, spoken -> {
+                if (request != speechSession) return;
+                winnerSpeech = null;
+                if (editorSession != session || !isInputViewShown() || editor != getCurrentInputConnection()) return;
+                try {
+                    if (!round.equals(store.load().encode()) || !prizes.equals(PrizeJson.encode(store.prizes()))) throw new IllegalArgumentException("Game or prizes changed. Tap Speak again.");
+                    if (emptyEditor() == null) { speechMessage = "Send or clear the current message, then speak again. No winner saved."; render(); return; }
+                    WinnerCommand command = WinnerCommand.prepare(store.prizes(), spoken, store.load().count());
+                    // Persist before handing off; a failed insertion remains recoverable from Winners.
+                    store.prizes(command.book);
+                    boolean inserted = editor.commitText(command.announcement, 1);
+                    speechMessage = inserted ? "Winner saved. Check the name in the message box, then WhatsApp Send."
+                        : "Winner saved. Return to Winners and tap Insert announcement.";
+                    render(); scroll.scrollTo(0, 0); say(inserted ? "Ready · check name, then WhatsApp Send" : "Winner saved; message could not be inserted.");
+                } catch (IllegalArgumentException | IllegalStateException error) { speechMessage = "Heard: " + spoken + "\n\n" + error.getMessage(); render(); scroll.scrollTo(0, 0); }
+            }, error -> {
+                if (request != speechSession) return; winnerSpeech = null; speechMessage = error; render(); scroll.scrollTo(0, 0);
+            }, message -> {
+                if (request != speechSession) return; speechMessage = message; render();
+            });
+            render(); scroll.scrollTo(0, 0); winnerSpeech.start(preferences.dictationLanguage());
+        } catch (RuntimeException error) { cancelWinnerSpeech(); speechMessage = "Voice typing could not start. Try again or choose winners manually."; render(); }
     }
     private void say(String message) { if (status != null) status.setText(message); }
     private InputConnection emptyEditor() {

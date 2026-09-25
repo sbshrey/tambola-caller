@@ -84,8 +84,9 @@ public final class MainActivity extends Activity {
         text("To play", 25); text("Open the right WhatsApp group and tap its message box.\n\nNext number puts the emoji number into the box. Tap WhatsApp Send. Repeat for each call.", 20);
         text("Useful buttons", 25); text("Hear again: hear the same number.\nInsert again: put the same number in the box.\nABC: return to normal typing.\nBoard: see called numbers.\nWinners: optional prize tracking.", 19);
         text("Swipe up inside the keyboard to see more buttons. Tap Call at the top to return to Next number.", 19);
+        text("Speak a winner", 25); text("In the chat: Winners → Speak prize + winner. Allow microphone once and return to your chat. Say Early five winner Asha Sharma, or King winners Asha aur Bina. Use Speech · change for Hindi. The prize must be enabled. Names are added and winners saved automatically, using the configured prize amount. Check the name in the message box, then WhatsApp Send. Two winners split the prize equally.", 19);
         text("Pictures and voice clips", 25); text("Tap Share in the keyboard. Choose a picture or voice clip. If a chooser opens, select WhatsApp and your group. Check the preview, then Send. Sound played aloud stays on this phone.", 19);
-        text("Your privacy", 25); text("No accounts, ads, Internet, microphone or contacts permission. The app checks the current draft only to avoid overwriting it; message text is not saved. Voice clips are AI-generated and included in the app.", 17);
+        text("Your privacy", 25); text("No accounts, ads, Internet or contacts permission in this app. Optional winner dictation asks for microphone access; your phone's speech service may process audio online. The app does not save microphone recordings. It saves winner names on this phone and checks the current draft to avoid overwriting it; chat text is not saved. Number voice clips are AI-generated and included in the app.", 17);
     }
     private void practice() {
         text("Practice safely", 28); text("Nothing here is sent to WhatsApp. Your live game stays unchanged.", 20);

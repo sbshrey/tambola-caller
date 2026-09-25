@@ -1,4 +1,23 @@
-# Tambola Keyboard 1.2.0 validation
+# Tambola Keyboard 1.3.0 validation
+
+Validated on 25 September 2026. Package version code 5; Android-only update.
+
+- **Speak prize + winner** uses Android's speech service from the keyboard, automatically assigns one or two names to one enabled prize, and inserts the announcement into the current empty editor. Exact existing names reuse their IDs; new names are added. The enabled prize's configured amount is used, including equal two-winner splits. Sending remains a separate WhatsApp action.
+- **22 JVM tests passed**, including all 41 scheme labels, custom schemes, Hindi/Hinglish examples, exact player reuse, ₹10/₹5 and odd-rupee splits, disabled/unknown/ambiguous prizes, duplicate or excess names, already-awarded prizes and minimum calls. “King ki winner Mona” correctly treats Mona as a person even when the Mona scheme is enabled. A final parser refinement was checked by all JVM tests and the focused large-text voice UI test.
+- **27 Android instrumented tests passed** on the dedicated Android 11/API 30 emulator: a 26-test combined suite plus one separately prepared microphone-permission test. Ten new speech tests exercise `SpeechRecognizer` through a debug-only provider in a separate process: text recognition results → persistent award → actual editor insertion, Hindi names, existing-draft protection, cancel, editor restart, changed draft/game/prizes, network error/retry, Done speaking and repeat-award rejection. Sixteen existing number, new-game, prize, media and catalog tests also passed.
+- The permission test denied the system prompt, returned to the same editor and called another number, then granted microphone permission and returned without changing winners. Permission refusal does not block normal calling. The speech tests use synthetic text and **do not record or recognize real microphone audio**. Initial fixture failures were resolved by selecting the IME after runner startup and moving the test provider to another process, as required by Android's calling-permission check.
+- The automatic two-winner insertion flow also passed at **130% font size and 360dp width**. Normal and large-text keyboard screenshots were visually inspected; secondary controls scroll. Debug and release lint found no issues.
+- Signed release uses the existing certificate. Signed v1.3.0 installed over signed v1.2.0, reported version code 5 and launched successfully; this verifies update compatibility, not physical-device data retention. Release DEX checks confirm that the test editor, speech provider and fixture configuration provider are absent. The package requests optional `RECORD_AUDIO` plus the two existing media-playback permissions; it has no Internet or contacts permission. Android's speech provider may nevertheless process audio online. The website was unchanged; its tests were not rerun.
+
+**No physical-phone speech recognition or WhatsApp session was tested for this update.** Recognition quality, Hindi/Latin spelling, speech-provider availability, connectivity and Android/OEM differences need a phone check. The app does not validate paper tickets or infer whether a spoken claim is true. The host checks the ticket and the inserted text before sending.
+
+Phone acceptance: install over the existing app, enable a prize, and try in your own WhatsApp chat. Test “Early five winner Asha Sharma”, two winners joined by “aur”, and Hindi mode. Verify the configured amount, name spelling, cancellation, existing-draft protection, correction through the prize button, and a new round. If insertion fails after saving, use **Insert [prize] announcement** rather than awarding again.
+
+APK, guide, checksum and local test logs are in ignored `releases/1.3.0/`.
+
+---
+
+# Previous version: 1.2.0 validation
 
 Validated on 25 September 2026. Package version code 4; this update changes the Android keyboard only.
 

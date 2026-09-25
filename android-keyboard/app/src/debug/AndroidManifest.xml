@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
+        <!-- Lint 8.7 reads this overlay alone when it contains services. Mirror the main declaration. -->
+        <service android:name=".CallPlaybackService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
+        <provider android:name=".TestSpeechProvider" android:authorities="${applicationId}.speechtest" android:exported="false" />
+        <service android:name=".TestRecognitionService" android:process=":test_speech" android:exported="true" android:permission="android.permission.BIND_SPEECH_RECOGNITION_SERVICE">
+            <intent-filter><action android:name="android.speech.RecognitionService" /></intent-filter>
+        </service>
         <!-- Test editor in a separate task, mirroring a chat app. Never shipped in release. -->
         <activity android:name=".KeyboardEditorActivity" android:exported="false"
             android:taskAffinity="io.github.sbshrey.tambola.keyboard.testeditor" android:windowSoftInputMode="adjustResize" />
