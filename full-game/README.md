@@ -2,7 +2,7 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-The offline alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. The [private-room service](server/README.md) is implemented for local testing, with Android online integration still ahead. Badges, final music/art, Hindi UI, hosted play and production release validation remain unfinished.
+The alpha implements solo/computer and shared-device family rounds, digital tickets, number calling, manual/assisted marking, standard/custom prizes, ranked houses, 90-call play, ties, points, pause/resume, local history, and three offline voice languages. The Android [custom-rule editor](domain/CUSTOM_RULES.md) includes sample-ticket examples and rule inspection during play; rematches retain the agreed setup. Native private rooms now include a lobby, private tickets, host controls, encrypted sessions and reconnect flows against the local [room service](server/README.md). See [alpha03 validation](ALPHA03_VALIDATION.md) and the [native client guide](client/README.md). Badges, final music/art, Hindi UI, hosted play and production release validation remain unfinished.
 
 ## Build
 
@@ -27,10 +27,10 @@ The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing 
 - Every winning ticket appears in an award. Players receive points once per prize even with multiple winning tickets; tied players each get full points.
 - Leaving the foreground pauses offline play and audio. Restoring a round does not automatically speak or draw.
 - Calling controls remain at the bottom of the game screen while the tickets scroll. The large-number marking sheet supports smaller screens; at large system text sizes the ticket overview switches to wrapping row layouts.
-- Room stores rounds atomically. Preferences use DataStore. History is local; deleting rounds requires confirmation.
+- Room stores rounds atomically. Preferences use DataStore. Offline history is local; deleting offline rounds requires confirmation. Online snapshots and sessions use a separate encrypted store.
 - Setup/editor drafts use the ViewModel and saved instance state to survive recreation. Rematches retain players/settings/custom prizes and produce a fresh round when dealt. Sharing starts with a preview and leaves player names out unless selected.
 
-Assets in this build: native vector/Compose graphics and the repository's previously generated AI voice recordings. No runtime AI calls, analytics, ads, payments, microphone permission, or network permission are included in the offline alpha.
+Assets in this build: native vector/Compose graphics and the repository's previously generated AI voice recordings. No runtime AI calls, analytics, ads, payments, microphone permission, or OpenAI key are included. Internet permission supports private rooms; solo and family play remain offline.
 
 ## Test scope
 

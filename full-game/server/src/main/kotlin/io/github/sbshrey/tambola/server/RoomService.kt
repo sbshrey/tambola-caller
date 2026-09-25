@@ -154,6 +154,9 @@ class RoomService(private val database: Database, private val clock: () -> Long 
                 host(); lobby()
                 demand(room.members.size >= 2 && room.members.all { it.ready && now - it.lastSeen < PRESENCE_TIMEOUT },
                     409, "not_ready", "At least two connected players must be ready; every member must be ready.")
+                val houses = room.options.game.prizes.count { it.isRankedHouse }.coerceAtLeast(1)
+                demand(room.members.size * room.options.game.ticketsPerPlayer >= houses,
+                    409, "insufficient_tickets", "$houses houses need at least $houses tickets at the table. Add players or increase tickets per player.")
                 val game = Round.create(room.members.map { Player(it.id, it.name) }, room.options.game, now = now).start()
                 val nonce = secret()
                 room.copy(phase = RoomPhase.ACTIVE, locked = true, round = game, nonce = nonce, drawCommitment = commitment(game, nonce),

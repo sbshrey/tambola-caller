@@ -1,6 +1,6 @@
 # Private room service: local development candidate
 
-Ktor/JDK 17 service backed by PostgreSQL. This is the first tested service implementation, **not a hosted production deployment**. The released offline alpha APK does not connect to it yet.
+Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha03 APK connects to it through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha03 validation](../ALPHA03_VALIDATION.md).
 
 ## Run and test
 
@@ -60,6 +60,8 @@ JSON request bodies are capped at 32 KiB with a 10-second read timeout; WebSocke
 
 Persisted minute buckets limit guest creation to 60 per socket peer address and authenticated create/join/command/read requests to 10/20/180/300 per profile. A profile can own at most five unexpired open rooms. Authentication happens before creating profile rate buckets. The service does not trust forwarded address headers; proxy-aware rate enforcement and connection/body limits must be configured and tested with the actual ingress provider. These initial quotas are not a complete abuse/DoS defense.
 
-Still required: native Android session storage/lobby/game/reconnect UX, invite links, data deletion, production identity/recovery decisions, hosting/TLS/secrets, least-privilege migration/runtime roles, metrics/alerts, backup/restore, dependency/advisory review, 10-room concurrent load and latency measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
+Native Android session storage/lobby/game/reconnect flows are implemented in the [client](../client/README.md); the alpha03 host and guest emulator journeys pass against this service. Still required: invite links, data deletion, production identity/recovery decisions, hosting/TLS/secrets, least-privilege migration/runtime roles, metrics/alerts, backup/restore, dependency/advisory review, 10-room concurrent load and latency measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
 
 See [service validation](VALIDATION.md) and the repository execution ledger for observed evidence.
+
+Protocol v1 native-client additions: `PublicRound.players` retains the immutable round roster, while `winningTickets` contains owner IDs and ordinals only for already awarded tickets. Neither field exposes another player's card numbers. Defaults permit decoding older persisted receipts; no previously released APK consumed this room protocol.

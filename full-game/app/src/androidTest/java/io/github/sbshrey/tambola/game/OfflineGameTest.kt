@@ -67,9 +67,9 @@ class OfflineGameTest {
     @Test fun familyTicketsAreSeparateAndRulesCanBeInspected() {
         tap("Play on one device"); tap("Deal the tickets")
         compose.waitUntil(10_000) { exists("Call next number") }
-        compose.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.HorizontalScrollAxisRange) and hasAnyDescendant(hasText("Bina · 1"))).performScrollTo()
-        tap("Bina · 1")
-        compose.onNodeWithText("Bina · 1").assertIsSelected()
+        compose.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.HorizontalScrollAxisRange) and hasAnyDescendant(hasText("Bina · ticket 1"))).performScrollTo()
+        tap("Bina · ticket 1")
+        compose.onNodeWithText("Bina · ticket 1").assertIsSelected()
         tap("Mark ticket")
         val target = InstrumentationRegistry.getInstrumentation().targetContext
         val screenshot = java.io.File(target.filesDir, "family-${target.resources.configuration.fontScale}.png")

@@ -16,7 +16,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-enum class Screen { HOME, SETUP, GAME, RESULTS, HISTORY, SETTINGS }
+enum class Screen { HOME, SETUP, GAME, RESULTS, HISTORY, SETTINGS, ONLINE }
 data class GameUiState(
     val loading: Boolean = true,
     val screen: Screen = Screen.HOME,

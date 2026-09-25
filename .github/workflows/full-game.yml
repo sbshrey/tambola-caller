@@ -39,7 +39,7 @@ jobs:
       - name: Verify PostgreSQL service and process restart
         working-directory: full-game
         run: |
-          bash gradlew -PserverOnly=true :domain:test :server:test :server:installDist --no-daemon --console=plain
+          bash gradlew -PserverOnly=true :domain:test :client:test :server:test :server:installDist --no-daemon --console=plain
           node tools/server-smoke.mjs
       - uses: actions/upload-artifact@v4
         if: always()
@@ -48,6 +48,7 @@ jobs:
           path: |
             full-game/server/build/reports/tests/
             full-game/domain/build/reports/tests/
+            full-game/client/build/reports/tests/
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30

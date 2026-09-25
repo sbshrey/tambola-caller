@@ -26,9 +26,15 @@ import java.util.Random
 fun CustomRuleEditor(state: GameUiState, model: GameViewModel) {
     val draft = state.ruleDraft ?: return
     val tickets = state.setupDraft.tickets
+    CustomRuleEditor(draft, state.originalRuleDraft, tickets, model::updateRule, model::saveRule, model::cancelRule)
+}
+
+@Composable
+fun CustomRuleEditor(draft: CustomRuleDraft, original: CustomRuleDraft?, tickets: Int,
+    update: (CustomRuleDraft) -> Unit, save: () -> Unit, cancel: () -> Unit) {
     val result = remember(draft, tickets) { runCatching { draft.prize(tickets) } }
     var discard by remember { mutableStateOf(false) }
-    val back = { if (draft != state.originalRuleDraft) discard = true else model.cancelRule() }
+    val back = { if (draft != original) discard = true else cancel() }
     Dialog(onDismissRequest = back, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         val focus = LocalFocusManager.current
         Surface(Modifier.fillMaxSize(), color = Ink) {
@@ -41,9 +47,9 @@ fun CustomRuleEditor(state: GameUiState, model: GameViewModel) {
                     Eyebrow("YOUR TABLE. YOUR TRADITIONS.")
                     Text("Make the rule clear,\nthen make it yours.", style = MaterialTheme.typography.headlineMedium)
                     GameCard {
-                        OutlinedTextField(draft.title, { if (it.length <= 40) model.updateRule(draft.copy(title = it)) },
+                        OutlinedTextField(draft.title, { if (it.length <= 40) update(draft.copy(title = it)) },
                             label = { Text("Prize name") }, singleLine = true, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done), keyboardActions = KeyboardActions(onDone = { focus.clearFocus() }), modifier = Modifier.fillMaxWidth().testTag("prize-title"))
-                        DigitField("Points", draft.points, { model.updateRule(draft.copy(points = it)) }, 4, "prize-points")
+                        DigitField("Points", draft.points, { update(draft.copy(points = it)) }, 4, "prize-points")
                         Text("Every tied player receives these points once, even if several of their tickets win.", color = Muted)
                     }
                     Text("A ticket must satisfy one group", style = MaterialTheme.typography.titleMedium)
@@ -54,30 +60,30 @@ fun CustomRuleEditor(state: GameUiState, model: GameViewModel) {
                             group.forEachIndexed { index, condition ->
                                 if (index > 0) { HorizontalDivider(); Eyebrow("AND", Saffron) }
                                 key(groupIndex, index) {
-                                    ConditionEditor(condition, "$groupIndex-$index") { model.updateRule(draft.changeCondition(groupIndex, index, it)) }
+                                    ConditionEditor(condition, "$groupIndex-$index") { update(draft.changeCondition(groupIndex, index, it)) }
                                 }
                                 if (group.size > 1) TextButton(onClick = {
-                                    model.updateRule(draft.copy(groups = draft.groups.mapIndexed { i, list -> if (i == groupIndex) list.filterIndexed { j, _ -> j != index } else list }))
+                                    update(draft.copy(groups = draft.groups.mapIndexed { i, list -> if (i == groupIndex) list.filterIndexed { j, _ -> j != index } else list }))
                                 }) { Text("Remove condition ${index + 1}") }
                             }
-                            OutlinedButton(onClick = { model.updateRule(draft.copy(groups = draft.groups.mapIndexed { i, list -> if (i == groupIndex) list + ConditionDraft(all = true) else list })) },
+                            OutlinedButton(onClick = { update(draft.copy(groups = draft.groups.mapIndexed { i, list -> if (i == groupIndex) list + ConditionDraft(all = true) else list })) },
                                 enabled = group.size < 8 && draft.groups.sumOf { it.size } < 16, modifier = Modifier.testTag("add-and-$groupIndex")) { Text("Add AND condition") }
-                            if (draft.groups.size > 1) TextButton(onClick = { model.updateRule(draft.copy(groups = draft.groups.filterIndexed { i, _ -> i != groupIndex })) }) { Text("Remove group ${groupIndex + 1}") }
+                            if (draft.groups.size > 1) TextButton(onClick = { update(draft.copy(groups = draft.groups.filterIndexed { i, _ -> i != groupIndex })) }) { Text("Remove group ${groupIndex + 1}") }
                         }
                     }
-                    OutlinedButton(onClick = { model.updateRule(draft.copy(groups = draft.groups + listOf(listOf(ConditionDraft(all = true))))) },
+                    OutlinedButton(onClick = { update(draft.copy(groups = draft.groups + listOf(listOf(ConditionDraft(all = true))))) },
                         enabled = draft.groups.size < 4 && draft.groups.sumOf { it.size } < 16, modifier = Modifier.fillMaxWidth()) { Text("Add OR group") }
                     GameCard {
                         Text("Which owned tickets count?", style = MaterialTheme.typography.titleMedium)
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            FilterChip(selected = draft.ticketOrdinals.isEmpty(), onClick = { model.updateRule(draft.copy(ticketOrdinals = emptyList())) }, label = { Text("All owned tickets") })
+                            FilterChip(selected = draft.ticketOrdinals.isEmpty(), onClick = { update(draft.copy(ticketOrdinals = emptyList())) }, label = { Text("All owned tickets") })
                             (1..tickets).forEach { n -> FilterChip(selected = n in draft.ticketOrdinals,
-                                onClick = { model.updateRule(draft.copy(ticketOrdinals = if (n in draft.ticketOrdinals) draft.ticketOrdinals - n else draft.ticketOrdinals + n)) }, label = { Text("Ticket $n") }) }
+                                onClick = { update(draft.copy(ticketOrdinals = if (n in draft.ticketOrdinals) draft.ticketOrdinals - n else draft.ticketOrdinals + n)) }, label = { Text("Ticket $n") }) }
                         }
                         Text("Minimum matching tickets", style = MaterialTheme.typography.titleMedium)
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             (1..tickets).forEach { n -> FilterChip(selected = draft.minimumTickets == n,
-                                onClick = { model.updateRule(draft.copy(minimumTickets = n)) }, label = { Text("$n") }, modifier = Modifier.testTag("minimum-tickets-$n")) }
+                                onClick = { update(draft.copy(minimumTickets = n)) }, label = { Text("$n") }, modifier = Modifier.testTag("minimum-tickets-$n")) }
                         }
                         Text("Each selected ticket must satisfy the pattern. A player wins when enough of their own tickets match.", color = Muted)
                     }
@@ -88,13 +94,13 @@ fun CustomRuleEditor(state: GameUiState, model: GameViewModel) {
                 }
                 Column(Modifier.fillMaxWidth().background(Panel).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     result.exceptionOrNull()?.message?.let { Text(it, color = Coral, style = MaterialTheme.typography.bodySmall) }
-                    PrimaryAction("Save prize", enabled = result.isSuccess, onClick = model::saveRule)
+                    PrimaryAction("Save prize", enabled = result.isSuccess, onClick = save)
                 }
             }
         }
         if (discard) AlertDialog(onDismissRequest = { discard = false }, title = { Text("Discard these edits?") },
             text = { Text("The prize in your setup will stay as it was.") },
-            confirmButton = { TextButton(onClick = model::cancelRule) { Text("Discard edits") } },
+            confirmButton = { TextButton(onClick = cancel) { Text("Discard edits") } },
             dismissButton = { TextButton(onClick = { discard = false }) { Text("Keep editing") } })
     }
 }

@@ -23,15 +23,18 @@ import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.*
 import io.github.sbshrey.tambola.game.data.SavedRound
+import io.github.sbshrey.tambola.game.online.*
 import java.text.DateFormat
 import java.util.Date
 
 @Composable
-fun TambolaApp(state: GameUiState, model: GameViewModel) {
+fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiState, online: OnlineViewModel) {
     BackHandler(state.screen != Screen.HOME && state.ruleDraft == null) { model.navigate(Screen.HOME) }
-    val pageScroll = key(state.screen, state.round?.id) { rememberScrollState() }
+    val pageScroll = key(state.screen, state.round?.id,
+        onlineState.room?.roomId.takeIf { state.screen == Screen.ONLINE },
+        onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
     Surface(Modifier.fillMaxSize(), color = Ink) {
-        Column(Modifier.fillMaxSize().safeDrawingPadding()) {
+        Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 if (state.screen != Screen.HOME) TextButton(onClick = { model.navigate(Screen.HOME) }) { Text("‹ Home") }
                 else Box(Modifier.size(36.dp).background(Saffron, CircleShape), contentAlignment = Alignment.Center) { Text("T", fontWeight = FontWeight.Black, color = Ink, fontSize = 22.sp) }
@@ -47,9 +50,11 @@ fun TambolaApp(state: GameUiState, model: GameViewModel) {
                     Screen.RESULTS -> (state.viewedResult ?: state.round)?.let { Results(it, model) }
                     Screen.HISTORY -> History(state.history, model)
                     Screen.SETTINGS -> Settings(state, model)
+                    Screen.ONLINE -> OnlineScreen(onlineState, online, state.preferences)
                 }
             }
             if (!state.loading && state.screen == Screen.GAME) state.round?.let { GameControls(it, state, model) }
+            if (!state.loading && state.screen == Screen.ONLINE) OnlineControls(onlineState, online)
         }
     }
     if (state.screen == Screen.SETUP && state.ruleDraft != null) CustomRuleEditor(state, model)
@@ -87,69 +92,26 @@ private fun Home(state: GameUiState, model: GameViewModel) {
         Text("Bring everyone together", style = MaterialTheme.typography.titleLarge)
         Text("Pass one phone around. Every player gets their own digital tickets.", color = Muted)
         OutlinedButton(onClick = { model.setup(GameMode.FAMILY) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp), shape = RoundedCornerShape(18.dp)) { Text("Play on one device") }
+        HorizontalDivider(color = Muted.copy(alpha = .2f))
+        Text("Meet at a private table", style = MaterialTheme.typography.titleLarge)
+        Text("Play together on your own phones with a room code.", color = Muted)
+        OutlinedButton(onClick = { model.navigate(Screen.ONLINE) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp), shape = RoundedCornerShape(18.dp)) { Text("Play online") }
     }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         OutlinedButton(onClick = { model.navigate(Screen.HISTORY) }, modifier = Modifier.weight(1f)) { Text("Your rounds") }
         OutlinedButton(onClick = { model.navigate(Screen.SETTINGS) }, modifier = Modifier.weight(1f)) { Text("How to play") }
     }
-    Text("Offline alpha · Private online rooms are in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
+    Text("Development alpha · Private rooms require the configured room service.", color = Muted, style = MaterialTheme.typography.bodySmall)
 }
 
 @Composable
 private fun GameTable(round: Round, state: GameUiState, model: GameViewModel) {
-    var selected by rememberSaveable(round.id) { mutableIntStateOf(0) }
-    var board by remember { mutableStateOf(false) }
-    var claims by remember { mutableStateOf(false) }
     var cancel by remember { mutableStateOf(false) }
-    val index = selected.coerceIn(round.tickets.indices)
-    Eyebrow(if (round.finished) "ROUND ${if (round.status == RoundStatus.COMPLETED) "COMPLETE" else "CANCELLED"}" else if (round.status == RoundStatus.PAUSED) "TAKE A BREATHER · PAUSED" else "LET THE GOOD TIMES ROLL")
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.width(120.dp)) { NumberBall(round.latest, state.preferences.reducedMotion, compact = true) }
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(if (round.latest == null) "Ready when you are" else "Call ${round.called.size} of 90", style = MaterialTheme.typography.titleMedium)
-            TextButton(onClick = { board = true }) { Text("Number board") }
-            TextButton(onClick = model::repeatCall, enabled = round.latest != null) { Text("Hear again") }
-        }
-    }
-    LinearProgressIndicator(progress = { round.called.size / 90f }, modifier = Modifier.fillMaxWidth(), color = Jade, trackColor = Panel)
-    if (round.called.isNotEmpty()) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("RECENT", fontSize = 10.sp, color = Muted, modifier = Modifier.weight(1f))
-            round.called.takeLast(5).reversed().forEachIndexed { i, n -> Box(Modifier.size(34.dp).background(if (i == 0) Saffron else Panel, CircleShape), contentAlignment = Alignment.Center) { Text("$n", fontSize = 14.sp, color = if (i == 0) Ink else Ivory, fontWeight = FontWeight.Bold) } }
-        }
-    }
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text("Your table", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-        Text("${round.tickets.size} tickets", color = Muted, fontSize = 12.sp)
-    }
-    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        round.tickets.forEachIndexed { i, ticket -> FilterChip(selected = index == i, onClick = { selected = i }, label = { Text(round.players.first { it.id == ticket.playerId }.name + " · ${ticket.id.substringAfterLast('-')}") }) }
-    }
-    TicketCard(round.tickets[index], round, state.preferences.haptics, model::toggleMark)
-    Text("Amber outline: called · Green: marked. Tap Mark ticket for large, comfortable number buttons.", color = Muted, style = MaterialTheme.typography.bodySmall)
-    PrimaryAction("Check claims · ${round.awards.size + round.customAwards.size} verified") { claims = true }
+    TablePlay(round.toTable(), state.preferences, model::toggleMark, model::repeatCall)
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         if (round.settings.mode == GameMode.PRACTICE && !round.finished) TextButton(onClick = model::undo, enabled = round.called.isNotEmpty()) { Text("Undo last call") }
         if (!round.finished) TextButton(onClick = { cancel = true }) { Text("End round") }
     }
-    if (board) AlertDialog(onDismissRequest = { board = false }, title = { Text("The number board") }, text = {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("${round.called.size} called · ${90 - round.called.size} to go", color = Muted)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                (1..90).forEach { n -> Box(Modifier.size(36.dp).background(if (n == round.latest) Saffron else if (n in round.called) Jade else Ink, RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text("$n", color = if (n in round.called) Ink else Muted, fontWeight = FontWeight.Bold) } }
-            }
-            Text("Call history", style = MaterialTheme.typography.titleMedium)
-            Text(round.called.joinToString(" → ").ifEmpty { "No numbers yet" }, color = Muted)
-        }
-    }, confirmButton = { TextButton(onClick = { board = false }) { Text("Back to table") } })
-    if (claims) AlertDialog(onDismissRequest = { claims = false }, title = { Text("Fair wins, happy faces") }, text = {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("Winners are verified from called numbers, even if someone forgets to mark. Tickets completing a prize on the same call tie.", color = Muted)
-            Text(round.settings.endExplanation(), color = Saffron)
-            Text(if (round.settings.assistedMarking) "Assisted marking is on for everyone." else "Manual marking · computer tickets mark automatically.", color = Muted)
-            RuleList(round, round.tickets[index])
-        }
-    }, confirmButton = { TextButton(onClick = { claims = false }) { Text("Back to game") } })
     if (cancel) AlertDialog(onDismissRequest = { cancel = false }, title = { Text("End this round early?") }, text = { Text("This round will be saved as cancelled with the results so far.") }, confirmButton = { TextButton(onClick = { cancel = false; model.finish() }) { Text("End round") } }, dismissButton = { TextButton(onClick = { cancel = false }) { Text("Keep playing") } })
 }
 
@@ -189,10 +151,10 @@ private fun Results(round: Round, model: GameViewModel) {
             }
         }
     }
-    GameCard { Text("The winning moments", style = MaterialTheme.typography.titleLarge); RuleList(round) }
+    GameCard { Text("The winning moments", style = MaterialTheme.typography.titleLarge); RuleList(round.toTable()) }
     PrimaryAction("Play another round") { model.rematch(round) }
     OutlinedButton(onClick = { sharing = true }, modifier = Modifier.fillMaxWidth()) { Text("Share these results") }
-    if (sharing) ShareResults(round, onDismiss = { sharing = false }) { message ->
+    if (sharing) ShareResults(round.toTable(), onDismiss = { sharing = false }) { message ->
         context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, message) }, "Share results"))
     }
 }
@@ -233,12 +195,12 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
         listOf("1. Choose players, tickets, and prizes. Everyone can see the rules before play. Try custom patterns on sample tickets.", "2. Call numbers yourself or turn on automatic calling. Each number appears only once.", "3. Tap Mark ticket and dab the called numbers, or choose assisted marking before a round.", "4. Check claims to inspect the required numbers and verified winners. Same-call winners tie and get full points.", "5. Finish at the chosen house, or play all 90 calls. Rematch keeps your players and rules; every game deals new tickets.").forEach { Text(it, color = Muted) }
     }
     GameCard {
-        Text("Your data stays here", style = MaterialTheme.typography.titleLarge)
-        Text("This offline alpha stores names, tickets, calls, and results on this device. No sign-in, ads, analytics, or in-app purchases. Number recordings were generated with OpenAI. Artwork and motion in this build use native graphics.", color = Muted)
+        Text("Your games and privacy", style = MaterialTheme.typography.titleLarge)
+        Text("Solo and family rounds stay on this device. Online play sends your display name, tickets, calls and results to the room service; room members see names and wins, and only their own ticket numbers. Online sessions and cached history are encrypted on this device. No ads, analytics or purchases. Number recordings were generated with OpenAI.", color = Muted)
         OutlinedButton(onClick = { delete = true }, modifier = Modifier.fillMaxWidth()) { Text("Delete all saved rounds") }
-        Text("Tambola Together · ${BuildConfig.VERSION_NAME}\nOnline rooms, music, badges, and Hindi interface are still in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
+        Text("Tambola Together · ${BuildConfig.VERSION_NAME}\nHosted online release, music, badges, and Hindi interface are still in development.", color = Muted, style = MaterialTheme.typography.bodySmall)
     }
-    if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text("Delete saved rounds?") }, text = { Text("This removes your current game, player names, and all local round history. This cannot be undone. Sound and display settings will stay.") }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text("Delete rounds") } }, dismissButton = { TextButton(onClick = { delete = false }) { Text("Keep rounds") } })
+    if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text("Delete saved rounds?") }, text = { Text("This removes your offline current game, player names, and offline history. This cannot be undone. Online data and sound and display settings will stay.") }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text("Delete rounds") } }, dismissButton = { TextButton(onClick = { delete = false }) { Text("Keep rounds") } })
 }
 
 @Composable
@@ -247,4 +209,57 @@ fun SettingSwitch(title: String, detail: String, checked: Boolean, onChange: (Bo
         Column(Modifier.weight(1f)) { Text(title, style = MaterialTheme.typography.titleMedium); Text(detail, color = Muted, style = MaterialTheme.typography.bodyMedium) }
         Switch(checked = checked, onCheckedChange = null)
     }
+}
+
+@Composable
+fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.data.Preferences,
+    mark: (String, Int) -> Unit, repeatCall: () -> Unit) {
+    var selected by rememberSaveable(round.id) { mutableIntStateOf(0) }
+    var board by remember { mutableStateOf(false) }
+    var claims by remember { mutableStateOf(false) }
+    val index = selected.coerceIn(round.tickets.indices)
+    Eyebrow(if (round.finished) "ROUND ${if (round.status == RoundStatus.COMPLETED) "COMPLETE" else "CANCELLED"}" else if (round.status == RoundStatus.PAUSED) "TAKE A BREATHER · PAUSED" else "LET THE GOOD TIMES ROLL")
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.width(120.dp)) { NumberBall(round.latest, preferences.reducedMotion, compact = true) }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(if (round.latest == null) "Ready when you are" else "Call ${round.called.size} of 90", style = MaterialTheme.typography.titleMedium)
+            TextButton(onClick = { board = true }) { Text("Number board") }
+            TextButton(onClick = repeatCall, enabled = round.latest != null) { Text("Hear again") }
+        }
+    }
+    LinearProgressIndicator(progress = { round.called.size / 90f }, modifier = Modifier.fillMaxWidth(), color = Jade, trackColor = Panel)
+    if (round.called.isNotEmpty()) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text("RECENT", fontSize = 10.sp, color = Muted, modifier = Modifier.weight(1f))
+            round.called.takeLast(5).reversed().forEachIndexed { i, n -> Box(Modifier.size(34.dp).background(if (i == 0) Saffron else Panel, CircleShape), contentAlignment = Alignment.Center) { Text("$n", fontSize = 14.sp, color = if (i == 0) Ink else Ivory, fontWeight = FontWeight.Bold) } }
+        }
+    }
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text("Your table", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+        Text("${round.tickets.size} tickets", color = Muted, fontSize = 12.sp)
+    }
+    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        round.tickets.forEachIndexed { i, ticket -> FilterChip(selected = index == i, onClick = { selected = i }, label = { Text(round.ticketLabel(ticket.id)) }) }
+    }
+    TicketCard(round.tickets[index], round, preferences.haptics, mark)
+    Text("Amber outline: called · Green: marked. Tap Mark ticket for large, comfortable number buttons.", color = Muted, style = MaterialTheme.typography.bodySmall)
+    PrimaryAction("Check claims · ${round.awards.size + round.customAwards.size} verified") { claims = true }
+    if (board) AlertDialog(onDismissRequest = { board = false }, title = { Text("The number board") }, text = {
+        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("${round.called.size} called · ${90 - round.called.size} to go", color = Muted)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                (1..90).forEach { n -> Box(Modifier.size(36.dp).background(if (n == round.latest) Saffron else if (n in round.called) Jade else Ink, RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text("$n", color = if (n in round.called) Ink else Muted, fontWeight = FontWeight.Bold) } }
+            }
+            Text("Call history", style = MaterialTheme.typography.titleMedium)
+            Text(round.called.joinToString(" → ").ifEmpty { "No numbers yet" }, color = Muted)
+        }
+    }, confirmButton = { TextButton(onClick = { board = false }) { Text("Back to table") } })
+    if (claims) AlertDialog(onDismissRequest = { claims = false }, title = { Text("Fair wins, happy faces") }, text = {
+        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Winners are verified from called numbers, even if someone forgets to mark. Tickets completing a prize on the same call tie.", color = Muted)
+            Text(round.settings.endExplanation(), color = Saffron)
+            Text(if (round.settings.assistedMarking) "Assisted marking is on for everyone." else if (round.settings.mode == GameMode.ONLINE) "Manual marking · mark your own called numbers." else "Manual marking · computer tickets mark automatically.", color = Muted)
+            RuleList(round, round.tickets[index])
+        }
+    }, confirmButton = { TextButton(onClick = { claims = false }) { Text("Back to game") } })
 }

@@ -1,5 +1,7 @@
 # Room-service candidate validation
 
+This report records the initial service milestone. See [alpha03 validation](../ALPHA03_VALIDATION.md) for the later 19-test service suite and native Android client acceptance.
+
 Date: 25 September 2026. This report covers local source validation, not a hosted service or a production APK.
 
 ## Observed checks

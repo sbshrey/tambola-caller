@@ -32,6 +32,35 @@ class RoomServiceTest : PostgresTest() {
         assertEquals(status, error.status); assertEquals(code, error.code)
     }
 
+    @Test fun `finished roster and winner labels survive a player leaving without disclosing other cards`() {
+        val host = guest("Asha"); val other = guest("Bina")
+        var room = start(host, other, options = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, playAllNumbers = true), automaticCalling = false))
+        repeat(90) { room = command(host, room.code, RoomAction.Draw) }
+        val completed = room.round!!
+        assertEquals(setOf(host.playerId, other.playerId), completed.players.map { it.id }.toSet())
+        assertEquals(completed.awards.flatMap { it.ticketIds }.toSet(), completed.winningTickets.map { it.id }.toSet())
+        assertTrue(completed.winningTickets.all { it.ordinal == 1 })
+        command(other, room.code, RoomAction.Leave)
+        val after = service.read(host.token, room.code).snapshot
+        assertEquals(1, after.members.size)
+        assertEquals(completed.players, after.round!!.players)
+        assertEquals(completed.winningTickets, after.round!!.winningTickets)
+        assertTrue(after.round!!.ownTickets.all { it.playerId == host.playerId })
+    }
+
+    @Test fun `ranked houses require enough actual tickets when starting`() {
+        val host = guest("Asha"); val other = guest("Bina")
+        val settings = RoundSettings(mode = GameMode.ONLINE, prizes = listOf(Prize.HOUSE_ONE, Prize.HOUSE_TWO, Prize.HOUSE_THREE))
+        val room = create(host, options = RoomOptions(game = settings, automaticCalling = false))
+        service.join(other.token, room.code)
+        command(host, room.code, RoomAction.Ready(true)); command(other, room.code, RoomAction.Ready(true))
+        failure(409, "insufficient_tickets") { command(host, room.code, RoomAction.Start) }
+        assertEquals(RoomPhase.LOBBY, service.read(host.token, room.code).snapshot.phase)
+        command(host, room.code, RoomAction.Configure(RoomOptions(game = settings.copy(ticketsPerPlayer = 2), automaticCalling = false)))
+        command(host, room.code, RoomAction.Ready(true)); command(other, room.code, RoomAction.Ready(true))
+        assertEquals(RoomPhase.ACTIVE, command(host, room.code, RoomAction.Start).phase)
+    }
+
     @Test fun `authentication stores only token hash and supports revocation and expiry`() {
         val host = guest("Asha")
         val hashes = database.transaction { it.query("SELECT token_hash FROM guests") { row -> row.getString(1) } }

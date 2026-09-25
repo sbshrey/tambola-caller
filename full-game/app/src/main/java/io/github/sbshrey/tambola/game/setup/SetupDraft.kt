@@ -23,7 +23,7 @@ data class SetupDraft(
         if (mode == GameMode.FAMILY && playerNames.size !in 2..8) add("Family play needs 2–8 players, one name per line.")
         if (playerNames.map(String::lowercase).distinct().size != playerNames.size) add("Give each player a different name so everyone can recognise their tickets.")
         if (tickets !in 1..6 || bots !in 0..5 || houses !in 1..3) add("Choose supported ticket, player and house counts.")
-        if (houses > playerCount * tickets) add("$houses houses need at least $houses tickets at the table.")
+        if (mode != GameMode.ONLINE && houses > playerCount * tickets) add("$houses houses need at least $houses tickets at the table.")
         customPrizes.filter { it.minimumTickets > tickets || it.ticketOrdinals.any { ordinal -> ordinal > tickets } }.forEach {
             add("${it.title} needs more tickets. Edit the prize or increase tickets per player.")
         }

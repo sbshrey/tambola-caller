@@ -14,14 +14,13 @@ import io.github.sbshrey.tambola.domain.*
 
 private data class VisibleRule(val id: String, val title: String, val points: Int, val explanation: String,
     val groups: List<List<RuleCondition>>, val prize: Prize? = null, val custom: CustomPrize? = null) {
-    fun award(round: Round): VisibleAward? = if (prize != null) round.awards.firstOrNull { it.prize == prize }?.let { VisibleAward(it.drawIndex, it.ticketIds, it.playerIds) }
+    fun award(round: TableRound): VisibleAward? = if (prize != null) round.awards.firstOrNull { it.prize == prize }?.let { VisibleAward(it.drawIndex, it.ticketIds, it.playerIds) }
         else round.customAwards.firstOrNull { it.prizeId == id }?.let { VisibleAward(it.drawIndex, it.ticketIds, it.playerIds) }
 }
 private data class VisibleAward(val call: Int, val tickets: List<String>, val players: List<String>)
-private fun Round.ticketLabel(id: String) = tickets.first { it.id == id }.let { t -> players.first { it.id == t.playerId }.name + " · ticket ${t.id.substringAfterLast('-')}" }
 
 @Composable
-fun RuleList(round: Round, initialTicket: Ticket = round.tickets.first()) {
+fun RuleList(round: TableRound, initialTicket: Ticket = round.tickets.first()) {
     val rules = remember(round.settings) {
         round.settings.prizes.map { VisibleRule(it.name, it.title, it.points, it.explanation, listOf(listOf(it.condition())), prize = it) } +
             round.settings.customPrizes.map { VisibleRule(it.id, it.title, it.points, it.describe(), it.pattern.alternatives, custom = it) }
@@ -45,7 +44,7 @@ fun RuleList(round: Round, initialTicket: Ticket = round.tickets.first()) {
 }
 
 @Composable
-private fun RuleDetails(round: Round, rule: VisibleRule, initialTicket: Ticket, dismiss: () -> Unit) {
+private fun RuleDetails(round: TableRound, rule: VisibleRule, initialTicket: Ticket, dismiss: () -> Unit) {
     var index by rememberSaveable(rule.id, round.id) { mutableIntStateOf(round.tickets.indexOf(initialTicket).coerceAtLeast(0)) }
     val ticket = round.tickets[index]
     val called = round.called.toSet()
@@ -100,7 +99,7 @@ private fun RuleDetails(round: Round, rule: VisibleRule, initialTicket: Ticket, 
 }
 
 @Composable
-fun ShareResults(round: Round, onDismiss: () -> Unit, share: (String) -> Unit) {
+fun ShareResults(round: TableRound, onDismiss: () -> Unit, share: (String) -> Unit) {
     var names by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf(round.players.map { it.id }.toSet()) }
     var error by remember { mutableStateOf<String?>(null) }

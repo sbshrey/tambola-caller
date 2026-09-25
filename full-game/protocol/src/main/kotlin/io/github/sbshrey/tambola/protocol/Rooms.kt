@@ -23,6 +23,7 @@ val WireJson = Json { encodeDefaults = true }
 }
 @Serializable data class CreateRoomRequest(val id: String, val options: RoomOptions = RoomOptions())
 @Serializable data class MemberView(val playerId: String, val displayName: String, val avatar: Int, val ready: Boolean, val connected: Boolean)
+@Serializable data class WinningTicket(val id: String, val playerId: String, val ordinal: Int)
 
 /** A deliberate allow-list. Never return a domain Round from a network endpoint. */
 @Serializable data class PublicRound(
@@ -36,6 +37,9 @@ val WireJson = Json { encodeDefaults = true }
     val drawCommitment: String,
     val revealedOrder: List<Int>? = null,
     val revealedNonce: String? = null,
+    // Defaults allow reading receipts written before native online play was added.
+    val players: List<Player> = emptyList(),
+    val winningTickets: List<WinningTicket> = emptyList(),
 )
 @Serializable data class RoomEvent(val revision: Long, val type: String, val at: Long, val roundId: String? = null)
 @Serializable data class RoomView(

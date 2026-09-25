@@ -44,7 +44,13 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
         round = round?.let { game -> PublicRound(game.id, game.status, game.called,
             game.tickets.filter { it.playerId == actor }, game.awards, game.customAwards,
             game.players.associate { it.id to game.score(it.id) }, requireNotNull(drawCommitment),
-            game.drawOrder.takeIf { game.finished }, nonce.takeIf { game.finished }) },
+            game.drawOrder.takeIf { game.finished }, nonce.takeIf { game.finished },
+            game.players, game.players.flatMap { player ->
+                val awarded = (game.awards.flatMap { it.ticketIds } + game.customAwards.flatMap { it.ticketIds }).toSet()
+                game.tickets.filter { it.playerId == player.id }.mapIndexedNotNull { index, ticket ->
+                    if (ticket.id in awarded) WinningTicket(ticket.id, player.id, index + 1) else null
+                }
+            }) },
         nextDrawAt = nextDrawAt, expiresAt = expiresAt, serverTime = now,
     )
 }

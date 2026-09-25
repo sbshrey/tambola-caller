@@ -8,6 +8,7 @@ dependencies {
     implementation(libs.ktor.server.status.pages); implementation(libs.ktor.json)
     implementation(libs.postgres); implementation(libs.hikari); implementation(libs.logback)
     testImplementation(libs.junit); testImplementation(libs.ktor.test.host)
+    testImplementation(project(":client"))
     testImplementation(libs.ktor.client.content.negotiation); testImplementation(libs.ktor.client.websockets)
 }
 tasks.test {

@@ -1,4 +1,5 @@
 import java.security.MessageDigest
+import java.net.URI
 
 plugins {
     alias(libs.plugins.android.application)
@@ -14,14 +15,20 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.2.0-alpha02"
+        versionCode = 3
+        versionName = "0.3.0-alpha03"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     buildTypes {
-        release { isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") }
+        val endpoint = providers.gradleProperty("tambolaApiUrl").getOrElse("")
+        require(endpoint.isEmpty() || (URI(endpoint).let { it.scheme == "https" && it.host != null && it.userInfo == null && it.query == null && it.fragment == null && it.path.orEmpty() in listOf("", "/") }))
+        debug { buildConfigField("String", "ROOM_API_URL", "\"${endpoint.ifEmpty { "http://127.0.0.1:8080" }}\"") }
+        release {
+            buildConfigField("String", "ROOM_API_URL", "\"$endpoint\"")
+            isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
     }
     sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/voiceAssets"))
     lint { abortOnError = true }
@@ -52,6 +59,8 @@ val prepareVoices by tasks.registering(Sync::class) {
 tasks.named("preBuild") { dependsOn(prepareVoices) }
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":protocol"))
+    implementation(project(":client"))
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui); implementation(libs.compose.foundation); implementation(libs.compose.material3)
     implementation(libs.compose.preview); debugImplementation(libs.compose.tooling)

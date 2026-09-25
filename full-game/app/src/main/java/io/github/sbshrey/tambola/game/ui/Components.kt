@@ -55,7 +55,7 @@ fun NumberBall(number: Int?, reducedMotion: Boolean, compact: Boolean = false) {
 }
 
 @Composable
-fun TicketCard(ticket: Ticket, round: Round, haptics: Boolean, onMark: (String, Int) -> Unit) {
+fun TicketCard(ticket: Ticket, round: TableRound, haptics: Boolean, onMark: (String, Int) -> Unit) {
     var edit by rememberSaveable(ticket.id) { mutableStateOf(false) }
     val player = round.players.first { it.id == ticket.playerId }
     val marked = round.marks[ticket.id].orEmpty()
