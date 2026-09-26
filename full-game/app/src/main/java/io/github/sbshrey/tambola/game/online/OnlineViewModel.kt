@@ -205,7 +205,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             if (saved?.room != null) { mutable.update { it.copy(error = UiMessage(R.string.error_leave_first)) }; return }
         }
         if (pending is PendingOperation.Match && saved?.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) { connect(); return }
-        if (pending is PendingOperation.DeleteProfile || pending is PendingOperation.Match || pending == PendingOperation.Logout) { stream?.cancel(); stream = null; audio.stop() }
+        if (pending.pausesRoomStream()) { stream?.cancel(); stream = null; audio.stop() }
         if (pending is PendingOperation.DeleteProfile || pending == PendingOperation.Logout) walletJob?.cancel()
         mutable.update { it.copy(busy = true, error = null, notice = null,
             deletingProfile = pending is PendingOperation.DeleteProfile,
@@ -223,7 +223,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     fun retry() {
         if (mutable.value.busy || saved?.pending == null || mutable.value.storageFailure) return
-        if (saved?.pending is PendingOperation.Match) { stream?.cancel(); stream = null; audio.stop() }
+        if (saved?.pending.pausesRoomStream()) { stream?.cancel(); stream = null; audio.stop() }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {
             try { performPending() }
@@ -297,8 +297,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     private fun connect() {
         if (!active || mutable.value.loading || mutable.value.storageFailure || mutable.value.sessionExpired ||
-            mutable.value.deletingProfile || saved?.pending is PendingOperation.DeleteProfile ||
-            saved?.pending == PendingOperation.Logout || saved?.pending is PendingOperation.Match ||
+            mutable.value.deletingProfile || saved?.pending.pausesRoomStream() ||
             saved?.room == null || api == null || stream?.isActive == true) return
         stream = viewModelScope.launch {
             var attempts = 0
@@ -331,6 +330,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                     }
                 } catch (error: CancellationException) { throw error }
                 catch (error: RoomApiFailure) {
+                    currentCoroutineContext().ensureActive()
+                    if (saved?.credentials?.playerId != session.credentials.playerId || saved?.room?.roomId != room.roomId ||
+                        saved?.pending.pausesRoomStream()) break
                     if (error.status == 401) {
                         if (usedToken != null && !authRetried) {
                             rejectedToken = usedToken; authRetried = true
@@ -340,10 +342,18 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break
                     }
                     if (error.code in setOf("not_member", "room_missing", "room_closed")) {
-                        mutex.withLock { saved?.let { persist(it.copy(room = null, marks = emptyMap(),
-                            pending = it.pending.takeUnless { pending -> pending is PendingOperation.Command && pending.code == room.code })) } }
-                        refreshWallet()
-                        mutable.update { it.copy(connection = Connection.IDLE, error = UiMessage(R.string.error_room_unavailable)) }; break
+                        val detached = mutex.withLock {
+                            currentCoroutineContext().ensureActive()
+                            val latest = saved ?: return@withLock false
+                            if (latest.credentials.playerId != session.credentials.playerId || latest.room?.roomId != room.roomId ||
+                                latest.pending.pausesRoomStream()) return@withLock false
+                            persist(latest.copy(room = null, marks = emptyMap(),
+                                pending = latest.pending.takeUnless { pending -> pending is PendingOperation.Command && pending.code == room.code }))
+                            mutable.update { it.copy(connection = Connection.IDLE, error = UiMessage(R.string.error_room_unavailable)) }
+                            true
+                        }
+                        if (detached) refreshWallet()
+                        break
                     }
                 } catch (error: LocalStorageFailure) { showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break }
                 catch (error: InvalidRoomResponse) { showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break }
@@ -444,3 +454,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
 }
 
 private class LocalStorageFailure : Exception("Local online storage unavailable")
+
+/** A leave may commit before its HTTP receipt arrives. Keep that receipt retryable;
+ * losing room membership is expected until the exact command is confirmed. */
+private fun PendingOperation?.pausesRoomStream(): Boolean = this is PendingOperation.DeleteProfile ||
+    this is PendingOperation.Match || this == PendingOperation.Logout ||
+    (this is PendingOperation.Command && request.action == RoomAction.Leave)

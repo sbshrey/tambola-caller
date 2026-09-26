@@ -20,6 +20,10 @@ object CoinRefillAndroid : PostgresTest() {
         val sdk = System.getenv("ANDROID_SDK_ROOT") ?: "${System.getenv("LOCALAPPDATA")}/Android/Sdk"
         val adb = File(sdk, "platform-tools/adb.exe").absolutePath
         val serial = "emulator-5582"
+        val testClass = System.getenv("TAMBOLA_COIN_ANDROID_TEST") ?: "CoinRefillTest"
+        check(testClass in setOf("CoinRefillTest", "CoinLeaveTest"))
+        val label = System.getenv("TAMBOLA_COIN_ANDROID_LABEL") ?: "coin-refill-native"
+        check(label.matches(Regex("[a-z0-9-]+")))
         fun command(vararg arguments: String): String {
             val process = ProcessBuilder(arguments.toList()).redirectErrorStream(true).start()
             try {
@@ -70,10 +74,10 @@ object CoinRefillAndroid : PostgresTest() {
             for (apk in listOf("app/build/outputs/apk/debug/app-debug.apk", "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"))
                 adb("install", "-r", apk)
             driver = ProcessBuilder("node", "tools/android-smoke.mjs", "--online", "--fault-proxy", "--class",
-                "io.github.sbshrey.tambola.game.CoinRefillTest", "--label", "coin-refill-native").inheritIO().start()
-            check(driver.waitFor(180, TimeUnit.SECONDS) && driver.exitValue() == 0) { "Native refill test failed" }
+                "io.github.sbshrey.tambola.game.$testClass", "--label", label).inheritIO().start()
+            check(driver.waitFor(180, TimeUnit.SECONDS) && driver.exitValue() == 0) { "Native coin fixture failed" }
             check(database.transaction { it.query("SELECT 1 FROM guests") { true }.isEmpty() }) { "QA profile was not deleted" }
-            println("Native refill passed; isolated profile removed; installed host untouched.")
+            println("Native coin fixture passed; isolated profile removed; installed host untouched.")
         } finally {
             driver?.takeIf { it.isAlive }?.destroyForcibly()?.waitFor(5, TimeUnit.SECONDS)
             proxy?.takeIf { it.isAlive }?.destroyForcibly()?.waitFor(5, TimeUnit.SECONDS)

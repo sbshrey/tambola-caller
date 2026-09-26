@@ -19,8 +19,8 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 20
-        versionName = "0.20.0-alpha20"
+        versionCode = 21
+        versionName = "0.21.0-alpha21"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
