@@ -256,6 +256,8 @@ CI on every relevant change: domain/server unit tests, PostgreSQL integration te
 
 ## 11. Production release definition
 
+The [store, privacy and support draft](../full-game/RELEASE_CONTENT_DRAFT.md) now captures the implemented data flows and proposed listing copy. Operator/contact details, hosted configuration, external deletion-request verification and bounded recovery-record retention remain open; the draft is not published or a completed release gate. The [build-tool review](../full-game/BUILD_TOOL_REVIEW.md) records the Gradle wrapper finding and pending upgrade/validation separately from the passing runtime scans.
+
 The goal is complete only when all applicable conditions below have evidence:
 
 - [ ] Full install → setup → tickets → calls → marks → verified awards → results → rematch flow works in all agreed modes.
