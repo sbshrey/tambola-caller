@@ -83,3 +83,5 @@ The opt-in `:server:loadTest` task runs the full 320-client/1,920-ticket workloa
 See [service validation](VALIDATION.md) and the repository execution ledger for observed evidence.
 
 Protocol v1 native-client additions: `PublicRound.players` retains the immutable round roster, while `winningTickets` contains owner IDs and ordinals only for already awarded tickets. Neither field exposes another player's card numbers. Defaults permit decoding older persisted receipts; no previously released APK consumed this room protocol.
+
+Retained-history deletion now streams records within its atomic transaction, and background replay defers work already locked by a live operation. See [the memory/contention regression, tests and evidence](HISTORY_DELETION_VALIDATION.md). No schema, grant or protocol change is required.

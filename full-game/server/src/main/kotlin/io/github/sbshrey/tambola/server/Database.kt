@@ -55,3 +55,14 @@ internal fun <T> Connection.query(sql: String, vararg params: Any?, map: (Result
     params.forEachIndexed { index, value -> statement.setObject(index + 1, value) }
     statement.executeQuery().use { result -> buildList { while (result.next()) add(map(result)) } }
 }
+
+/** Fetch a bounded page of rows inside the caller's transaction, without collecting decoded history.
+ * Updates must use another statement and must not change this query's ordering keys. */
+internal fun Connection.forEachRow(sql: String, vararg params: Any?, consume: (ResultSet) -> Unit) {
+    check(!autoCommit) { "Streaming rows requires a transaction" }
+    prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY).use { statement ->
+        statement.fetchSize = 32
+        params.forEachIndexed { index, value -> statement.setObject(index + 1, value) }
+        statement.executeQuery().use { rows -> while (rows.next()) consume(rows) }
+    }
+}

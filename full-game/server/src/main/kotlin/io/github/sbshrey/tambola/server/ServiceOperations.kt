@@ -110,7 +110,7 @@ class ServiceOperations(
 internal class RoomWorker(private val service: RoomService, private val operations: ServiceOperations) {
     fun runPass() {
         try {
-            operations.replayed(operations.step(WorkerStep.REPLAY) { service.replayDeletions(10) })
+            operations.replayed(operations.step(WorkerStep.REPLAY) { service.replayDeletions(10, skipBusy = true) })
             operations.step(WorkerStep.TICK) { service.tick() }
             if (operations.cleanupDue()) operations.step(WorkerStep.CLEANUP) { service.cleanup() }
             operations.workerSucceeded()

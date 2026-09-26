@@ -61,35 +61,51 @@ class RoomService(
     }
 
     /** One identity per transaction preserves guest-before-room lock ordering across workers. */
-    fun replayDeletions(limit: Int = 100): Int {
+    fun replayDeletions(limit: Int = 100, skipBusy: Boolean = false): Int {
         try {
-            val applied = replayDeletionBatch(limit)
-            if (applied < limit) replayFailure = false
-            return applied
+            val result = replayDeletionBatch(limit, skipBusy)
+            if (result.caughtUp) replayFailure = false
+            return result.applied
         } catch (error: Exception) { replayFailure = true; throw error }
     }
 
-    private fun replayDeletionBatch(limit: Int): Int {
-        val journal = journal ?: return 0
+    private data class ReplayResult(val applied: Int, val caughtUp: Boolean)
+    private enum class ReplayStep { APPLIED, CAUGHT_UP, BUSY }
+
+    private fun replayDeletionBatch(limit: Int, skipBusy: Boolean): ReplayResult {
+        val journal = journal ?: return ReplayResult(0, true)
         require(limit in 1..1000)
         var applied = 0
         repeat(limit) {
-            val advanced = database.transaction { connection ->
-                val saved = connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton FOR UPDATE") {
+            val step = database.transaction { connection ->
+                val saved = connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton FOR UPDATE${if (skipBusy) " SKIP LOCKED" else ""}") {
                     it.getString(1) to it.getLong(2)
-                }.single()
+                }.singleOrNull()
+                if (saved == null) {
+                    recoveryCheck(skipBusy && connection.query("SELECT 1 FROM deletion_recovery WHERE singleton") { true }.isNotEmpty(),
+                        "Deletion recovery cursor is missing")
+                    return@transaction ReplayStep.BUSY
+                }
                 val head = journal.position()
                 recoveryCheck(saved.first == null || saved.first == head.id, "Primary database belongs to another deletion journal")
                 recoveryCheck(saved.second <= head.head, "Deletion journal is older than the primary recovery cursor")
                 val next = journal.next(saved.second, head.head)
+                if (next != null && skipBusy) {
+                    val locked = connection.query("SELECT id FROM guests WHERE id = ? FOR UPDATE SKIP LOCKED", next.playerId) { it.getString(1) }.isNotEmpty()
+                    // A live deletion or previously authorized command owns this guest. Do not
+                    // advance the cursor or treat ordinary contention as a recovery failure.
+                    // An absent guest still needs replay: retained records may come from a restore.
+                    if (!locked && connection.query("SELECT 1 FROM guests WHERE id = ?", next.playerId) { true }.isNotEmpty())
+                        return@transaction ReplayStep.BUSY
+                }
                 if (next != null) applyDeletion(connection, next)
                 connection.execute("UPDATE deletion_recovery SET journal_id = ?, applied_sequence = ? WHERE singleton", head.id, next?.sequence ?: saved.second)
-                next != null
+                if (next != null) ReplayStep.APPLIED else ReplayStep.CAUGHT_UP
             }
-            if (!advanced) return applied
+            if (step != ReplayStep.APPLIED) return ReplayResult(applied, step == ReplayStep.CAUGHT_UP)
             applied++
         }
-        return applied
+        return ReplayResult(applied, false)
     }
 
     fun recoveryHealthy(): Boolean = database.transaction { verifyJournal(it); true }
@@ -106,8 +122,8 @@ class RoomService(
         val playerId = intent.playerId
         val now = clock()
         connection.query("SELECT id FROM guests WHERE id = ? FOR UPDATE", playerId) { it.getString(1) }
-        val rooms = connection.query("SELECT payload FROM rooms WHERE id IN (SELECT room_id FROM room_participants WHERE player_id = ?) ORDER BY id FOR UPDATE", playerId) { decode(it.getString(1)) }
-        rooms.forEach { original ->
+        connection.forEachRow("SELECT payload FROM rooms WHERE id IN (SELECT room_id FROM room_participants WHERE player_id = ?) ORDER BY id FOR UPDATE", playerId) { row ->
+            val original = decode(row.getString(1))
             val redacted = original.redact(playerId)
             val remaining = redacted.members.filterNot { it.id == playerId }
             val successor = remaining.minWithOrNull(compareBy<Member> { now - it.lastSeen >= PRESENCE_TIMEOUT }.thenBy { it.joinedAt }.thenBy { it.id })
@@ -117,12 +133,15 @@ class RoomService(
                 round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
                 nextDrawAt = if (remaining.isEmpty()) null else redacted.nextDrawAt)
             changed(connection, next, "profile_deleted", now)
-            connection.query("SELECT round_id, payload FROM finished_rounds WHERE room_id = ? FOR UPDATE", original.id) { it.getString(1) to decode(it.getString(2)) }.forEach { (id, archive) ->
+            connection.forEachRow("SELECT round_id, payload FROM finished_rounds WHERE room_id = ? ORDER BY round_id FOR UPDATE", original.id) { row ->
+                val id = row.getString(1)
+                val archive = decode(row.getString(2))
                 connection.execute("UPDATE finished_rounds SET payload = ? WHERE room_id = ? AND round_id = ?", WireJson.encodeToString(archive.redact(playerId)), original.id, id)
             }
-            connection.query("SELECT actor, command_id, response FROM command_receipts WHERE room_id = ? AND actor <> ? FOR UPDATE", original.id, playerId) {
-                Triple(it.getString(1), it.getString(2), WireJson.decodeFromString<RoomUpdate>(it.getString(3)))
-            }.forEach { (actor, id, response) ->
+            connection.forEachRow("SELECT actor, command_id, response FROM command_receipts WHERE room_id = ? AND actor <> ? ORDER BY actor, command_id FOR UPDATE", original.id, playerId) { row ->
+                val actor = row.getString(1)
+                val id = row.getString(2)
+                val response = WireJson.decodeFromString<RoomUpdate>(row.getString(3))
                 connection.execute("UPDATE command_receipts SET response = ? WHERE room_id = ? AND actor = ? AND command_id = ?", WireJson.encodeToString(response.redact(playerId)), original.id, actor, id)
             }
         }

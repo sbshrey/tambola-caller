@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins { application; alias(libs.plugins.kotlin.jvm); alias(libs.plugins.kotlin.serialization) }
 kotlin { jvmToolchain(17) }
 application { mainClass.set("io.github.sbshrey.tambola.server.ServerKt") }
@@ -26,4 +28,17 @@ tasks.register<JavaExec>("loadTest") {
     mainClass.set("io.github.sbshrey.tambola.server.ServiceLoad")
     workingDir = rootProject.projectDir
     maxHeapSize = "768m"
+}
+
+tasks.register<JavaExec>("historyDeletionLoad") {
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("io.github.sbshrey.tambola.server.HistoryDeletionLoad")
+    workingDir = rootProject.projectDir
+    maxHeapSize = "128m"
+    jvmArgs("-XX:ActiveProcessorCount=4")
+    timeout.set(Duration.ofMinutes(5))
+    environment("TAMBOLA_DATABASE_URL", System.getenv("TAMBOLA_TEST_DATABASE_URL") ?: "")
+    environment("TAMBOLA_DATABASE_USER", System.getenv("TAMBOLA_TEST_DATABASE_USER") ?: "")
+    environment("TAMBOLA_DATABASE_PASSWORD", System.getenv("TAMBOLA_TEST_DATABASE_PASSWORD") ?: "")
 }

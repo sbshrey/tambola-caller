@@ -51,7 +51,7 @@ jobs:
             full-game/.test-workspace/load-*/gc.log
   room-service:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16
@@ -84,7 +84,7 @@ jobs:
       - name: Verify PostgreSQL service, restart, deletion recovery and restricted roles
         working-directory: full-game
         run: |
-          bash gradlew -PserverOnly=true :domain:test :client:test :server:test :server:installDist --no-daemon --console=plain
+          bash gradlew -PserverOnly=true :domain:test :client:test :server:test :server:installDist :server:historyDeletionLoad --no-daemon --console=plain
           node tools/server-smoke.mjs
           node tools/server-deletion-recovery.mjs
           node tools/server-permissions-smoke.mjs
@@ -113,6 +113,7 @@ jobs:
             full-game/.test-workspace/deletion-process-*/evidence.json
             full-game/.test-workspace/permissions-*/evidence.json
             full-game/.test-workspace/permissions-*/metrics.prom
+            full-game/.test-workspace/history-delete-*/evidence.json
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
