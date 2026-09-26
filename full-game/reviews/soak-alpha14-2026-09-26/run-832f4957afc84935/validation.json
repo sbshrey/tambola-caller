@@ -1,0 +1,80 @@
+{
+  "runId": "832f4957afc84935",
+  "accepted": true,
+  "scope": "Local ten-room service endurance only; not physical-phone, hosted TLS, mobile-network or Android-memory acceptance.",
+  "exactRuntimeUnchanged": true,
+  "applicationApkUnchanged": true,
+  "observations": 145,
+  "files": [
+    {
+      "path": "alpha14-soak-gradle.txt",
+      "bytes": 7364,
+      "sha256": "7f3c2fe399b08bf91b993bda4bfeea4e4110aba157d9872a66e19476d7c43429"
+    },
+    {
+      "path": "alpha14-soak-status.json",
+      "bytes": 333,
+      "sha256": "ca4b2d2ff7b9e4fdd8505a9adaf88916d60d056f8177815fe422f49d4ea464d2"
+    },
+    {
+      "path": "collection-1.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-2.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-3.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-4.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-5.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-6.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-7.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-8.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "collection-9.txt",
+      "bytes": 39,
+      "sha256": "0a847638d420b95d559d5d4f9903373c324305cccef294b840d0921f981cfc7c"
+    },
+    {
+      "path": "evidence.json",
+      "bytes": 188858,
+      "sha256": "5a35f04d7a65de686ccd88b690695705ef100d2fdc7be1bb9b38f51224eb64ac"
+    },
+    {
+      "path": "gc.log",
+      "bytes": 4278096,
+      "sha256": "aaac23123f9233c33fdf4c4a448a698d887d287f65a4f64612f833b8e456fba7"
+    },
+    {
+      "path": "independent-cleanup.json",
+      "bytes": 326,
+      "sha256": "2f9c11065d97e46fd6925c5ab5a8108a3bdb1808b902920f4eae1e7b8ebf75dc"
+    }
+  ]
+}

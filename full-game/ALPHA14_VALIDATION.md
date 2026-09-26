@@ -1,6 +1,6 @@
 # Alpha14: build migration and device acceptance
 
-26 September 2026. Internal candidate on `shrey/full-tambola-game`; production hosting/signing and broader release gates remain open. Local candidate acceptance is complete; sustained-service and public-release work remain. Alpha13 and the earlier build checkpoint remain unchanged.
+26 September 2026. Internal candidate on `shrey/full-tambola-game`; production hosting/signing and broader release gates remain open. Local candidate and sustained-service acceptance are recorded below; Android long-session and public-release work remain. Alpha13 and the earlier build checkpoint remain unchanged.
 
 ## Changes
 
@@ -37,6 +37,7 @@ Manifest-order correction: the immutable alpha14 package and original migration 
 | Native online pair | API30 host / API36 guest finish 90 unique calls with matching scores, awards and draw audit, then rematch with new grids and retained rules. Only each player's two tickets are visible. Native cancellation and two histories agree; owned service/mappings/settings cleaned up |
 | Cold online recovery | Draw and deletion each discard three committed replies, terminate the original Android process and verify reconciliation in a new process with the same pending identity and preserved offline progress. Owned services/mappings/settings cleaned up |
 | API26 minimum | Four core gameplay methods (33.936s), four full offline methods (77.584s) and 12 layouts (17.660s) pass. Four six-card captures add 684 pixel comparisons. Initial emulator transport registration failed before testing; relaunch on a fresh port succeeded |
+| Sustained service | Nine complete automatic games in ten rooms, 320 persistent clients and six tickets each; 71.54 minutes, all 259,200 deliveries, 537 ms p95 / 892 ms maximum local delivery. Every comparable post-full-GC heap is 24 MiB; all results/history/rematch/archive checks pass, zero recorded stream/database failures. Owned process/database cleanup independently confirmed |
 
 The APK bytes are the same for all accepted app checks above. Broad offline, in-place upgrade and initial API36 checks use instrumentation `81802f7c...`; final API30/API26 pixel matrices, native pair and cold online recovery use `dcd8b9db...`. Total layout coverage is 72 combinations, with 3,420 glyph comparisons across 20 six-card captures. Instrumentation changed only to correct obsolete navigation selectors and add screenshot-ink assertions. Raw transcripts, inventories, provenance, screenshots, failed probes and exact artifact records are under [the migration evidence directory](reviews/toolchain-migration-2026-09-26/).
 
@@ -44,4 +45,6 @@ The APK bytes are the same for all accepted app checks above. Broad offline, in-
 
 Dated completed OSV queries report zero active matches across 469 observed build Maven version pairs and 225 runtime version pairs. All 1,321 prior dependency-verification entries are preserved; 314 new entries were independently checked against fresh official HTTPS bytes. This is coordinate/byte coverage, not proof against unknown vulnerabilities. The official Gradle distribution separately retains three unsuppressed Medium package matches; its JARs were not replaced. The review documents the limited direct-reference assessment.
 
-These are local Windows/emulator results. They do not establish production signing, hosted TLS/latency, mobile network switching, physical ARM64/TalkBack/audio quality, Hindi editorial approval, actual Linux/remote CI, or a completed sustained service run. Operator/domain/support/privacy/audience decisions and verified public invitation links remain required for public release. No push, CI dispatch, hosted deployment or store publication occurred.
+The sustained run has separate [raw evidence and hashes](reviews/soak-alpha14-2026-09-26/run-832f4957afc84935/validation.json); its service runtime and application bytes match this candidate. See [performance acceptance](PERFORMANCE.md) for the measurement definitions and the pending Android long-session and transport-byte checks.
+
+These are local Windows/emulator results. They do not establish production signing, hosted TLS/latency, mobile network switching, physical ARM64/TalkBack/audio quality, Hindi editorial approval, actual Linux/remote CI, or Android long-session performance. Operator/domain/support/privacy/audience decisions and verified public invitation links remain required for public release. No push, CI dispatch, hosted deployment or store publication occurred.
