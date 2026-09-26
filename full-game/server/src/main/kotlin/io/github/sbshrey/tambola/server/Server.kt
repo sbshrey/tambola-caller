@@ -26,7 +26,9 @@ private const val MAX_BODY_BYTES = 32_768
 // Leave room for authentication, SQL and transport within the one-second delivery budget.
 private const val STREAM_POLL_MILLIS = 500L
 
-fun main() {
+fun main(args: Array<String>) {
+    require(args.isEmpty() || args.contentEquals(arrayOf("--migrate"))) { "Use no arguments to serve, or --migrate for the separate migration job" }
+    val migrateOnly = args.isNotEmpty()
     fun required(name: String) = System.getenv(name)?.takeIf { it.isNotBlank() } ?: error("$name is required")
     val host = System.getenv("TAMBOLA_BIND_HOST") ?: "127.0.0.1"
     require(host == "127.0.0.1" || host == "::1" || System.getenv("TAMBOLA_TLS_PROXY") == "true") {
@@ -35,19 +37,35 @@ fun main() {
     val port = (System.getenv("PORT") ?: "8080").toInt().also { require(it in 1..65535) }
     val primaryUrl = required("TAMBOLA_DATABASE_URL")
     val journalUrl = System.getenv("TAMBOLA_DELETION_DATABASE_URL")?.takeIf { it.isNotBlank() }
-    validateRecoveryConfiguration(host, primaryUrl, journalUrl, System.getenv("TAMBOLA_LOCAL_DEVELOPMENT") == "true")
+    val localDevelopment = System.getenv("TAMBOLA_LOCAL_DEVELOPMENT") == "true"
+    validateRecoveryConfiguration(host, primaryUrl, journalUrl, localDevelopment)
+    val localFixture = localFixtureMode(host, primaryUrl, journalUrl, localDevelopment)
     val journalDatabase = journalUrl?.let { Database(it, required("TAMBOLA_DELETION_DATABASE_USER"), required("TAMBOLA_DELETION_DATABASE_PASSWORD")) }
     try {
-        val journal = journalDatabase?.let { DeletionJournal(it).also(DeletionJournal::migrate) }
+        val journal = journalDatabase?.let { DeletionJournal(it).also { value ->
+            if (migrateOnly || localFixture) value.migrate() else { value.verifyMigrations(); RuntimePrivileges.verify(it, journal = true) }
+        } }
         Database(primaryUrl, required("TAMBOLA_DATABASE_USER"), required("TAMBOLA_DATABASE_PASSWORD")).use { database ->
-            database.migrate()
+            if (migrateOnly || localFixture) database.migrate() else { database.verifyMigrations(); RuntimePrivileges.verify(database, journal = false) }
             journal?.verifyRestoreBoundary(database)
+            if (migrateOnly) return
             val service = RoomService(database, journal = journal)
             // No listener exists while restored identities and historical receipts are being redacted.
             while (service.replayDeletions() > 0) { /* bounded transactions, restartable cursor */ }
             embeddedServer(Netty, host = host, port = port) { roomsModule(database, service) }.start(wait = true)
         }
     } finally { journalDatabase?.close() }
+}
+
+internal fun localFixtureMode(host: String, primary: String, journal: String?, requested: Boolean): Boolean {
+    if (!requested) return false
+    val prefix = "jdbc:postgresql://127\\.0\\.0\\.1:[0-9]+/"
+    require(host in setOf("127.0.0.1", "::1") &&
+        primary.matches(Regex(prefix + "(tambola_(test|dev)|tambola_(load|recovery)_main_[a-f0-9]{16})")) &&
+        (journal == null || journal.matches(Regex(prefix + "(tambola_(test|dev)|tambola_(load|recovery)_journal_[a-f0-9]{16}|tambola_recovery_wrong_[a-f0-9]{16})")))) {
+        "Local development requires explicitly named loopback fixture databases for both stores"
+    }
+    return true
 }
 
 internal fun validateRecoveryConfiguration(host: String, primaryUrl: String, journalUrl: String?, localDevelopment: Boolean) {

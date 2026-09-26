@@ -82,7 +82,12 @@ class DeletionJournalTest : PostgresTest() {
         assertEquals(1, service.replayDeletions())
         val different = DeletionJournal(additionalDatabase()).also { it.migrate() }
         assertThrows(SQLException::class.java) { RoomService(database, now::get, different).replayDeletions() }
-        journalDb.transaction { it.execute("UPDATE deletion_journal_identity SET head = 0") }
+        journalDb.transaction {
+            // Owner-only corruption fixture models restoring an older journal snapshot.
+            it.execute("ALTER TABLE deletion_journal_identity DISABLE TRIGGER deletion_journal_head_guard")
+            it.execute("UPDATE deletion_journal_identity SET head = 0")
+            it.execute("ALTER TABLE deletion_journal_identity ENABLE TRIGGER deletion_journal_head_guard")
+        }
         assertThrows(SQLException::class.java) { service.replayDeletions() }
         assertThrows(SQLException::class.java) { service.recoveryHealthy() }
         assertEquals(1L, database.transaction { it.query("SELECT applied_sequence FROM deletion_recovery") { row -> row.getLong(1) }.single() })

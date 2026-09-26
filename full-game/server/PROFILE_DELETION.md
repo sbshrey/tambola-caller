@@ -28,7 +28,7 @@ Newly expired but **unrevoked** credentials may request deletion only; they cann
 
 ## Stored records, locking and migration
 
-Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Migration 003 adds a binding to the independent journal and a transactional replay cursor; the journal has its own migration 001. Earlier primary migrations stay unchanged. Startup applies ordered migrations under advisory locks and verifies immutable checksums, then replays deletion before opening HTTP. See the [restore runbook](BACKUP_RECOVERY.md) for required startup configuration and handling of pre-journal restore points.
+Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Migration 003 adds a binding to the independent journal and a transactional replay cursor; journal migrations 001–002 create its records and guard head advancement. Earlier migrations stay unchanged. A separate owner `--migrate` job applies ordered migrations under advisory locks; ordinary startup verifies immutable checksums and [restricted runtime grants](DATABASE_PERMISSIONS.md), then replays deletion before opening HTTP. See the [restore runbook](BACKUP_RECOVERY.md) for required startup configuration and handling of pre-journal restore points.
 
 The participant index covers current members/round players, past audits and command/create receipt actors. Backfill includes former members who no longer appear in the current lobby. Every later save records known guest participants. Deleted profiles are excluded from future index inserts even when their opaque player ID remains in an ongoing round.
 

@@ -51,7 +51,7 @@ async function start(journalDatabase, expectRejected = false) {
   const java = process.env.JAVA_HOME ? resolve(process.env.JAVA_HOME, 'bin', 'java' + suffix) : 'java';
   child = spawn(java, ['-Xms128m', '-Xmx384m', '-cp', resolve(root, 'server/build/install/server/lib/*'), 'io.github.sbshrey.tambola.server.ServerKt'], {
     cwd: root, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, PORT: String(port), TAMBOLA_BIND_HOST: '127.0.0.1', TAMBOLA_LOCAL_DEVELOPMENT: 'false',
+    env: { ...process.env, PORT: String(port), TAMBOLA_BIND_HOST: '127.0.0.1', TAMBOLA_LOCAL_DEVELOPMENT: 'true',
       TAMBOLA_DATABASE_URL: jdbc.replace('/tambola_test', '/' + names.main), TAMBOLA_DATABASE_USER: user, TAMBOLA_DATABASE_PASSWORD: password,
       TAMBOLA_DELETION_DATABASE_URL: jdbc.replace('/tambola_test', '/' + journalDatabase), TAMBOLA_DELETION_DATABASE_USER: user, TAMBOLA_DELETION_DATABASE_PASSWORD: password },
   });

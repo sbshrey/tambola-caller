@@ -122,7 +122,7 @@ object ServiceLoad {
             val builder = ProcessBuilder(java.toString(), "-Xms128m", "-Xmx512m", "-XX:ActiveProcessorCount=4", "-Xlog:gc:file=gc.log:time,uptime",
                 "-cp", root.resolve("server/build/install/server/lib").toString() + "/*", "io.github.sbshrey.tambola.server.ServerKt")
                 .directory(directory.toFile()).redirectOutput(ProcessBuilder.Redirect.DISCARD).redirectError(ProcessBuilder.Redirect.DISCARD)
-            builder.environment().putAll(mapOf("PORT" to port.toString(), "TAMBOLA_BIND_HOST" to "127.0.0.1", "TAMBOLA_LOCAL_DEVELOPMENT" to "false",
+            builder.environment().putAll(mapOf("PORT" to port.toString(), "TAMBOLA_BIND_HOST" to "127.0.0.1", "TAMBOLA_LOCAL_DEVELOPMENT" to "true",
                 "TAMBOLA_DATABASE_URL" to databaseUrl(names[0]), "TAMBOLA_DATABASE_USER" to user, "TAMBOLA_DATABASE_PASSWORD" to password,
                 "TAMBOLA_DELETION_DATABASE_URL" to databaseUrl(names[1]), "TAMBOLA_DELETION_DATABASE_USER" to user, "TAMBOLA_DELETION_DATABASE_PASSWORD" to password))
             child = builder.start()

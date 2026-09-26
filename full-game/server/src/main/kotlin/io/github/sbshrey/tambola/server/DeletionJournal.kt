@@ -11,20 +11,20 @@ data class JournalPosition(val id: String, val head: Long)
 /** A separate PostgreSQL database, never restored together with the room database. No raw tokens or names. */
 class DeletionJournal(private val database: Database) {
     @Volatile private var expectedId: String? = null
+    private val migrations = Migrations("journal_migrations", 749023802,
+        listOf("001_deletions.sql", "002_head_guard.sql").map { "/db/journal/$it" })
 
     fun migrate() {
         database.transaction { connection ->
-            connection.query("SELECT pg_advisory_xact_lock(749023802)") { true }
-            connection.execute("CREATE TABLE IF NOT EXISTS journal_migrations (version integer PRIMARY KEY, checksum text NOT NULL)")
-            val sql = requireNotNull(javaClass.getResource("/db/journal/001_deletions.sql")).readText()
-            val checksum = digest(sql)
-            val installed = connection.query("SELECT checksum FROM journal_migrations WHERE version = 1") { it.getString(1) }.singleOrNull()
-            if (installed == null) {
-                connection.createStatement().use { it.execute(sql) }
-                connection.execute("INSERT INTO deletion_journal_identity(singleton, journal_id) VALUES (true, ?)", UUID.randomUUID().toString())
-                connection.execute("INSERT INTO journal_migrations VALUES (1, ?)", checksum)
-            } else check(installed == checksum) { "Installed journal migration differs from source" }
+            migrations.migrate(connection) { version ->
+                if (version == 1) connection.execute("INSERT INTO deletion_journal_identity(singleton, journal_id) VALUES (true, ?)", UUID.randomUUID().toString())
+            }
         }
+        expectedId = position().id
+    }
+
+    fun verifyMigrations() {
+        database.transaction { migrations.verify(it) }
         expectedId = position().id
     }
 
