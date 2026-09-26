@@ -1,0 +1,47 @@
+
+io.github.sbshrey.tambola.game.NativePairTest:
+Error in completeRoundAndRematchOnIndependentNativeClients(io.github.sbshrey.tambola.game.NativePairTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 90000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:809)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:378)
+	at io.github.sbshrey.tambola.game.NativePairTest.until(NativePairTest.kt:31)
+	at io.github.sbshrey.tambola.game.NativePairTest.until$default(NativePairTest.kt:31)
+	at io.github.sbshrey.tambola.game.NativePairTest$completeRoundAndRematchOnIndependentNativeClients$1.invokeSuspend(NativePairTest.kt:76)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:266)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:101)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.NativePairTest.completeRoundAndRematchOnIndependentNativeClients(NativePairTest.kt:51)
+
+
+Time: 109.999
+There was 1 failure:
+1) completeRoundAndRematchOnIndependentNativeClients(io.github.sbshrey.tambola.game.NativePairTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 90000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:809)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:378)
+	at io.github.sbshrey.tambola.game.NativePairTest.until(NativePairTest.kt:31)
+	at io.github.sbshrey.tambola.game.NativePairTest.until$default(NativePairTest.kt:31)
+	at io.github.sbshrey.tambola.game.NativePairTest$completeRoundAndRematchOnIndependentNativeClients$1.invokeSuspend(NativePairTest.kt:76)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:266)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:101)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.NativePairTest.completeRoundAndRematchOnIndependentNativeClients(NativePairTest.kt:51)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

@@ -62,20 +62,20 @@ class ProcessRecoveryTest {
         PreferenceStore(context).update(Preferences(voice = false, reducedMotion = true))
         compose.runOnIdle { online.resetLocalData() }
         until { online.state.value.name == null && !online.state.value.loading }
-        tap("Play solo"); tap("Just me"); tap("Deal the tickets")
+        tap("Custom game"); tap("Just me"); tap("Help with marking"); tap("Deal the tickets")
         if (compose.hasTextNow("Start new round")) tap("Start new round")
-        until { offline.state.value.round != null && !offline.state.value.saving && compose.hasTextNow("Call next number") }
+        until { offline.state.value.round != null && !offline.state.value.saving && compose.hasTextNow("Next") }
         val ticket = offline.state.value.round!!.tickets.first()
         do {
             val count = offline.state.value.round!!.called.size
             if (count > 0) delay(550) // Respect the app's physical double-tap guard.
-            tap("Call next number")
+            tap("Next")
             until { offline.state.value.round!!.called.size == count + 1 && !offline.state.value.saving }
         } while (offline.state.value.round!!.called.none { it in ticket.numbers })
         val number = offline.state.value.round!!.called.first { it in ticket.numbers }
-        tap("Mark ticket"); compose.onNodeWithContentDescription("Number $number").performScrollTo().performClick()
+        compose.tapTag("dab-called")
         until { number in offline.state.value.round!!.marks[ticket.id].orEmpty() }
-        tap("Done"); tap("‹ Home"); tap("Play online")
+        compose.goHome(); tap("With friends")
         until { !offline.state.value.saving && offline.state.value.round!!.status == RoundStatus.PAUSED }
         val offlineRound = offline.state.value.round!!
         val field = compose.onNodeWithTag("online-name")
@@ -96,8 +96,8 @@ class ProcessRecoveryTest {
             tap("Start online round"); until { online.state.value.room?.phase == RoomPhase.ACTIVE && !online.state.value.busy }
             val initial = saved()
             control(if (kind == "delete") "arm-delete-drop" else "arm-command-drop")
-            if (kind == "delete") { tap("Delete online profile"); tap("Delete profile permanently") }
-            else tap("Call next online number")
+            if (kind == "delete") { compose.openArenaOption("Room details"); tap("Delete online profile"); tap("Delete profile permanently") }
+            else tap("Next")
             until { online.state.value.pending && !online.state.value.busy && online.state.value.error != null }
             val pending = saved().pending!!
             val committed = api.read(peer.token, joined.code).snapshot
@@ -114,7 +114,10 @@ class ProcessRecoveryTest {
                 digest(WireJson.encodeToString(host.credentials)), initial.room!!.code, initial.room!!.round!!.id,
                 initial.room!!.round!!.ownTickets, pending, offlineRound)
             writeFixture("witness.json", WireJson.encodeToString(witness))
-            tap("Got it"); compose.onNodeWithText("Retry pending action").performScrollTo().assertIsDisplayed()
+            tap("Got it")
+            val retry = compose.onNodeWithText("Retry pending action")
+            if (kind == "delete") retry.performScrollTo()
+            retry.assertIsDisplayed()
             captureTestScreen("process-$kind-pending")
             writeFixture("ready.json", "{\"runId\":\"$runId\",\"kind\":\"$kind\",\"pid\":${Process.myPid()}}")
             // The external driver verifies this live PID, kills it, and launches verify in a new process.
@@ -142,7 +145,7 @@ class ProcessRecoveryTest {
                 assertEquals(1, server.round!!.called.size)
                 api.command(restored.credentials.token, witness.code, CommandRequest(UUID.randomUUID().toString(), server.revision, RoomAction.Draw))
             }
-            tap("Play online"); until { online.state.value.pending }
+            tap("With friends"); until { online.state.value.pending }
             if (kind == "draw") until { online.state.value.connection == Connection.LIVE && online.state.value.room!!.round!!.called.size == 2 }
             tap("Retry pending action")
             until { !online.state.value.pending && !online.state.value.busy }
@@ -164,11 +167,13 @@ class ProcessRecoveryTest {
                 val receipt = api.command(restored.credentials.token, witness.code, original.request)
                 assertEquals(1, receipt.snapshot.round!!.called.size)
                 assertEquals(2, api.read(restored.credentials.token, witness.code).snapshot.round!!.called.size)
-                compose.onNodeWithText("Latest number: ${current.room!!.round!!.called.last()} · 2 called").assertIsDisplayed()
+                compose.onNodeWithText("Call 2 of 90").assertIsDisplayed()
+                compose.onNodeWithTag("current-call").assertContentDescriptionEquals(
+                    context.getString(R.string.ui_current_number, current.room!!.round!!.called.last()))
             }
             compose.waitForIdle()
             captureTestScreen("process-$kind-recovered")
-            tap("‹ Home"); tap("Resume round")
+            compose.goHome(); tap("Resume round")
             assertEquals(witness.offline.id, offline.state.value.round!!.id)
             assertEquals(witness.offline.tickets, offline.state.value.round!!.tickets)
             assertEquals(witness.offline.called, offline.state.value.round!!.called)

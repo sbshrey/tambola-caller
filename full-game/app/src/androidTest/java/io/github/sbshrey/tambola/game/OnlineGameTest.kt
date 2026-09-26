@@ -56,8 +56,45 @@ class OnlineGameTest {
         until { !model.state.value.loading }
         compose.runOnIdle { model.resetLocalData() }
         until { model.state.value.name == null && !model.state.value.loading }
-        until { compose.hasTextNow("Play online") }
-        tap("Play online")
+        until { compose.hasTextNow("With friends") }
+        tap("With friends")
+    }
+
+    @Test fun readyRecoversPeerRaceButRequiresReviewOfChangedRules() = runBlocking<Unit> {
+        type("online-name", "Ready race Asha"); tap("Continue online")
+        until { model.state.value.name != null && !model.state.value.busy }
+        tap("Create private room"); until { model.state.value.room != null && !model.state.value.busy }; connected()
+        val session = saved()
+        val peerApi = HttpRoomApi(BuildConfig.ROOM_API_URL, true)
+        try {
+            val peer = peerApi.guest(GuestRequest("Ready race Bina"))
+            peerApi.join(peer.token, session.room!!.code)
+            until { model.state.value.room!!.members.size == 2 }
+            fun race(token: String, intervening: RoomAction) {
+                // Hold the main dispatcher after taking the player's agreement. The other client
+                // commits first, before the pending command or stream update can be dispatched.
+                compose.runOnUiThread {
+                    val before = model.state.value.room!!
+                    model.command(RoomAction.Ready(true))
+                    runBlocking(Dispatchers.IO) {
+                        peerApi.command(token, before.code, CommandRequest(UUID.randomUUID().toString(), before.revision, intervening))
+                    }
+                }
+                until { !model.state.value.busy }
+            }
+            race(peer.token, RoomAction.Ready(true))
+            assertNull(model.state.value.error)
+            assertTrue(model.state.value.room!!.members.all { it.ready })
+            assertNull(saved().pending)
+            compose.runOnUiThread { model.command(RoomAction.Ready(false)) }
+            until { !model.state.value.busy && model.state.value.room!!.members.first { it.playerId == session.credentials.playerId }.ready == false }
+            val changedRules = model.state.value.room!!.options.copy(intervalSeconds = 10)
+            race(session.credentials.token, RoomAction.Configure(changedRules))
+            assertEquals(R.string.error_stale_revision, model.state.value.error!!.resource)
+            assertFalse(model.state.value.room!!.members.first { it.playerId == session.credentials.playerId }.ready)
+            assertEquals(changedRules, model.state.value.room!!.options)
+            assertNull(saved().pending)
+        } finally { peerApi.close() }
     }
 
     @Test fun profileDeletionConfirmsAfterLostResponseAndKeepsOfflineGame() = runBlocking<Unit> {
@@ -67,12 +104,12 @@ class OnlineGameTest {
             try { connection.requestMethod = "POST"; connection.connectTimeout = 3_000; connection.readTimeout = 3_000; check(connection.responseCode == 200) }
             finally { connection.disconnect() }
         }
-        tap("‹ Home"); tap("Play solo"); tap("Just me"); tap("Deal the tickets")
+        compose.goHome(); tap("Custom game"); tap("Just me"); tap("Deal the tickets")
         if (compose.hasTextNow("Start new round")) tap("Start new round")
-        until { compose.hasTextNow("Call next number") }
-        tap("Call next number"); until { compose.hasTextNow("Call 1 of 90") }
+        until { compose.hasTextNow("Next") }
+        tap("Next"); until { compose.hasTextNow("Call 1 of 90") }
         val offlineBefore = ViewModelProvider(compose.activity)[GameViewModel::class.java].state.value.round!!
-        tap("‹ Home"); tap("Play online")
+        compose.goHome(); tap("With friends")
         type("online-name", "Delete fixture Asha"); tap("Continue online")
         until { compose.hasTextNow("Create private room") }
         tap("Create private room"); until { model.state.value.room != null }; connected()
@@ -89,7 +126,8 @@ class OnlineGameTest {
             until { model.state.value.room!!.members.last().ready }
             tap("I'm ready"); until { !model.state.value.busy && model.state.value.room!!.members.all { it.ready } }
             tap("Start online round"); until { model.state.value.room?.phase == RoomPhase.ACTIVE }
-            tap("Call next online number"); until { model.state.value.room?.round?.called?.size == 1 && !model.state.value.busy }
+            tap("Next"); until { model.state.value.room?.round?.called?.size == 1 && !model.state.value.busy }
+            compose.openArenaOption("Room details")
             tap("Delete online profile")
             compose.onNodeWithText("Delete your online profile?").assertExists()
             tap("Keep profile")
@@ -108,7 +146,7 @@ class OnlineGameTest {
             assertEquals(original.credentials, saved().credentials)
             assertEquals(Connection.SUSPENDED, model.state.value.connection)
             assertEquals(RoomPhase.ACTIVE, saved().room!!.phase)
-            compose.onNodeWithText("Call next online number").assertDoesNotExist()
+            compose.onNodeWithText("Next").assertDoesNotExist()
             tap("Got it")
             compose.onNodeWithText("Profile deletion is waiting for confirmation").performScrollTo().assertIsDisplayed()
             captureTestScreen("delete-awaiting-confirmation")
@@ -129,7 +167,7 @@ class OnlineGameTest {
             assertEquals(2, peerApi.command(peer.token, code, CommandRequest(UUID.randomUUID().toString(), remaining.revision, RoomAction.Draw)).snapshot.round!!.called.size)
             val receipt = peerApi.deleteProfile(original.credentials.token, pending.request)
             assertEquals(pending.request.id, receipt.id)
-            tap("‹ Home"); tap("Resume round")
+            compose.goHome(); tap("Resume round")
             compose.onNodeWithText("Call 1 of 90").assertExists()
             val offlineAfter = ViewModelProvider(compose.activity)[GameViewModel::class.java].state.value.round!!
             assertEquals(offlineBefore.id, offlineAfter.id); assertEquals(offlineBefore.tickets, offlineAfter.tickets)
@@ -145,6 +183,9 @@ class OnlineGameTest {
         assertNull("Registration error", model.state.value.error)
         tap("Create private room"); until { model.state.value.room != null }; connected()
         assertEquals(7, model.state.value.avatar)
+        assertEquals(3, model.state.value.room!!.options.game.ticketsPerPlayer)
+        assertEquals(5, model.state.value.room!!.options.intervalSeconds)
+        assertEquals(6, model.state.value.room!!.options.game.prizes.size)
         tap("Your profile · Moon\nChoose avatar"); pickAvatar("Mango")
         until { !model.state.value.busy && model.state.value.avatar == 1 }
         assertEquals(1, saved().avatar)
@@ -167,13 +208,14 @@ class OnlineGameTest {
             val original = saved()
             assertEquals(listOf(1, 3), original.room!!.round!!.players.map { it.avatar })
             assertEquals(2, original.room!!.round!!.ownTickets.size)
+            assertEquals(30, original.room!!.round!!.ownTickets.flatMap { it.numbers }.distinct().size)
             assertTrue(original.room!!.round!!.ownTickets.all { it.playerId == original.credentials.playerId })
             assertNull(original.room!!.round!!.revealedOrder)
             val encrypted = File(context.noBackupFilesDir, "private-rooms.enc").readBytes().toString(Charsets.ISO_8859_1)
             assertFalse(encrypted.contains(original.credentials.token)); assertFalse(encrypted.contains("Online Asha"))
             until { !model.state.value.busy }
-            repeat(5) { index -> tap("Call next online number"); until { model.state.value.room?.round?.called?.size == index + 1 && !model.state.value.busy } }
-            tap("Pause online calling"); until { model.state.value.room?.round?.status == RoundStatus.PAUSED && !model.state.value.busy }
+            repeat(5) { index -> tap("Next"); until { model.state.value.room?.round?.called?.size == index + 1 && !model.state.value.busy } }
+            tap("Pause"); until { model.state.value.room?.round?.status == RoundStatus.PAUSED && !model.state.value.busy }
             compose.activityRule.scenario.recreate(); connected()
             assertNull(model.state.value.winMoment)
             assertEquals(original.credentials.playerId, saved().credentials.playerId)
@@ -181,26 +223,26 @@ class OnlineGameTest {
             assertEquals(original.room!!.round!!.ownTickets, saved().room!!.round!!.ownTickets)
             assertEquals(original.room!!.round!!.players, saved().room!!.round!!.players)
             assertEquals(5, saved().room!!.round!!.called.size)
-            compose.onNodeWithText("Mark ticket").performScrollTo(); compose.waitForIdle(); captureTestScreen("online-paused-table")
-            tap("Resume online calling"); until { model.state.value.room?.round?.status == RoundStatus.PLAYING && !model.state.value.busy }
+            compose.onNodeWithTag("owned-hand").assertIsDisplayed(); compose.waitForIdle(); captureTestScreen("online-paused-table")
+            tap("Resume"); until { model.state.value.room?.round?.status == RoundStatus.PLAYING && !model.state.value.busy }
             // Simulates leaving the screen. Reconnect must restore the same round and calls.
-            tap("‹ Home"); until { model.state.value.connection == Connection.SUSPENDED }
-            tap("Play online"); connected()
+            compose.goHome(); until { model.state.value.connection == Connection.SUSPENDED }
+            tap("With friends"); connected()
             assertNull(model.state.value.winMoment)
             var inspectedWin = false
             repeat(85) { index ->
-                tap("Call next online number"); until { model.state.value.room?.round?.called?.size == index + 6 && !model.state.value.busy }
+                tap("Next"); until { model.state.value.room?.round?.called?.size == index + 6 && !model.state.value.busy }
                 val current = model.state.value.room!!.round!!
                 if (current.awards.any { it.drawIndex == index + 6 } || current.customAwards.any { it.drawIndex == index + 6 }) {
                     until { model.state.value.winMoment?.drawIndex == index + 6 }
                     assertTrue(model.state.value.winMoment!!.players.all { winner -> current.players.any { it == winner } })
                     if (!inspectedWin && model.state.value.room!!.phase == RoomPhase.ACTIVE) {
-                        compose.onNodeWithTag("verified-win").performScrollTo().assertIsDisplayed()
-                        compose.onNodeWithText("Call next online number").assertIsDisplayed()
+                        compose.onNodeWithTag("win-slot").assertIsDisplayed()
+                        compose.onNodeWithText("Next").assertIsDisplayed()
                         captureTestScreen("online-verified-win")
-                        tap("Dismiss celebration"); assertNull(model.state.value.winMoment)
-                        tap("‹ Home"); until { model.state.value.connection == Connection.SUSPENDED }
-                        tap("Play online"); connected(); assertNull(model.state.value.winMoment)
+                        compose.runOnIdle { model.dismissWin() }; assertNull(model.state.value.winMoment)
+                        compose.goHome(); until { model.state.value.connection == Connection.SUSPENDED }
+                        tap("With friends"); connected(); assertNull(model.state.value.winMoment)
                         inspectedWin = true
                     }
                 }
@@ -219,9 +261,10 @@ class OnlineGameTest {
             assertEquals(1, final.history.size)
             assertTrue(final.badges.earned(Badge.FIRST_ROUND))
             assertEquals(hostGame.awards.hasHouseFor(setOf(final.credentials.playerId)), final.badges.earned(Badge.FIRST_HOUSE))
-            tap("Check claims · ${hostGame.awards.size + hostGame.customAwards.size} verified")
+            compose.openArenaOption("Prizes")
             tap("Inspect Online five pair"); compose.onNodeWithText("Matching owned tickets: 2 / 2 needed").assertExists()
             captureTestScreen("online-custom-winner"); tap("Back to prizes"); tap("Back to game")
+            tap("See round results")
             tap("Share online results"); compose.onNodeWithTag("share-preview").assertTextContains("Player 1", substring = true)
             assertFalse(compose.onNodeWithTag("share-preview").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString().contains("Online Asha"))
             captureTestScreen("online-private-share"); tap("Keep private")
@@ -229,7 +272,7 @@ class OnlineGameTest {
             assertEquals(1, model.state.value.room!!.options.game.customPrizes.size)
             assertTrue(model.state.value.room!!.members.none { it.ready })
             assertNull(model.state.value.room!!.round)
-            tap("‹ Home"); tap("Your badges"); tap("Online profile")
+            compose.goHome(); tap("Your badges"); tap("Online profile")
             compose.onNodeWithTag("badge-FIRST_ROUND").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned"))
         } finally { peerJob.cancelAndJoin(); peerApi.close() }
     }
@@ -238,7 +281,7 @@ class OnlineGameTest {
         val hostApi = HttpRoomApi(BuildConfig.ROOM_API_URL, true)
         val host = hostApi.guest(GuestRequest("Guest test host"))
         var room = hostApi.create(host.token, CreateRoomRequest(UUID.randomUUID().toString(),
-            RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 2, playAllNumbers = true), automaticCalling = false))).snapshot
+            RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6, playAllNumbers = true), automaticCalling = false))).snapshot
         suspend fun command(action: RoomAction): RoomView {
             val current = hostApi.read(host.token, room.code).snapshot
             return hostApi.command(host.token, room.code, CommandRequest(UUID.randomUUID().toString(), current.revision, action)).snapshot
@@ -251,25 +294,31 @@ class OnlineGameTest {
             tap("I'm ready"); until { !model.state.value.busy && model.state.value.room!!.members.last().ready }
             command(RoomAction.Ready(true)); room = command(RoomAction.Start)
             until { model.state.value.room?.phase == RoomPhase.ACTIVE }
-            compose.onNodeWithText("Call next online number").assertDoesNotExist()
+            compose.onNodeWithText("Next").assertDoesNotExist()
+            compose.onNodeWithTag("hand-ticket-6").assertIsDisplayed()
+            compose.onNodeWithTag("hand-ticket-7").assertDoesNotExist()
+            compose.onNodeWithText("Guest test host").assertDoesNotExist()
+            assertEquals((1..90).toList(), saved().room!!.round!!.ownTickets.flatMap { it.numbers }.sorted())
             val ticket = saved().room!!.round!!.ownTickets.first()
             do { room = command(RoomAction.Draw) } while (room.round!!.called.none { it in ticket.numbers })
             val number = room.round!!.called.first { it in ticket.numbers }
             until { number in model.state.value.room!!.round!!.called }
-            tap("Mark ticket"); compose.onNodeWithContentDescription("Number $number").performScrollTo().performClick()
+            compose.tapTag("dab-called")
             until { number in model.state.value.marks[ticket.id].orEmpty() }
-            tap("Done"); compose.waitForIdle(); captureTestScreen("online-guest-mark")
-            tap("‹ Home"); until { model.state.value.connection == Connection.SUSPENDED }
+            val expectedMarks = saved().marks
+            compose.waitForIdle(); captureTestScreen("online-guest-mark")
+            compose.goHome(); until { model.state.value.connection == Connection.SUSPENDED }
             repeat(5) { room = command(RoomAction.Draw) }
-            tap("Play online"); connected()
+            tap("With friends"); connected()
             until { model.state.value.room!!.round!!.called == room.round!!.called }
             assertNull(model.state.value.winMoment)
-            assertEquals(setOf(number), saved().marks[ticket.id])
+            assertEquals(expectedMarks, saved().marks)
             assertEquals(ticket, saved().room!!.round!!.ownTickets.first())
             assertTrue(saved().room!!.round!!.ownTickets.none { it.playerId == host.playerId })
             room = command(RoomAction.End)
             until { model.state.value.room?.phase == RoomPhase.FINISHED }
             compose.onNodeWithText("Set up rematch").assertDoesNotExist()
+            tap("See round results")
             tap("Leave room"); compose.onNode(hasText("Leave room") and hasAnyAncestor(isDialog())).performClick()
             until { model.state.value.room == null && !model.state.value.busy }
             assertEquals(1, saved().history.size)

@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.RoomInviteTest:...
+
+Time: 18.811
+
+OK (3 tests)

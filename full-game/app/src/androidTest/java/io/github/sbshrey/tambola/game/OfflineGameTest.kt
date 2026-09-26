@@ -18,7 +18,7 @@ class OfflineGameTest {
     private fun exists(text: String) = compose.hasTextNow(text)
     private fun tap(text: String) = compose.tapText(text)
     private fun awaitHome(phase: String) {
-        try { compose.waitUntil(10_000) { exists("Play solo") } }
+        try { compose.waitUntil(10_000) { exists("Custom game") } }
         catch (error: Exception) {
             runCatching { captureTestScreen("offline-reset-failure") }
             val state = ViewModelProvider(compose.activity)[GameViewModel::class.java].state.value
@@ -28,6 +28,7 @@ class OfflineGameTest {
     }
 
     @Before fun reset() {
+        compose.useEnglish()
         runBlocking { PreferenceStore(InstrumentationRegistry.getInstrumentation().targetContext).update(Preferences(voice = false, reducedMotion = true)) }
         awaitHome("before deletion")
         tap("Settings")
@@ -37,13 +38,13 @@ class OfflineGameTest {
     }
 
     @Test fun fullOfflineRoundCanBePlayedSavedAndSharedFromResults() {
-        tap("Play solo")
+        tap("Custom game")
         tap("Just me")
         tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
+        compose.waitUntil(10_000) { exists("Next") }
         var count = 0
         while (!exists("See round results") && count < 90) {
-            tap("Call next number")
+            tap("Next")
             Thread.sleep(550) // The production accidental-double-tap guard is intentionally active.
             compose.waitForIdle()
             count++
@@ -56,46 +57,43 @@ class OfflineGameTest {
         compose.waitUntil(10_000) { runCatching { compose.onNodeWithTag("badge-FIRST_ROUND").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned")); true }.getOrDefault(false) }
         compose.onNodeWithTag("badge-FIRST_ROUND").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned"))
         compose.onNodeWithTag("badge-FIRST_HOUSE").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Earned"))
-        tap("‹ Home")
+        compose.goHome()
         tap("Your rounds")
         tap("View results")
         compose.onNodeWithText("A round of applause!").assertExists()
     }
 
     @Test fun recreationPreservesCallsAndLeavesRoundPaused() {
-        tap("Play solo"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        tap("Call next number")
+        tap("Custom game"); tap("Deal the tickets")
+        compose.waitUntil(10_000) { exists("Next") }
+        tap("Next")
         compose.waitUntil(10_000) { exists("Call 1 of 90") }
         compose.activityRule.scenario.recreate()
-        compose.waitUntil(10_000) { exists("Resume calling") }
+        compose.waitUntil(10_000) { exists("Resume") }
         compose.onNodeWithText("Call 1 of 90").assertExists()
-        compose.onNodeWithText("Resume calling").assertExists()
-        tap("Resume calling")
-        compose.waitUntil(10_000) { exists("Call next number") }
+        compose.onNodeWithText("Resume").assertExists()
+        tap("Resume")
+        compose.waitUntil(10_000) { exists("Next") }
         Thread.sleep(550)
-        tap("Call next number")
+        tap("Next")
         compose.waitUntil(10_000) { exists("Call 2 of 90") }
     }
 
     @Test fun familyTicketsAreSeparateAndRulesCanBeInspected() {
-        tap("Play on one device"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        compose.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.HorizontalScrollAxisRange) and hasAnyDescendant(hasText("Bina · ticket 1"))).performScrollTo()
-        tap("Bina · ticket 1")
-        compose.onNodeWithText("Bina · ticket 1").assertIsSelected()
-        tap("Mark ticket")
-        val target = InstrumentationRegistry.getInstrumentation().targetContext
-        val screenshot = java.io.File(target.filesDir, "family-${target.resources.configuration.fontScale}.png")
-        InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()?.let { bitmap ->
-            screenshot.outputStream().use { bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it) }
-        }
-        compose.onNodeWithText("Bina's ticket").assertExists()
-        tap("Done")
-        tap("Check claims · 0 verified")
-        compose.onNodeWithText("Fair wins, happy faces").assertExists()
-        tap("Back to game")
-        tap("End round")
+        tap("Pass & play"); tap("Deal the tickets")
+        compose.waitUntil(10_000) { exists("Next") }
+        compose.openArenaOption("Pass the phone")
+        compose.onNodeWithTag("owned-hand").assertDoesNotExist()
+        tap("Show Bina’s tickets")
+        compose.onNodeWithText("Bina").assertIsDisplayed()
+        compose.onNodeWithText("Asha").assertDoesNotExist()
+        compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
+        captureTestScreen("family-current-hand")
+        compose.openArenaOption("Prizes")
+        tap("Inspect Full house")
+        compose.onAllNodesWithText("Bina · ticket 1").onFirst().assertExists()
+        tap("Back to prizes"); tap("Back to game")
+        compose.openArenaOption("End round")
         compose.onAllNodesWithText("End round").onLast().performClick()
         compose.waitUntil(10_000) { exists("See round results") }
         tap("See round results")
@@ -103,18 +101,18 @@ class OfflineGameTest {
     }
 
     @Test fun viewingPastResultsKeepsCurrentRoundResumable() {
-        tap("Play solo"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        tap("End round")
+        tap("Custom game"); tap("Deal the tickets")
+        compose.waitUntil(10_000) { exists("Next") }
+        compose.openArenaOption("End round")
         compose.onAllNodesWithText("End round").onLast().performClick()
         compose.waitUntil(10_000) { exists("See round results") }
-        tap("‹ Home"); tap("Play solo"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        tap("Call next number")
+        compose.goHome(); tap("Custom game"); tap("Deal the tickets")
+        compose.waitUntil(10_000) { exists("Next") }
+        tap("Next")
         compose.waitUntil(10_000) { exists("Call 1 of 90") }
-        tap("‹ Home"); tap("Your rounds"); tap("View results")
+        compose.goHome(); tap("Your rounds"); tap("View results")
         compose.onNodeWithText("Until next time.").assertExists()
-        tap("‹ Home"); tap("Resume round")
+        compose.goHome(); tap("Resume round")
         compose.onNodeWithText("Call 1 of 90").assertExists()
     }
 }

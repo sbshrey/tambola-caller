@@ -9,7 +9,8 @@ import java.security.MessageDigest
 @Serializable sealed class PendingOperation {
     @Serializable @SerialName("create") data class Create(val request: CreateRoomRequest) : PendingOperation()
     @Serializable @SerialName("join") data class Join(val code: String) : PendingOperation()
-    @Serializable @SerialName("command") data class Command(val code: String, val request: CommandRequest) : PendingOperation()
+    @Serializable @SerialName("command") data class Command(val code: String, val request: CommandRequest,
+        val readyAgreement: ReadyAgreement? = null) : PendingOperation()
     @Serializable @SerialName("logout") data object Logout : PendingOperation()
     @Serializable @SerialName("delete_profile") data class DeleteProfile(val request: DeleteProfileRequest) : PendingOperation()
 }

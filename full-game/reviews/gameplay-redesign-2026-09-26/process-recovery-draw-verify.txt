@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.ProcessRecoveryTest:.
+
+Time: 5.039
+
+OK (1 test)

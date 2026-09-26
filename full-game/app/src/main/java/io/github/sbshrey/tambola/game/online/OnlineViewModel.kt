@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import io.github.sbshrey.tambola.client.*
 import io.github.sbshrey.tambola.domain.RoundStatus
 import io.github.sbshrey.tambola.domain.BadgeProgress
+import io.github.sbshrey.tambola.domain.RoundSettings
+import io.github.sbshrey.tambola.domain.GameMode
+import io.github.sbshrey.tambola.domain.Prize
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
@@ -114,7 +117,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             finally { mutable.update { it.copy(busy = false) } }
         }
     }
-    fun create(options: RoomOptions = RoomOptions()) = begin(PendingOperation.Create(CreateRoomRequest(UUID.randomUUID().toString(), options)))
+    fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = true,
+        prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 5)) =
+        begin(PendingOperation.Create(CreateRoomRequest(UUID.randomUUID().toString(), options)))
     fun join(rawCode: String) {
         val code = rawCode.trim().uppercase()
         if (!Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
@@ -123,7 +128,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun command(action: RoomAction) {
         val room = saved?.room ?: return
         if (mutable.value.connection != Connection.LIVE) { mutable.update { it.copy(error = UiMessage(R.string.error_reconnect)) }; return }
-        begin(PendingOperation.Command(room.code, CommandRequest(UUID.randomUUID().toString(), room.revision, action)))
+        begin(PendingOperation.Command(room.code, CommandRequest(UUID.randomUUID().toString(), room.revision, action),
+            readyAgreement = if (action is RoomAction.Ready) room.readyAgreement() else null))
     }
     fun logout() = begin(PendingOperation.Logout)
     fun deleteProfile() = begin(PendingOperation.DeleteProfile(DeleteProfileRequest(UUID.randomUUID().toString())))
@@ -152,7 +158,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             finally { mutable.update { it.copy(busy = false) }; connect() }
         }
     }
-    private suspend fun performPending() {
+    private suspend fun performPending(readyRetries: Int = 3) {
         val current = saved ?: return
         val pending = current.pending ?: return
         val api = api ?: return
@@ -189,7 +195,16 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             if (pending !is PendingOperation.DeleteProfile && error.status in 400..499 && error.status !in listOf(401, 408, 429)) mutex.withLock { saved?.let { persist(it.copy(pending = null)) } }
             if (error.status == 409 && current.room != null) {
                 val update = api.read(current.credentials.token, current.room!!.code)
-                mutex.withLock { saved?.let { persist(it.accept(update, live = false).saved) } }
+                val retryReady = mutex.withLock {
+                    val latest = saved ?: return@withLock false
+                    val refreshed = latest.accept(update, live = false).saved
+                    val replacement = if (error.code == "stale_revision" && readyRetries > 0 && pending is PendingOperation.Command)
+                        refreshed.room?.let { pending.rebaseReady(it, UUID.randomUUID().toString()) } else null
+                    // Persist a new id only after the previous command was definitively rejected.
+                    persist(refreshed.copy(pending = replacement ?: refreshed.pending))
+                    replacement != null
+                }
+                if (retryReady) { performPending(readyRetries - 1); return }
             }
             throw error
         } catch (error: LocalStorageFailure) {
@@ -255,6 +270,23 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             try { mutex.withLock { saved?.let {
                 val next = it.mark(ticketId, number)
                 if (next != it) { persist(next); if (active) audio.effect(SoundCue.MARK) }
+            } } }
+            catch (error: CancellationException) { throw error }
+            catch (error: Exception) { showFailure(error) }
+        }
+    }
+    fun dabCalled() {
+        if (saved?.pending is PendingOperation.DeleteProfile) return
+        viewModelScope.launch {
+            try { mutex.withLock { saved?.let { current ->
+                val room = current.room ?: return@let
+                val game = room.round ?: return@let
+                if (game.status !in setOf(RoundStatus.PLAYING, RoundStatus.PAUSED) || room.options.game.assistedMarking) return@let
+                val next = game.ownTickets.fold(current) { value, ticket ->
+                    ticket.numbers.filter { it in game.called && it !in value.marks[ticket.id].orEmpty() }
+                        .fold(value) { marked, number -> marked.mark(ticket.id, number) }
+                }
+                if (next != current) { persist(next); if (active) audio.effect(SoundCue.MARK) }
             } } }
             catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }

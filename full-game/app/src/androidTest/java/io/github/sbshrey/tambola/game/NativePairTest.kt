@@ -53,11 +53,12 @@ class NativePairTest {
         check(BuildConfig.DEBUG && BuildConfig.ROOM_API_URL == "http://127.0.0.1:8080")
         check(isAndroidEmulator())
         check(UUID.fromString(runId).toString() == runId && role in setOf("host", "guest"))
+        compose.useEnglish()
         PreferenceStore(context).update(Preferences(voice = false, reducedMotion = true))
         until { !model.state.value.loading }
         compose.runOnIdle { model.resetLocalData() }
         until { model.state.value.name == null && !model.state.value.loading }
-        until { compose.hasTextNow("Play online") }; tap("Play online")
+        until { compose.hasTextNow("With friends") }; tap("With friends")
         type("online-name", if (role == "host") "Native pair Asha" else "Native pair Bina")
         tap("Continue online"); until { model.state.value.name != null && !model.state.value.busy }
         if (role == "host") {
@@ -80,11 +81,11 @@ class NativePairTest {
         until { model.state.value.room?.phase == RoomPhase.ACTIVE && !model.state.value.busy }
         val first = model.state.value.room!!
         val firstRound = first.round!!
-        compose.onNodeWithText("Mark ticket").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("owned-hand").assertIsDisplayed()
         captureTestScreen("native-pair-$role-playing")
-        if (role == "guest") compose.onNodeWithText("Call next online number").assertDoesNotExist()
+        if (role == "guest") compose.onNodeWithText("Next").assertDoesNotExist()
         if (role == "host") repeat(90) { index ->
-            tap("Call next online number")
+            tap("Next")
             until { !model.state.value.busy && model.state.value.room!!.round!!.called.size == index + 1 }
         }
         until(300_000) { model.state.value.room?.phase == RoomPhase.FINISHED && !model.state.value.busy }
@@ -93,6 +94,7 @@ class NativePairTest {
         assertEquals((1..90).toSet(), finished.called.toSet())
         assertEquals(firstRound.ownTickets, finished.ownTickets)
         assertEquals(1, model.state.value.history.size)
+        tap("See round results")
         compose.onNodeWithText("90 calls ·", substring = true).performScrollTo().assertIsDisplayed()
         captureTestScreen("native-pair-$role-finished")
         publish("finished")
@@ -120,6 +122,7 @@ class NativePairTest {
         val endGate = File(context.filesDir, "native-pair-$runId-end")
         until { endGate.exists() }
         if (role == "host") {
+            compose.openArenaOption("Room details")
             tap("End online round")
             compose.onNode(hasText("End online round") and hasAnyAncestor(isDialog())).performClick()
         }

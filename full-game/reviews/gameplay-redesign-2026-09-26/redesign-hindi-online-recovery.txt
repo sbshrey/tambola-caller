@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.LocalizationTest:.
+
+Time: 11.012
+
+OK (1 test)

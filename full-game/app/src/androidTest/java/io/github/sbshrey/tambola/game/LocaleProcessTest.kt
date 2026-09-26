@@ -65,7 +65,7 @@ class LocaleProcessTest {
         until { compose.activity.resources.configuration.locales[0].language == "en" }
         compose.runOnIdle {
             model.setup(GameMode.PRACTICE)
-            model.updateSetup(model.state.value.setupDraft.copy(names = "दीपा", bots = 0, playAllNumbers = true, avatars = listOf(7)))
+            model.updateSetup(model.state.value.setupDraft.copy(names = "दीपा", bots = 0, assisted = false, playAllNumbers = true, avatars = listOf(7)))
             model.create()
         }
         until { !model.state.value.saving && model.state.value.screen == Screen.GAME }
@@ -73,14 +73,13 @@ class LocaleProcessTest {
         do {
             val count = model.state.value.round!!.called.size
             if (count > 0) android.os.SystemClock.sleep(550)
-            tap(R.string.ui_call_next_number)
+            compose.tapTag("local-next")
             until { model.state.value.round!!.called.size == count + 1 }
         } while (model.state.value.round!!.called.none { it in ticket.numbers })
         val number = model.state.value.round!!.called.first { it in ticket.numbers }
-        tap(R.string.ui_mark_ticket)
-        compose.onNodeWithContentDescription(words()(R.string.ui_number, number)).performScrollTo().performClick()
+        compose.tapTag("dab-called")
         until { number in model.state.value.round!!.marks[ticket.id].orEmpty() }
-        tap(R.string.ui_done); tap(R.string.ui_settings)
+        compose.openArenaOption(words()(R.string.ui_settings))
         compose.tapTag("interface-language-hi")
         until { compose.activity.resources.configuration.locales[0].language == "hi" && model.state.value.round!!.status == RoundStatus.PAUSED }
         compose.onNodeWithTag("interface-language-hi").performScrollTo().assertIsSelected()

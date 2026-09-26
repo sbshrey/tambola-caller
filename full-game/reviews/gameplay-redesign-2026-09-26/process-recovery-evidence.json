@@ -1,0 +1,30 @@
+{
+  "candidateSha256": "bb73f3632176bfbcd6bda8b1585b834eb5741655f7b1274def7b9ccccb19447b",
+  "serial": "emulator-5582",
+  "cases": [
+    {
+      "kind": "draw",
+      "runId": "c5f038b0-d48f-4f27-aa6f-16a1f0394df1",
+      "oldPid": 17798,
+      "newPid": 18059,
+      "originalProcessTerminated": true,
+      "committedRepliesDropped": 3,
+      "verifyPassed": true
+    },
+    {
+      "kind": "delete",
+      "runId": "a54cccc0-4e4f-4be0-979e-6dcd3a897391",
+      "oldPid": 18169,
+      "newPid": 18459,
+      "originalProcessTerminated": true,
+      "committedRepliesDropped": 3,
+      "verifyPassed": true
+    }
+  ],
+  "completed": true,
+  "restoredAnimationSettings": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  }
+}

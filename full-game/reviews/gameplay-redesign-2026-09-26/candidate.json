@@ -1,0 +1,20 @@
+{
+  "version": "0.13.0-alpha13",
+  "apkSha256": "bb73f3632176bfbcd6bda8b1585b834eb5741655f7b1274def7b9ccccb19447b",
+  "instrumentationSha256": "ad2ace7ffd9a143edcbf3ee3a199207b052163208db982a5a141f189a75ec938",
+  "screenshots": {
+    "api36-hindi-large-text-six.png": "ba9c98cbcd8d519e942f09a43597dd02adbda085a5eec4a2f319a986d4042392",
+    "family-handoff.png": "d6873e7aa2b2e167f7f451f1fb43d172dd3486347d4b2c1b6cd07adbc0f1c0d7",
+    "hindi-light-six.png": "2d5d5410672a38ca424441f293614b5031d8c60aa83407fd5fb84719b7deb16b",
+    "home.png": "48a4084a1c5ff19d39d5b9588553d71b70754a7b1cfe7cd5210fd759a54e946c",
+    "landscape-six.png": "8ad60bc633e6569f0c543ca962b76513a41f331e71a49f8ac6855af1961e5fdc",
+    "online-six-tickets.png": "c364b13b17c93e41766c8cb8ddda9b4c942850a76169e7b96b281a2bca203e87",
+    "six-tickets.png": "683a2f52d437788ead1dc274040405a1efc502f3f188f4c6c0e50ad1da52b4ec",
+    "small-large-text-six.png": "0c18a2d600ba0bbd0b4a72f71a0e61643af5fe98d65645eb9620e560c9e8d0d3",
+    "three-tickets.png": "da40cb21cc5b71372bd2446d23aef1a3bd5ab3380d4fb03a10e5254a03d08d57"
+  },
+  "note": "Screenshots and 60 layout combinations use visualCandidateSha256. The packaged candidate adds only guarded Ready-race recovery in the client/ViewModel, with unchanged UI. Updated online tests, two-native-device and cold-process records identify their APK separately. See ALPHA13_VALIDATION.md for actual pass/fail scope.",
+  "visualCandidateSha256": "68d85e46d8e15173790eeb33f92a520168cc6b916117a5fb52650e3a1ae3d711",
+  "visualInstrumentationSha256": "aa925ed1f7f4c42edc7b3bb97766da3377293db2312cd3076487bf9e05ede090",
+  "readyInstrumentationSha256": "24ddb1dbddc93400c107efd1678cbfee788f124ea61f0011e17c6bbe2c3de888"
+}

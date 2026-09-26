@@ -19,6 +19,7 @@ fun Setup(state: GameUiState, model: GameViewModel) {
     val draft = state.setupDraft
     val family = draft.mode == GameMode.FAMILY
     var confirm by remember { mutableStateOf(false) }
+    var advanced by remember { mutableStateOf(false) }
     Eyebrow(if (family) words(R.string.ui_a_table_for_everyone) else words(R.string.ui_your_own_little_game_night))
     Text(if (family) words(R.string.ui_who_s_playing) else words(R.string.ui_let_s_make_it_yours), style = MaterialTheme.typography.headlineMedium)
     GameCard {
@@ -40,18 +41,22 @@ fun Setup(state: GameUiState, model: GameViewModel) {
         }
         SettingSwitch(words(R.string.ui_help_with_marking), words(R.string.ui_automatically_dab_called_numbers), draft.assisted) { model.updateSetup(draft.copy(assisted = it)) }
     }
-    if (draft.playerNames.isNotEmpty()) GameCard {
+    PrimaryAction(if (state.saving) words(R.string.ui_dealing_your_tickets) else words(R.string.ui_deal_the_tickets), enabled = draft.errors.isEmpty() && !state.saving) {
+        if (state.round?.finished == false) confirm = true else model.create()
+    }
+    TextButton(onClick = { advanced = !advanced }, modifier = Modifier.testTag("setup-options")) { Text(words(R.string.play_customize)) }
+    if (advanced && draft.playerNames.isNotEmpty()) GameCard {
         Text(words(R.string.ui_a_face_for_every_place), style = MaterialTheme.typography.titleLarge)
         Text(words(R.string.ui_choose_each_player_s_avatar_before_dealing_computer), color = Muted)
         draft.playerNames.take(if (family) 8 else 1).forEachIndexed { index, name ->
             AvatarChoice(name, draft.avatar(index)) { model.updateSetup(draft.withAvatar(index, it)) }
         }
     }
-    RoundRules(draft, model::updateSetup, model::editRule, model::removeRule)
-    if (draft.errors.isNotEmpty()) GameCard { draft.errors.forEach { Text(words.message(it), color = Coral) } }
-    PrimaryAction(if (state.saving) words(R.string.ui_dealing_your_tickets) else words(R.string.ui_deal_the_tickets), enabled = draft.errors.isEmpty() && !state.saving) {
-        if (state.round?.finished == false) confirm = true else model.create()
+    if (advanced) RoundRules(draft, model::updateSetup, model::editRule, model::removeRule)
+    else runCatching { draft.settings() }.getOrNull()?.let { settings ->
+        Text(settings.prizes.joinToString(" · ") { words.prizeTitle(it) }, color = Muted, style = MaterialTheme.typography.bodySmall)
     }
+    if (draft.errors.isNotEmpty()) GameCard { draft.errors.forEach { Text(words.message(it), color = Coral) } }
     if (confirm) AlertDialog(onDismissRequest = { confirm = false }, title = { Text(words(R.string.ui_start_a_fresh_round)) },
         text = { Text(words(R.string.ui_your_current_round_will_be_saved_as_cancelled)) },
         confirmButton = { TextButton(onClick = { confirm = false; model.create() }) { Text(words(R.string.ui_start_new_round)) } },

@@ -90,7 +90,7 @@
     <string name="ui_try_calling_a_number">"एक नंबर पुकारकर देखें"</string>
     <string name="ui_hear_7_again">"7 फिर सुनें"</string>
     <string name="ui_make_your_first_sample_call">"अपना पहला नमूना नंबर पुकारें।"</string>
-    <string name="ui_seven_is_on_your_top_row_open_mark">"सात आपकी ऊपरी पंक्ति में है। टिकट पर निशान लगाएँ खोलें, 7 दबाएँ, फिर हो गया दबाएँ।"</string>
+    <string name="ui_seven_is_on_your_top_row_open_mark">"सात आपके टिकट की ऊपर वाली पंक्ति में है। निशान वाला बटन दबाकर इसे चुनें।"</string>
     <string name="ui_nice_dab_green_means_marked_only_called_numbers">"सही निशान! हरे रंग का मतलब निशान लगा है। सिर्फ़ पुकारे गए नंबरों पर निशान लग सकते हैं; निशान हटाने के लिए फिर दबाएँ।"</string>
     <string name="ui_prefer_a_helping_hand_choose_assisted_marking_before">"मदद चाहिए? असली दौर शुरू होने से पहले अपने आप निशान लगाने का विकल्प चुनें।"</string>
     <string name="ui_let_s_finish_the_sample_top_line_a">"अब नमूने की टॉप लाइन पूरी करें। पंक्ति के सभी पाँच नंबर पुकारे जाने पर लाइन जीतती है।"</string>
@@ -379,8 +379,8 @@
     <string name="ui_try_the_interactive_tutorial">"खेलकर सीखने का पाठ आज़माएँ"</string>
     <string name="ui_1_choose_players_tickets_and_prizes_everyone_can">"1. खिलाड़ी, टिकट और इनाम चुनें। खेलने से पहले सभी नियम देख सकते हैं। अपने पैटर्न नमूना टिकटों पर आज़माएँ।"</string>
     <string name="ui_2_call_numbers_yourself_or_turn_on_automatic">"2. खुद नंबर पुकारें या अपने आप पुकारना चालू करें। हर नंबर सिर्फ़ एक बार आता है।"</string>
-    <string name="ui_3_tap_mark_ticket_and_dab_the_called">"3. टिकट पर निशान लगाएँ दबाकर पुकारे गए नंबर चुनें, या दौर से पहले अपने आप निशान लगाना चुनें।"</string>
-    <string name="ui_4_check_claims_to_inspect_the_required_numbers">"4. जीत की जाँच में ज़रूरी नंबर और पक्के विजेता देखें। एक ही पुकार पर जीतने वाले सभी खिलाड़ियों को पूरे अंक मिलते हैं।"</string>
+    <string name="ui_3_tap_mark_ticket_and_dab_the_called">"3. आपके सभी टिकट एक ही स्क्रीन पर रहते हैं। अपने आप निशान लगते हैं; मैन्युअल मोड में पुकारे गए नंबरों पर निशान लगाने का बटन दबाएँ।"</string>
+    <string name="ui_4_check_claims_to_inspect_the_required_numbers">"4. गेम मेनू में इनाम खोलकर नियम और पक्के विजेता देखें। एक ही पुकार पर जीतने वाले सभी खिलाड़ियों को पूरे अंक मिलते हैं।"</string>
     <string name="ui_5_finish_at_the_chosen_house_or_play">"5. चुने हुए हाउस पर दौर खत्म करें, या सभी 90 पुकारें खेलें। दोबारा खेलने पर खिलाड़ी और नियम वही रहते हैं; हर खेल में नए टिकट मिलते हैं।"</string>
     <string name="ui_your_games_and_privacy">"आपके खेल और गोपनीयता"</string>
     <string name="ui_solo_and_family_rounds_stay_on_this_device">"ऑफ़लाइन दौर इसी डिवाइस पर रहते हैं। निजी रूम का ऑनलाइन डेटा रूम सेवा पर सहेजा जाता है; सदस्य नाम और जीत देखते हैं, और टिकट के नंबर केवल अपने देखते हैं। डेटा सहेजने, मिटाने और बैकअप से बहाली के बारे में पढ़ें।"</string>

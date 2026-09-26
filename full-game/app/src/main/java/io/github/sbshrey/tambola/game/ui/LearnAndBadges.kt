@@ -67,7 +67,7 @@ fun TutorialScreen(state: GameUiState, model: GameViewModel, scrollToTop: suspen
         }
         1 -> {
             Text(words(R.string.ui_a_ticket_has_15_numbers_five_in_each), color = Muted)
-            TicketCard(lessonTicket, table, false) { _, _ -> }
+            CompactTicket(lessonTicket, table, Modifier.fillMaxWidth().height(180.dp), prefs.reducedMotion)
             Text(words(R.string.ui_this_sample_ticket_is_only_for_learning_every), color = Saffron)
         }
         2 -> {
@@ -75,13 +75,17 @@ fun TutorialScreen(state: GameUiState, model: GameViewModel, scrollToTop: suspen
             if (!called) PrimaryAction(words(R.string.ui_try_calling_a_number)) { called = true; model.tutorialCall() }
             else TextButton(onClick = model::tutorialCall, enabled = prefs.voice) { Text(words(R.string.ui_hear_7_again)) }
             Text(if (!called) words(R.string.ui_make_your_first_sample_call) else if (!marked) words(R.string.ui_seven_is_on_your_top_row_open_mark) else words(R.string.ui_nice_dab_green_means_marked_only_called_numbers), color = if (marked) Jade else Muted)
-            TicketCard(lessonTicket, table, prefs.haptics) { _, number -> if (number in calls) markedNumbers = if (number in markedNumbers) markedNumbers - number else markedNumbers + number }
+            CompactTicket(lessonTicket, table, Modifier.fillMaxWidth().height(180.dp), prefs.reducedMotion)
+            PrimaryAction(words(R.string.play_dab_short, calls.count { it !in markedNumbers }), modifier = Modifier.testTag("lesson-dab"),
+                enabled = calls.any { it !in markedNumbers }) { markedNumbers = calls }
             Text(words(R.string.ui_prefer_a_helping_hand_choose_assisted_marking_before), color = Muted)
         }
         3 -> {
             Text(words(R.string.ui_let_s_finish_the_sample_top_line_a), color = Muted)
             if (!topLine) PrimaryAction(words(R.string.ui_try_a_top_line_win)) { topLine = true }
-            TicketCard(lessonTicket, table, false) { _, number -> if (number in calls) markedNumbers = if (number in markedNumbers) markedNumbers - number else markedNumbers + number }
+            CompactTicket(lessonTicket, table, Modifier.fillMaxWidth().height(180.dp), prefs.reducedMotion)
+            PrimaryAction(words(R.string.play_dab_short, calls.count { it !in markedNumbers }), modifier = Modifier.testTag("lesson-dab"),
+                enabled = calls.any { it !in markedNumbers }) { markedNumbers = calls }
             if (won) GameCard {
                 Eyebrow(words(R.string.ui_top_line_verified), Jade)
                 Text(words(R.string.ui_15_points_all_five_numbers_called), style = MaterialTheme.typography.titleLarge)

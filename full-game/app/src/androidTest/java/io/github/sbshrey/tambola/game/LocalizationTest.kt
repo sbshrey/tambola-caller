@@ -36,13 +36,9 @@ class LocalizationTest {
         compose.waitForIdle()
     }
     @After fun resetLanguage() {
-        // Finish the tested UI before restoring a platform setting. Recreating a live root
-        // during teardown can strand Espresso's next-frame wait on API 36.
+        compose.useEnglish()
+        until { compose.activity.resources.configuration.locales[0].language == "en" }
         compose.activityRule.scenario.close()
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
-        }
-        assertTrue(AppCompatDelegate.getApplicationLocales().isEmpty)
     }
     private suspend fun prepare() {
         PreferenceStore(context).update(Preferences(language = "hinglish", voice = false, effects = false,
@@ -89,14 +85,14 @@ class LocalizationTest {
         compose.runOnIdle {
             model.setup(GameMode.FAMILY)
             model.updateSetup(model.state.value.setupDraft.copy(names = "आशा\nBina", avatars = listOf(7, 3),
-                playAllNumbers = true, customPrizes = listOf(custom)))
+                playAllNumbers = true, assisted = false, customPrizes = listOf(custom)))
             model.create()
         }
         until { !model.state.value.saving && model.state.value.screen == Screen.GAME }
         do {
             val count = model.state.value.round!!.called.size
             if (count > 0) android.os.SystemClock.sleep(550)
-            tap(R.string.ui_call_next_number)
+            compose.tapTag("local-next")
             until { model.state.value.round!!.called.size == count + 1 }
         } while (model.state.value.round!!.customAwards.isEmpty())
         val round = model.state.value.round!!
@@ -105,7 +101,7 @@ class LocalizationTest {
         compose.runOnIdle { model.toggleMark(winner.id, number) }
         until { number in model.state.value.round!!.marks[winner.id].orEmpty() }
         val original = model.state.value.round!!
-        tap(R.string.ui_settings)
+        compose.openArenaOption(words()(R.string.ui_settings))
         selectLanguage("hi")
         captureTestScreen("hindi-settings")
         assertEquals("hinglish", model.state.value.preferences.language)
@@ -114,17 +110,16 @@ class LocalizationTest {
         assertEquals(original.called, retained.called); assertEquals(original.marks, retained.marks)
         assertEquals(original.players, retained.players); assertEquals(original.customAwards, retained.customAwards)
         assertNull(model.state.value.winMoment)
-        tap(R.string.ui_home)
+        compose.goHome()
         captureTestScreen("hindi-home")
         tap(R.string.ui_resume_round)
         captureTestScreen("hindi-table")
-        val claimText = words()(R.string.ui_check_claims_verified, retained.awards.size + retained.customAwards.size)
-        compose.tapText(claimText)
+        compose.openArenaOption(words()(R.string.play_prizes))
         compose.tapText(words()(R.string.ui_inspect, "पहला नंबर"))
         compose.onNodeWithText(words()(R.string.ui_back_to_prizes)).assertIsDisplayed()
         captureTestScreen("hindi-claim-details")
         tap(R.string.ui_back_to_prizes); tap(R.string.ui_back_to_game)
-        tap(R.string.ui_end_round)
+        compose.openArenaOption(words()(R.string.ui_end_round))
         compose.onNode(hasText(words()(R.string.ui_end_round)) and hasAnyAncestor(isDialog())).performClick()
         until { model.state.value.round!!.finished }
         tap(R.string.ui_see_round_results)
@@ -181,7 +176,7 @@ class LocalizationTest {
         tap(R.string.ui_create_private_room)
         until { online.state.value.room != null && !online.state.value.busy && online.state.value.connection == Connection.LIVE }
         val original = checkNotNull(OnlineStore(context).read())
-        tap(R.string.ui_settings); selectLanguage("hi"); tap(R.string.ui_home); tap(R.string.ui_play_online)
+        tap(R.string.ui_settings); selectLanguage("hi"); compose.goHome(); tap(R.string.play_friends)
         until { online.state.value.connection == Connection.LIVE }
         assertEquals(original.room!!.code, online.state.value.room!!.code)
         assertEquals("सीमा", online.state.value.name)
@@ -200,7 +195,7 @@ class LocalizationTest {
             compose.onNodeWithText(words()(R.string.error_action_unconfirmed)).assertIsDisplayed()
             captureTestScreen("hindi-online-pending-error")
             tap(R.string.ui_got_it)
-            tap(R.string.ui_settings); selectLanguage("en"); tap(R.string.ui_home); tap(R.string.ui_play_online)
+            tap(R.string.ui_settings); selectLanguage("en"); compose.goHome(); tap(R.string.play_friends)
             assertEquals(pending, checkNotNull(OnlineStore(context).read()).pending)
             assertEquals(original.credentials, checkNotNull(OnlineStore(context).read()).credentials)
             compose.onNodeWithText(words()(R.string.ui_profile_deletion_is_waiting_for_confirmation)).performScrollTo().assertIsDisplayed()

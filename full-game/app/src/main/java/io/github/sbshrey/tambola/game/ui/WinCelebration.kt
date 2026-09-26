@@ -24,37 +24,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-@Composable
-fun WinCelebration(moment: WinMoment, reducedMotion: Boolean, dismiss: () -> Unit, inspect: () -> Unit) {
-    val words = gameText()
-    GameCard(Modifier.testTag("verified-win")) {
-        Box(Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
-            WinConfetti(moment.id, reducedMotion, Modifier.matchParentSize())
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                moment.players.firstOrNull()?.let { AvatarBadge(it.avatar, size = 44.dp) }
-                Column(Modifier.weight(1f)) {
-                    Eyebrow(words(R.string.ui_a_verified_win))
-                    Text(if (moment.players.size > 1) words(R.string.ui_good_times_shared) else words(R.string.ui_a_little_round_of_applause), style = MaterialTheme.typography.titleMedium)
-                }
-            }
-        }
-        Column(Modifier.semantics { liveRegion = LiveRegionMode.Polite }, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(words(R.string.ui_call_number, moment.drawIndex, moment.number), color = Muted, style = MaterialTheme.typography.bodySmall)
-            moment.lines.take(2).forEach { line ->
-                val names = line.players.take(2).joinToString { words.playerLabel(it) } +
-                    if (line.players.size > 2) words(R.string.ui_and_more, line.players.size - 2) else ""
-                Text(line.prize?.let(words::prizeTitle) ?: line.title, fontWeight = FontWeight.SemiBold)
-                Text(words(R.string.ui_points_2, names, line.points) + if (line.players.size > 1) words(R.string.ui_each_tied) else "", color = Jade)
-            }
-            if (moment.lines.size > 2) Text(words(R.string.ui_more_verified_prizes_on_this_call, moment.lines.size - 2), color = Muted)
-        }
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TextButton(onClick = inspect) { Text(words(R.string.ui_see_winning_tickets)) }
-            TextButton(onClick = dismiss) { Text(words(R.string.ui_dismiss_celebration)) }
-        }
-    }
-}
-
 /** Decorative, finite motion. Its message and the game controls remain independently usable. */
 @Composable
 internal fun WinConfetti(eventId: String, reducedMotion: Boolean, modifier: Modifier = Modifier) {

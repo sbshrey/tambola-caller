@@ -61,17 +61,86 @@ class TicketGenerator(private val random: Random = SecureRandom()) {
         require(players.map { it.id }.distinct().size == players.size)
         val fingerprints = mutableSetOf<String>()
         return players.flatMap { player ->
-            (1..perPlayer).map { index ->
-                var ticket: Ticket? = null
-                repeat(100) {
-                    if (ticket == null) {
-                        val candidate = generate("${player.id}-$index", player.id)
-                        if (fingerprints.add(candidate.fingerprint)) ticket = candidate
+            var tickets: List<Ticket>? = null
+            repeat(100) {
+                if (tickets == null) {
+                    val candidate = strip(player.id).take(perPlayer)
+                    if (candidate.none { it.fingerprint in fingerprints }) {
+                        tickets = candidate
+                        fingerprints.addAll(candidate.map { it.fingerprint })
                     }
                 }
-                checkNotNull(ticket) { "Could not generate unique tickets" }
+            }
+            checkNotNull(tickets) { "Could not generate unique tickets" }
+        }
+    }
+
+    /** A physical strip: six valid tickets partition 1..90, without shared numbers.
+     * Smaller hands are a randomly ordered subset of a complete strip. Existing
+     * saved tickets are deliberately not rewritten when the dealer changes.
+     */
+    private fun strip(playerId: String): List<Ticket> {
+        // One number in every column of every ticket leaves 36 numbers to place.
+        // A tiny integral flow assigns the extras (at most two per ticket/column).
+        // Residual paths avoid rejection sampling and unlucky-seed dead ends.
+        val source = 0
+        val sink = 16
+        val capacity = Array(17) { IntArray(17) }
+        for (ticket in 0..5) {
+            capacity[source][ticket + 1] = 6
+            for (column in 0..8) capacity[ticket + 1][column + 7] = 2
+        }
+        for (column in 0..8) capacity[column + 7][sink] = columnRange(column).count() - 6
+        val neighbors = Array(17) { from -> (0..sink).filter { to -> capacity[from][to] > 0 || capacity[to][from] > 0 }.shuffledWith(random) }
+        var remaining = 36
+        while (remaining > 0) {
+            val parent = IntArray(17) { -1 }
+            parent[source] = source
+            val queue = ArrayDeque<Int>().apply { add(source) }
+            while (queue.isNotEmpty() && parent[sink] == -1) {
+                val from = queue.removeFirst()
+                (if (from == source) neighbors[from].shuffledWith(random) else neighbors[from]).forEach { to ->
+                    if (parent[to] == -1 && capacity[from][to] > 0) {
+                        parent[to] = from
+                        queue.add(to)
+                    }
+                }
+            }
+            check(parent[sink] != -1) { "Invalid strip allocation" }
+            var to = sink
+            while (to != source) {
+                val from = parent[to]
+                capacity[from][to]--
+                capacity[to][from]++
+                to = from
+            }
+            remaining--
+        }
+        val counts = Array(6) { ticket -> IntArray(9) { column -> 3 - capacity[ticket + 1][column + 7] } }
+        val grids = Array(6) { MutableList(27) { 0 } }
+        val occupied = Array(6) { Array(9) { emptyList<Int>() } }
+        for (ticket in 0..5) {
+            val room = IntArray(3) { 5 }
+            // Largest columns first, filling rows with most space (random ties),
+            // realizes the degree sequence without retrying row arrangements.
+            (0..8).toList().shuffledWith(random).sortedByDescending { counts[ticket][it] }.forEach { column ->
+                val rows = (0..2).toList().shuffledWith(random).sortedByDescending { room[it] }.take(counts[ticket][column]).sorted()
+                rows.forEach { check(room[it] > 0); room[it]-- }
+                occupied[ticket][column] = rows
+            }
+            check(room.all { it == 0 })
+        }
+        for (column in 0..8) {
+            val values = columnRange(column).toList().shuffledWith(random)
+            var offset = 0
+            for (ticket in 0..5) {
+                val rows = occupied[ticket][column]
+                val numbers = values.subList(offset, offset + rows.size).sorted()
+                rows.forEachIndexed { index, row -> grids[ticket][row * 9 + column] = numbers[index] }
+                offset += rows.size
             }
         }
+        return grids.toList().shuffledWith(random).mapIndexed { index, cells -> Ticket("$playerId-${index + 1}", playerId, cells.toList()) }
     }
 }
 

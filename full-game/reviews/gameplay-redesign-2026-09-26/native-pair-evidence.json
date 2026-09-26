@@ -1,0 +1,35 @@
+{
+  "runId": "f773de1d-c126-42ec-acac-512a2f833d0f",
+  "candidateSha256": "bb73f3632176bfbcd6bda8b1585b834eb5741655f7b1274def7b9ccccb19447b",
+  "devices": [
+    {
+      "role": "host",
+      "serial": "emulator-5582",
+      "avd": "tambola_full_game_alpha12_api30\r",
+      "pid": 15968,
+      "passed": true
+    },
+    {
+      "role": "guest",
+      "serial": "emulator-5584",
+      "avd": "tambola_full_game_api36_16kb\r",
+      "pid": 5576,
+      "passed": true
+    }
+  ],
+  "completed": true,
+  "firstRound": {
+    "id": "9b492531-23b4-4668-b9cf-0d6810b0222c",
+    "calls": 90,
+    "matchingCallsScoresAwardsAndAudit": true,
+    "privateTicketsPerDevice": 2
+  },
+  "rematch": {
+    "id": "340a9ba8-cb24-4477-9376-f65efbb2fb63",
+    "newNumberGrids": true,
+    "retainedRules": true,
+    "nativeCancellation": true,
+    "historyPerDevice": 2
+  },
+  "deviceSettingsAndMappingsRestored": true
+}

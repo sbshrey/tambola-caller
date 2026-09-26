@@ -1,5 +1,7 @@
 # Complete Tambola Game: implementation and release plan
 
+**26 September design revision:** the user's APK trial identified major UX friction. [GAMEPLAY_REDESIGN.md](GAMEPLAY_REDESIGN.md) is the active product brief, competitor-review evidence, screen audit and iteration sequence. Prioritize one-action fast play, familiar prizes, complete visible owned hands, and disjoint physical ticket strips before further release packaging. Earlier ticket-carousel and long setup layouts are superseded.
+
 Date: 25 September 2026. Development branch: `shrey/full-tambola-game`.
 Starting commit: `76b6a2c5da5a4729a7dbcd28fac83878780ac9d8`.
 Status: execution in progress. The internal Android alpha includes offline/family play, native private rooms against a locally tested service, saved appearance, original offline music/effects, selectable avatars, verified-win celebrations, English/Hindi data disclosure and private-room invitation links. Public link verification still requires the actual hosted domain and signing identity. See [FULL_GAME_PROGRESS.md](FULL_GAME_PROGRESS.md) for current evidence; the production release gates below remain unchanged.

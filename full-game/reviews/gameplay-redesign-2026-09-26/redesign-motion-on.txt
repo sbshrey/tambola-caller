@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.ArenaMotionTest:.
+
+Time: 3.728
+
+OK (1 test)

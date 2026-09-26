@@ -1,0 +1,15 @@
+{
+  "serial": "emulator-5584",
+  "api": "36",
+  "candidateSha256": "68d85e46d8e15173790eeb33f92a520168cc6b916117a5fb52650e3a1ae3d711",
+  "cases": [
+    {
+      "name": "small-large-text",
+      "size": "720x1280",
+      "density": "320",
+      "font": "2.0",
+      "passed": true
+    }
+  ],
+  "restored": true
+}

@@ -14,6 +14,14 @@ internal fun isAndroidEmulator(): Boolean = android.os.Build.HARDWARE in setOf("
 internal fun ComposeTestRule.hasTextNow(text: String) = onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
 internal fun ComposeTestRule.tapText(text: String) = tapNode(onNodeWithText(text))
 internal fun ComposeTestRule.tapTag(tag: String) = tapNode(onNodeWithTag(tag))
+internal fun ComposeTestRule.goHome() = tapTag("home")
+internal fun ComposeTestRule.openArenaOption(text: String) { tapTag("game-options"); tapText(text) }
+internal fun ComposeTestRule.useEnglish() {
+    InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(androidx.core.os.LocaleListCompat.forLanguageTags("en"))
+    }
+    waitForIdle()
+}
 internal fun ComposeTestRule.scrollTextToEnd(text: String) {
     val node = onNodeWithText(text)
     node.performSemanticsAction(SemanticsActions.ScrollBy) { it(0f, 100_000f) }

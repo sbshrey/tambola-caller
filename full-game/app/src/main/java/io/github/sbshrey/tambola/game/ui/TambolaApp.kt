@@ -33,19 +33,27 @@ import io.github.sbshrey.tambola.game.presentation.WinMoment
 fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiState, online: OnlineViewModel,
     invitation: RoomInviteState = RoomInviteState(), dismissInvitation: () -> Unit = {}) {
     val words = gameText()
+    var roomDetails by rememberSaveable(onlineState.room?.round?.id) { mutableStateOf(false) }
     BackHandler(state.screen != Screen.HOME && state.ruleDraft == null) { model.navigate(Screen.HOME) }
+    BackHandler(roomDetails && state.screen == Screen.ONLINE) { roomDetails = false }
     val pageScroll = key(state.screen, state.round?.id,
         onlineState.room?.roomId.takeIf { state.screen == Screen.ONLINE },
         invitation.revision.takeIf { state.screen == Screen.ONLINE },
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
     Surface(Modifier.fillMaxSize().testTag("app-background"), color = MaterialTheme.colorScheme.background) {
-        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
+        if (!state.loading && state.screen == Screen.GAME && state.round != null) {
+            OfflineArena(state.round, state, model)
+        } else if (!state.loading && state.screen == Screen.ONLINE && onlineState.room?.round != null &&
+            onlineState.room.phase in setOf(io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE, io.github.sbshrey.tambola.protocol.RoomPhase.FINISHED) &&
+            !onlineState.storageFailure && !onlineState.deletingProfile && invitation.code == null && !roomDetails) {
+            OnlineArena(onlineState, online, state.preferences, { model.navigate(Screen.HOME) }, { roomDetails = true })
+        } else BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
             // A fixed action panel must not consume the reading area at large text sizes or
             // in a short window. Keep those actions in the same scroll flow as the room.
             val inlineOnlineControls = LocalDensity.current.fontScale >= 1.3f || maxHeight < 480.dp
             Column(Modifier.fillMaxSize()) {
                 Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    if (state.screen != Screen.HOME) TextButton(onClick = { model.navigate(Screen.HOME) }) { Text(words(R.string.ui_home)) }
+                    if (state.screen != Screen.HOME) TextButton(onClick = { model.navigate(Screen.HOME) }, modifier = Modifier.testTag("home")) { Text(words(R.string.ui_home)) }
                     else Box(Modifier.size(36.dp).background(Saffron, CircleShape), contentAlignment = Alignment.Center) { Text("T", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onPrimary, fontSize = 22.sp) }
                     Text(if (state.screen == Screen.HOME) words(R.string.ui_tambola_together) else words.screen(state.screen), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                     if (state.screen != Screen.SETTINGS) TextButton(onClick = { model.navigate(Screen.SETTINGS) }) { Text(words(R.string.ui_settings), fontSize = 12.sp) }
@@ -54,98 +62,26 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
                 else Column(Modifier.weight(1f).verticalScroll(pageScroll).padding(horizontal = 20.dp).padding(top = 8.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(if (state.screen == Screen.GAME) 12.dp else 20.dp)) {
                     SoundNotice()
                     when (state.screen) {
-                        Screen.HOME -> Home(state, model)
+                        Screen.HOME -> QuickHome(state, model)
                         Screen.SETUP -> Setup(state, model)
-                        Screen.GAME -> state.round?.let { GameTable(it, state, model) }
+                        Screen.GAME -> Unit // Live games use the bounded arena above.
                         Screen.RESULTS -> (state.viewedResult ?: state.round)?.let { Results(it, model) }
                         Screen.HISTORY -> History(state.history, model)
                         Screen.SETTINGS -> Settings(state, model)
-                        Screen.ONLINE -> OnlineScreen(onlineState, online, state.preferences, invitation, dismissInvitation, inlineOnlineControls)
+                        Screen.ONLINE -> {
+                            if (roomDetails && onlineState.room?.round != null) TextButton(onClick = { roomDetails = false }) { Text(words(R.string.ui_back_to_game)) }
+                            OnlineScreen(onlineState, online, state.preferences, invitation, dismissInvitation, inlineOnlineControls)
+                        }
                         Screen.TUTORIAL -> TutorialScreen(state, model) { pageScroll.scrollTo(0) }
                         Screen.BADGES -> BadgesScreen(state, onlineState)
                     }
                 }
-                if (!state.loading && state.screen == Screen.GAME) state.round?.let { GameControls(it, state, model) }
                 if (!state.loading && state.screen == Screen.ONLINE && !inlineOnlineControls) OnlineControls(onlineState, online)
             }
         }
     }
     if (state.screen == Screen.SETUP && state.ruleDraft != null) CustomRuleEditor(state, model)
     state.error?.let { error -> AlertDialog(onDismissRequest = model::clearError, title = { Text(words(R.string.ui_a_quick_heads_up)) }, text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
-}
-
-@Composable
-private fun Home(state: GameUiState, model: GameViewModel) {
-    val words = gameText()
-    Eyebrow(words(R.string.ui_good_company_great_numbers))
-    Text(words(R.string.ui_make_room_nfor_a_little_joy), style = MaterialTheme.typography.headlineLarge)
-    Text(words(R.string.ui_your_tickets_your_people_one_happy_game_night), color = Muted)
-    if (!state.preferences.tutorialDismissed && !state.preferences.tutorialCompleted) GameCard {
-        Eyebrow(words(R.string.ui_new_to_tambola), Saffron)
-        Text(words(R.string.ui_try_a_ticket_make_a_call_find_your), style = MaterialTheme.typography.titleMedium)
-        PrimaryAction(words(R.string.ui_learn_with_a_sample_ticket)) { model.navigate(Screen.TUTORIAL) }
-        TextButton(onClick = { model.finishTutorial(false) }) { Text(words(R.string.ui_maybe_later)) }
-    }
-    GameNightArtwork()
-    state.round?.takeIf { !it.finished }?.let { round ->
-        GameCard {
-            Eyebrow(words(R.string.ui_your_table_is_waiting), Saffron)
-            Text(pluralStringResource(R.plurals.numbers_called, round.called.size, round.called.size) + " · " +
-                pluralStringResource(R.plurals.player_count, round.players.size, round.players.size), style = MaterialTheme.typography.titleMedium)
-            PrimaryAction(words(R.string.ui_resume_round)) { model.navigate(Screen.GAME) }
-        }
-    }
-    GameCard {
-        Eyebrow(words(R.string.ui_play_your_way))
-        Text(words(R.string.ui_a_little_me_time), style = MaterialTheme.typography.titleLarge)
-        Text(words(R.string.ui_practice_at_your_pace_or_invite_some_friendly), color = Muted)
-        PrimaryAction(words(R.string.ui_play_solo)) { model.setup(GameMode.PRACTICE) }
-        HorizontalDivider(color = Muted.copy(alpha = .2f))
-        Text(words(R.string.ui_bring_everyone_together), style = MaterialTheme.typography.titleLarge)
-        Text(words(R.string.ui_pass_one_phone_around_every_player_gets_their), color = Muted)
-        OutlinedButton(onClick = { model.setup(GameMode.FAMILY) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp), shape = RoundedCornerShape(18.dp)) { Text(words(R.string.ui_play_on_one_device)) }
-        HorizontalDivider(color = Muted.copy(alpha = .2f))
-        Text(words(R.string.ui_meet_at_a_private_table), style = MaterialTheme.typography.titleLarge)
-        Text(words(R.string.ui_play_together_on_your_own_phones_with_a), color = Muted)
-        OutlinedButton(onClick = { model.navigate(Screen.ONLINE) }, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp), shape = RoundedCornerShape(18.dp)) { Text(words(R.string.ui_play_online)) }
-    }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedButton(onClick = { model.navigate(Screen.HISTORY) }, modifier = Modifier.weight(1f)) { Text(words(R.string.ui_your_rounds)) }
-        OutlinedButton(onClick = { model.navigate(Screen.TUTORIAL) }, modifier = Modifier.weight(1f)) { Text(words(R.string.ui_how_to_play)) }
-    }
-    OutlinedButton(onClick = { model.navigate(Screen.BADGES) }, modifier = Modifier.fillMaxWidth()) { Text(words(R.string.ui_your_badges)) }
-    Text(words(R.string.ui_development_alpha_private_rooms_require_the_configured_room), color = Muted, style = MaterialTheme.typography.bodySmall)
-}
-
-@Composable
-private fun GameTable(round: Round, state: GameUiState, model: GameViewModel) {
-    val words = gameText()
-    var cancel by remember { mutableStateOf(false) }
-    TablePlay(round.toTable(), state.preferences, model::toggleMark, model::repeatCall, state.winMoment, model::dismissWin)
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        if (round.settings.mode == GameMode.PRACTICE && !round.finished) TextButton(onClick = model::undo, enabled = round.called.isNotEmpty()) { Text(words(R.string.ui_undo_last_call)) }
-        if (!round.finished) TextButton(onClick = { cancel = true }) { Text(words(R.string.ui_end_round)) }
-    }
-    if (cancel) AlertDialog(onDismissRequest = { cancel = false }, title = { Text(words(R.string.ui_end_this_round_early)) }, text = { Text(words(R.string.ui_this_round_will_be_saved_as_cancelled_with)) }, confirmButton = { TextButton(onClick = { cancel = false; model.finish() }) { Text(words(R.string.ui_end_round)) } }, dismissButton = { TextButton(onClick = { cancel = false }) { Text(words(R.string.ui_keep_playing)) } })
-}
-
-@Composable
-private fun GameControls(round: Round, state: GameUiState, model: GameViewModel) {
-    val words = gameText()
-    Column(Modifier.fillMaxWidth().background(Panel).padding(horizontal = 20.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(round.latest?.let { words(R.string.ui_latest_number_called, it, round.called.size) } ?: words(R.string.ui_your_tickets_are_ready), color = Muted, style = MaterialTheme.typography.bodySmall)
-        when {
-            round.finished -> PrimaryAction(words(R.string.ui_see_round_results)) { model.navigate(Screen.RESULTS) }
-            round.status == RoundStatus.PAUSED -> PrimaryAction(words(R.string.ui_resume_calling)) { model.resume() }
-            else -> {
-                PrimaryAction(if (state.auto) words(R.string.ui_call_next_now) else words(R.string.ui_call_next_number)) { model.draw() }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(onClick = model::auto, modifier = Modifier.weight(1f)) { Text(if (state.auto) words(R.string.ui_stop_auto) else words(R.string.ui_auto_s, state.preferences.interval)) }
-                    TextButton(onClick = model::pause, modifier = Modifier.weight(1f)) { Text(words(R.string.ui_pause)) }
-                }
-            }
-        }
-    }
 }
 
 @Composable
@@ -256,60 +192,4 @@ fun SettingSwitch(title: String, detail: String, checked: Boolean, onChange: (Bo
         Column(Modifier.weight(1f)) { Text(title, style = MaterialTheme.typography.titleMedium); Text(detail, color = Muted, style = MaterialTheme.typography.bodyMedium) }
         Switch(checked = checked, onCheckedChange = null)
     }
-}
-
-@Composable
-fun TablePlay(round: TableRound, preferences: io.github.sbshrey.tambola.game.data.Preferences,
-    mark: (String, Int) -> Unit, repeatCall: () -> Unit, winMoment: WinMoment? = null, dismissWin: () -> Unit = {}) {
-    val words = gameText()
-    var selected by rememberSaveable(round.id) { mutableIntStateOf(0) }
-    var board by remember { mutableStateOf(false) }
-    var claims by remember { mutableStateOf(false) }
-    val index = selected.coerceIn(round.tickets.indices)
-    val numberChipSize = 34.dp * LocalDensity.current.fontScale.coerceAtLeast(1f)
-    Eyebrow(if (round.finished) words(if (round.status == RoundStatus.COMPLETED) R.string.round_complete else R.string.round_cancelled) else if (round.status == RoundStatus.PAUSED) words(R.string.ui_take_a_breather_paused) else words(R.string.ui_let_the_good_times_roll))
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.width(120.dp)) { NumberBall(round.latest, preferences.reducedMotion, compact = true) }
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(if (round.latest == null) words(R.string.ui_ready_when_you_are) else words(R.string.ui_call_of_90, round.called.size), style = MaterialTheme.typography.titleMedium)
-            TextButton(onClick = { board = true }) { Text(words(R.string.ui_number_board)) }
-            TextButton(onClick = repeatCall, enabled = round.latest != null) { Text(words(R.string.ui_hear_again)) }
-        }
-    }
-    LinearProgressIndicator(progress = { round.called.size / 90f }, modifier = Modifier.fillMaxWidth(), color = Jade, trackColor = Panel)
-    winMoment?.let { WinCelebration(it, preferences.reducedMotion, dismissWin) { claims = true } }
-    if (round.called.isNotEmpty()) {
-        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(words(R.string.ui_recent_calls), fontSize = 10.sp, color = Muted, modifier = Modifier.fillMaxWidth())
-            round.called.takeLast(5).reversed().forEachIndexed { i, n -> Box(Modifier.size(numberChipSize).background(if (i == 0) Saffron else Panel, CircleShape), contentAlignment = Alignment.Center) { Text("$n", fontSize = 14.sp, lineHeight = 18.sp, color = if (i == 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) } }
-        }
-    }
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(words(R.string.ui_your_table), style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-        Text(pluralStringResource(R.plurals.ticket_count, round.tickets.size, round.tickets.size), color = Muted, fontSize = 12.sp)
-    }
-    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        round.tickets.forEachIndexed { i, ticket -> FilterChip(selected = index == i, onClick = { selected = i }, label = { Text(words.ticketLabel(round, ticket.id)) }) }
-    }
-    TicketCard(round.tickets[index], round, preferences.haptics, mark)
-    Text(words(R.string.ui_amber_outline_called_green_marked_tap_mark_ticket), color = Muted, style = MaterialTheme.typography.bodySmall)
-    PrimaryAction(words(R.string.ui_check_claims_verified, round.awards.size + round.customAwards.size)) { claims = true }
-    if (board) AlertDialog(onDismissRequest = { board = false }, title = { Text(words(R.string.ui_the_number_board)) }, text = {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(words(R.string.ui_called_to_go, round.called.size, 90 - round.called.size), color = Muted)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                (1..90).forEach { n -> Box(Modifier.size(numberChipSize + 2.dp).background(if (n == round.latest) Saffron else if (n in round.called) Jade else MaterialTheme.colorScheme.surfaceContainerHighest, RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text("$n", color = if (n == round.latest) MaterialTheme.colorScheme.onPrimary else if (n in round.called) MaterialTheme.colorScheme.onSecondary else Muted, fontWeight = FontWeight.Bold) } }
-            }
-            Text(words(R.string.ui_call_history), style = MaterialTheme.typography.titleMedium)
-            Text(round.called.joinToString(" → ").ifEmpty { words(R.string.ui_no_numbers_yet) }, color = Muted)
-        }
-    }, confirmButton = { TextButton(onClick = { board = false }) { Text(words(R.string.ui_back_to_table)) } })
-    if (claims) AlertDialog(onDismissRequest = { claims = false }, title = { Text(words(R.string.ui_fair_wins_happy_faces)) }, text = {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(words(R.string.ui_winners_are_verified_from_called_numbers_even_if), color = Muted)
-            Text(words.endExplanation(round.settings), color = Saffron)
-            Text(if (round.settings.assistedMarking) words(R.string.ui_assisted_marking_is_on_for_everyone) else if (round.settings.mode == GameMode.ONLINE) words(R.string.ui_manual_marking_mark_your_own_called_numbers) else words(R.string.ui_manual_marking_computer_tickets_mark_automatically), color = Muted)
-            RuleList(round, round.tickets[index])
-        }
-    }, confirmButton = { TextButton(onClick = { claims = false }) { Text(words(R.string.ui_back_to_game)) } })
 }

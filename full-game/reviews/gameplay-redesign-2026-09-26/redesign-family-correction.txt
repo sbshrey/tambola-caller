@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.OfflineGameTest:.
+
+Time: 8.392
+
+OK (1 test)

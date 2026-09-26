@@ -90,7 +90,7 @@
     <string name="ui_try_calling_a_number">"Try calling a number"</string>
     <string name="ui_hear_7_again">"Hear 7 again"</string>
     <string name="ui_make_your_first_sample_call">"Make your first sample call."</string>
-    <string name="ui_seven_is_on_your_top_row_open_mark">"Seven is on your top row. Open Mark ticket, tap 7, then tap Done."</string>
+    <string name="ui_seven_is_on_your_top_row_open_mark">"Seven is on your top row. Tap Dab to mark it."</string>
     <string name="ui_nice_dab_green_means_marked_only_called_numbers">"Nice dab! Green means marked. Only called numbers can be marked; tap again to undo a dab."</string>
     <string name="ui_prefer_a_helping_hand_choose_assisted_marking_before">"Prefer a helping hand? Choose assisted marking before a real round."</string>
     <string name="ui_let_s_finish_the_sample_top_line_a">"Let\'s finish the sample top line. A line wins when all five of its numbers have been called."</string>
@@ -379,8 +379,8 @@
     <string name="ui_try_the_interactive_tutorial">"Try the interactive tutorial"</string>
     <string name="ui_1_choose_players_tickets_and_prizes_everyone_can">"1. Choose players, tickets, and prizes. Everyone can see the rules before play. Try custom patterns on sample tickets."</string>
     <string name="ui_2_call_numbers_yourself_or_turn_on_automatic">"2. Call numbers yourself or turn on automatic calling. Each number appears only once."</string>
-    <string name="ui_3_tap_mark_ticket_and_dab_the_called">"3. Tap Mark ticket and dab the called numbers, or choose assisted marking before a round."</string>
-    <string name="ui_4_check_claims_to_inspect_the_required_numbers">"4. Check claims to inspect the required numbers and verified winners. Same-call winners tie and get full points."</string>
+    <string name="ui_3_tap_mark_ticket_and_dab_the_called">"3. Your tickets stay together on screen. Auto dab marks called numbers; in manual mode, tap Dab to catch up."</string>
+    <string name="ui_4_check_claims_to_inspect_the_required_numbers">"4. Open Prizes in the game menu to inspect rules and verified winners. Same-call winners tie and get full points."</string>
     <string name="ui_5_finish_at_the_chosen_house_or_play">"5. Finish at the chosen house, or play all 90 calls. Rematch keeps your players and rules; every game deals new tickets."</string>
     <string name="ui_your_games_and_privacy">"Your games and privacy"</string>
     <string name="ui_solo_and_family_rounds_stay_on_this_device">"Offline rounds stay on this device. Private rooms save online data on the room service; members see names and wins, and only their own ticket numbers. Read how storage, deletion and backup recovery work."</string>

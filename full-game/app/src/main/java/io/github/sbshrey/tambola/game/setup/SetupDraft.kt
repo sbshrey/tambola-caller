@@ -44,7 +44,8 @@ data class SetupDraft(
         return RoundSettings(mode, tickets, assisted, prizes + housePrizes, playAllNumbers, customPrizes)
     }
     companion object {
-        fun fresh(mode: GameMode) = SetupDraft(mode = mode, names = if (mode == GameMode.FAMILY) "Asha\nBina" else "You")
+        fun fresh(mode: GameMode) = SetupDraft(mode = mode, names = if (mode == GameMode.FAMILY) "Asha\nBina" else "You", assisted = true,
+            prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE))
         fun from(round: Round) = SetupDraft(round.settings.mode, round.players.filterNot { it.computer }.joinToString("\n") { it.name },
             round.settings.ticketsPerPlayer, round.players.count { it.computer }, round.settings.assistedMarking,
             round.settings.prizes.filterNot { it == Prize.FULL_HOUSE || it.isRankedHouse },

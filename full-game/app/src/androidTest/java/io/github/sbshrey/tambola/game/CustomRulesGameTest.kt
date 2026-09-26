@@ -19,15 +19,16 @@ class CustomRulesGameTest {
     private fun type(tag: String, text: String) { compose.onNodeWithTag(tag).performScrollTo().performTextReplacement(text); compose.waitForIdle() }
 
     @Before fun reset() {
+        compose.useEnglish()
         runBlocking { PreferenceStore(InstrumentationRegistry.getInstrumentation().targetContext).update(Preferences(voice = false, reducedMotion = true)) }
-        compose.waitUntil(10_000) { exists("Play solo") }
+        compose.waitUntil(10_000) { exists("Custom game") }
         tap("Settings"); tap("Delete all saved rounds"); tap("Delete rounds")
-        compose.waitUntil(10_000) { exists("Play solo") }
+        compose.waitUntil(10_000) { exists("Custom game") }
     }
 
     @Test fun customCompoundMultiTicketRuleSurvivesRecreationAndNinetyCallRematch() {
-        tap("Play solo"); tap("Just me"); compose.tapTag("tickets-2")
-        tap("Two houses"); tap("Call all 90 numbers"); tap("Create custom prize")
+        tap("Custom game"); tap("Just me"); compose.tapTag("tickets-2")
+        compose.tapTag("setup-options"); tap("Two houses"); tap("Call all 90 numbers"); tap("Create custom prize")
         type("prize-title", "Lucky pair")
         compose.tapTag("select-0-0-ROW")
         compose.tapTag("add-and-0")
@@ -45,14 +46,14 @@ class CustomRulesGameTest {
         compose.onNodeWithTag("prize-title").assertTextContains("Lucky pair")
         compose.onNodeWithTag("minimum-tickets-2").assertIsSelected()
         tap("Save prize"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        tap("Check claims · 0 verified"); tap("Inspect Lucky pair")
+        compose.waitUntil(10_000) { exists("Next") }
+        compose.openArenaOption("Prizes"); tap("Inspect Lucky pair")
         compose.onNodeWithText("Matching owned tickets: 0 / 2 needed").assertExists()
         captureTestScreen("custom-claim-details")
         tap("Back to prizes"); tap("Back to game")
         var calls = 0
         while (!exists("See round results") && calls < 90) {
-            tap("Call next number"); calls++
+            tap("Next"); calls++
             compose.waitUntil(10_000) { exists("Call $calls of 90") || exists("See round results") }
             Thread.sleep(550)
         }
@@ -66,7 +67,7 @@ class CustomRulesGameTest {
         assertEquals(1, round.customAwards.size); assertEquals(2, round.customAwards.single().ticketIds.size)
         assertEquals(2, round.settings.customPrizes.single().pattern.alternatives.size)
         assertTrue(Prize.HOUSE_TWO in round.settings.prizes)
-        tap("Play another round")
+        tap("Play another round"); compose.tapTag("setup-options")
         compose.onNodeWithText("Two houses").assertIsSelected()
         compose.onNodeWithText("Call all 90 numbers").assertIsOn()
         compose.onNodeWithText("Lucky pair").assertExists()
@@ -75,7 +76,7 @@ class CustomRulesGameTest {
     }
 
     @Test fun incompatibleTicketReductionIsExplainedAndDraftCanBeCorrected() {
-        tap("Play solo"); compose.tapTag("tickets-3"); tap("Create custom prize")
+        tap("Custom game"); compose.tapTag("tickets-3"); compose.tapTag("setup-options"); tap("Create custom prize")
         type("prize-title", "Third ticket")
         tap("Ticket 3"); tap("Save prize")
         compose.tapTag("tickets-1")
@@ -96,9 +97,9 @@ class CustomRulesGameTest {
     }
 
     @Test fun resultsPreviewExcludesNamesUntilExplicitlyIncluded() {
-        tap("Play on one device"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        tap("End round"); compose.onAllNodesWithText("End round").onLast().performClick()
+        tap("Pass & play"); tap("Deal the tickets")
+        compose.waitUntil(10_000) { exists("Next") }
+        compose.openArenaOption("End round"); compose.onAllNodesWithText("End round").onLast().performClick()
         compose.waitUntil(10_000) { exists("See round results") }
         tap("See round results"); tap("Share these results")
         compose.onNodeWithTag("share-preview").assertTextContains("Player 1: 0 points", substring = true)
@@ -112,19 +113,19 @@ class CustomRulesGameTest {
 
     @Test fun rulePreviewAndClaimDetailsRemainUsableAtLargeText() {
         val font = (InstrumentationRegistry.getInstrumentation().targetContext.resources.configuration.fontScale * 100).toInt()
-        tap("Play on one device"); tap("Create custom prize")
+        tap("Pass & play"); compose.tapTag("setup-options"); tap("Create custom prize")
         type("prize-title", "A column prize")
         compose.tapTag("select-0-0-COLUMN")
         tap("Winning example")
         compose.onNodeWithText("Sample rule satisfied").performScrollTo().assertIsDisplayed()
         captureTestScreen("rule-preview-font-$font")
         tap("Save prize"); tap("Deal the tickets")
-        compose.waitUntil(10_000) { exists("Call next number") }
-        tap("Check claims · 0 verified"); tap("Inspect A column prize")
+        compose.waitUntil(10_000) { exists("Next") }
+        compose.openArenaOption("Prizes"); tap("Inspect A column prize")
         compose.onNodeWithText("All of column 1 (1–9)").performScrollTo().assertIsDisplayed()
         captureTestScreen("rule-details-font-$font")
         tap("Back to prizes"); tap("Back to game")
-        tap("End round"); compose.onAllNodesWithText("End round").onLast().performClick()
+        compose.openArenaOption("End round"); compose.onAllNodesWithText("End round").onLast().performClick()
         compose.waitUntil(10_000) { exists("See round results") }
         tap("See round results")
         compose.onNodeWithText("Until next time.").assertExists()

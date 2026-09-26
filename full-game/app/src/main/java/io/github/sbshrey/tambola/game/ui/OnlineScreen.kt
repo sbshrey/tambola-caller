@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -48,13 +49,13 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     var history by rememberSaveable { mutableStateOf(false) }
     var selectedHistory by rememberSaveable { mutableStateOf<String?>(null) }
     val room = state.room
+    var showRules by rememberSaveable(room?.roomId) { mutableStateOf(false) }
     val host = room?.hostId == state.playerId
     val enabled = !state.busy && !state.pending && !state.sessionExpired && !state.storageFailure
     if (state.loading) { CircularProgressIndicator(); return }
     invitation.code?.let { RoomInvitationCard(it, state, { focus.clearFocus(); model.join(it) }, dismissInvitation) }
-    if (room?.round == null) {
-        Eyebrow(words(R.string.ui_a_game_night_anywhere))
-        Text(words(R.string.ui_your_private_table), style = MaterialTheme.typography.headlineLarge)
+    if (room == null) {
+        Text(words(R.string.ui_your_private_table), style = MaterialTheme.typography.headlineMedium)
     }
     if (!state.available) {
         GameCard { Text(words(R.string.ui_online_rooms_aren_t_available_in_this_build)); Text(words(R.string.ui_you_can_play_solo_or_with_everyone_on), color = Muted) }
@@ -84,7 +85,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             PrimaryAction(if (state.busy) words(R.string.ui_opening_your_profile) else words(R.string.ui_continue_online), enabled = enabled && name.isNotBlank()) { focus.clearFocus(); model.register(name, avatar) }
         }
     } else {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        if (room == null) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             AvatarBadge(state.avatar); Text(words(R.string.ui_playing_as, state.name), color = Jade, modifier = Modifier.weight(1f))
         }
         if (room == null) {
@@ -135,13 +136,17 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                     }
                 }
                 GameCard {
-                    Text(words(R.string.ui_the_rules_for_this_round), style = MaterialTheme.typography.titleLarge)
-                    Text(words.endExplanation(room.options.game), color = Saffron)
-                    Text(if (room.options.game.assistedMarking) words(R.string.ui_assisted_marking_for_everyone) else words(R.string.ui_mark_your_own_called_numbers_wins_are_checked), color = Muted)
-                    Text(if (room.options.automaticCalling) words(R.string.ui_the_server_calls_a_number_every_seconds, room.options.intervalSeconds) else words(R.string.ui_the_host_calls_each_next_number), color = Muted)
-                    room.options.game.prizes.forEach { Text(words(R.string.ui_pts_n, words.prizeTitle(it), it.points, words.prizeExplanation(it))) }
-                    room.options.game.customPrizes.forEach { Text(words(R.string.ui_pts_n, it.title, it.points, words.customPrize(it))) }
-                    Text(words(R.string.ui_ties_on_the_same_call_share_full_points), color = Muted)
+                    Text(room.options.game.prizes.joinToString(" · ") { words.prizeTitle(it) }, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleMedium)
+                    Text(if (room.options.automaticCalling) words(R.string.ui_auto_s, room.options.intervalSeconds) else words(R.string.ui_the_host_calls_each_next_number), color = Muted)
+                    TextButton(onClick = { showRules = !showRules }, modifier = Modifier.testTag("lobby-prizes")) { Text(words(R.string.play_prizes)) }
+                    if (showRules) {
+                        Text(words.endExplanation(room.options.game), color = Saffron)
+                        Text(if (room.options.game.assistedMarking) words(R.string.ui_assisted_marking_for_everyone) else words(R.string.ui_mark_your_own_called_numbers_wins_are_checked), color = Muted)
+                        room.options.game.prizes.forEach { Text(words(R.string.ui_pts_n, words.prizeTitle(it), it.points, words.prizeExplanation(it))) }
+                        room.options.game.customPrizes.forEach { Text(words(R.string.ui_pts_n, it.title, it.points, words.customPrize(it))) }
+                        Text(words(R.string.ui_ties_on_the_same_call_share_full_points), color = Muted)
+                    }
                     if (host) {
                         OutlinedButton(onClick = { configure = true }, enabled = enabled) { Text(words(R.string.ui_edit_room_rules)) }
                         SettingSwitch(words(R.string.ui_lock_room), words(R.string.ui_prevent_new_players_from_joining), room.locked) { if (enabled && state.connection == Connection.LIVE) model.command(RoomAction.Lock(it)) }
@@ -150,11 +155,10 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             } else {
                 val table = room.toTable(state.marks)
                 if (table != null && table.tickets.isNotEmpty()) {
-                    TablePlay(table, preferences, model::mark, model::repeatCall, state.winMoment, model::dismissWin)
                     if (table.finished) OnlineResults(table)
                 }
             }
-            Text(words(R.string.ui_the_room_continues_when_you_leave_the_app), color = Muted, style = MaterialTheme.typography.bodySmall)
+            if (room.phase != RoomPhase.LOBBY || showRules) Text(words(R.string.ui_the_room_continues_when_you_leave_the_app), color = Muted, style = MaterialTheme.typography.bodySmall)
             if (room.phase != RoomPhase.ACTIVE) TextButton(onClick = { leave = true }, enabled = enabled && state.connection == Connection.LIVE) { Text(words(R.string.ui_leave_room)) }
         }
         OutlinedButton(onClick = { history = !history }, modifier = Modifier.fillMaxWidth()) { Text(if (history) words(R.string.ui_hide_online_history) else words(R.string.ui_online_history, state.history.size)) }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 
 private val Context.preferences by preferencesDataStore("preferences")
 enum class Appearance(val label: String) { SYSTEM("System"), LIGHT("Light"), DARK("Dark") }
-data class Preferences(val voice: Boolean = true, val language: String = "en", val haptics: Boolean = true, val reducedMotion: Boolean = false, val interval: Int = 10,
+data class Preferences(val voice: Boolean = true, val language: String = "en", val haptics: Boolean = true, val reducedMotion: Boolean = false, val interval: Int = 5,
     val tutorialCompleted: Boolean = false, val tutorialDismissed: Boolean = false, val appearance: Appearance = Appearance.SYSTEM,
     val music: Boolean = false, val effects: Boolean = true,
     val voiceVolume: Int = 100, val musicVolume: Int = 45, val effectsVolume: Int = 60)
@@ -27,7 +27,7 @@ class PreferenceStore(private val context: Context) {
     private val musicVolume = intPreferencesKey("musicVolume")
     private val effectsVolume = intPreferencesKey("effectsVolume")
     val values = context.preferences.data.map { p ->
-        Preferences(p[voice] ?: true, p[language]?.takeIf { it in setOf("en", "hi", "hinglish") } ?: "en", p[haptics] ?: true, p[reducedMotion] ?: false, (p[interval] ?: 10).coerceIn(5, 30),
+        Preferences(p[voice] ?: true, p[language]?.takeIf { it in setOf("en", "hi", "hinglish") } ?: "en", p[haptics] ?: true, p[reducedMotion] ?: false, (p[interval] ?: 5).coerceIn(5, 30),
             p[tutorialCompleted] ?: false, p[tutorialDismissed] ?: false,
             Appearance.entries.firstOrNull { it.name == p[appearance] } ?: Appearance.SYSTEM,
             p[music] ?: false, p[effects] ?: true, (p[voiceVolume] ?: 100).coerceIn(0, 100),

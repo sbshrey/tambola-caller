@@ -137,7 +137,18 @@ class GameViewModel(application: Application, private val savedState: SavedState
         }
     }
 
-    fun create() {
+    fun quickPlay() {
+        if (mutable.value.saving) return
+        if (mutable.value.round?.finished == false) { navigate(Screen.GAME); resume(); return }
+        updateSetup(SetupDraft(tickets = 3, bots = 2, assisted = true,
+            prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE)))
+        val fastPreferences = mutable.value.preferences.copy(interval = 5)
+        mutable.update { it.copy(preferences = fastPreferences) }
+        updatePreferences(fastPreferences)
+        create(automatic = true)
+    }
+
+    fun create(automatic: Boolean = false) {
         if (mutable.value.saving) return
         val draft = mutable.value.setupDraft
         mutable.update { it.copy(saving = true) }
@@ -153,6 +164,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     audio.stop(); stopTimer(); lastDrawAt = -1_000
                     mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null, winMoment = null) }
                     if (foreground) audio.effect(SoundCue.DEAL)
+                    if (automatic) auto()
                 } catch (cancelled: CancellationException) { throw cancelled }
                 catch (error: Exception) { reportStorageFailure("create", error); mutable.update { it.copy(error = error.uiMessage(R.string.error_save_round)) } }
                 finally { mutable.update { it.copy(saving = false) } }
@@ -160,7 +172,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
         }
     }
 
-    private fun mutate(speak: Boolean = false, markSound: Boolean = false, transform: (Round) -> Round) {
+    private fun mutate(speak: Boolean = false, markSound: Boolean = false, afterSave: () -> Unit = {}, transform: (Round) -> Round) {
         viewModelScope.launch {
             mutex.withLock {
                 val previous = mutable.value.round ?: return@withLock
@@ -174,6 +186,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     if (liveCall) audio.play(next.latest!!, mutable.value.preferences.language, celebration = moment != null)
                     if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
+                    afterSave()
                 } catch (cancelled: CancellationException) { throw cancelled }
                 catch (error: Exception) { reportStorageFailure("save-progress", error); mutable.update { it.copy(error = error.uiMessage(R.string.error_save_progress)) } }
             }
@@ -187,15 +200,21 @@ class GameViewModel(application: Application, private val savedState: SavedState
         mutate(speak = true) { it.draw() }
     }
     fun toggleMark(ticketId: String, number: Int) = mutate(markSound = true) { it.toggleMark(ticketId, number) }
+    fun dabCalled(playerId: String) = mutate(markSound = true) { round ->
+        if (round.finished || round.settings.assistedMarking) round else round.tickets.filter { it.playerId == playerId && round.players.none { player -> player.id == playerId && player.computer } }
+            .fold(round) { next, ticket -> ticket.numbers.filter { it in next.called && it !in next.marks[ticket.id].orEmpty() }
+                .fold(next) { marked, number -> marked.toggleMark(ticket.id, number) } }
+    }
     fun undo() { stopTimer(); audio.stop(); dismissWin(); mutate { it.undo() } }
-    fun resume() { mutate { it.start() } }
+    fun resume() { mutate(afterSave = { if (savedState.get<String>("auto_round") == mutable.value.round?.id) auto() }) { it.start() } }
     fun pause() { stopTimer(); audio.stop(); dismissWin(); mutate { audio.stop(); it.pause() } }
     fun setForeground(value: Boolean) { foreground = value; if (!value) pause() }
     fun finish() { stopTimer(); audio.stop(); dismissWin(); mutate { it.cancel() } }
     fun repeatCall() { if (foreground) mutable.value.round?.latest?.let { audio.repeat(it, mutable.value.preferences.language) } }
     fun auto() {
-        if (mutable.value.auto) { stopTimer(); return }
+        if (mutable.value.auto) { savedState.remove<String>("auto_round"); stopTimer(); return }
         if (mutable.value.round?.status != RoundStatus.PLAYING) return
+        savedState["auto_round"] = mutable.value.round?.id
         mutable.update { it.copy(auto = true) }
         timer = viewModelScope.launch {
             while (isActive) {
