@@ -1,0 +1,9 @@
+
+io.github.sbshrey.tambola.game.LanTransportTest:.
+
+Time: 0.841
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.

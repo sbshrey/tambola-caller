@@ -2,7 +2,7 @@
 
 Installed 26 September 2026 at `C:\Users\sbshr\AppData\Local\TambolaTogetherHost`.
 
-Upgraded to the online coin service (schema 005/protocol 4) from commit `0b4c8de948d4925975d4e772e4b8ac1b458d65ec`. The protected `upgrades` directory retains the previous configuration, service hashes and a fresh verified primary/journal backup pair. Actual coin purchases and refunds passed over verified TLS after restricted-role startup.
+Upgraded on 27 September to alpha17 service source `9fe335d47b5b76688c0a148f64e074af4630fbdf` (primary schema 006, journal schema 003, room protocol 4). The protected `upgrades` directory retains the previous configuration, service hashes and a fresh verified primary/journal backup pair. After restricted-role startup, verified TLS checks passed for purchases/refunds, device enrollment, exact session rotation/retry and retention of the same wallet/purchase receipt. Android HTTPS/WSS transport also passed. See [alpha17 acceptance](../full-game/reviews/session-wifi-alpha17-2026-09-27/README.md).
 
 - Game endpoint: `https://192.168.1.4:8443` (PC Ethernet address, same LAN as Wi-Fi).
 - Backend binds only `127.0.0.1:18080`; PostgreSQL binds only `127.0.0.1:55433`.
@@ -11,7 +11,7 @@ Upgraded to the online coin service (schema 005/protocol 4) from commit `0b4c8de
 - Pinned Java 17 and PowerShell 7.6 runtimes, service libraries and configuration live outside the checkout. User/SYSTEM ACLs and Windows DPAPI protect configuration. Never copy `.secrets`, database files, private TLS keys or raw backups into Git/APKs.
 - Hidden watcher restarts the worker; the worker restarts Java/Caddy and recovers the dedicated database. PID, executable and start-time checks protect unrelated processes.
 - Current-user login startup is installed. It runs after this user signs in, **not before Windows login**. Do not describe it as a SYSTEM service or a reboot-tested deployment. Existing AC sleep timeout is already disabled; no power settings were changed.
-- Backups run every 24 hours while the worker is active, retaining seven complete pairs. Primary is dumped before the journal. Archive-list validation passed; actual restoration of these installed-host backups has not yet been rehearsed. Keep the live deletion journal and replay newer deletions during any future restore.
+- Backups run every 24 hours while the worker is active, retaining seven complete pairs. Primary is dumped before the journal. Archive-list validation passed; actual restoration of these installed-host backups has not yet been rehearsed. Keep the live recovery journal and replay newer deletion/logout intents during any future restore.
 
 ## One administrator action for phone testing
 
@@ -63,5 +63,7 @@ Before migration starts, a failed upgrade resumes the old service. Once migratio
 Physical phone Wi-Fi, Internet reachability, reboot behavior, installed-backup restoration and release signing remain separate acceptance checks. PC request timings are not a mobile-network latency guarantee.
 
 The alpha16 LAN APK also passed a complete native coin round on the dedicated emulator: 86 calls, all eight selected prizes, 2,400 coins paid, conserved aggregate wallets, results, Play Again and cancellation/refund. The Java server recovered in 5,678 ms during that round and the app continued over WSS. See [the archived results and frame-time limits](../full-game/reviews/coin-wifi-alpha16-2026-09-26/README.md).
+
+The exact alpha17 APK passed a fresh 84-call native round after the session/journal migration: automatic device enrollment, six disjoint owned tickets, all eight selected claims, 2,400 coins paid, 3,300 final balance, conserved aggregate wallets, results, another purchase and its cancellation/refund. No fault restart was injected in this run. Diagnostic emulator frame p95 was 50 ms; physical/optimized smoothness remains open. The installed APK matched the packaged checksum, temporary QA profiles were deleted, and the host remained freshly ready over verified TLS. See [alpha17 results](../full-game/reviews/session-wifi-alpha17-2026-09-27/README.md).
 
 Dependency sources: [Caddy v2.11.4](https://github.com/caddyserver/caddy/releases/tag/v2.11.4), [EDB PostgreSQL binaries](https://www.enterprisedb.com/download-postgresql-binaries). Caddy matched its published checksum. PostgreSQL came from the official HTTPS download; its observed SHA-256 is recorded with the installation evidence, not represented as a publisher signature verification.

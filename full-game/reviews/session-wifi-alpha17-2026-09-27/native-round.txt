@@ -1,0 +1,9 @@
+
+io.github.sbshrey.tambola.game.LanCoinGameTest:.
+
+Time: 460.311
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.

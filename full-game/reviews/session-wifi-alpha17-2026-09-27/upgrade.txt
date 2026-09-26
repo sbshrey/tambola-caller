@@ -1,0 +1,3 @@
+Candidate staged and verified; stopping the idle host.
+Both fresh database archives retained with the upgrade; applying migrations.
+Updated host ready. Source: 9fe335d47b5b76688c0a148f64e074af4630fbdf. Verify TLS coin transactions and the matching LAN APK next.

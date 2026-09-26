@@ -1,0 +1,260 @@
+{
+  "files": [
+    {
+      "bytes": 5557,
+      "sha256": "07be99758b699e194f70fb9784d94202dc6c98212877829e3d72b020f2660576",
+      "name": "alpn-api-1.1.3.v20160715.jar"
+    },
+    {
+      "bytes": 29371,
+      "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05",
+      "name": "annotations-23.0.0.jar"
+    },
+    {
+      "bytes": 241885,
+      "sha256": "857658c8bdcbff794949a8d9922f88d63ee3751c203c7cd7d21ea97f9e745288",
+      "name": "checker-qual-3.55.1.jar"
+    },
+    {
+      "bytes": 295134,
+      "sha256": "4a4b0affb22a9572409d3a6bde99ce3f2045c551cadc1ca7fe09690892c526c3",
+      "name": "config-1.4.5.jar"
+    },
+    {
+      "bytes": 233662,
+      "sha256": "d8a6ce558cca0ee2e999b42332640de5616cb22678d31d5b1b4d631276ba891d",
+      "name": "domain.jar"
+    },
+    {
+      "bytes": 170532,
+      "sha256": "07c6344059af30a135144209c7c8bd666b8823124422ec859864d209d4ab7ca1",
+      "name": "HikariCP-6.3.0.jar"
+    },
+    {
+      "bytes": 256537,
+      "sha256": "0b7b8b003a90ea491579b62f5118828e45112914c65589b00faa49d6ec785839",
+      "name": "jansi-2.4.2.jar"
+    },
+    {
+      "bytes": 3349363,
+      "sha256": "44380abf37d245ce5c0f294f43512d1c39a59642bfa463922c74e96877cf49f8",
+      "name": "kotlin-reflect-2.2.21.jar"
+    },
+    {
+      "bytes": 1853314,
+      "sha256": "2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f",
+      "name": "kotlin-stdlib-2.4.20.jar"
+    },
+    {
+      "bytes": 1479317,
+      "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd",
+      "name": "kotlinx-coroutines-core-jvm-1.10.2.jar"
+    },
+    {
+      "bytes": 22535,
+      "sha256": "3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775",
+      "name": "kotlinx-io-bytestring-jvm-0.8.0.jar"
+    },
+    {
+      "bytes": 152882,
+      "sha256": "610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13",
+      "name": "kotlinx-io-core-jvm-0.8.0.jar"
+    },
+    {
+      "bytes": 399128,
+      "sha256": "1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c",
+      "name": "kotlinx-serialization-core-jvm-1.9.0.jar"
+    },
+    {
+      "bytes": 6933,
+      "sha256": "98abb132b03e11b80318d45350ec9ebbb5453d26505e81331bf2eea7143b6fbe",
+      "name": "kotlinx-serialization-json-io-jvm-1.9.0.jar"
+    },
+    {
+      "bytes": 278414,
+      "sha256": "d94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8",
+      "name": "kotlinx-serialization-json-jvm-1.9.0.jar"
+    },
+    {
+      "bytes": 6383,
+      "sha256": "0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea",
+      "name": "ktor-events-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 125764,
+      "sha256": "ff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f",
+      "name": "ktor-http-cio-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 416171,
+      "sha256": "7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085",
+      "name": "ktor-http-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 286875,
+      "sha256": "c1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710",
+      "name": "ktor-io-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 198257,
+      "sha256": "f50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626",
+      "name": "ktor-network-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 22934,
+      "sha256": "5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7",
+      "name": "ktor-serialization-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 28564,
+      "sha256": "f29c0b2be7ec7dea560c19ebe5a0442fa2736d90c5078b249d6c7bca80245b94",
+      "name": "ktor-serialization-kotlinx-json-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 33912,
+      "sha256": "6d5366c19b87a681a8feefec7358e91fbc70559055137ec474a9b2a8bb84be17",
+      "name": "ktor-serialization-kotlinx-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 38685,
+      "sha256": "bbe6998103727e036936f49d28bad388eb64acef8c1031b721a2b10eb1d426fb",
+      "name": "ktor-server-content-negotiation-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 916059,
+      "sha256": "99d298bf02246cd87ff73d5ca7808535f4cc75ab1457279ccd80c7298bbda631",
+      "name": "ktor-server-core-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 178624,
+      "sha256": "c377fe92938a04e0979dbc37a4f49d2b6846c11711dca464a83d1dfaf95692be",
+      "name": "ktor-server-netty-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 34099,
+      "sha256": "6eddbc82077fcf55cb3348d94b35e3453d65a6651ef3a417a1214a5671b239b1",
+      "name": "ktor-server-status-pages-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 49536,
+      "sha256": "ebc5131dda06ffb4d0680e3ca38dc549912bb0fe69f62b3df6c8e27a8ffff3db",
+      "name": "ktor-server-websockets-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 342783,
+      "sha256": "ad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a",
+      "name": "ktor-utils-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 7234,
+      "sha256": "3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82",
+      "name": "ktor-websocket-serialization-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 172115,
+      "sha256": "129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894",
+      "name": "ktor-websockets-jvm-3.3.3.jar"
+    },
+    {
+      "bytes": 291545,
+      "sha256": "16ccdfd1847eca169d5651c5f799ea990472350e0c38f68fd6bc47d705ef4a0a",
+      "name": "logback-classic-1.6.4.jar"
+    },
+    {
+      "bytes": 650933,
+      "sha256": "1b67779e224455ae7e00bd4ccadaf05c38531927ea4363f66412359373f2e9d7",
+      "name": "logback-core-1.6.4.jar"
+    },
+    {
+      "bytes": 378263,
+      "sha256": "fdf236d2b76aa9710684401fdad7dff9dec56e43da5d39172c9a55ba5f14b360",
+      "name": "netty-buffer-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 155356,
+      "sha256": "7e4612bead7ba88ac6f7908fa722f90ad6835ea96505c9e40b2f93686c1f61f3",
+      "name": "netty-codec-base-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 237340,
+      "sha256": "9d8a4b9a6a2a166ec5a4bbe51a78b4f6a726457c51d81495743c7e7ccb9f4765",
+      "name": "netty-codec-compression-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 681156,
+      "sha256": "2d50765eb58591ce35146c54ca032a257808d2165d8985a8522c70ea1470e8d7",
+      "name": "netty-codec-http-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 497705,
+      "sha256": "a45a2b06c377b9c87c21ae2b37f04c8d808192590a73d977e7a60fd59921f283",
+      "name": "netty-codec-http2-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 903757,
+      "sha256": "5d97cae5669685872339698efe13f74fe3cdb2dccdb36963b2352bd95acf7070",
+      "name": "netty-common-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 588760,
+      "sha256": "6d5a08d9dd6d7d0211202e22dbb1629b23a62550335c7e80892da1d4cb115540",
+      "name": "netty-handler-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 32975,
+      "sha256": "68373ec544cf769ba17bf2ef455166d98f2c260dff536edf35ef57067a9c155f",
+      "name": "netty-resolver-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 549970,
+      "sha256": "eac4f12068db4489e60c6520fad663e5d872f0436a7c641aa9e08db649947863",
+      "name": "netty-transport-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 159938,
+      "sha256": "3677ca998f3db749d3fdb0fb1b1674f9809f4fbe8f819a346f4858dfb16c4d95",
+      "name": "netty-transport-classes-epoll-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 116822,
+      "sha256": "be48ee5b8a2328a1f4f2160270344175612dd9567787727de0dbaecb694beb51",
+      "name": "netty-transport-classes-kqueue-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 7199,
+      "sha256": "15efbb26cde751e9bab669cc52da5e909f41626f9e04378e2c4cd61202d1359e",
+      "name": "netty-transport-native-epoll-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 6879,
+      "sha256": "4ee651cdac49aedac42d0d22e726cb4a578f0c02286fc041153ec58925cac818",
+      "name": "netty-transport-native-kqueue-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 46877,
+      "sha256": "cada7023d09136af128511ca94421d69dc84d0f1f64c9e1f127a1271bb62932a",
+      "name": "netty-transport-native-unix-common-4.2.18.Final.jar"
+    },
+    {
+      "bytes": 1220948,
+      "sha256": "6e0e4cc2d8cae902084f8a2b18728b073a6fd9d1f87c9d8bff8f298c18185b93",
+      "name": "postgresql-42.7.13.jar"
+    },
+    {
+      "bytes": 216244,
+      "sha256": "228f34ff501ac78421a62d26e88db531d0b9e8e89dac7c42b102bd19b2a40a06",
+      "name": "protocol.jar"
+    },
+    {
+      "bytes": 309984,
+      "sha256": "4df54270b7e6785ff984ab4aa7bda254d253f6879da3991cbe155b2295a0392d",
+      "name": "server.jar"
+    },
+    {
+      "bytes": 70246,
+      "sha256": "e91ff6d720609e7a194ffe758c3ed5c84e798617ae07b0a0f6a4fe229741b4bb",
+      "name": "slf4j-api-2.0.19.jar"
+    }
+  ],
+  "sourceCommit": "9fe335d47b5b76688c0a148f64e074af4630fbdf"
+}

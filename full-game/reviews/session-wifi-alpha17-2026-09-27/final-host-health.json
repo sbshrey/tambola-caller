@@ -1,0 +1,14 @@
+{
+  "checkedAtUtc": "2026-09-26T19:21:04.242Z",
+  "origin": "https://192.168.1.4:8443",
+  "sourceCommit": "9fe335d47b5b76688c0a148f64e074af4630fbdf",
+  "status": 200,
+  "tlsAuthorized": true,
+  "supervisorCheckedAt": "2026-09-26T19:20:59.4568881Z",
+  "supervisorStatus": "ready",
+  "health": {
+    "status": "ready",
+    "protocolVersion": 4
+  },
+  "scope": "Fresh readiness after the complete native round; not a reboot or physical-phone test"
+}

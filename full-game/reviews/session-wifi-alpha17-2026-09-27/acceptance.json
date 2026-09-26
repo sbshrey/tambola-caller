@@ -1,0 +1,27 @@
+{
+  "nativeFullRound": "passed",
+  "deviceEnrolled": true,
+  "finishedCalls": 84,
+  "prizesVerified": 8,
+  "settledWinnings": 2400,
+  "finalBalance": 3300,
+  "aggregateWalletConservation": 6000,
+  "playAgainRefund": "passed",
+  "installedApkSha256": "575bcd865231a3e5fe96c972c22ac6c657d95e4973beb10a8edcdb73c56dc2e4",
+  "packagedApkMatchesInstalled": true,
+  "noAdbReverse": true,
+  "versionCode": 17,
+  "versionName": "0.17.0-alpha17-wifi",
+  "scope": "Dedicated Android 11 API30 emulator; not a physical phone",
+  "frames": {
+    "observedNonFirstDrawFrames": 5284,
+    "firstDrawFramesExcluded": 6,
+    "droppedReports": 0,
+    "unavailableDurations": 0,
+    "over16666667Nanoseconds": 3470,
+    "maximumMs": 299.115086,
+    "p95BucketUpperMs": 50,
+    "p95Beyond2000Ms": false,
+    "reportsComplete": true
+  }
+}
