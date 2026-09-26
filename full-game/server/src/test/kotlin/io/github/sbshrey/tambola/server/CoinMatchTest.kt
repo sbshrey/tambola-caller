@@ -8,6 +8,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.util.UUID
 import java.util.concurrent.Callable
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -72,6 +73,30 @@ class CoinMatchTest : PostgresTest() {
             assertEquals(900L, service.wallet(actor.token).balance)
             assertEquals(1, count("rooms")); assertEquals(1, count("match_receipts")); assertEquals(2, count("coin_ledger"))
         } finally { executor.shutdownNow() }
+    }
+
+    @Test fun `returning to an owned table does not wait for unrelated lobby allocation`() {
+        val actor = guest()
+        val first = match(actor, 3)
+        val held = CountDownLatch(1)
+        val release = CountDownLatch(1)
+        val executor = Executors.newFixedThreadPool(2)
+        try {
+            val holder = executor.submit(Callable {
+                database.transaction { connection ->
+                    connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+                    held.countDown()
+                    check(release.await(10, TimeUnit.SECONDS))
+                }
+            })
+            assertTrue(held.await(5, TimeUnit.SECONDS))
+            val resumed = executor.submit(Callable { match(actor, 6) }).get(3, TimeUnit.SECONDS)
+            assertEquals(first.roomId, resumed.roomId)
+            assertEquals(3, resumed.coins!!.ownTickets)
+            assertEquals(1200L, resumed.wallet!!.balance)
+            assertFalse(holder.isDone)
+            release.countDown(); holder.get(5, TimeUnit.SECONDS)
+        } finally { release.countDown(); executor.shutdownNow(); executor.awaitTermination(10, TimeUnit.SECONDS) }
     }
     private fun id() = UUID.randomUUID().toString()
     private fun guest(name: String = "Coin player") = service.register(GuestRequest(name), id())

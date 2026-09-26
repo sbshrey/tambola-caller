@@ -111,8 +111,6 @@ class RoomService(
                 demand(receipt.hash == hash, 409, "id_reused", "This purchase ID already has different ticket choices.")
                 return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
             }
-            // Serialize lobby selection; guest-before-room ordering is retained.
-            connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
             val now = clock()
             val existing = connection.query("""SELECT payload FROM rooms WHERE matchable AND phase IN ('LOBBY','ACTIVE')
                 AND expires_at > ? AND id IN (SELECT room_id FROM room_participants WHERE player_id = ?)
@@ -122,19 +120,24 @@ class RoomService(
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
             } else {
+                // The guest lock already serializes this player's entry. Prepare their
+                // wallet before serializing shared lobby selection; all writes still
+                // roll back together if the purchase cannot complete.
+                CoinLedger.ensure(connection, guest.id, now)
+                connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+                val purchaseAt = clock()
                 val waiting = connection.query("""SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
                     AND (payload::jsonb->>'startsAt')::bigint > ? AND jsonb_array_length(payload::jsonb->'members') < 8
-                    ORDER BY (payload::jsonb->>'startsAt')::bigint, id LIMIT 1 FOR UPDATE""", now, now) { decode(it.getString(1)) }.singleOrNull()
+                    ORDER BY (payload::jsonb->>'startsAt')::bigint, id LIMIT 1 FOR UPDATE""", purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id, coinOptions(),
-                    emptyList(), now + ROOM_LIFETIME, startsAt = now + MATCH_COUNTDOWN).also {
+                    emptyList(), purchaseAt + ROOM_LIFETIME, startsAt = purchaseAt + MATCH_COUNTDOWN).also {
                     connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, true)",
                         it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it))
                 }
                 demand(room.startsAt!! > clock(), 409, "sales_closed", "That round is starting. Try Play again.")
-                CoinLedger.open(connection, guest.id, now)
                 changed(connection, room.copy(
-                    members = room.members + Member(guest.id, guest.name, guest.avatar, now, ready = true, lastSeen = now),
-                    purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", now)
+                    members = room.members + Member(guest.id, guest.name, guest.avatar, purchaseAt, ready = true, lastSeen = purchaseAt),
+                    purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", purchaseAt, before = room)
             }
             val response = update(connection, saved, guest.id, null)
             connection.execute("INSERT INTO match_receipts VALUES (?, ?, ?, ?, ?)", guest.id, request.id, hash, saved.id, WireJson.encodeToString(response))
@@ -575,17 +578,18 @@ class RoomService(
         return if (!member.connected) changed(connection, updated, "reconnected", now) else updated.also { save(connection, it) }
     }
 
-    private fun changed(connection: Connection, room: RoomRecord, type: String, now: Long): RoomRecord {
+    private fun changed(connection: Connection, room: RoomRecord, type: String, now: Long, before: RoomRecord? = null): RoomRecord {
         val next = room.coinLobby().copy(revision = room.revision + 1)
         if (next.options.coinGame) {
-            val before = connection.query("SELECT payload FROM rooms WHERE id = ?", next.id) { decode(it.getString(1)) }.single()
-            RoomEconomy.reconcile(connection, before, next, now)
+            val previous = before ?: connection.query("SELECT payload FROM rooms WHERE id = ?", next.id) { decode(it.getString(1)) }.single()
+            RoomEconomy.reconcile(connection, previous, next, now)
             RoomEconomy.settle(connection, next, now)
         }
         save(connection, next)
         val event = RoomEvent(next.revision, type, now, next.round?.id)
         connection.execute("INSERT INTO room_events VALUES (?, ?, ?)", next.id, next.revision, WireJson.encodeToString(event))
-        connection.execute("DELETE FROM room_events WHERE room_id = ? AND revision <= ?", next.id, next.revision - EVENT_LIMIT)
+        if (next.revision > EVENT_LIMIT)
+            connection.execute("DELETE FROM room_events WHERE room_id = ? AND revision <= ?", next.id, next.revision - EVENT_LIMIT)
         if (next.round?.finished == true) connection.execute("INSERT INTO finished_rounds VALUES (?, ?, ?) ON CONFLICT DO NOTHING", next.id, next.round.id, WireJson.encodeToString(next))
         return next
     }

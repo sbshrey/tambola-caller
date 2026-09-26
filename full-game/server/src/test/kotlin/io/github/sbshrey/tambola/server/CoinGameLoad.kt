@@ -40,6 +40,8 @@ object CoinGameLoad {
     private suspend fun run(): Int {
         val playerCount = (System.getenv("TAMBOLA_COIN_LOAD_PLAYERS")?.toInt() ?: 80).also { require(it in 8..320 && it % 8 == 0) }
         val probeCalls = (System.getenv("TAMBOLA_COIN_LOAD_PROBE_CALLS")?.toInt() ?: 0).also { require(it in 0..5) }
+        val prepareWallets = System.getenv("TAMBOLA_COIN_LOAD_PREPARE_WALLETS") == "true"
+        val diagnostics = System.getenv("TAMBOLA_COIN_LOAD_DIAGNOSTICS") == "true"
         val env = IsolatedLoadService()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val failure = AtomicReference<String?>(null)
@@ -57,6 +59,8 @@ object CoinGameLoad {
         val inflight = AtomicInteger()
         val peakClaims = AtomicInteger()
         val tables = ConcurrentHashMap<String, List<Actor>>()
+        val waitSamples = ConcurrentHashMap<String, AtomicInteger>()
+        val waitPolls = AtomicInteger()
         var stage = "initializing"
         var success = false
         var cleanup = false
@@ -89,6 +93,7 @@ object CoinGameLoad {
                 record("expectedTables", playerCount / 8); record("probeCalls", probeCalls); record("intervalMs", 5000)
                 record("serverHeapMiB", 512); record("serverActiveProcessors", 4)
                 record("runtimeSource", env.runtimeSource); record("sharedHttpTransports", playerCount / 8)
+                record("walletsPreparedBeforePurchase", prepareWallets); record("databaseWaitSampling", diagnostics)
                 record("scope", "Real isolated journal-enabled Java service; public match/wallet/selected-claim HTTP and native WebSocket clients. Synthetic clients mark revealed own numbers. Profiles seeded; no signup, Android UI, TLS, physical-network or restricted-role claim.")
                 record("fixtureSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinGameLoad.kt"))))
                 record("lifecycleSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/IsolatedLoadService.kt"))))
@@ -99,7 +104,23 @@ object CoinGameLoad {
                 val credentials = env.seed(playerCount)
                 clients += List(playerCount / 8) { HttpRoomApi(env.base, true) }
                 actors += credentials.mapIndexed { index, player -> Actor(index, player, clients[index % clients.size], env.base) }
+                if (prepareWallets) {
+                    checkpoint("prepare-registered-wallets-through-api")
+                    coroutineScope { actors.map { actor -> async(Dispatchers.IO) {
+                        check(actor.api.wallet(actor.credentials.token).balance == COIN_STARTER_BALANCE)
+                    } }.awaitAll() }
+                }
                 checkpoint("concurrent-mixed-ticket-purchases")
+                val sampler = if (diagnostics) launchChecked {
+                    env.primary { connection ->
+                        while (isActive) {
+                            connection.query("SELECT coalesce(wait_event, 'executing'), count(*) FROM pg_stat_activity WHERE datname = current_database() AND pid <> pg_backend_pid() AND state = 'active' GROUP BY wait_event") {
+                                it.getString(1) to it.getInt(2)
+                            }.forEach { (key, count) -> waitSamples.computeIfAbsent(key) { AtomicInteger() }.addAndGet(count) }
+                            waitPolls.incrementAndGet(); Thread.sleep(25)
+                        }
+                    }
+                } else null
                 coroutineScope { actors.map { actor -> async(Dispatchers.IO) {
                     val response = if (actor.index % 8 == 1) coroutineScope {
                         val first = async { measured(purchaseMs) { actor.api.match(actor.credentials.token, actor.purchase) } }
@@ -174,6 +195,7 @@ object CoinGameLoad {
                         }
                     }
                 } }.awaitAll() }
+                sampler?.cancelAndJoin()
                 awaitCondition { actors.all { it.connected.get() == 1 && it.view().round != null } }
                 tables.putAll(actors.groupBy { it.view().roomId })
                 check(tables.size == playerCount / 8 && tables.values.all { it.size == 8 }) { "Matchmaking did not fill eight-seat tables" }
@@ -269,6 +291,8 @@ object CoinGameLoad {
             record("connectedPlayers", actors.count { it.connected.get() == 1 })
             record("finishedPlayers", actors.count { it.saved.get().room?.phase == RoomPhase.FINISHED })
             record("minimumCalls", actors.minOfOrNull { it.calls.get() }); record("maximumCalls", actors.maxOfOrNull { it.calls.get() })
+            record("databaseWaitPolls", waitPolls.get())
+            evidence["databaseActiveWaitSamples"] = buildJsonObject { waitSamples.toSortedMap().forEach { (key, count) -> put(key, count.get()) } }
             record("successfulClaims", successfulClaims.get()); record("closedClaimWindows", closedWindows.get())
             record("peakConcurrentClaims", peakClaims.get()); record("duplicateReceiptsChecked", receiptChecks.get())
             record("delayedAcknowledgementRetries", discardedAcknowledgements.get()); record("expectedDeliverySamples", expectedSamples)

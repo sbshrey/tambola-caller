@@ -15,9 +15,13 @@ internal const val COIN_REFILL_INTERVAL = 5 * 60_000L
  */
 internal object CoinLedger {
     fun open(connection: Connection, player: String, now: Long): WalletView {
+        ensure(connection, player, now)
+        return view(connection, player)
+    }
+
+    fun ensure(connection: Connection, player: String, now: Long) {
         val inserted = connection.execute("INSERT INTO coin_wallets (player_id) SELECT id FROM guests WHERE id = ? ON CONFLICT DO NOTHING", player)
         if (inserted == 1) credit(connection, player, "starter", COIN_STARTER_BALANCE, now)
-        return view(connection, player)
     }
 
     fun view(connection: Connection, player: String): WalletView = connection.query("""
