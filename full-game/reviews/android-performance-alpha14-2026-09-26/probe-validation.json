@@ -1,0 +1,40 @@
+{
+  "probeRunId": "4b022fe8-22cf-46a3-97c4-188b1393fadc",
+  "probeAccepted": true,
+  "fullHourAccepted": false,
+  "apkSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "instrumentationSha256": "7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25",
+  "failedFirstProbe": "Remote missing-file diagnostic was parsed as JSON before the report existed. Driver corrected to use the shell remote exit status. App preference cleanup was unconfirmed after the driver stopped that first probe.",
+  "files": [
+    {
+      "path": "alpha14-long-session-build.txt",
+      "bytes": 4665,
+      "sha256": "663fd08b0564afdbb7bf25db6e83e8b7f09f91d3939661a5be65f73f884f99f7"
+    },
+    {
+      "path": "alpha14-session-probe/evidence.json",
+      "bytes": 1202,
+      "sha256": "d9700e3575c078c2ab6d54f878f3419135fc3620427287d0d4e330e8d42d1d45"
+    },
+    {
+      "path": "alpha14-session-probe/instrumentation.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "alpha14-session-probe2/device-report.json",
+      "bytes": 2102,
+      "sha256": "6c4841d3511fd20810f4ea33c788e4549f48f8f2838d71bd8182bc584658a7f8"
+    },
+    {
+      "path": "alpha14-session-probe2/evidence.json",
+      "bytes": 1098,
+      "sha256": "5c53dd671bb27b14c040eb13a7e230001cfb4da2b56acad6d59ee2e033e39d8e"
+    },
+    {
+      "path": "alpha14-session-probe2/instrumentation.txt",
+      "bytes": 87,
+      "sha256": "247893fd431a1f50c5f37640aed8270a8e039920ad48d3ce702c3538d8120ce7"
+    }
+  ]
+}

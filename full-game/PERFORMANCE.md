@@ -29,9 +29,15 @@ The driver adds a local forwarding hop. Do not infer production latency, data-pl
 
 ## Remaining device budgets
 
-### Native long-session fixture — awaiting compilation and execution
+### Native long-session fixture — short probe passed; full run pending
 
-`LongSessionTest` and `tools/android-long-session.mjs` add an opt-in session on a dedicated emulator. They have not yet been compiled or run. Run a short fixture probe after the service endurance workload ends, then the default workload only if the probe passes:
+`LongSessionTest` and `tools/android-long-session.mjs` add an opt-in session on a dedicated emulator. Instrumentation compilation passed in 31 seconds (five executed tasks), and the corrected short probe passed on API30 in **69.444 seconds**, with three deliberately shortened three-call rounds, rematches, history, frame collection and preference/device-setting restoration. The application APK remains `49344972…`; the diagnostic instrumentation is `7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25`. The full nine-game run is still pending.
+
+The first driver attempt read the report before it existed; `adb exec-out` returned the missing-file diagnostic as text, which could not be parsed as JSON. The driver now uses `adb shell` with its remote exit status. That failed attempt remains archived, including its unconfirmed app-preference cleanup. The successful repetition confirms cleanup. [Probe evidence and hashes](reviews/android-performance-alpha14-2026-09-26/probe-validation.json) preserve both outcomes and the compilation transcript.
+
+The short probe observed 116 non-first-draw frames, no dropped/unavailable reports, a **91 ms p95 upper bucket** and **138.43 ms maximum**; all exceeded the 16.67 ms reference. These debug/software-rendered emulator timings do **not** meet that reference and do not establish physical-phone performance. Managed heap after warmup spanned 3,488 bytes, PSS spanned 1,304 KiB, and native allocations rose across the short warmup. None of these short measurements substitutes for the sustained session or the physical release-device gate.
+
+Commands for a new dedicated fixture run (use fresh output labels):
 
 ```powershell
 .\gradlew.bat :app:assembleDebugAndroidTest --no-daemon --console=plain

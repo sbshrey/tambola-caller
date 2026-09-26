@@ -53,7 +53,8 @@ const evidence = { runId, serial, avd, apkSha256, testApkSha256, rounds, draws,
   animationsBefore: Object.fromEntries(previous), scope: 'Debug emulator long-session diagnostics; not physical release performance acceptance.' };
 let child, done = false, code, transcript = '', latest;
 function readReport() {
-  const raw = run(['exec-out', 'run-as', app, 'cat', 'files/long-session.json'], { optional: true });
+  // shell carries the remote exit status; exec-out can return a missing-file error as stdout.
+  const raw = run(['shell', 'run-as', app, 'cat', 'files/long-session.json'], { optional: true });
   if (!raw) return;
   const value = JSON.parse(raw);
   if (value.runId === runId) return value;

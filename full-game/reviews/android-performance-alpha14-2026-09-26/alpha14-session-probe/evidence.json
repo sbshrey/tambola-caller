@@ -1,0 +1,30 @@
+{
+  "runId": "42a64e06-fbe7-4a6a-9acf-06872bf41dc8",
+  "serial": "emulator-5582",
+  "avd": "tambola_full_game_alpha12_api30",
+  "apkSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "testApkSha256": "7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25",
+  "rounds": 3,
+  "draws": 3,
+  "driverSha256": "c5ca8d5aa73dfb425e12847aa883adae053fd88dd85927acfc4fa79e510f3506",
+  "completed": false,
+  "fixtureSourceSha256": "eb84aa017e2db23c14150e3f1f9c52875dd8a7a27b88f6a9dcee3cb365913ff5",
+  "fingerprint": "google/sdk_gphone_x86_arm/generic_x86_arm:11/RSR1.201013.001/6903271:userdebug/dev-keys",
+  "displaySize": "Physical size: 1080x1920",
+  "displayDensity": "Physical density: 420",
+  "fontScale": "1.0",
+  "rendererProperty": "opengl",
+  "animationsBefore": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "scope": "Debug emulator long-session diagnostics; not physical release performance acceptance.",
+  "adbPid": 12164,
+  "failureType": "SyntaxError",
+  "deviceSettingsRestored": false,
+  "cleanupErrors": [
+    "read_final_report",
+    "app_preference_restore_unconfirmed"
+  ]
+}
