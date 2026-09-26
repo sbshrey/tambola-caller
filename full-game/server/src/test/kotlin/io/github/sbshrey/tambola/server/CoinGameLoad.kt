@@ -24,6 +24,9 @@ object CoinGameLoad {
     private fun id() = UUID.randomUUID().toString()
     private fun sha(bytes: ByteArray) = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
     private data class Delivery(val roomId: String, val actor: Int, val call: Int, val receivedAt: Long)
+    private data class Span(val startNanos: Long, val endNanos: Long, val startEpochMs: Long, val endEpochMs: Long) {
+        val milliseconds get() = (endNanos - startNanos) / 1_000_000.0
+    }
     private class Actor(val index: Int, val credentials: GuestCredentials, val api: HttpRoomApi, val base: String) {
         val quantity = index % 6 + 1
         val purchase = MatchRequest(id(), quantity)
@@ -42,6 +45,27 @@ object CoinGameLoad {
         val probeCalls = (System.getenv("TAMBOLA_COIN_LOAD_PROBE_CALLS")?.toInt() ?: 0).also { require(it in 0..5) }
         val prepareWallets = System.getenv("TAMBOLA_COIN_LOAD_PREPARE_WALLETS") == "true"
         val diagnostics = System.getenv("TAMBOLA_COIN_LOAD_DIAGNOSTICS") == "true"
+        val firstCohort = (System.getenv("TAMBOLA_COIN_LOAD_FIRST_COHORT")?.toInt() ?: 0).also {
+            require(it == 0 || (it in 8 until playerCount && it % 8 == 0 && (playerCount - it) % 16 == 0 && probeCalls == 0))
+        }
+        val laterCohortSize = (playerCount - firstCohort) / 2
+        val joinTrigger = CompletableDeferred<Long>()
+        val triggerAt = java.util.concurrent.atomic.AtomicLong()
+        val purchaseSpans = List(3) { ConcurrentLinkedQueue<Span>() }
+        val issued = List(3) { AtomicInteger() }
+        val pending = List(3) { AtomicInteger() }
+        val peakPending = List(3) { AtomicInteger() }
+        val existingClaimSpans = ConcurrentLinkedQueue<Span>()
+        val overlapDeliveryMs = mutableListOf<Double>()
+        fun cohort(actor: Actor) = when {
+            firstCohort == 0 || actor.index < firstCohort -> 0
+            actor.index < firstCohort + laterCohortSize -> 1
+            else -> 2
+        }
+        fun window(group: Int): Span? = purchaseSpans[group].takeIf { it.isNotEmpty() }?.let {
+            Span(it.minOf { s -> s.startNanos }, it.maxOf { s -> s.endNanos },
+                it.minOf { s -> s.startEpochMs }, it.maxOf { s -> s.endEpochMs })
+        }
         val env = IsolatedLoadService()
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val failure = AtomicReference<String?>(null)
@@ -79,21 +103,38 @@ object CoinGameLoad {
         suspend fun awaitCondition(timeout: Long = 30_000, condition: () -> Boolean) {
             withTimeout(timeout) { while (!condition()) { healthy(); delay(25) } }; healthy()
         }
-        suspend fun <T> measured(samples: MutableCollection<Double>, block: suspend () -> T): T {
+        suspend fun <T> measured(samples: MutableCollection<Double>, spans: MutableCollection<Span>? = null, block: suspend () -> T): T {
+            val epoch = System.currentTimeMillis()
             val start = System.nanoTime()
-            return block().also { samples.add((System.nanoTime() - start) / 1_000_000.0) }
+            return block().also {
+                val span = Span(start, System.nanoTime(), epoch, System.currentTimeMillis())
+                samples.add(span.milliseconds); spans?.add(span)
+            }
+        }
+        suspend fun purchase(actor: Actor): RoomUpdate {
+            val group = cohort(actor)
+            val active = pending[group].incrementAndGet(); peakPending[group].accumulateAndGet(active, ::maxOf)
+            val started = issued[group].incrementAndGet()
+            if (firstCohort > 0 && group > 0 && started == 1) println("coin-load[${env.runId}]: joining-cohort-$group-started")
+            try { return measured(purchaseMs, purchaseSpans[group]) { actor.api.match(actor.credentials.token, actor.purchase) } }
+            finally { pending[group].decrementAndGet() }
         }
         fun launchChecked(block: suspend CoroutineScope.() -> Unit) = scope.launch {
             try { block() } catch (error: CancellationException) { throw error }
             catch (error: Exception) { failure.compareAndSet(null, safeFailure(error)) }
         }
         try {
-            withTimeout(10 * 60_000L) {
+            withTimeout((if (firstCohort > 0) 14 else 10) * 60_000L) {
                 record("runId", env.runId); record("completed", false); record("players", playerCount)
                 record("expectedTables", playerCount / 8); record("probeCalls", probeCalls); record("intervalMs", 5000)
                 record("serverHeapMiB", 512); record("serverActiveProcessors", 4)
                 record("runtimeSource", env.runtimeSource); record("sharedHttpTransports", playerCount / 8)
                 record("walletsPreparedBeforePurchase", prepareWallets); record("databaseWaitSampling", diagnostics)
+                record("firstCohortPlayers", firstCohort)
+                if (firstCohort > 0) {
+                    record("laterCohortPlayers", laterCohortSize)
+                    record("mixedTrafficDefinition", "Existing players trigger two equally sized joining cohorts at the first valid selected claim and its announced next-draw deadline. The triggering claimant waits for at least eight issued primary purchases and one still pending before submitting. Claims are measured when their requests start inside an observed joining window; deliveries are measured for existing-table draw events timestamped inside a joining window. Window bounds use successful primary request start/end times, exclude the gap between cohorts, and do not assert uninterrupted server CPU work. Profiles seeded; no physical network or Android claim.")
+                }
                 record("sqlProfiling", env.sqlProfiling)
                 if (env.sqlProfiling) record("sqlProfilerSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/ProfiledCoinServer.kt"))))
                 record("scope", "Real isolated journal-enabled Java service; public match/wallet/selected-claim HTTP and native WebSocket clients. Synthetic clients mark revealed own numbers. Profiles seeded; no signup, Android UI, TLS, physical-network or restricted-role claim.")
@@ -124,11 +165,16 @@ object CoinGameLoad {
                     }
                 } else null
                 coroutineScope { actors.map { actor -> async(Dispatchers.IO) {
+                    val group = cohort(actor)
+                    if (group > 0) {
+                        val nextDraw = withTimeout(180_000) { joinTrigger.await() }
+                        if (group == 2) delay((nextDraw - System.currentTimeMillis()).coerceAtLeast(0))
+                    }
                     val response = if (actor.index % 8 == 1) coroutineScope {
-                        val first = async { measured(purchaseMs) { actor.api.match(actor.credentials.token, actor.purchase) } }
+                        val first = async { purchase(actor) }
                         val duplicate = async { measured(receiptMs) { actor.api.match(actor.credentials.token, actor.purchase) } }
                         first.await().also { check(it == duplicate.await()); receiptChecks.incrementAndGet() }
-                    } else measured(purchaseMs) { actor.api.match(actor.credentials.token, actor.purchase) }
+                    } else purchase(actor)
                     check(response.snapshot.coins!!.ownTickets == actor.quantity)
                     check(response.snapshot.wallet!!.balance == COIN_STARTER_BALANCE - actor.quantity * COIN_TICKET_PRICE)
                     if (actor.index % 8 == 0) {
@@ -177,13 +223,24 @@ object CoinGameLoad {
                                 (awarded == null || (awarded.drawIndex == round.called.size && ticket.id !in awarded.ticketIds)) &&
                                     (!prize.isRankedHouse || (prize == nextRank && ticket.id !in previousHouses)) && prize.matches(ticket, marks)
                             }.map { ClaimSelection(ticket.id, it.name) } }
-                            if (selections.isNotEmpty() && actor.index % 8 == 0) delay(200)
+                            val triggered = selections.isNotEmpty() && firstCohort > 0 && actor.index < firstCohort &&
+                                joinTrigger.complete(requireNotNull(turn.nextDrawAt))
+                            if (triggered) {
+                                triggerAt.set(System.currentTimeMillis())
+                                println("coin-load[${env.runId}]: existing-claim-triggered-joining-cohorts")
+                                check(withTimeoutOrNull(2_000) {
+                                    while (issued[1].get() < minOf(8, laterCohortSize) || pending[1].get() == 0) { healthy(); delay(5) }
+                                    true
+                                } == true) { "Joining requests did not overlap the triggering claim" }
+                            } else if (selections.isNotEmpty() && actor.index % 8 == 0) delay(200)
                             for (selection in selections) {
                                 if (actor.view().round!!.called.size != round.called.size) { closedWindows.incrementAndGet(); break }
                                 val request = CommandRequest(id(), turn.revision, RoomAction.Claim(round.id, round.called.size, marks, selection))
                                 val active = inflight.incrementAndGet(); peakClaims.accumulateAndGet(active, ::maxOf)
                                 try {
-                                    val result = measured(claimMs) { actor.api.command(actor.credentials.token, turn.code, request) }
+                                    val result = measured(claimMs, existingClaimSpans.takeIf { firstCohort > 0 && actor.index < firstCohort }) {
+                                        actor.api.command(actor.credentials.token, turn.code, request)
+                                    }
                                     actor.accept(result); successfulClaims.incrementAndGet()
                                     claimReactionMs.add((System.nanoTime() - reaction) / 1_000_000.0)
                                     if (actor.index % 8 == 0) {
@@ -198,6 +255,11 @@ object CoinGameLoad {
                     }
                 } }.awaitAll() }
                 sampler?.cancelAndJoin()
+                if (firstCohort > 0) {
+                    check(purchaseSpans[0].size == firstCohort && purchaseSpans.drop(1).all { it.size == laterCohortSize })
+                    record("joinTriggerEpochMs", triggerAt.get())
+                    checkpoint("joining-cohorts-purchased")
+                }
                 if (env.sqlProfiling) env.primary { connection ->
                     val now = System.currentTimeMillis()
                     val version = connection.query("SELECT max(version) FROM schema_migrations") { it.getInt(1) }.single()
@@ -234,6 +296,7 @@ object CoinGameLoad {
                     val records = env.primary { c -> c.query("SELECT payload FROM rooms ORDER BY id") { WireJson.decodeFromString<RoomRecord>(it.getString(1)) } }
                     var sharedAwards = 0
                     var paid = 0L
+                    val joiningWindows = (1..2).mapNotNull(::window)
                     for (record in records) {
                         val group = tables.getValue(record.id)
                         val game = requireNotNull(record.round)
@@ -271,8 +334,12 @@ object CoinGameLoad {
                         check(samples.map { it.actor to it.call }.toSet().size == samples.size)
                         check(group.all { actor -> samples.count { it.actor == actor.index } == game.called.size })
                         samples.forEach { sample ->
-                            val elapsed = sample.receivedAt - events[sample.call - 1].at
+                            val eventAt = events[sample.call - 1].at
+                            val elapsed = sample.receivedAt - eventAt
                             check(elapsed >= 0); deliveryMs += elapsed.toDouble()
+                            if (firstCohort > 0 && sample.actor < firstCohort && joiningWindows.any {
+                                    eventAt in it.startEpochMs..it.endEpochMs
+                                }) overlapDeliveryMs += elapsed.toDouble()
                         }
                         expectedSamples += game.called.size * group.size
                         paid += pool.coins
@@ -316,8 +383,28 @@ object CoinGameLoad {
             evidence["purchaseRoundTripMs"] = stats(purchaseMs); evidence["claimRoundTripMs"] = stats(claimMs)
             evidence["duplicateReceiptRoundTripMs"] = stats(receiptMs); evidence["snapshotToClaimReceiptMs"] = stats(claimReactionMs)
             evidence["drawEventToSnapshotMs"] = stats(deliveryMs)
+            var mixedTimingPassed = firstCohort == 0
+            if (firstCohort > 0) {
+                val windows = (1..2).mapNotNull(::window)
+                val overlapClaims = existingClaimSpans.filter { claim -> windows.any { claim.startNanos in it.startNanos..it.endNanos } }.map { it.milliseconds }
+                val allPurchases = purchaseSpans[0].size == firstCohort && purchaseSpans.drop(1).all { it.size == laterCohortSize }
+                val observed = allPurchases && windows.size == 2 && overlapClaims.isNotEmpty() && overlapDeliveryMs.isNotEmpty()
+                record("joinTriggerEpochMs", triggerAt.get())
+                record("mixedTrafficObserved", observed)
+                record("mixedSampleCaution", "Counts are reported explicitly; a small overlapping-claim sample is a smoke measurement, not a stable population p95.")
+                evidence["purchaseCohorts"] = JsonArray((0..2).map { group -> buildJsonObject {
+                    put("cohort", group); put("players", if (group == 0) firstCohort else laterCohortSize)
+                    put("primaryRequestsIssued", issued[group].get()); put("peakPendingPrimaryRequests", peakPending[group].get())
+                    put("purchaseRoundTripMs", stats(purchaseSpans[group].map { it.milliseconds }))
+                    window(group)?.let { put("startEpochMs", it.startEpochMs); put("endEpochMs", it.endEpochMs) }
+                } })
+                evidence["existingClaimDuringJoinsMs"] = stats(overlapClaims)
+                evidence["existingDrawDuringJoinsMs"] = stats(overlapDeliveryMs)
+                mixedTimingPassed = observed && percentile(overlapClaims, .95) < 1000 && percentile(overlapDeliveryMs, .95) < 1000
+                record("mixedP95Under1000Ms", mixedTimingPassed)
+            }
             record("latencyDefinition", "Same-host wall-clock interval from the persisted drawn event timestamp captured before its transaction commits to each native client's first snapshot containing that call; includes commit and polling. Not scheduled-deadline, mobile or TLS latency.")
-            val latencyPassed = !env.sqlProfiling && !diagnostics && probeCalls == 0 && expectedSamples == deliveryMs.size && expectedSamples > 0 &&
+            val latencyPassed = mixedTimingPassed && !env.sqlProfiling && !diagnostics && probeCalls == 0 && expectedSamples == deliveryMs.size && expectedSamples > 0 &&
                 percentile(deliveryMs, .95) < 1000 && percentile(purchaseMs, .95) < 1000 && percentile(claimMs, .95) < 1000
             record("allP95Under1000Ms", latencyPassed)
             checkpoint(if (success) if (probeCalls > 0) "probe-passed" else "completed" else "failed")

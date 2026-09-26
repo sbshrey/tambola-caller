@@ -44,7 +44,7 @@ tasks.register<JavaExec>("coinGameLoad") {
     workingDir = rootProject.projectDir
     maxHeapSize = "1024m"
     jvmArgs("-XX:ActiveProcessorCount=8")
-    timeout.set(Duration.ofMinutes(12))
+    timeout.set(Duration.ofMinutes(if ((System.getenv("TAMBOLA_COIN_LOAD_FIRST_COHORT")?.toIntOrNull() ?: 0) > 0) 16 else 12))
 }
 
 tasks.register<JavaExec>("coinPurchaseBurst") {

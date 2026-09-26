@@ -24,6 +24,14 @@ python tools/analyze-coin-sql-profile.py .test-workspace/coin-load-<run-id>
 
 The resulting `sql-timings.txt` excludes ordinary service diagnostics. `sql-profile-summary.json` includes the analyzer hash. Time outside JDBC execution includes statement preparation, result decoding and application work; it is not a pure CPU measurement. Keep diagnostic runs separate from final uninstrumented measurements.
 
+## Purchases during active rounds
+
+Set `TAMBOLA_COIN_LOAD_FIRST_COHORT=64` with 320 players for a full mixed-traffic run. The first 64 players start eight tables. Their first valid selected claim releases 128 joining players; another 128 start at that table's announced next-draw deadline. The triggering claimant waits until at least eight primary purchases have been issued and at least one remains pending. All forty tables then finish normally with the same privacy, receipt, prize and wallet checks as the default run.
+
+The first cohort must be a positive multiple of eight, smaller than the total, with the remaining players divisible by sixteen. This mode requires a full run (`TAMBOLA_COIN_LOAD_PROBE_CALLS=0`); zero or an unset first cohort preserves all-at-once purchasing. Mixed runs have a fourteen-minute inner deadline and a sixteen-minute task timeout.
+
+Evidence reports each cohort's successful primary purchase spans, issued requests and peak pending client requests. Existing-player claim samples start within either joining cohort's earliest-start/latest-end window. Existing-player delivery samples have persisted draw timestamps within those windows. The gap between cohorts is excluded, as are duplicate/replayed purchase requests from the window bounds. Pending client requests do not prove uninterrupted server CPU or database work. Missing overlap fails mixed latency acceptance; small overlapping-claim samples are smoke measurements, not a stable population p95. Mixed acceptance additionally requires both overlapping claim and delivery p95 below 1,000 ms, without relaxing the ordinary full-run purchase, claim or delivery targets.
+
 ## Repeated purchase diagnostic
 
 `coinPurchaseBurst` isolates cold versus repeat purchases using the same server, seeded players and HTTP clients. It buys mixed 1–6-ticket hands concurrently, checks full eight-player tables, cancels before the normal sales deadline, and verifies exact purchase/leave retries and refunds. Two waves are the default; `TAMBOLA_COIN_BURST_WAVES` allows 1–4. `TAMBOLA_COIN_BURST_STREAMS=true` subscribes to live updates immediately after each purchase, while other purchases are still pending, and requires every subscription to receive a snapshot before cancellation. Streams stop before refunds. The fixture always records `capacityAcceptance: false`: cancellation is not completed-round rematching or endurance, and this diagnostic has no call/claim/settlement acceptance.
