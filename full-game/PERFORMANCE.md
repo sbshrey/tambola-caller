@@ -12,7 +12,14 @@ The current 51-JAR service runtime has canonical identity `04440bb170091d3392a1e
 
 ## Native-client traffic measurement
 
-The existing two-emulator journey can optionally count transport bytes without changing the app or inspecting message contents. It still verifies 90 matching calls/results, private two-ticket hands, rematch and native cancellation. Its transparent proxy binds only loopback, bounds live connections and preserves streaming backpressure and half-close behavior. Three local Node tests pass for binary transfer/counting, connection limits/cleanup and refused upstreams; the full native measurement has **not run yet**.
+The two-emulator journey counts transport bytes without changing the app or inspecting message contents. Run `3e77b813-a3b1-4b7d-a824-01eb5a666ec2` **passed on API30 host/API26 guest** with the unchanged alpha14 APK and service runtime: 90 matching calls/results, private two-ticket hands, rematch and native cancellation. Both installed app/test APK identities were checked before and after. Original device settings/mappings were restored; the owned service and proxies stopped. Independent ADB/listener inspection confirmed no reverse mappings or service listener remained. [Raw evidence and hashes](reviews/android-performance-alpha14-2026-09-26/network-validation.json) include both native transcripts and six screenshots.
+
+| Cumulative checkpoint | Host upload bytes | Host download bytes | Guest upload bytes | Guest download bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Setup plus first complete game | 38,600 | 402,073 | 2,302 | 125,110 |
+| Through rematch and native cancellation | 40,271 | 414,732 | 2,811 | 132,247 |
+
+Both devices used two connections, with zero rejected connections or transport errors. The first checkpoint was approximately 39.6 seconds after proxy startup; this is a fast manual-draw journey with two tickets per player. It does not measure a paced automatic game, a maximum-size room, mobile-network latency or data-plan overhead. The transparent proxy binds only loopback, bounds live connections and preserves streaming backpressure and half-close behavior. Three local Node tests cover binary transfer/counting, connection limits/cleanup and refused upstreams.
 
 Install matching application and instrumentation APKs on two dedicated `tambola_full_game_*` emulators. Configure the isolated PostgreSQL/JDK environment described in the [service guide](server/README.md). Use a fresh output label:
 

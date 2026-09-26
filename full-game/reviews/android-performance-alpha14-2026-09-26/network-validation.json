@@ -1,0 +1,52 @@
+{
+  "runId": "3e77b813-a3b1-4b7d-a824-01eb5a666ec2",
+  "accepted": true,
+  "scope": "Per-device loopback TCP payload bytes, including HTTP headers and WebSocket framing/acks/pings. No TLS/IP/radio overhead; no payload contents retained. Not a physical-network measurement.",
+  "files": [
+    {
+      "path": "alpha14-native-network/evidence.json",
+      "bytes": 8403,
+      "sha256": "5e86698e2179452af149f550e59204dbc4494d909b7499c648a6e1d7fc36267e"
+    },
+    {
+      "path": "alpha14-native-network/guest-instrumentation.txt",
+      "bytes": 86,
+      "sha256": "b80662ea922163b0dd2dac3aefe10f15d81c80a86ecfca8a76bc2cb669c73b0b"
+    },
+    {
+      "path": "alpha14-native-network/host-instrumentation.txt",
+      "bytes": 86,
+      "sha256": "ad989630367c0295f43254d2f0612d13a526af4c0dc40c75445eff5ec1e04ad3"
+    },
+    {
+      "path": "alpha14-native-network/native-pair-guest-finished.png",
+      "bytes": 139883,
+      "sha256": "b18eb79578a490907186703ad0fdc2af7d240ad73857b73a7a1b6de6f79622f7"
+    },
+    {
+      "path": "alpha14-native-network/native-pair-guest-playing.png",
+      "bytes": 162756,
+      "sha256": "cf8950ed2369954f28ec1ebe0078ed57729bcca4470c4a7ad85632c3e2d49230"
+    },
+    {
+      "path": "alpha14-native-network/native-pair-guest-rematch-result.png",
+      "bytes": 166742,
+      "sha256": "f5a1d258c06e8ad0ab009bf7bf11232dcb797767fc778806cd71e34e46ce1f6e"
+    },
+    {
+      "path": "alpha14-native-network/native-pair-host-finished.png",
+      "bytes": 128881,
+      "sha256": "65d7c29ad93a1383045862b9cd70c75b8fbb102b5c8a779dac351e393198166b"
+    },
+    {
+      "path": "alpha14-native-network/native-pair-host-playing.png",
+      "bytes": 132520,
+      "sha256": "08dc5a69d8699e25cea8c2a85f846036d05886b16111507c8160ec94812758ab"
+    },
+    {
+      "path": "alpha14-native-network/native-pair-host-rematch-result.png",
+      "bytes": 119072,
+      "sha256": "c6846319c35511131f9ee6d573a5b13c556bb2d397c737cd8acc719dcb9517cc"
+    }
+  ]
+}

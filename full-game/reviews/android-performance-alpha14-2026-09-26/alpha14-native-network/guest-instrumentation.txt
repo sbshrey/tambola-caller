@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.NativePairTest:.
+
+Time: 33.604
+
+OK (1 test)
+
+
