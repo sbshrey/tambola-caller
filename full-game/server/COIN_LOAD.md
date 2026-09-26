@@ -14,6 +14,16 @@ The default is 80 players. Valid counts are multiples of eight from 8 through 32
 
 The default deliberately includes lazy wallet initialization in the purchase burst. `TAMBOLA_COIN_LOAD_PREPARE_WALLETS=true` first calls the wallet API for every seeded profile, matching the wallet state normally established by registration. These preparation calls also warm HTTP connections and service code; report this as a distinct condition, never as a server optimization. `TAMBOLA_COIN_LOAD_DIAGNOSTICS=true` samples aggregate PostgreSQL active wait categories during purchases every 25 ms. It records no SQL text or identifiers, but adds diagnostic overhead, so keep it off for final timing acceptance.
 
+`TAMBOLA_COIN_LOAD_SQL_PROFILE=true` uses a **test-classpath-only** launcher that wraps JDBC calls after acquiring the matchmaking advisory lock. It records fixed query categories, lock wait, held-transaction duration and commit duration, with no parameters, query text or player data. It also captures the allocation query plan and aggregate room update counters. The current diagnostic lookup supports installed schema 006 and generated-field schema 007. It never changes the installed server. Both diagnostic modes prevent a full latency-acceptance pass even if their timings fall below the target.
+
+To extract only validated timing records and an aggregate report from the private service log:
+
+```powershell
+python tools/analyze-coin-sql-profile.py .test-workspace/coin-load-<run-id>
+```
+
+The resulting `sql-timings.txt` excludes ordinary service diagnostics. `sql-profile-summary.json` includes the analyzer hash. Time outside JDBC execution includes statement preparation, result decoding and application work; it is not a pure CPU measurement. Keep diagnostic runs separate from final uninstrumented measurements.
+
 By default the task uses the local `installDist` runtime. To test an existing candidate, set `TAMBOLA_COIN_LOAD_RUNTIME_LIB` to its JAR directory and `TAMBOLA_COIN_LOAD_RUNTIME_SHA256` to its previously verified canonical runtime hash. The fixture hashes the source, copies only regular JARs into its new run directory, and verifies the complete copied manifest before launch. It verifies that manifest again after play. It does not overwrite either runtime. The manifest algorithm matches `tools/service-runtime.mjs`.
 
 ## Coverage and limits

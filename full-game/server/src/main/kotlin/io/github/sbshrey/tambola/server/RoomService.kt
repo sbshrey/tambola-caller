@@ -7,6 +7,10 @@ import java.sql.Connection
 import java.sql.SQLException
 import java.util.UUID
 
+internal const val OPEN_COIN_LOBBY_SQL = """SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
+    AND coin_starts_at > ? AND coin_human_seats < 8
+    ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
+
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
 class RoomService(
     private val database: Database,
@@ -126,9 +130,7 @@ class RoomService(
                 CoinLedger.ensure(connection, guest.id, now)
                 connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
                 val purchaseAt = clock()
-                val waiting = connection.query("""SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
-                    AND (payload::jsonb->>'startsAt')::bigint > ? AND jsonb_array_length(payload::jsonb->'members') < 8
-                    ORDER BY (payload::jsonb->>'startsAt')::bigint, id LIMIT 1 FOR UPDATE""", purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
+                val waiting = connection.query(OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id, coinOptions(),
                     emptyList(), purchaseAt + ROOM_LIFETIME, startsAt = purchaseAt + MATCH_COUNTDOWN).also {
                     connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, true)",

@@ -94,6 +94,8 @@ object CoinGameLoad {
                 record("serverHeapMiB", 512); record("serverActiveProcessors", 4)
                 record("runtimeSource", env.runtimeSource); record("sharedHttpTransports", playerCount / 8)
                 record("walletsPreparedBeforePurchase", prepareWallets); record("databaseWaitSampling", diagnostics)
+                record("sqlProfiling", env.sqlProfiling)
+                if (env.sqlProfiling) record("sqlProfilerSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/ProfiledCoinServer.kt"))))
                 record("scope", "Real isolated journal-enabled Java service; public match/wallet/selected-claim HTTP and native WebSocket clients. Synthetic clients mark revealed own numbers. Profiles seeded; no signup, Android UI, TLS, physical-network or restricted-role claim.")
                 record("fixtureSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinGameLoad.kt"))))
                 record("lifecycleSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/IsolatedLoadService.kt"))))
@@ -196,6 +198,16 @@ object CoinGameLoad {
                     }
                 } }.awaitAll() }
                 sampler?.cancelAndJoin()
+                if (env.sqlProfiling) env.primary { connection ->
+                    val now = System.currentTimeMillis()
+                    val version = connection.query("SELECT max(version) FROM schema_migrations") { it.getInt(1) }.single()
+                    check(version in 6..7) { "Update the diagnostic lookup for this schema" }
+                    val lookup = if (version == 7) OPEN_COIN_LOBBY_SQL else """SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
+                        AND (payload::jsonb->>'startsAt')::bigint > ? AND jsonb_array_length(payload::jsonb->'members') < 8
+                        ORDER BY (payload::jsonb->>'startsAt')::bigint, id LIMIT 1 FOR UPDATE"""
+                    val plan = connection.query("EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) $lookup", now, now) { it.getString(1) }.single()
+                    Files.writeString(env.directory.resolve("allocation-query-plan.json"), plan + "\n")
+                }
                 awaitCondition { actors.all { it.connected.get() == 1 && it.view().round != null } }
                 tables.putAll(actors.groupBy { it.view().roomId })
                 check(tables.size == playerCount / 8 && tables.values.all { it.size == 8 }) { "Matchmaking did not fill eight-seat tables" }
@@ -275,6 +287,11 @@ object CoinGameLoad {
                     record("sharedPrizesVerified", sharedAwards); record("settledCoins", paid); record("aggregateBalance", playerCount * COIN_STARTER_BALANCE)
                     record("exactlyOnePurchasePerPlayer", true); record("matchingResultsAndExactShares", true)
                 }
+                if (env.sqlProfiling) evidence["diagnosticRoomUpdates"] = env.primary { connection ->
+                    connection.query("SELECT n_tup_upd, n_tup_hot_upd, n_dead_tup FROM pg_stat_user_tables WHERE relname = 'rooms'") {
+                        buildJsonObject { put("updates", it.getLong(1)); put("hotUpdates", it.getLong(2)); put("estimatedDeadTuples", it.getLong(3)) }
+                    }.single()
+                }
                 healthy(); check(serviceRuntimeIdentity(env.root, env.runtimeLib) == env.runtimeIdentity)
                 success = true
             }
@@ -300,7 +317,7 @@ object CoinGameLoad {
             evidence["duplicateReceiptRoundTripMs"] = stats(receiptMs); evidence["snapshotToClaimReceiptMs"] = stats(claimReactionMs)
             evidence["drawEventToSnapshotMs"] = stats(deliveryMs)
             record("latencyDefinition", "Same-host wall-clock interval from the persisted drawn event timestamp captured before its transaction commits to each native client's first snapshot containing that call; includes commit and polling. Not scheduled-deadline, mobile or TLS latency.")
-            val latencyPassed = probeCalls == 0 && expectedSamples == deliveryMs.size && expectedSamples > 0 &&
+            val latencyPassed = !env.sqlProfiling && !diagnostics && probeCalls == 0 && expectedSamples == deliveryMs.size && expectedSamples > 0 &&
                 percentile(deliveryMs, .95) < 1000 && percentile(purchaseMs, .95) < 1000 && percentile(claimMs, .95) < 1000
             record("allP95Under1000Ms", latencyPassed)
             checkpoint(if (success) if (probeCalls > 0) "probe-passed" else "completed" else "failed")

@@ -48,6 +48,7 @@ internal class IsolatedLoadService : AutoCloseable {
         target
     }
     val runtimeIdentity = serviceRuntimeIdentity(root, runtimeLib)
+    val sqlProfiling = System.getenv("TAMBOLA_COIN_LOAD_SQL_PROFILE") == "true"
     private val names = listOf("tambola_load_main_$runId", "tambola_load_journal_$runId")
     private val owned = mutableSetOf<String>()
     private val port = ServerSocket(0, 1, InetAddress.getByName("127.0.0.1")).use { it.localPort }
@@ -69,10 +70,13 @@ internal class IsolatedLoadService : AutoCloseable {
             control("CREATE DATABASE $it TEMPLATE template0"); owned += it
         }
         val java = Path.of(System.getProperty("java.home"), "bin", if (System.getProperty("os.name").startsWith("Windows")) "java.exe" else "java")
+        val classpath = runtimeLib.toString() + "/*" + if (sqlProfiling)
+            System.getProperty("path.separator") + root.resolve("server/build/classes/kotlin/test") else ""
         val builder = ProcessBuilder(java.toString(), "-Xms128m", "-Xmx512m", "-XX:ActiveProcessorCount=4",
-            "-Xlog:gc:file=gc.log:time,uptime", "-cp", runtimeLib.toString() + "/*",
-            "io.github.sbshrey.tambola.server.ServerKt").directory(directory.toFile())
-            .redirectOutput(ProcessBuilder.Redirect.DISCARD).redirectError(ProcessBuilder.Redirect.DISCARD)
+            "-Xlog:gc:file=gc.log:time,uptime", "-cp", classpath,
+            "io.github.sbshrey.tambola.server." + if (sqlProfiling) "ProfiledCoinServer" else "ServerKt").directory(directory.toFile())
+            .redirectOutput(if (sqlProfiling) ProcessBuilder.Redirect.to(directory.resolve("service-diagnostic.log").toFile()) else ProcessBuilder.Redirect.DISCARD)
+            .redirectError(ProcessBuilder.Redirect.DISCARD)
         builder.environment().putAll(mapOf("PORT" to port.toString(), "TAMBOLA_BIND_HOST" to "127.0.0.1", "TAMBOLA_LOCAL_DEVELOPMENT" to "true",
             "TAMBOLA_DATABASE_URL" to databaseUrl(0), "TAMBOLA_DATABASE_USER" to user, "TAMBOLA_DATABASE_PASSWORD" to password,
             "TAMBOLA_DELETION_DATABASE_URL" to databaseUrl(1), "TAMBOLA_DELETION_DATABASE_USER" to user, "TAMBOLA_DELETION_DATABASE_PASSWORD" to password))
