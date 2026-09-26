@@ -1,0 +1,191 @@
+{
+  "checkedAt": "2026-09-26T20:26:48.121311+00:00",
+  "sourceCommit": "14c20f0042c53c7f9c64f593ee7deebc302773ff",
+  "app": {
+    "path": "releases\\0.18.0-alpha18-wifi-optimized\\Tambola-Together-0.18.0-alpha18-wifi-optimized.apk",
+    "sha256": "06be6a1ebee61d755d171a8caa3cf441d30229045444a8e08e757f8c9b93ba2a",
+    "bytes": 29126773,
+    "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+    "debuggable": false,
+    "profileableByShell": true,
+    "minified": true,
+    "resourcesShrunk": true
+  },
+  "benchmarkDriver": {
+    "sha256": "2a3a34e33b979479493999ff2173108317b36ffb4660edabce4b63edbc6136f7",
+    "bytes": 55882142
+  },
+  "tests": {
+    "androidUnit": 14,
+    "failures": 0,
+    "lintErrors": 0,
+    "lintWarnings": 90,
+    "fullRoundSeconds": 510.492,
+    "startupSeconds": 15.409
+  },
+  "journey": {
+    "completed": true,
+    "scope": "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; three passive HTTP QA peers",
+    "stage": "passed",
+    "elapsedMs": 510305,
+    "ownedTickets": 6,
+    "distinctOwnNumbers": 90,
+    "calls": 86,
+    "claims": 8,
+    "coldProcessRestoredMarks": 20,
+    "finishedCalls": 86,
+    "settledWinnings": 2400,
+    "finalBalance": 3300,
+    "newRoundPurchasedAndRefunded": true,
+    "nativeProfileDeleted": true,
+    "deletedQaPeers": 3
+  },
+  "measurementLimits": [
+    "Software API30 emulator; no physical performance claim",
+    "CompilationMode.Ignore preserves existing compilation state",
+    "FrameTimingMetric CPU duration is not the earlier Window FrameMetrics total duration",
+    "One full round; three retained cold-start samples; no startup p95 claim",
+    "Heavy builds started only after timing checks finished",
+    "No custom baseline profile or method trace; ART method tracing is disabled by the benchmark library"
+  ],
+  "localTraces": [
+    {
+      "localPath": ".test-workspace\\optimized-gameplay-5-benchmark\\io.github.sbshrey.tambola.benchmark\\CoinReleaseBenchmark_realCoinRound_iter000_2026-09-26-20-21-02.perfetto-trace",
+      "sha256": "122a6d1ad9d3b7af81ecfb752abd1cd9fa7d5ad944d5b30f2d3eb2d0ccf48b99",
+      "bytes": 53412333
+    },
+    {
+      "localPath": ".test-workspace\\optimized-startup-2-benchmark\\io.github.sbshrey.tambola.benchmark\\CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace",
+      "sha256": "eb06f1b099d0d9446454e36928749708821634e2b22fbd10e88c1d2998398cd9",
+      "bytes": 424772
+    },
+    {
+      "localPath": ".test-workspace\\optimized-startup-2-benchmark\\io.github.sbshrey.tambola.benchmark\\CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace",
+      "sha256": "9d05d29e4a1ffa47bb03172a5ecfc0474adafbf57f75e6a1e30b8e93414d0301",
+      "bytes": 401765
+    },
+    {
+      "localPath": ".test-workspace\\optimized-startup-2-benchmark\\io.github.sbshrey.tambola.benchmark\\CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace",
+      "sha256": "1fb655f236663dd37e92da1f41b4605eeac80f7f4bb45f76bff68643f18ee51d",
+      "bytes": 397053
+    }
+  ],
+  "files": {
+    "benchmark-build-5.txt": {
+      "sha256": "38fe2ca37758eededea8cce513a95343f9c2d26b0b13e4e4138232031d9ceebf",
+      "bytes": 3382
+    },
+    "benchmark-dependency-provenance.json": {
+      "sha256": "2df487268f5ccf9fead2f0100c8461345f80fe39220144e7aa72584716f36274",
+      "bytes": 58308
+    },
+    "coin-release-journey.json": {
+      "sha256": "7a5c95b18852555a7e092d3d85d1bdb82c04fb740a17c6d09c12a0a1b52c88a5",
+      "bytes": 466
+    },
+    "coin-release-results.png": {
+      "sha256": "aa67f78e82058c7533263eb7d7a2844a1a429c704dfaf61a7efd7861ecb357de",
+      "bytes": 114401
+    },
+    "failed-row-geometry-cleanup.json": {
+      "sha256": "e177e0960541158686f15cd4faf5c4e9e141bcc8fb510755b9377ba60053a805",
+      "bytes": 274
+    },
+    "gameplay-benchmark.json": {
+      "sha256": "fb90748613cb5f498e8a581227ea02bea49814b08955bae858f807bd6c8a495c",
+      "bytes": 98203
+    },
+    "gameplay-collection.txt": {
+      "sha256": "ccd6966f262eca4a9fc0eed0e81232e0996309b8e1c8d07c04086cc52d0724ab",
+      "bytes": 126
+    },
+    "lint.xml": {
+      "sha256": "800fce027350806aa2ec5eac801b97f1730c37fc4a06a9d136547a87f1c24505",
+      "bytes": 108860
+    },
+    "optimized-apk-identity.json": {
+      "sha256": "804eda48ef026853c7bdc5ff278d2cae563a88da3533810c8cfb7598e3050bd3",
+      "bytes": 384
+    },
+    "optimized-apk-signature.txt": {
+      "sha256": "ac175ec1777974def2dc0c4f34f186c039266f56d60059370e18c7076fca8f95",
+      "bytes": 972
+    },
+    "optimized-build-strict.txt": {
+      "sha256": "3b50308be4e1d40fbae0094401a00ae3ca1dc7afe5514653abb0d9d3fe13007d",
+      "bytes": 6352
+    },
+    "optimized-default-projects.txt": {
+      "sha256": "b5fdfa61db0ad9a1cef47178454f7ec3ee0d6da4e3d15fa923a33e11c798ca51",
+      "bytes": 907
+    },
+    "optimized-final-checks.txt": {
+      "sha256": "b2be829eadd3815c91d0850b05450b1f724de410c377ac8d01b53ae0c8ee44b3",
+      "bytes": 4028
+    },
+    "optimized-gameplay-2.txt": {
+      "sha256": "10c1436a169da9d925d8fb84b5a5f711ea1f2ffb9ee9143e3bb7c6265c849508",
+      "bytes": 3814
+    },
+    "optimized-gameplay-3.txt": {
+      "sha256": "86ae651b8c5c9cf3fa8bd895919d59f0d96e91ad5de69250cb6fdc9e399951aa",
+      "bytes": 4381
+    },
+    "optimized-gameplay-4.txt": {
+      "sha256": "19c472be687f19bad0b96c8cde98c85f8b7d1266eede33475738e1aa78bdda1b",
+      "bytes": 5672
+    },
+    "optimized-gameplay-5.txt": {
+      "sha256": "dd959cfb77b3c75ec716e76f1bc3fb28770efb202e3433bedbf6c93266fbd3c5",
+      "bytes": 5373
+    },
+    "optimized-gameplay-midround.png": {
+      "sha256": "97601ed5bf3d5356d60269a625d5d3bf284a0b6738a8c324ed00bf3c6e4b91cc",
+      "bytes": 214040
+    },
+    "optimized-host-health.json": {
+      "sha256": "d2a01614b8230ee4acab62b920de0fad84952d21626dbd4c113a756d258c5100",
+      "bytes": 289
+    },
+    "optimized-manifest.txt": {
+      "sha256": "584dbec3640926dc470257e3c10e1700ff05bfb435df5532aa9028a7b8e51f64",
+      "bytes": 10556
+    },
+    "optimized-network-security.txt": {
+      "sha256": "c67c5d7ef14d1f186efcf32abac48293207d3490d91fbb23ab1060e12a52697f",
+      "bytes": 384
+    },
+    "optimized-server-projects.txt": {
+      "sha256": "a3cb5eb513e8c34f48424c6abc4edb94724de954c5a65fbb4e65d75ca6547474",
+      "bytes": 866
+    },
+    "optimized-startup-2.txt": {
+      "sha256": "1c5e3b4a3a425fc220a0f8235fa7eb38acfbb40ea1a55e7fb60c33a2d919faaf",
+      "bytes": 7878
+    },
+    "startup-benchmark.json": {
+      "sha256": "ce82dc39b6571a8a25968fbf2713845407febf5180360fd3a3c08c60c3aaeaa4",
+      "bytes": 3661
+    },
+    "startup-collection.txt": {
+      "sha256": "2b9ff7e4a1259fcacc02e834d74eea91e9265adf575acf387deb6f0eac1cc383",
+      "bytes": 124
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.presentation.CoinResultsTest.xml": {
+      "sha256": "fdb10808e1f573318ba0ee9739f9ec6d11474be1c7492e60ec8fd7640d030eca",
+      "bytes": 1261
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.presentation.WinMomentTest.xml": {
+      "sha256": "5d8b1c85ee75ee4b31efbe22faffd38a335fe6b8ab7f7a8ce5ac1bb67667c681",
+      "bytes": 1098
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.setup.SetupDraftTest.xml": {
+      "sha256": "73fc6eb852ff473190fff9764eb8b7285693ba1f711d4df1d4ed267fc6c3d3fb",
+      "bytes": 1058
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.ui.ThemeContrastTest.xml": {
+      "sha256": "bb4aab42cb96fc53cb35b05a1f405c42084eaae0fd277bf7e2658b77494e8925",
+      "bytes": 499
+    }
+  }
+}

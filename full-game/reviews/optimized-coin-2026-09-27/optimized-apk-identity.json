@@ -1,0 +1,11 @@
+{
+  "apkSha256": "06be6a1ebee61d755d171a8caa3cf441d30229045444a8e08e757f8c9b93ba2a",
+  "bytes": 29126773,
+  "installedMatchesBuild": true,
+  "publicCaSha256": "98ef33aa08d19a2a0ad67c097d90864c352a1e2011e725d8f0cdf8ca7c0cc24f",
+  "caResource": "res/F7.pem",
+  "versionCode": 18,
+  "versionName": "0.18.0-alpha18-wifi-optimized",
+  "device": "emulator-5582",
+  "api": "30"
+}

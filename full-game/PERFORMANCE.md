@@ -1,6 +1,8 @@
 # Performance acceptance
 
-The current candidate is alpha14. This page separates measured results from remaining performance work; emulator behavior is not a physical-phone or mobile-network benchmark.
+The current product is the online coin game. Alpha18's Wi-Fi debug APK passed a complete manual round and eliminated repeated idle-lobby composition work; its emulator frame p95 was still 51 ms. The opt-in [optimized Wi-Fi driver](macrobenchmark/README.md) measures a non-debuggable, minified APK through external UI controls. Emulator behavior is not a physical-phone or mobile-network benchmark. The alpha14 measurements below remain historical evidence for earlier flows and cannot establish current coin-game performance.
+
+The optimized alpha18 passed an external 86-call round, cold-process mark restoration, all eight claims, settlement and replay/refund. It is 30.51% smaller at 29,126,773 bytes. Macrobenchmark reported 2,603 frames with CPU-duration p50/p95/p99 of 16.102/53.436/122.340 ms, so smoothness remains open. This is a different metric and fixture from the earlier debug total-frame timings; do not compare them as a speedup. Three retained cold launches had a median initial display of 808.166 ms. [Reports, screenshots and trace identities](reviews/optimized-coin-2026-09-27/README.md) explain compilation state, software-emulator limits and remaining physical-device work.
 
 ## Sustained automatic rooms
 

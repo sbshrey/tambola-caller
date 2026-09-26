@@ -1,0 +1,9 @@
+{
+  "completed": false,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; three passive HTTP QA peers",
+  "stage": "failed",
+  "elapsedMs": 27859,
+  "failureType": "AssertionError",
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 3
+}

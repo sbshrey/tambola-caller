@@ -1,0 +1,88 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preLanReleaseBuild UP-TO-DATE
+> Task :app:generateLanReleaseBuildConfig UP-TO-DATE
+> Task :app:generateLanReleaseResources UP-TO-DATE
+> Task :app:prepareLanTrust UP-TO-DATE
+> Task :app:packageLanReleaseResources UP-TO-DATE
+> Task :app:processLanReleaseNavigationResources UP-TO-DATE
+> Task :app:parseLanReleaseLocalResources UP-TO-DATE
+> Task :app:generateLanReleaseRFile UP-TO-DATE
+> Task :app:kaptGenerateStubsLanReleaseKotlin UP-TO-DATE
+> Task :app:kaptLanReleaseKotlin UP-TO-DATE
+> Task :app:compileLanReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileLanRelease UP-TO-DATE
+> Task :app:compileLanReleaseJavaWithJavac UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:extractDeepLinksLanRelease UP-TO-DATE
+> Task :app:processLanReleaseMainManifest UP-TO-DATE
+> Task :app:generateLanReleaseLintReportModel
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
+> Task :app:javaPreCompileDebug FROM-CACHE
+> Task :app:parseDebugLocalResources
+> Task :app:mapDebugSourceSetPaths
+> Task :app:compileDebugNavigationResources FROM-CACHE
+> Task :app:checkDebugAarMetadata
+> Task :app:generateDebugRFile
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:extractDeepLinksRelease FROM-CACHE
+> Task :app:processReleaseMainManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:mergeDebugResources
+> Task :app:processDebugResources
+> Task :app:kaptGenerateStubsDebugKotlin
+> Task :app:kaptDebugKotlin
+
+> Task :app:compileDebugKotlin
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/src/main/java/io/github/sbshrey/tambola/game/online/OnlineViewModel.kt:281:97 Check for instance is always 'true'.
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:kaptGenerateStubsDebugUnitTestKotlin
+> Task :app:kaptDebugUnitTestKotlin SKIPPED
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:lintAnalyzeLanRelease
+> Task :app:testDebugUnitTest
+
+> Task :app:lintReportLanRelease
+Wrote HTML report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-lanRelease.html
+Wrote SARIF report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-lanRelease.sarif
+
+> Task :app:lintLanRelease
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 41s
+56 actionable tasks: 31 executed, 4 from cache, 21 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

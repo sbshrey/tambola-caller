@@ -1,8 +1,10 @@
 # Tambola Together alpha18 — Wi-Fi testing
 
-Install [the alpha18 Wi-Fi APK](releases/0.18.0-alpha18-wifi/Tambola-Together-0.18.0-alpha18-wifi.apk) on Android 8 or newer. This is a private-network development build with the existing debug signing certificate. Install over the previous full-game alpha and keep its data; uninstalling or resetting can lose access to the saved wallet. Tambola Keyboard is a separate app and is not required.
+Install [the optimized alpha18 Wi-Fi APK](releases/0.18.0-alpha18-wifi-optimized/Tambola-Together-0.18.0-alpha18-wifi-optimized.apk) on Android 8 or newer. This is a private-network development build with the existing development signing certificate. Install over the previous full-game alpha and keep its data; uninstalling or resetting can lose access to the saved wallet. Tambola Keyboard is a separate app and is not required. The [earlier debug APK](releases/0.18.0-alpha18-wifi/Tambola-Together-0.18.0-alpha18-wifi.apk) remains available as a fallback.
 
 Alpha18 shows only your winning prizes and your actual share of tied prizes. It also removes unnecessary idle lobby timer work. The existing alpha17 Wi-Fi service remains running and compatible.
+
+The optimized build is 29.1 MB, uses code/resource shrinking and disables debugging. It passed a complete online round, a forced app restart with retained marks, settlement and a replay refund. Emulator timing still misses the smoothness target; physical-phone performance remains unverified.
 
 ## Connect and play
 
@@ -18,4 +20,4 @@ Alpha17 renews expired game sessions automatically on the same installation. It 
 
 Settings retain language, caller audio, music/effects and reduced-motion preferences. Your game data explains retention and deletion. Confirmed profile deletion removes server access and wallet data; sign-out revokes access without immediately erasing shared game history. Recovery records prevent older server backups from reactivating deleted or signed-out credentials recorded by this version.
 
-The [candidate evidence](reviews/coin-ui-2026-09-27/README.md) distinguishes checks already completed from pending acceptance. This is not a signed Store release or proof of physical-phone Wi-Fi, optimized animation performance, Windows reboot behavior or installed-backup restoration. See [host operation](../docs/WIFI_HOST.md) and [the remaining release work](../docs/ONLINE_COIN_GAME_PLAN.md).
+The [optimized candidate evidence](reviews/optimized-coin-2026-09-27/README.md) and [alpha18 UI evidence](reviews/coin-ui-2026-09-27/README.md) distinguish completed checks from pending acceptance. This is not a Store release or proof of physical-phone Wi-Fi, smooth animation performance, Windows reboot behavior or installed-backup restoration. See [host operation](../docs/WIFI_HOST.md) and [the remaining release work](../docs/ONLINE_COIN_GAME_PLAN.md).

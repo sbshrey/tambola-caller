@@ -1,0 +1,92 @@
+
+io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark:INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_max=5.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_median=4.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_min=4.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_stddev=0.5773502691896258
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p50=69.4349
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p90=531.3135400000001
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p95=535.6212
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p99=536.62176
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_max=1007.533
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_median=808.1663
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_min=773.6135
+INSTRUMENTATION_STATUS: EMULATOR_time_to_initial_display_millis_stddev=126.26645736759757
+INSTRUMENTATION_STATUS: android.studio.display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_coldCoinEntry
+  frameCount               [min     4.0](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [median     4.0](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [max     5.0](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace)
+  timeToInitialDisplayMs   [min   773.6](file://CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace),   [median   808.2](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [max 1,007.5](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace)
+  frameDurationCpuMs       P50     69.4,   P90    531.3,   P95    535.6,   P99    536.6
+    Traces: Iteration [0](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace) [1](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace) [2](file://CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_coldCoinEntry
+  frameCount               [min     4.0](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [median     4.0](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [max     5.0](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace)
+  timeToInitialDisplayMs   [min   773.6](file://CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace),   [median   808.2](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [max 1,007.5](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace)
+  frameDurationCpuMs       P50     69.4,   P90    531.3,   P95    535.6,   P99    536.6
+    Traces: Iteration [0](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace) [1](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace) [2](file://CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_coldCoinEntry
+  frameCount               [min     4.0](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [median     4.0](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [max     5.0](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace)
+  timeToInitialDisplayMs   [min   773.6](file://CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace),   [median   808.2](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace),   [max 1,007.5](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace)
+  frameDurationCpuMs       P50     69.4,   P90    531.3,   P95    535.6,   P99    536.6
+    Traces: Iteration [0](file://CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace) [1](file://CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace) [2](file://CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark
+INSTRUMENTATION_STATUS_CODE: 2
+.
+
+Time: 15.409
+
+OK (1 test)
+
+

@@ -1,0 +1,126 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preLanReleaseBuild UP-TO-DATE
+> Task :app:mergeLanReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeLanReleaseNativeLibs UP-TO-DATE
+> Task :app:stripLanReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractLanReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeLanReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkLanReleaseDuplicateClasses UP-TO-DATE
+> Task :app:generateLanReleaseBuildConfig UP-TO-DATE
+> Task :app:generateLanReleaseResources UP-TO-DATE
+> Task :app:prepareLanTrust UP-TO-DATE
+> Task :app:packageLanReleaseResources UP-TO-DATE
+> Task :app:processLanReleaseNavigationResources UP-TO-DATE
+> Task :app:parseLanReleaseLocalResources UP-TO-DATE
+> Task :app:generateLanReleaseRFile UP-TO-DATE
+> Task :app:kaptGenerateStubsLanReleaseKotlin UP-TO-DATE
+> Task :app:kaptLanReleaseKotlin UP-TO-DATE
+> Task :app:compileLanReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileLanRelease UP-TO-DATE
+> Task :app:compileLanReleaseJavaWithJavac
+> Task :app:mergeLanReleaseArtProfile UP-TO-DATE
+> Task :app:checkLanReleaseAarMetadata UP-TO-DATE
+> Task :app:mapLanReleaseSourceSetPaths UP-TO-DATE
+> Task :app:compileLanReleaseNavigationResources UP-TO-DATE
+> Task :app:mergeLanReleaseResources UP-TO-DATE
+> Task :app:createLanReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksLanRelease UP-TO-DATE
+> Task :app:processLanReleaseMainManifest UP-TO-DATE
+> Task :app:processLanReleaseManifest UP-TO-DATE
+> Task :app:processLanReleaseManifestForPackage UP-TO-DATE
+> Task :app:processLanReleaseResources UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeLanReleaseGeneratedProguardFiles
+> Task :app:processLanReleaseJavaRes
+> Task :app:mergeLanReleaseStartupProfile UP-TO-DATE
+> Task :app:generateLanReleaseAssets UP-TO-DATE
+> Task :app:prepareSounds UP-TO-DATE
+> Task :app:prepareVoices UP-TO-DATE
+> Task :app:mergeLanReleaseAssets UP-TO-DATE
+> Task :app:compressLanReleaseAssets UP-TO-DATE
+> Task :app:extractLanReleaseVersionControlInfo UP-TO-DATE
+> Task :app:expandLanReleaseArtProfileWildcards
+> Task :app:mergeLanReleaseJavaResource
+> Task :app:generateLanReleaseLintVitalReportModel
+> Task :app:produceLanReleaseComposeMapping
+> Task :app:reportLanReleaseComposeMappingErrors
+> Task :app:collectLanReleaseDependencies UP-TO-DATE
+> Task :app:sdkLanReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningLanRelease UP-TO-DATE
+> Task :app:writeLanReleaseAppMetadata UP-TO-DATE
+> Task :app:writeLanReleaseSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:preBuild UP-TO-DATE
+> Task :macrobenchmark:preLanReleaseBuild UP-TO-DATE
+> Task :macrobenchmark:checkTestedAppObfuscationLanRelease UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:prepareBenchmarkTrust UP-TO-DATE
+> Task :macrobenchmark:packageLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseNavigationResources UP-TO-DATE
+> Task :macrobenchmark:parseLanReleaseLocalResources UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseRFile UP-TO-DATE
+> Task :macrobenchmark:javaPreCompileLanRelease UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:compressLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseGlobalSynthetics UP-TO-DATE
+> Task :macrobenchmark:checkLanReleaseDuplicateClasses UP-TO-DATE
+> Task :macrobenchmark:desugarLanReleaseFileDependencies
+> Task :macrobenchmark:compileLanReleaseKotlin
+> Task :app:lintVitalAnalyzeLanRelease
+> Task :app:minifyLanReleaseWithR8
+> Task :macrobenchmark:mergeExtDexLanRelease
+> Task :macrobenchmark:compileLanReleaseJavaWithJavac NO-SOURCE
+> Task :app:lintVitalReportLanRelease
+> Task :macrobenchmark:processLanReleaseJavaRes
+> Task :app:lintVitalLanRelease
+> Task :macrobenchmark:mapLanReleaseSourceSetPaths
+> Task :macrobenchmark:compileLanReleaseNavigationResources FROM-CACHE
+> Task :macrobenchmark:checkLanReleaseAarMetadata
+> Task :macrobenchmark:mergeLibDexLanRelease
+> Task :macrobenchmark:mergeLanReleaseJavaResource
+> Task :macrobenchmark:mergeLanReleaseResources
+> Task :macrobenchmark:mergeLanReleaseManifest
+> Task :macrobenchmark:processLanReleaseManifest
+> Task :macrobenchmark:mergeLanReleaseJniLibFolders
+> Task :macrobenchmark:validateSigningLanRelease
+> Task :macrobenchmark:writeLanReleaseSigningConfigVersions
+> Task :macrobenchmark:mergeLanReleaseNativeLibs
+
+> Task :macrobenchmark:stripLanReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libbenchmarkNative.so, libtracing_perfetto.so. Run with --info option to learn more.
+
+> Task :macrobenchmark:processLanReleaseResources
+> Task :macrobenchmark:dexBuilderLanRelease
+> Task :macrobenchmark:mergeProjectDexLanRelease
+> Task :macrobenchmark:packageLanRelease
+> Task :macrobenchmark:createLanReleaseApkListingFileRedirect
+> Task :macrobenchmark:assembleLanRelease
+> Task :app:mergeLanReleaseComposeMapping
+> Task :app:convertShrunkResourcesToBinaryLanRelease
+> Task :app:optimizeLanReleaseResources
+> Task :app:compileLanReleaseArtProfile
+> Task :app:packageLanRelease
+> Task :app:createLanReleaseApkListingFileRedirect
+> Task :app:assembleLanRelease
+
+BUILD SUCCESSFUL in 2m 21s
+97 actionable tasks: 39 executed, 1 from cache, 57 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

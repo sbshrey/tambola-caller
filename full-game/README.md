@@ -4,6 +4,8 @@ Native Android game under development on `shrey/full-tambola-game`. The current 
 
 Play buys 1–6 disjoint tickets with free virtual coins, starts a short countdown and fills empty seats with labelled computers. Calls arrive every five seconds. Mark manually, page through one or two readable tickets with arrows, and claim a chosen prize beside its ticket. The pool funds six to eight prizes; results offer another round. Alpha17 adds automatic same-installation session renewal and durable logout recovery; [packaging and Wi-Fi acceptance](reviews/session-wifi-alpha17-2026-09-27/README.md) track its deployment status.
 
+The current [optimized alpha18 APK](ALPHA_INSTALL.md) adds personal prize shares and reduced idle work, then enables code/resource shrinking in a non-debuggable Wi-Fi build. Its external UI check passed a full round, cold-process mark recovery, payout and replay/refund. The 29.1 MB APK retains the existing development signature. [Optimized evidence](reviews/optimized-coin-2026-09-27/README.md) keeps emulator timing separate from physical-phone and production acceptance.
+
 ## Earlier checkpoints
 
 Alpha13 redesigns play around a compact game table: one-tap quick games, all 1–6 owned tickets together without a ticket carousel or scrolling, non-repeating numbers across each player's hand, and a covered handoff for shared-device family play. See the [design research](../docs/GAMEPLAY_REDESIGN.md), [alpha13 validation](ALPHA13_VALIDATION.md) and [installation guide](ALPHA_INSTALL.md). Alpha14 packages the verified build-tool migration with Android 8/11/16, upgrade, multiplayer and recovery acceptance; see [alpha14 validation](ALPHA14_VALIDATION.md). It remains an internal development build.

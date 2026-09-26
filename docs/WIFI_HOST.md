@@ -9,7 +9,7 @@ The alpha18 APK passed a complete native round against this unchanged service. I
 - Game endpoint: `https://192.168.1.4:8443` (PC Ethernet address, same LAN as Wi-Fi).
 - Backend binds only `127.0.0.1:18080`; PostgreSQL binds only `127.0.0.1:55433`.
 - PostgreSQL 16.15 uses separate `tambola_local` and `tambola_local_journal` databases, migration-owner and restricted runtime roles. Existing test database on 55432 is untouched.
-- Caddy 2.11.4 terminates TLS and blocks `/internal/*` from the LAN. Its private CA is trusted only by the separate `lan` APK for this IP. No system certificate store was changed; release trust remains unchanged.
+- Caddy 2.11.4 terminates TLS and blocks `/internal/*` from the LAN. Its private CA is trusted only by the explicit `lan` and optimized `lanRelease` Wi-Fi APKs for this IP. No system certificate store was changed; ordinary release trust remains unchanged.
 - Pinned Java 17 and PowerShell 7.6 runtimes, service libraries and configuration live outside the checkout. User/SYSTEM ACLs and Windows DPAPI protect configuration. Never copy `.secrets`, database files, private TLS keys or raw backups into Git/APKs.
 - Hidden watcher restarts the worker; the worker restarts Java/Caddy and recovers the dedicated database. PID, executable and start-time checks protect unrelated processes.
 - Current-user login startup is installed. It runs after this user signs in, **not before Windows login**. Do not describe it as a SYSTEM service or a reboot-tested deployment. Existing AC sleep timeout is already disabled; no power settings were changed.

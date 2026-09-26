@@ -1,0 +1,106 @@
+{
+    "context": {
+        "build": {
+            "brand": "google",
+            "device": "generic_x86_arm",
+            "fingerprint": "google/sdk_gphone_x86_arm/generic_x86_arm:11/RSR1.201013.001/6903271:userdebug/dev-keys",
+            "id": "RSR1.201013.001",
+            "model": "sdk_gphone_x86_arm",
+            "type": "userdebug",
+            "version": {
+                "codename": "REL",
+                "sdk": 30
+            }
+        },
+        "cpuCoreCount": 3,
+        "cpuLocked": false,
+        "cpuMaxFreqHz": 2000,
+        "memTotalBytes": 2077138944,
+        "sustainedPerformanceModeEnabled": false,
+        "artMainlineVersion": 1,
+        "osCodenameAbbreviated": "R",
+        "compilationMode": "run-from-apk",
+        "payload": {}
+    },
+    "benchmarks": [
+        {
+            "name": "coldCoinEntry",
+            "params": {},
+            "className": "io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark",
+            "totalRunTimeNs": 14319289000,
+            "metrics": {
+                "frameCount": {
+                    "minimum": 4.0,
+                    "maximum": 5.0,
+                    "median": 4.0,
+                    "coefficientOfVariation": 0.13323467750529827,
+                    "runs": [
+                        5.0,
+                        4.0,
+                        4.0
+                    ]
+                },
+                "timeToInitialDisplayMs": {
+                    "minimum": 773.6135,
+                    "maximum": 1007.533,
+                    "median": 808.1663,
+                    "coefficientOfVariation": 0.14629339958570964,
+                    "runs": [
+                        1007.533,
+                        808.1663,
+                        773.6135
+                    ]
+                }
+            },
+            "sampledMetrics": {
+                "frameDurationCpuMs": {
+                    "P50": 69.4349,
+                    "P90": 531.3135400000001,
+                    "P95": 535.6212,
+                    "P99": 536.62176,
+                    "runs": [
+                        [
+                            367.7433,
+                            66.7937,
+                            69.4349,
+                            536.8719,
+                            20.5641
+                        ],
+                        [
+                            356.3623,
+                            42.2672,
+                            517.4181,
+                            13.0075
+                        ],
+                        [
+                            359.953,
+                            47.1314,
+                            534.7874,
+                            19.4286
+                        ]
+                    ]
+                }
+            },
+            "warmupIterations": 0,
+            "repeatIterations": 3,
+            "thermalThrottleSleepSeconds": 0,
+            "profilerOutputs": [
+                {
+                    "type": "PerfettoTrace",
+                    "label": "Trace Iteration 0",
+                    "filename": "CoinReleaseBenchmark_coldCoinEntry_iter000_2026-09-26-20-22-07.perfetto-trace"
+                },
+                {
+                    "type": "PerfettoTrace",
+                    "label": "Trace Iteration 1",
+                    "filename": "CoinReleaseBenchmark_coldCoinEntry_iter001_2026-09-26-20-22-11.perfetto-trace"
+                },
+                {
+                    "type": "PerfettoTrace",
+                    "label": "Trace Iteration 2",
+                    "filename": "CoinReleaseBenchmark_coldCoinEntry_iter002_2026-09-26-20-22-15.perfetto-trace"
+                }
+            ]
+        }
+    ]
+}

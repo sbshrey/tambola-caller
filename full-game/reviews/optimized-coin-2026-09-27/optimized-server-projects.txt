@@ -1,0 +1,32 @@
+
+> Task :projects
+
+Projects:
+
+------------------------------------------------------------
+Root project 'TambolaTogether'
+------------------------------------------------------------
+
+Location: D:\Github\App Ideas\tambola-caller\full-game
+
+Project hierarchy:
+
+Root project 'TambolaTogether'
++--- Project ':client'
++--- Project ':domain'
++--- Project ':protocol'
+\--- Project ':server'
+
+Project locations:
+
+project ':client' - \client
+project ':domain' - \domain
+project ':protocol' - \protocol
+project ':server' - \server
+
+To see a list of the tasks of a project, run gradlew <project-path>:tasks
+For example, try running gradlew :client:tasks
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

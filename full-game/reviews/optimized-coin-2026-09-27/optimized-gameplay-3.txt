@@ -1,0 +1,55 @@
+
+io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark:
+Error in realCoinRound(io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark):
+java.lang.IllegalStateException: Missing UI control play-arena
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node(CoinJourney.kt:43)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare$lambda$0(CoinJourney.kt:88)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:205)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare(CoinJourney.kt:61)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinRound$lambda$0$0(CoinReleaseBenchmark.kt:49)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.$r8$lambda$oJBPr3jp-YDpcbmb1s48FeezjlI(Unknown Source:0)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode$lambda$0(Macrobenchmark.kt:478)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase(MacrobenchmarkPhase.kt:94)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark$lambda$3(Macrobenchmark.kt:304)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.TraceProcessorExtensions.runServer(TraceProcessorExtensions.kt:152)
+	at androidx.benchmark.TraceProcessorExtensions.runServer$default(TraceProcessorExtensions.kt:149)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark(Macrobenchmark.kt:296)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode(Macrobenchmark.kt:435)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated(MacrobenchmarkRule.kt:87)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated$default(MacrobenchmarkRule.kt:78)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinRound(CoinReleaseBenchmark.kt:48)
+
+
+Time: 23.151
+There was 1 failure:
+1) realCoinRound(io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark)
+java.lang.IllegalStateException: Missing UI control play-arena
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node(CoinJourney.kt:43)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare$lambda$0(CoinJourney.kt:88)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:205)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare(CoinJourney.kt:61)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinRound$lambda$0$0(CoinReleaseBenchmark.kt:49)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.$r8$lambda$oJBPr3jp-YDpcbmb1s48FeezjlI(Unknown Source:0)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode$lambda$0(Macrobenchmark.kt:478)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase(MacrobenchmarkPhase.kt:94)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark$lambda$3(Macrobenchmark.kt:304)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.TraceProcessorExtensions.runServer(TraceProcessorExtensions.kt:152)
+	at androidx.benchmark.TraceProcessorExtensions.runServer$default(TraceProcessorExtensions.kt:149)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark(Macrobenchmark.kt:296)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode(Macrobenchmark.kt:435)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated(MacrobenchmarkRule.kt:87)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated$default(MacrobenchmarkRule.kt:78)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinRound(CoinReleaseBenchmark.kt:48)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
