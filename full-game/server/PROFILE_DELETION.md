@@ -1,6 +1,6 @@
 # Online-profile deletion
 
-This describes the implemented local service and Android behavior. Local deletion-after-restore validation passes; public hosting, independent journal durability, provider restore/backup expiry, user-facing retention disclosure and high-volume deletion acceptance remain release gates. See [recovery validation](RECOVERY_VALIDATION.md).
+This describes the implemented local service and Android behavior. Local deletion-after-restore validation passes. Alpha11 explains the current retention and recovery behavior in English/Hindi before registration, in Settings and at deletion. Public hosting, independent journal durability, a bounded provider backup/journal retirement policy and high-volume deletion acceptance remain release gates. See [recovery validation](RECOVERY_VALIDATION.md).
 
 ## What a player can do
 
@@ -36,7 +36,7 @@ Version-1 logout records cannot be distinguished from ordinary expired sessions.
 
 Authentication holds a shared guest-row lock until its room transaction finishes and checks independent suppression. Deletion exclusively locks the guest, then affected rooms in ID order. This prevents a join/command authorized just before deletion from restoring the old name afterward. Worker room locks also use ID order within their fairness-selected batch. Primary room/profile edits, audit/receipt redaction and confirmation all roll back on failure; the independently committed intent remains for retry. Other players' command IDs and request hashes are preserved while their historical response profile fields are redacted.
 
-Rooms close 24 hours after creation; room records and audits expire 30 days later. Expired guest rows are removed after 30 days, and primary deletion confirmations are removed at `confirmUntil`. Short-lived rate records contain hashed socket addresses or opaque profile IDs. Independent journal entries intentionally have no automatic pruning: they must outlive every backup/PITR/export capable of restoring that identity. This is retained pseudonymous recovery data. There is no deployed backup policy yet. Before public release, define and disclose its retention/retirement policy, update the Android deletion disclosure, and validate provider backup isolation and restore cutover. Existing alpha10 release files remain unchanged by the service update.
+Rooms close 24 hours after creation; room records and audits expire 30 days later. Expired guest rows are removed after 30 days, and primary deletion confirmations are removed at `confirmUntil`. Short-lived rate records contain hashed socket addresses or opaque profile IDs. Independent journal entries intentionally have no automatic pruning: they must outlive every backup/PITR/export capable of restoring that identity. This is retained pseudonymous recovery data. Alpha11 explicitly discloses its contents and absent automatic expiry, separately from the 30-day confirmation window. There is no deployed backup policy yet. Before public release, define and disclose the provider retention/retirement policy and validate backup isolation and restore cutover. Existing alpha10 and service release packages remain unchanged.
 
 ## Local fault fixture
 

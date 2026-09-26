@@ -1,0 +1,19 @@
+<resources>
+    <string name="privacy_title">Your game data</string>
+    <string name="privacy_open">Read about your game data</string>
+    <string name="privacy_close">Back to the game</string>
+    <string name="privacy_device_title">On this device</string>
+    <string name="privacy_device_body">Solo and family rounds, player names, marks, history and offline badges stay on this device. They have no automatic expiry. You can remove them in Settings. Online sessions and cached rounds are encrypted separately. The app excludes its data from Android backup and device transfer.</string>
+    <string name="privacy_online_title">In a private room</string>
+    <string name="privacy_online_body">The room service stores your display name, avatar, tickets, room settings, calls, scores and results. Other room members see names, avatars and wins, and only their own ticket numbers. Use a nickname and avoid personal information in custom prize titles. This is free social play with points and badges.</string>
+    <string name="privacy_retention_title">How long online records stay</string>
+    <string name="privacy_retention_body">Rooms close 24 hours after creation. Their game records are scheduled for removal 30 days after the room expires. Guest access lasts seven days; expired guest profiles are scheduled for removal after another 30 days. Local cached results stay until you sign out, reset or delete the profile, or newer results replace them. Backup recovery records have a separate lifetime, explained below.</string>
+    <string name="privacy_deletion_title">Deleting an online profile</string>
+    <string name="privacy_deletion_body">Deletion removes your profile and access, leaves every room, and replaces your profile name and avatar in service game records with Deleted player. Other players can finish an active game. Shared tickets, calls, scores, prize titles and results remain until room retention expires. Text you entered into prize titles and copies already saved or shared by others are not removed. After confirmation, this device clears its online data and badges. Offline rounds stay.</string>
+    <string name="privacy_recovery_title">Deletion and older backups</string>
+    <string name="privacy_recovery_body">A deletion request does not erase older backups. The service keeps a separate recovery record with a random profile ID, a one-way confirmation code and deletion timestamps so an older backup cannot restore access to the deleted profile. This record contains no display name, avatar or sign-in secret and currently has no automatic expiry. The same deletion request can confirm its result for 30 days; recovery protection remains after that confirmation expires.</string>
+    <string name="privacy_controls_title">Sign out, reset or retry</string>
+    <string name="privacy_controls_body">Signing out revokes the online session and clears online data on this device; it does not delete service history. Reset online data only clears this device. Neither action substitutes for Delete online profile. If deletion is waiting for confirmation, keep the saved request and use Retry pending action. Resetting discards the details needed to confirm that request.</string>
+    <string name="privacy_monitoring_title">Sound and service health</string>
+    <string name="privacy_monitoring_body">No ads or purchases are included. Number voices were generated with OpenAI and play from packaged recordings; gameplay does not send your game data to OpenAI. The room service keeps short-lived request-limit records for profiles and network addresses, plus aggregate health counts and timings. Those health metrics contain no names, room codes, tickets or profile IDs.</string>
+</resources>

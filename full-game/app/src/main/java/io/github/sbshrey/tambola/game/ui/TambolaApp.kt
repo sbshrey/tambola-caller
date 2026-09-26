@@ -197,6 +197,7 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
     val words = gameText()
     val prefs = state.preferences
     var delete by remember { mutableStateOf(false) }
+    var gameData by rememberSaveable { mutableStateOf(false) }
     Eyebrow(words(R.string.ui_make_yourself_comfortable_2))
     Text(words(R.string.ui_just_your_style), style = MaterialTheme.typography.headlineLarge)
     GameCard {
@@ -233,9 +234,11 @@ private fun Settings(state: GameUiState, model: GameViewModel) {
     GameCard {
         Text(words(R.string.ui_your_games_and_privacy), style = MaterialTheme.typography.titleLarge)
         Text(words(R.string.ui_solo_and_family_rounds_stay_on_this_device), color = Muted)
+        TextButton(onClick = { gameData = true }, modifier = Modifier.testTag("open-game-data")) { Text(words(R.string.privacy_open)) }
         OutlinedButton(onClick = { delete = true }, modifier = Modifier.fillMaxWidth()) { Text(words(R.string.ui_delete_all_saved_rounds)) }
         Text(words(R.string.ui_build_status, BuildConfig.VERSION_NAME), color = Muted, style = MaterialTheme.typography.bodySmall)
     }
+    if (gameData) GameDataDialog { gameData = false }
     if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text(words(R.string.ui_delete_saved_rounds)) }, text = { Text(words(R.string.ui_this_removes_your_offline_current_game_player_names)) }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text(words(R.string.ui_delete_rounds)) } }, dismissButton = { TextButton(onClick = { delete = false }) { Text(words(R.string.ui_keep_rounds)) } })
 }
 

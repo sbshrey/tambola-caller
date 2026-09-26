@@ -1,6 +1,8 @@
 package io.github.sbshrey.tambola.game
 
 import androidx.compose.ui.test.*
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.lifecycle.ViewModelProvider
@@ -47,6 +49,9 @@ class OnlineGameTest {
         assumeTrue("Opt-in local room integration", InstrumentationRegistry.getArguments().getString("tambolaOnline") == "true")
         check(BuildConfig.DEBUG && BuildConfig.ROOM_API_URL == "http://127.0.0.1:8080")
         check(isAndroidEmulator())
+        // This fixture uses English labels even when a preceding process saved Hindi.
+        compose.runOnUiThread { AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("en")) }
+        until { compose.activity.resources.configuration.locales[0].language == "en" }
         runBlocking { PreferenceStore(context).update(Preferences(voice = false, reducedMotion = true)) }
         until { !model.state.value.loading }
         compose.runOnIdle { model.resetLocalData() }
@@ -91,6 +96,12 @@ class OnlineGameTest {
             assertEquals(original.credentials.playerId, model.state.value.playerId)
             control("arm-delete-drop")
             tap("Delete online profile"); captureTestScreen("delete-confirmation")
+            compose.onNodeWithText("Delete profile permanently").assertIsDisplayed()
+            compose.onNodeWithText("Keep profile").assertIsDisplayed()
+            compose.scrollTextToEnd(context.getString(R.string.ui_this_permanently_removes_your_service_profile_and_access))
+            captureTestScreen("delete-confirmation-end")
+            compose.onNodeWithText("Delete profile permanently").assertIsDisplayed()
+            compose.onNodeWithText("Keep profile").assertIsDisplayed()
             tap("Delete profile permanently")
             compose.waitUntil(35_000) { model.state.value.deletingProfile && !model.state.value.busy && model.state.value.error != null }
             val pending = saved().pending as PendingOperation.DeleteProfile

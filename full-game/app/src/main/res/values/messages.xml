@@ -32,7 +32,7 @@
     <string name="error_room_code">"Enter the 8-character room code."</string>
     <string name="error_reconnect">"Reconnect before changing the room."</string>
     <string name="error_leave_first">"Leave your current room before opening another."</string>
-    <string name="notice_profile_deleted">"Online profile deleted. Its name and avatar were removed from service records. Online data on this device was cleared; offline games stay here."</string>
+    <string name="notice_profile_deleted">"Online profile deleted. Its profile name and avatar were removed from shared game records. Online data on this device was cleared; offline games stay. A separate recovery record remains to keep older backups from restoring your access."</string>
     <string name="notice_deletion_storage">"The service confirmed profile deletion, but this device's data could not be cleared. Use Reset online data after resolving the storage problem."</string>
     <string name="error_room_unavailable">"This room is no longer available to your profile."</string>
     <string name="error_delete_unconfirmed">"Profile deletion could not be confirmed. Retry the same pending request; resetting this device does not prove server deletion."</string>

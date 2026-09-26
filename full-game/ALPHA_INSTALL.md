@@ -1,10 +1,10 @@
-# Tambola Together 0.10.0-alpha10
+# Tambola Together 0.11.0-alpha11
 
 This is an internal **development alpha**, signed with an Android debug certificate. Solo and family play work offline. Native private rooms require a separately configured room service; this package targets a local test service, not a public hosted service. It is not the production release. Use fictional player names while testing. A future release signed with the production certificate may require uninstalling this alpha, which clears its local history.
 
 Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
 
-1. Copy `Tambola-Together-0.10.0-alpha10.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
+1. Copy `Tambola-Together-0.11.0-alpha11.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
 2. If Android asks, allow APK installation for the app you opened the file from.
 3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.
 4. Use **Call next number** or **Auto**. Tap **Mark ticket** for large buttons, or select assisted marking during setup.
@@ -45,6 +45,8 @@ Calls and prizes are server-confirmed. Host controls support pause/resume, endin
 
 Online profiles and cached rooms are encrypted on the device. **Delete online profile** removes the profile and room memberships, replaces its stored display name/avatar in shared game records, and clears this device's online data after service confirmation. If the reply is lost, **Retry pending action** checks the original request, including after recreating the screen. Deleting a host transfers control to a remaining player; offline games stay intact.
 
-Shared records retain opaque player IDs, tickets, calls, scores and custom prize text until normal retention expires. Other players' downloaded copies and existing backups are not instantly erased. See [profile deletion and retention](server/PROFILE_DELETION.md) for exact behavior and outstanding backup/restore acceptance. Signing out only revokes the session and clears local online data; a recovery reset only clears local data and can discard a pending deletion confirmation. Request deletion before signing out. There is no account-recovery service in this alpha.
+**Read about your game data** is available in Settings and on the online screen before creating a profile. The English/Hindi view explains local and service storage, retention, deletion, sound generation and aggregate service monitoring. Its content scrolls independently of the close button.
+
+Shared records retain opaque player IDs, tickets, calls, scores and custom prize text until normal retention expires. Other players' downloaded copies and existing backups are not instantly erased. The service retains a separate recovery record containing a random profile ID, one-way confirmation code and deletion times, without a display name, avatar or sign-in secret. It currently has no automatic expiry, so older backups cannot restore the deleted profile's access. The original request can confirm deletion for 30 days; recovery protection continues afterward. See [profile deletion and retention](server/PROFILE_DELETION.md) for exact behavior and outstanding backup/restore acceptance. Signing out only revokes the session and clears local online data; a recovery reset only clears local data and can discard a pending deletion confirmation. Request deletion before signing out. There is no account-recovery service in this alpha.
 
 Still in development: hosted online rooms and broader multiplayer recovery acceptance, final listening/art/motion acceptance, Hindi editorial review, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.

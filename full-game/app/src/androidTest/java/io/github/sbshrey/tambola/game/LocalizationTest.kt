@@ -188,7 +188,13 @@ class LocalizationTest {
         captureTestScreen("hindi-online-lobby")
         try {
             control("arm-delete-drop")
-            tap(R.string.ui_delete_online_profile); tap(R.string.ui_delete_profile_permanently)
+            tap(R.string.ui_delete_online_profile)
+            captureTestScreen("hindi-delete-confirmation")
+            compose.onNodeWithText(words()(R.string.ui_delete_profile_permanently)).assertIsDisplayed()
+            compose.scrollTextToEnd(words()(R.string.ui_this_permanently_removes_your_service_profile_and_access))
+            captureTestScreen("hindi-delete-confirmation-end")
+            compose.onNodeWithText(words()(R.string.ui_delete_profile_permanently)).assertIsDisplayed()
+            tap(R.string.ui_delete_profile_permanently)
             compose.waitUntil(35_000) { online.state.value.deletingProfile && !online.state.value.busy && online.state.value.error != null }
             val pending = checkNotNull(OnlineStore(context).read()).pending as PendingOperation.DeleteProfile
             compose.onNodeWithText(words()(R.string.error_action_unconfirmed)).assertIsDisplayed()

@@ -186,7 +186,7 @@
     <string name="ui_reset_online_data_2">"Reset online data?"</string>
     <string name="ui_this_removes_your_local_online_profile_cached_history">"This removes your local online profile, cached history and online badges. It does not delete server records. If deletion is waiting for confirmation, resetting also discards the details needed to retry that request."</string>
     <string name="ui_delete_your_online_profile">"Delete your online profile?"</string>
-    <string name="ui_this_permanently_removes_your_service_profile_and_access">"This permanently removes your service profile and access, and replaces its name/avatar in rooms, saved results and retry records with Deleted player. You leave every room; another player can host and finish an active game. Shared tickets, calls, scores and prize text stay until room retention expires. Copies already saved or shared by others and backups are not erased by this request.\n\nAfter confirmation, this device\'s online tickets, history and badges are cleared. Offline games stay. This cannot be undone."</string>
+    <string name="ui_this_permanently_removes_your_service_profile_and_access">"Your profile and online access will be removed. Its name and avatar in service game records become Deleted player. You leave every room; others can finish an active game. Shared game records and prize text stay until room retention expires. Other people\'s copies and older backups are not erased.\n\nA separate record keeps a random profile ID, a one-way confirmation code and deletion times so an older backup cannot restore your access. It contains no name, avatar or sign-in secret and currently has no automatic expiry. The same deletion request can confirm its result for 30 days.\n\nAfter confirmation, online data and badges on this device are cleared. Offline games stay. Deletion cannot be undone."</string>
     <string name="ui_delete_profile_permanently">"Delete profile permanently"</string>
     <string name="ui_keep_profile">"Keep profile"</string>
     <string name="ui_sign_out">"Sign out?"</string>
@@ -385,7 +385,7 @@
     <string name="ui_4_check_claims_to_inspect_the_required_numbers">"4. Check claims to inspect the required numbers and verified winners. Same-call winners tie and get full points."</string>
     <string name="ui_5_finish_at_the_chosen_house_or_play">"5. Finish at the chosen house, or play all 90 calls. Rematch keeps your players and rules; every game deals new tickets."</string>
     <string name="ui_your_games_and_privacy">"Your games and privacy"</string>
-    <string name="ui_solo_and_family_rounds_stay_on_this_device">"Solo and family rounds stay on this device. Online play sends your display name, tickets, calls and results to the room service; room members see names and wins, and only their own ticket numbers. Online sessions and cached history are encrypted on this device. No ads, analytics or purchases. Number recordings were generated with OpenAI."</string>
+    <string name="ui_solo_and_family_rounds_stay_on_this_device">"Offline rounds stay on this device. Private rooms save online data on the room service; members see names and wins, and only their own ticket numbers. Read how storage, deletion and backup recovery work."</string>
     <string name="ui_delete_all_saved_rounds">"Delete all saved rounds"</string>
     <string name="ui_build_status">"Tambola Together · %1$s\nHosted online release is still in development."</string>
     <string name="ui_delete_saved_rounds">"Delete saved rounds?"</string>

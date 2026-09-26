@@ -41,6 +41,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     var reset by remember { mutableStateOf(false) }
     var logout by remember { mutableStateOf(false) }
     var deleteProfile by remember { mutableStateOf(false) }
+    var gameData by rememberSaveable { mutableStateOf(false) }
     var leave by remember { mutableStateOf(false) }
     var history by rememberSaveable { mutableStateOf(false) }
     var selectedHistory by rememberSaveable { mutableStateOf<String?>(null) }
@@ -159,6 +160,8 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
         if (room == null) TextButton(onClick = { logout = true }, enabled = enabled) { Text(words(R.string.ui_sign_out_of_online_play)) }
     }
     if (state.name != null && !state.storageFailure) TextButton(onClick = { deleteProfile = true }, enabled = !state.busy && !state.pending) { Text(words(R.string.ui_delete_online_profile)) }
+    TextButton(onClick = { gameData = true }, modifier = Modifier.testTag("open-game-data")) { Text(words(R.string.privacy_open)) }
+    if (gameData) GameDataDialog { gameData = false }
     if (configure && room != null && host && room.phase == RoomPhase.LOBBY) RoomSettingsEditor(room,
         enabled && state.connection == Connection.LIVE, save = { model.command(RoomAction.Configure(it)); configure = false }, dismiss = { configure = false })
     state.history.firstOrNull { it.round?.id == selectedHistory }?.toTable(emptyMap())?.let { table ->

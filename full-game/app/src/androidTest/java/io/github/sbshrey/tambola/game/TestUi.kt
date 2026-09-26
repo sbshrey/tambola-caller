@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.game
 
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -13,6 +14,18 @@ internal fun isAndroidEmulator(): Boolean = android.os.Build.HARDWARE in setOf("
 internal fun ComposeTestRule.hasTextNow(text: String) = onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
 internal fun ComposeTestRule.tapText(text: String) = tapNode(onNodeWithText(text))
 internal fun ComposeTestRule.tapTag(tag: String) = tapNode(onNodeWithTag(tag))
+internal fun ComposeTestRule.scrollTextToEnd(text: String) {
+    val node = onNodeWithText(text)
+    node.performSemanticsAction(SemanticsActions.ScrollBy) { it(0f, 100_000f) }
+    // ScrollBy launches an animation; a real-time screenshot delay does not advance
+    // Compose's test clock. Settle frames and prove the final scroll position first.
+    waitForIdle()
+    val range = node.fetchSemanticsNode().config[SemanticsProperties.VerticalScrollAxisRange]
+    // At normal text size the Hindi copy already fits; zero is a valid end offset.
+    check(range.maxValue() >= 0f && kotlin.math.abs(range.value() - range.maxValue()) < 1f) {
+        "Long confirmation did not scroll to its end"
+    }
+}
 private fun ComposeTestRule.tapNode(node: SemanticsNodeInteraction) {
     var ancestor = node.fetchSemanticsNode().parent
     while (ancestor != null && !ancestor.config.contains(SemanticsActions.ScrollBy)) ancestor = ancestor.parent
