@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+rule_files: [alerts.yml]
+scrape_configs:
+  - job_name: tambola-rooms
+    metrics_path: /internal/metrics
+    scheme: https
+    scrape_timeout: 5s
+    authorization:
+      type: Bearer
+      credentials_file: /run/secrets/tambola-metrics-token
+    static_configs:
+      - targets: [rooms.internal.example:443]
+# Replace the private target and provision the token file through your secret manager.
+# Configure Alertmanager and an approved receiver separately; this file sends no notifications.

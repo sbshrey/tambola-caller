@@ -52,7 +52,10 @@ fun main(args: Array<String>) {
             val service = RoomService(database, journal = journal)
             // No listener exists while restored identities and historical receipts are being redacted.
             while (service.replayDeletions() > 0) { /* bounded transactions, restartable cursor */ }
-            embeddedServer(Netty, host = host, port = port) { roomsModule(database, service) }.start(wait = true)
+            val operations = ServiceOperations(workerEnabled = true, metricsToken = System.getenv("TAMBOLA_METRICS_TOKEN"))
+            embeddedServer(Netty, host = host, port = port) {
+                roomsModule(database, service, operations = operations, journalDatabase = journalDatabase)
+            }.start(wait = true)
         }
     } finally { journalDatabase?.close() }
 }
@@ -84,7 +87,9 @@ internal fun validateRecoveryConfiguration(host: String, primaryUrl: String, jou
     }
 }
 
-fun Application.roomsModule(database: Database, service: RoomService = RoomService(database), runWorker: Boolean = true) {
+fun Application.roomsModule(database: Database, service: RoomService = RoomService(database), runWorker: Boolean = true,
+    operations: ServiceOperations = ServiceOperations(runWorker), journalDatabase: Database? = null) {
+    install(OperationsPlugin) { this.operations = operations }
     install(ContentNegotiation) { json(WireJson) }
     install(WebSockets) { pingPeriod = 15.seconds; timeout = 30.seconds; maxFrameSize = 1_024; masking = false }
     install(StatusPages) {
@@ -107,7 +112,16 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
     }
     routing {
         get("/health/live") { call.respond(Health("ok")) }
-        get("/health/ready") { withContext(Dispatchers.IO) { database.healthy(); service.recoveryHealthy() }; call.respond(Health("ready")) }
+        get("/health/ready") {
+            demand(operations.workerReady(), 503, "worker_unavailable", "The room worker is starting or temporarily unavailable.")
+            withContext(Dispatchers.IO) { database.healthy(); service.recoveryHealthy() }
+            call.respond(Health("ready"))
+        }
+        get("/internal/metrics") {
+            demand(operations.hasMetrics(), 404, "not_found", "This endpoint is disabled.")
+            demand(operations.authorizes(call.request.headers[HttpHeaders.Authorization]), 401, "unauthorized", "Monitoring credentials are required.")
+            call.respondText(operations.render(database.poolStats(), journalDatabase?.poolStats()), ContentType.parse("text/plain; version=0.0.4; charset=utf-8"))
+        }
         route("/v1") {
             post("/guests") {
                 val body = call.body<GuestRequest>()
@@ -130,6 +144,7 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                 call.respond(withContext(Dispatchers.IO) { service.command(call.bearer(), call.code(), body) })
             }
             webSocket("/rooms/{code}/events") {
+                operations.streamOpened()
                 try {
                     val token = call.bearer()
                     val code = call.code()
@@ -157,21 +172,21 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                         }
                     } finally { receiver.cancel() }
                 } catch (error: ApiFailure) {
+                    operations.streamFailed()
                     close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, error.code))
                 } catch (error: SQLException) {
+                    operations.streamFailed()
                     close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "Service temporarily unavailable."))
-                }
+                } finally { operations.streamClosed() }
             }
         }
     }
     if (runWorker) {
         val job = launch(Dispatchers.IO) {
-            var ticks = 0
+            val worker = RoomWorker(service, operations)
             while (isActive) {
                 try {
-                    service.replayDeletions(10)
-                    service.tick()
-                    if (++ticks % 60 == 0) service.cleanup()
+                    worker.runPass()
                 } catch (error: CancellationException) { throw error }
                 catch (error: Exception) { log.error("Room worker failed ({})", error.javaClass.simpleName) }
                 delay(1_000)

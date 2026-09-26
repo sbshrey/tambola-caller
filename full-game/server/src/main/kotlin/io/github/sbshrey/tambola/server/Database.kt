@@ -40,8 +40,11 @@ class Database(url: String, user: String, password: String, schema: String = "pu
     fun verifyMigrations() = transaction { migrations.verify(it) }
 
     fun healthy(): Boolean = transaction { it.query("SELECT 1") { row -> row.getInt(1) }.single() == 1 }
+    internal fun poolStats() = pool.hikariPoolMXBean.let { PoolStats(it.activeConnections, it.idleConnections, it.threadsAwaitingConnection, it.totalConnections) }
     override fun close() = pool.close()
 }
+
+internal data class PoolStats(val active: Int, val idle: Int, val pending: Int, val total: Int)
 
 internal fun Connection.execute(sql: String, vararg params: Any?): Int = prepareStatement(sql).use { statement ->
     params.forEachIndexed { index, value -> statement.setObject(index + 1, value) }

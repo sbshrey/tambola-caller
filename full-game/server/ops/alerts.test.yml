@@ -1,0 +1,97 @@
+rule_files: [alerts.yml]
+evaluation_interval: 1m
+tests:
+  - name: healthy instance does not page
+    interval: 1m
+    input_series:
+      - {series: 'up{job="tambola-rooms",instance="fixture"}', values: '1x10'}
+      - {series: 'tambola_worker_enabled{job="tambola-rooms",instance="fixture"}', values: '1x10'}
+      - {series: 'tambola_worker_ready{job="tambola-rooms",instance="fixture"}', values: '1x10'}
+      - {series: 'tambola_cleanup_success_age_seconds{job="tambola-rooms",instance="fixture"}', values: '20x10'}
+      - {series: 'tambola_database_connections{job="tambola-rooms",instance="fixture",store="primary",state="pending"}', values: '0x10'}
+      - {series: 'tambola_jvm_heap_used_bytes{job="tambola-rooms",instance="fixture"}', values: '50x10'}
+      - {series: 'tambola_jvm_heap_max_bytes{job="tambola-rooms",instance="fixture"}', values: '100x10'}
+    alert_rule_test:
+      - {eval_time: 10m, alertname: TambolaScrapeUnavailable, exp_alerts: []}
+      - {eval_time: 10m, alertname: TambolaWorkerUnavailable, exp_alerts: []}
+      - {eval_time: 10m, alertname: TambolaCleanupOverdue, exp_alerts: []}
+      - {eval_time: 10m, alertname: TambolaHttpErrors, exp_alerts: []}
+      - {eval_time: 10m, alertname: TambolaHttpLatency, exp_alerts: []}
+      - {eval_time: 10m, alertname: TambolaPoolWaiting, exp_alerts: []}
+      - {eval_time: 10m, alertname: TambolaHeapPressure, exp_alerts: []}
+  - name: worker fault pages after delay and resolves after recovery
+    interval: 1m
+    input_series:
+      - {series: 'up{job="tambola-rooms",instance="fixture"}', values: '1x6'}
+      - {series: 'tambola_worker_enabled{job="tambola-rooms",instance="fixture"}', values: '1x6'}
+      - {series: 'tambola_worker_ready{job="tambola-rooms",instance="fixture"}', values: '1 0 0 1 1 1'}
+    alert_rule_test:
+      - {eval_time: 1m, alertname: TambolaWorkerUnavailable, exp_alerts: []}
+      - eval_time: 2m
+        alertname: TambolaWorkerUnavailable
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, severity: critical}
+            exp_annotations: {summary: "Room worker is failing or stalled"}
+      - {eval_time: 3m, alertname: TambolaWorkerUnavailable, exp_alerts: []}
+  - name: missing scrape and overdue cleanup are visible
+    interval: 1m
+    input_series:
+      - {series: 'up{job="tambola-rooms",instance="fixture"}', values: '0x8'}
+      - {series: 'tambola_worker_enabled{job="tambola-rooms",instance="fixture"}', values: '1x8'}
+      - {series: 'tambola_cleanup_success_age_seconds{job="tambola-rooms",instance="fixture"}', values: '-1x8'}
+      - {series: 'tambola_process_uptime_seconds{job="tambola-rooms",instance="fixture"}', values: '0+60x8'}
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: TambolaScrapeUnavailable
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, severity: critical}
+            exp_annotations: {summary: "Room service monitoring is unavailable"}
+      - eval_time: 6m
+        alertname: TambolaCleanupOverdue
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, severity: warning}
+            exp_annotations: {summary: "Room retention cleanup is overdue"}
+  - name: absent job configuration is detectable
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: TambolaScrapeUnavailable
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, severity: critical}
+            exp_annotations: {summary: "Room service monitoring is unavailable"}
+  - name: resource pressure is sustained before alerts fire
+    interval: 1m
+    input_series:
+      - {series: 'up{job="tambola-rooms",instance="fixture"}', values: '1x8'}
+      - {series: 'tambola_database_connections{job="tambola-rooms",instance="fixture",store="journal",state="pending"}', values: '2x8'}
+      - {series: 'tambola_jvm_heap_used_bytes{job="tambola-rooms",instance="fixture"}', values: '95x8'}
+      - {series: 'tambola_jvm_heap_max_bytes{job="tambola-rooms",instance="fixture"}', values: '100x8'}
+    alert_rule_test:
+      - eval_time: 1m
+        alertname: TambolaPoolWaiting
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, store: journal, state: pending, severity: warning}
+            exp_annotations: {summary: "Room database connections are waiting"}
+      - eval_time: 5m
+        alertname: TambolaHeapPressure
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, severity: warning}
+            exp_annotations: {summary: "Room service JVM heap use is high"}
+  - name: slow failing API traffic triggers error and latency alerts
+    interval: 1m
+    input_series:
+      - {series: 'up{job="tambola-rooms",instance="fixture"}', values: '1x12'}
+      - {series: 'tambola_http_duration_seconds_count{job="tambola-rooms",instance="fixture",route="read",status="5xx"}', values: '0+60x12'}
+      - {series: 'tambola_http_duration_seconds_bucket{job="tambola-rooms",instance="fixture",route="read",status="5xx",le="1.0"}', values: '0x12'}
+      - {series: 'tambola_http_duration_seconds_bucket{job="tambola-rooms",instance="fixture",route="read",status="5xx",le="2.0"}', values: '0+60x12'}
+      - {series: 'tambola_http_duration_seconds_bucket{job="tambola-rooms",instance="fixture",route="read",status="5xx",le="+Inf"}', values: '0+60x12'}
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: TambolaHttpErrors
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, severity: critical}
+            exp_annotations: {summary: "Room API failures exceed five percent"}
+      - eval_time: 10m
+        alertname: TambolaHttpLatency
+        exp_alerts:
+          - exp_labels: {job: tambola-rooms, instance: fixture, severity: warning}
+            exp_annotations: {summary: "Room API p95 response time exceeds one second"}

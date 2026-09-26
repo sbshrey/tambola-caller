@@ -68,6 +68,7 @@ jobs:
       TAMBOLA_TEST_DATABASE_USER: tambola_test
       TAMBOLA_TEST_DATABASE_PASSWORD: isolated-ci-test-password
       TAMBOLA_PG_BIN: /usr/lib/postgresql/16/bin
+      TAMBOLA_PROMTOOL_IMAGE: prom/prometheus@sha256:6976aa8a60fec930796ce5772b8d12da7a318a5daa8d40d69c5c7819a05eeed7
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -87,6 +88,20 @@ jobs:
           node tools/server-smoke.mjs
           node tools/server-deletion-recovery.mjs
           node tools/server-permissions-smoke.mjs
+      - name: Verify constrained runtime image
+        working-directory: full-game
+        run: |
+          docker build --file server/Dockerfile --iidfile .test-workspace/service-image-id.txt .
+          TAMBOLA_TEST_SERVICE_IMAGE="$(cat .test-workspace/service-image-id.txt)" node tools/server-permissions-smoke.mjs
+      - name: Verify alert rules and actual metric exposition
+        working-directory: full-game
+        run: |
+          docker run --rm --network=none --read-only --cap-drop=ALL --mount "type=bind,source=$PWD/server/ops,target=/rules,readonly" --workdir /rules --entrypoint /bin/promtool "$TAMBOLA_PROMTOOL_IMAGE" check config --syntax-only prometheus.example.yml
+          docker run --rm --network=none --read-only --cap-drop=ALL --mount "type=bind,source=$PWD/server/ops,target=/rules,readonly" --workdir /rules --entrypoint /bin/promtool "$TAMBOLA_PROMTOOL_IMAGE" check rules alerts.yml
+          docker run --rm --network=none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop=ALL --mount "type=bind,source=$PWD/server/ops,target=/rules,readonly" --workdir /rules --entrypoint /bin/promtool "$TAMBOLA_PROMTOOL_IMAGE" test rules alerts.test.yml
+          for metrics in .test-workspace/permissions-*/metrics.prom; do
+            docker run --rm -i --network=none --read-only --cap-drop=ALL --entrypoint /bin/promtool "$TAMBOLA_PROMTOOL_IMAGE" check metrics < "$metrics"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -97,6 +112,7 @@ jobs:
             full-game/client/build/reports/tests/
             full-game/.test-workspace/deletion-process-*/evidence.json
             full-game/.test-workspace/permissions-*/evidence.json
+            full-game/.test-workspace/permissions-*/metrics.prom
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30

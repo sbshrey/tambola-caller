@@ -1,0 +1,38 @@
+groups:
+  - name: tambola-rooms
+    rules:
+      - alert: TambolaScrapeUnavailable
+        expr: up{job="tambola-rooms"} == 0 or absent(up{job="tambola-rooms"})
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "Room service monitoring is unavailable"}
+      - alert: TambolaWorkerUnavailable
+        expr: (tambola_worker_ready{job="tambola-rooms"} == 0) and on(job, instance) (tambola_worker_enabled{job="tambola-rooms"} == 1)
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "Room worker is failing or stalled"}
+      - alert: TambolaCleanupOverdue
+        expr: ((tambola_cleanup_success_age_seconds{job="tambola-rooms"} > 180) or ((tambola_cleanup_success_age_seconds{job="tambola-rooms"} < 0) and on(job, instance) (tambola_process_uptime_seconds{job="tambola-rooms"} > 180))) and on(job, instance) (tambola_worker_enabled{job="tambola-rooms"} == 1)
+        for: 2m
+        labels: {severity: warning}
+        annotations: {summary: "Room retention cleanup is overdue"}
+      - alert: TambolaHttpErrors
+        expr: (sum by(job, instance) (rate(tambola_http_duration_seconds_count{job="tambola-rooms",route!~"live|ready|other",status="5xx"}[5m])) / sum by(job, instance) (rate(tambola_http_duration_seconds_count{job="tambola-rooms",route!~"live|ready|other"}[5m])) > 0.05) and on(job, instance) (sum by(job, instance) (rate(tambola_http_duration_seconds_count{job="tambola-rooms",route!~"live|ready|other"}[5m])) > 0.1)
+        for: 5m
+        labels: {severity: critical}
+        annotations: {summary: "Room API failures exceed five percent"}
+      - alert: TambolaHttpLatency
+        expr: (histogram_quantile(0.95, sum by(job, instance, le) (rate(tambola_http_duration_seconds_bucket{job="tambola-rooms",route!~"live|ready|other"}[5m]))) > 1) and on(job, instance) (sum by(job, instance) (rate(tambola_http_duration_seconds_count{job="tambola-rooms",route!~"live|ready|other"}[5m])) > 0.1)
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Room API p95 response time exceeds one second"}
+      - alert: TambolaPoolWaiting
+        expr: tambola_database_connections{job="tambola-rooms",state="pending"} > 0
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Room database connections are waiting"}
+      - alert: TambolaHeapPressure
+        expr: tambola_jvm_heap_used_bytes{job="tambola-rooms"} / tambola_jvm_heap_max_bytes{job="tambola-rooms"} > 0.9
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Room service JVM heap use is high"}

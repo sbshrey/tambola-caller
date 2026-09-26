@@ -55,7 +55,8 @@ class HttpTest : PostgresTest() {
     }
 
     @Test fun `two authenticated websocket clients receive private snapshots and durable draw replay`() = testApplication {
-        application { roomsModule(database, service, runWorker = false) }
+        val operations = ServiceOperations(false)
+        application { roomsModule(database, service, runWorker = false, operations = operations) }
         val host = service.register(GuestRequest("Asha"), "host")
         val other = service.register(GuestRequest("Bina"), "other")
         var room = service.create(host.token, CreateRoomRequest(UUID.randomUUID().toString(), RoomOptions(automaticCalling = false))).snapshot
@@ -73,6 +74,7 @@ class HttpTest : PostgresTest() {
                 send(Frame.Text(WireJson.encodeToString(EventAck(hostSnapshot.snapshot.revision))))
                 websocketClient.webSocket("/v1/rooms/${room.code}/events?after=${room.revision}", request = { bearerAuth(other.token) }) {
                     val otherSnapshot = WireJson.decodeFromString<RoomUpdate>((incoming.receive() as Frame.Text).readText())
+                    assertTrue(operations.render(database.poolStats(), null).contains("tambola_websocket_active 2"))
                     assertTrue(otherSnapshot.snapshot.round!!.ownTickets.all { it.playerId == other.playerId })
                     val response = client.post("/v1/rooms/${room.code}/commands") {
                         bearerAuth(host.token); contentType(ContentType.Application.Json)

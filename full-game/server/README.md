@@ -16,6 +16,8 @@ Do not place credentials in command arguments, source, APK resources or logs. Ru
 
 Default listener: `127.0.0.1:8080`. `PORT` changes the port. A non-loopback `TAMBOLA_BIND_HOST` requires `TAMBOLA_TLS_PROXY=true`; this is a deployment acknowledgement, **not TLS implementation**. A correctly configured TLS reverse proxy is still required before exposing the service.
 
+The [operations runbook](OPERATIONS.md) covers the non-root container, liveness/readiness, restricted metrics, alert rules, resource limits and incident response. Configure a separate random `TAMBOLA_METRICS_TOKEN` for protected `/internal/metrics`; without it that endpoint is disabled. Runtime readiness now also requires recent worker progress, so available database connections cannot hide failed automatic calling or cleanup.
+
 Integration tests require explicit `TAMBOLA_TEST_DATABASE_URL`, `TAMBOLA_TEST_DATABASE_USER`, and `TAMBOLA_TEST_DATABASE_PASSWORD`. The backup/permission drills require the loopback URL above and `TAMBOLA_PG_BIN` pointing to PostgreSQL 16 client binaries (for example `C:\Program Files\PostgreSQL\16\bin`). The isolated test administrator needs schema creation, CREATEDB and CREATEROLE privileges. Tests create fresh owned schemas or databases/roles and remove only their owned resources afterward. No database fallback and no silently skipped integration tests exist.
 
 ```powershell
@@ -37,7 +39,8 @@ All bodies and responses use strict JSON. Session credentials are opaque bearer 
 
 | Endpoint | Purpose |
 | --- | --- |
-| `GET /health/live` / `GET /health/ready` | Process / database readiness |
+| `GET /health/live` / `GET /health/ready` | Process liveness / recent successful worker plus database and recovery readiness |
+| `GET /internal/metrics` | Private fixed-label Prometheus metrics; separate monitoring bearer secret, disabled unless configured |
 | `POST /v1/guests` | Name (1–40 characters), avatar (0–7); returns guest ID and bearer token |
 | `POST /v1/guests/me/logout` | Revoke the current token; this is not data deletion |
 | `POST /v1/guests/me/delete` | Delete the authenticated profile and redact its stored profile fields; retry the original UUID to confirm |
@@ -69,7 +72,7 @@ JSON request bodies are capped at 32 KiB with a 10-second read timeout; WebSocke
 
 Persisted minute buckets limit guest creation to 60 per socket peer address and authenticated create/join/command/read requests to 10/20/180/300 per profile. A profile can own at most five unexpired open rooms. Authentication happens before creating profile rate buckets. The service does not trust forwarded address headers; proxy-aware rate enforcement and connection/body limits must be configured and tested with the actual ingress provider. These initial quotas are not a complete abuse/DoS defense.
 
-Native Android session storage/lobby/game/reconnect flows and explicit profile deletion are implemented in the [client](../client/README.md). Local deletion-after-restore checks and the ten-room/320-client manual-game capacity workload pass with the real service process. Migration/runtime separation and checked grants are implemented; [permission validation](PERMISSIONS_VALIDATION.md) records local evidence. Still required: invite links, production identity/recovery decisions, hosting/TLS/secrets and deployed role/rotation acceptance, metrics/alerts, independently durable journal and provider restore/retention acceptance, updated user-facing recovery-data disclosure, dependency/advisory review, hosted/broader-fault load and large-history deletion measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
+Native Android session storage/lobby/game/reconnect flows and explicit profile deletion are implemented in the [client](../client/README.md). Local deletion-after-restore checks and the ten-room/320-client manual-game capacity workload pass with the real service process. Migration/runtime separation and checked grants are implemented; [permission validation](PERMISSIONS_VALIDATION.md) records local evidence. Metrics, worker-aware readiness, alerts and a constrained runtime image now have [local operations checks](OPERATIONS_VALIDATION.md). Still required: invite links, production identity/recovery decisions, hosting/TLS/secrets and deployed role/rotation/alert-delivery acceptance, independently durable journal and provider restore/retention acceptance, updated user-facing recovery-data disclosure, dependency/advisory review, hosted/broader-fault load and large-history deletion measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
 
 The opt-in `:server:loadTest` task runs the full 320-client/1,920-ticket workload on fresh owned databases, requires every call/result to reach every client and enforces a conservative p95 delivery gate. It is separate from ordinary JUnit execution. [Capacity instructions](CAPACITY.md) describe fixture permissions, measurement definitions and safe cleanup.
 
