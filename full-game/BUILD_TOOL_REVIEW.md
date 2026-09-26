@@ -1,6 +1,6 @@
 # Build-tool review — 26 September 2026, in progress
 
-This review is separate from the [runtime dependency scan](DEPENDENCY_REVIEW.md) and [container scan](server/CONTAINER_DEPENDENCY_REVIEW.md). It is not yet complete. No build-tool update or rebuilt APK is claimed by this document.
+This review is separate from the [runtime dependency scan](DEPENDENCY_REVIEW.md) and [container scan](server/CONTAINER_DEPENDENCY_REVIEW.md). It is not yet complete. CI action updates are recorded below; the Gradle-wrapper upgrade and rebuilt APK remain pending.
 
 ## Confirmed wrapper finding
 
@@ -34,3 +34,24 @@ After that measurement:
 4. Check CI action/tool pins and wrapper verification, and document any remaining findings or compatibility issues. A local build cannot establish a remote CI run or production signing.
 
 Until those steps finish, the build-tool review remains an open release gate.
+
+## CI action refresh while the service soak runs
+
+GitHub [removed Node 20 from Actions runners on 23 September 2026](https://github.blog/changelog/2026-09-23-node-20-is-no-longer-available-in-github-actions/). The workflow's previous six action types all declared `node20`. Public maintainer release/tag references and the exact target `action.yml` files were fetched on 26 September; the replacements below declare `node24`. Full commit pins follow [GitHub's immutable-action guidance](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions). This review does not equate an upstream release or signature with a complete code/security audit.
+
+| Action | Selected release | Exact commit |
+| --- | --- | --- |
+| Checkout | [7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1) | `3d3c42e5aac5ba805825da76410c181273ba90b1` |
+| Java setup | [6.0.1](https://github.com/actions/setup-java/releases/tag/v6.0.1) | `de7274f081f381c8f8158605e0321c36c376e2e6` |
+| Node setup | [7.0.0](https://github.com/actions/setup-node/releases/tag/v7.0.0) | `820762786026740c76f36085b0efc47a31fe5020` |
+| Artifact upload | [7.0.1](https://github.com/actions/upload-artifact/releases/tag/v7.0.1) | `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` |
+| Gradle setup | [5.0.2](https://github.com/gradle/actions/releases/tag/v5.0.2) | `0723195856401067f7a2779048b490ace7a47d7c` |
+| Android setup | [4.0.4](https://github.com/android-actions/setup-android/releases/tag/v4.0.4) | `be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd` |
+
+Gradle setup stays on the 5.x line for this bounded Node 24 transition; its checked source uses the MIT license and validates wrapper JARs by default. This does not claim it is the newest action release. The workflow uses Ubuntu 24.04 in all five jobs and disables persisted checkout credentials; its read-only repository permission is unchanged. Actions Runner compatibility and actual downloads/builds still require remote CI execution.
+
+Artifact steps whose explicit path lists contain `.test-workspace` now set `include-hidden-files: true`. Those lists select evidence JSON, GC diagnostics, metric bodies and dependency/container reports rather than the entire work directory. The alpha APK/report step has no hidden-path requirement. Maintainer metadata confirms that artifact upload otherwise excludes hidden files by default.
+
+Local validation parses the workflow and all six fetched action definitions with PyYAML 6.0.3, checks every one of the 24 action references against the fetched commit, and checks used inputs against each action's declared inputs. The parser wheel was isolated under the ignored test workspace and verified against its published PyPI SHA-256; neither Python installation was modified. This is syntax/reference/input validation, not execution of GitHub's workflow engine. PostgreSQL image tags, package downloads, hosted-runner contents, resolved build dependencies and the wrapper update remain separately reviewed inputs.
+
+Retained evidence: [public action references](reviews/ci-actions-2026-09-26/references.json) and [local validation](reviews/ci-actions-2026-09-26/validation.json). The validation also checks the existing push/pull-request/manual trigger set, read-only repository permissions, Ubuntu 24.04 jobs, disabled persisted checkout credentials and the 14 explicitly selected hidden report paths. The workflow hash identifies the checked local bytes, including Windows line endings; Git normalizes text on commit.

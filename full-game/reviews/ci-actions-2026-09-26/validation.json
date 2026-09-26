@@ -1,0 +1,147 @@
+{
+  "scope": "YAML syntax, action references, declared inputs, trigger/permission policy and selected hidden-report paths; no remote CI execution",
+  "workflowSha256": "c8d80c341a1cfa7483c5461d2cb961f49e1478317f4574b4026cc7e2a305048f",
+  "actionCount": 24,
+  "jobs": 5,
+  "completed": true,
+  "parserVersion": "6.0.3",
+  "parserWheelSha256": "4a2e8cebe2ff6ab7d1050ecd59c25d4c8bd7e6f400f5f82b96557ac0abafd0ac",
+  "checkedActions": [
+    {
+      "job": "automatic-soak",
+      "action": "actions/checkout",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    {
+      "job": "automatic-soak",
+      "action": "actions/setup-java",
+      "sha": "de7274f081f381c8f8158605e0321c36c376e2e6"
+    },
+    {
+      "job": "automatic-soak",
+      "action": "gradle/actions/setup-gradle",
+      "sha": "0723195856401067f7a2779048b490ace7a47d7c"
+    },
+    {
+      "job": "automatic-soak",
+      "action": "actions/upload-artifact",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    },
+    {
+      "job": "automatic-recovery",
+      "action": "actions/checkout",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    {
+      "job": "automatic-recovery",
+      "action": "actions/setup-java",
+      "sha": "de7274f081f381c8f8158605e0321c36c376e2e6"
+    },
+    {
+      "job": "automatic-recovery",
+      "action": "gradle/actions/setup-gradle",
+      "sha": "0723195856401067f7a2779048b490ace7a47d7c"
+    },
+    {
+      "job": "automatic-recovery",
+      "action": "actions/upload-artifact",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    },
+    {
+      "job": "room-capacity",
+      "action": "actions/checkout",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    {
+      "job": "room-capacity",
+      "action": "actions/setup-java",
+      "sha": "de7274f081f381c8f8158605e0321c36c376e2e6"
+    },
+    {
+      "job": "room-capacity",
+      "action": "gradle/actions/setup-gradle",
+      "sha": "0723195856401067f7a2779048b490ace7a47d7c"
+    },
+    {
+      "job": "room-capacity",
+      "action": "actions/upload-artifact",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    },
+    {
+      "job": "room-service",
+      "action": "actions/checkout",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    {
+      "job": "room-service",
+      "action": "actions/setup-java",
+      "sha": "de7274f081f381c8f8158605e0321c36c376e2e6"
+    },
+    {
+      "job": "room-service",
+      "action": "actions/setup-node",
+      "sha": "820762786026740c76f36085b0efc47a31fe5020"
+    },
+    {
+      "job": "room-service",
+      "action": "gradle/actions/setup-gradle",
+      "sha": "0723195856401067f7a2779048b490ace7a47d7c"
+    },
+    {
+      "job": "room-service",
+      "action": "actions/upload-artifact",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    },
+    {
+      "job": "build",
+      "action": "actions/checkout",
+      "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    {
+      "job": "build",
+      "action": "actions/setup-java",
+      "sha": "de7274f081f381c8f8158605e0321c36c376e2e6"
+    },
+    {
+      "job": "build",
+      "action": "android-actions/setup-android",
+      "sha": "be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd"
+    },
+    {
+      "job": "build",
+      "action": "actions/setup-node",
+      "sha": "820762786026740c76f36085b0efc47a31fe5020"
+    },
+    {
+      "job": "build",
+      "action": "gradle/actions/setup-gradle",
+      "sha": "0723195856401067f7a2779048b490ace7a47d7c"
+    },
+    {
+      "job": "build",
+      "action": "actions/upload-artifact",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    },
+    {
+      "job": "build",
+      "action": "actions/upload-artifact",
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    }
+  ],
+  "hiddenReportPaths": [
+    "full-game/.test-workspace/soak-*/evidence.json",
+    "full-game/.test-workspace/soak-*/gc.log",
+    "full-game/.test-workspace/soak-*/collection-*.txt",
+    "full-game/.test-workspace/automatic-*/evidence.json",
+    "full-game/.test-workspace/load-*/evidence.json",
+    "full-game/.test-workspace/load-*/gc.log",
+    "full-game/.test-workspace/deletion-process-*/evidence.json",
+    "full-game/.test-workspace/permissions-*/evidence.json",
+    "full-game/.test-workspace/permissions-*/metrics.prom",
+    "full-game/.test-workspace/history-delete-*/evidence.json",
+    "full-game/.test-workspace/container-review/grype.json",
+    "full-game/.test-workspace/container-review/gate.json",
+    "full-game/.test-workspace/runtime-dependencies.json",
+    "full-game/.test-workspace/runtime-advisories.json"
+  ]
+}

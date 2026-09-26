@@ -1,0 +1,54 @@
+{
+  "checkedAtUtc": "2026-09-26T08:20:32.626821+00:00",
+  "scope": "Public maintainer tag and source verification; upstream source is linked, not vendored; no remote workflow execution",
+  "actions": [
+    {
+      "repository": "actions/checkout",
+      "selectedRef": "v7.0.1",
+      "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "actionSource": "https://raw.githubusercontent.com/actions/checkout/3d3c42e5aac5ba805825da76410c181273ba90b1/action.yml",
+      "actionDefinitionSha256": "d59219cb79590abdb877deaa14e3b65a00c05318bf5a6f3b989b9162b5d08c35",
+      "nodeRuntime": "node24"
+    },
+    {
+      "repository": "actions/setup-java",
+      "selectedRef": "v6.0.1",
+      "commit": "de7274f081f381c8f8158605e0321c36c376e2e6",
+      "actionSource": "https://raw.githubusercontent.com/actions/setup-java/de7274f081f381c8f8158605e0321c36c376e2e6/action.yml",
+      "actionDefinitionSha256": "0fea4e9d329b3503a7bc1a64c2221d47252e7c520403e674a7d8c5a13a88d3b9",
+      "nodeRuntime": "node24"
+    },
+    {
+      "repository": "actions/setup-node",
+      "selectedRef": "v7.0.0",
+      "commit": "820762786026740c76f36085b0efc47a31fe5020",
+      "actionSource": "https://raw.githubusercontent.com/actions/setup-node/820762786026740c76f36085b0efc47a31fe5020/action.yml",
+      "actionDefinitionSha256": "5d765941ab5d8bef27f08e81b0b041cdb2df2050ea0261dc925d157a2bafbd2b",
+      "nodeRuntime": "node24"
+    },
+    {
+      "repository": "actions/upload-artifact",
+      "selectedRef": "v7.0.1",
+      "commit": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+      "actionSource": "https://raw.githubusercontent.com/actions/upload-artifact/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/action.yml",
+      "actionDefinitionSha256": "c5979822866a72362e609844b6ebe77d4b7e759af68cc1c2c425dcf51481fab4",
+      "nodeRuntime": "node24"
+    },
+    {
+      "repository": "gradle/actions",
+      "selectedRef": "v5.0.2",
+      "commit": "0723195856401067f7a2779048b490ace7a47d7c",
+      "actionSource": "https://raw.githubusercontent.com/gradle/actions/0723195856401067f7a2779048b490ace7a47d7c/setup-gradle/action.yml",
+      "actionDefinitionSha256": "9f962f9604df64f176316d7eadb169348cd1b7041a754f417945f524bdd20840",
+      "nodeRuntime": "node24"
+    },
+    {
+      "repository": "android-actions/setup-android",
+      "selectedRef": "v4.0.4",
+      "commit": "be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd",
+      "actionSource": "https://raw.githubusercontent.com/android-actions/setup-android/be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd/action.yml",
+      "actionDefinitionSha256": "a7ee24e1ddce624c235f7069ee78f26b98077cb3ecdc20b2cbfe7a1aa4624aa1",
+      "nodeRuntime": "node24"
+    }
+  ]
+}
