@@ -37,6 +37,9 @@ fun checkedEndpoint(value: String, allowLocalHttp: Boolean = false): String {
 
 interface RoomApi : AutoCloseable {
     suspend fun guest(request: GuestRequest): GuestCredentials
+    suspend fun wallet(token: String): WalletView
+    suspend fun refill(token: String, request: RefillRequest): WalletView
+    suspend fun match(token: String, request: MatchRequest): RoomUpdate
     suspend fun create(token: String, request: CreateRoomRequest): RoomUpdate
     suspend fun join(token: String, code: String): RoomUpdate
     suspend fun read(token: String, code: String, after: Long? = null): RoomUpdate
@@ -72,6 +75,9 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
             payload
         }
     override suspend fun guest(request: GuestRequest): GuestCredentials = WireJson.decodeFromString(text("/v1/guests", body = WireJson.encodeToString(request), post = true))
+    override suspend fun wallet(token: String): WalletView = WireJson.decodeFromString(text("/v1/wallet", token))
+    override suspend fun refill(token: String, request: RefillRequest): WalletView = WireJson.decodeFromString(text("/v1/wallet/refill", token, WireJson.encodeToString(request), true))
+    override suspend fun match(token: String, request: MatchRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/matches", token, WireJson.encodeToString(request), true))
     override suspend fun create(token: String, request: CreateRoomRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/rooms", token, WireJson.encodeToString(request), true))
     override suspend fun join(token: String, code: String): RoomUpdate = WireJson.decodeFromString(text(roomPath(code) + "/join", token, post = true))
     override suspend fun read(token: String, code: String, after: Long?): RoomUpdate {

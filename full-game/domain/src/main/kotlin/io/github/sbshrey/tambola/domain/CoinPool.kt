@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 const val COIN_TICKET_PRICE = 100L
 const val COIN_STARTER_BALANCE = 1_500L
 
-data class CoinPrize(val prize: Prize, val coins: Long)
+@Serializable data class CoinPrize(val prize: Prize, val coins: Long)
 data class CoinAllocation(val key: String, val ticketId: String, val playerId: String, val coins: Long, val prize: Prize? = null)
 
 /** Immutable policy v1, fixed before any numbers are revealed. These coins have no cash value. */

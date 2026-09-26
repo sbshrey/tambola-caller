@@ -1,6 +1,8 @@
 # Coin service integration notes
 
-Current implementation boundary: schema 004, `CoinLedger`, authenticated wallet/refill endpoints and starter-wallet creation are implemented and passed focused PostgreSQL, HTTP and restricted-role tests. The installed Wi-Fi host still runs the tested manual-game checkpoint; it has not received schema 004 or the wallet endpoints. Purchases, settlement wiring, matchmaking and wallet UI remain to implement.
+Current implementation boundary: schemas 004–005, wallet/refill endpoints, transactional purchases, matchmaking, frozen pools, delayed tie settlement and refunds are implemented. Protocol 4 exposes each player's ticket quantity, coin prizes and spendable wallet without exposing other hands. The alpha16 app now opens on ticket selection, buys through a 12-second countdown, shows coin prizes beside paged tickets and provides per-ticket prize selection. Lost-response purchases survive activity recreation and retry without another debit. The installed Wi-Fi host still runs the tested manual-game checkpoint (schema 003/protocol 3); alpha16 has **not** been deployed there.
+
+Validation: 189 distinct JVM tests across the full baseline and focused extensions, Android debug build/unit tests/lint, two native coin-flow tests against the isolated real service, and the native manual-table regression passed. See [alpha16 evidence](../full-game/reviews/coin-match-alpha16-2026-09-26/README.md). This is an internal integration checkpoint, not a signed or phone-tested release.
 
 ## Transaction design
 
@@ -22,7 +24,9 @@ Current implementation boundary: schema 004, `CoinLedger`, authenticated wallet/
 
 ## Remaining acceptance
 
-Cover purchases/refunds and exact receipts across concurrency, DB rollback, restart, profile deletion and expiry; partial quantities; 6/7/8 prize schedules; ties and ranked houses; full-pool conservation including computer allocations; stale responses; reconnect; and two real clients. Update server/client protocol together when new room fields/actions are added.
+Covered: concurrent match/retry/overspend; quantity differences; exact purchase/leave receipts; rollback and retry after refill; queue refunds after outage; selected same-call ties; 6/7/8 prize schedules; full three-house settlement; whole-pool conservation; delayed computer allocations; active expiry; queued profile deletion and receipt redaction; restricted-role purchase/refund; forged HTTP prices; monotonic wallet snapshots; same-call claim revision recovery. Native checks used two independent authenticated clients (one Android UI, one HTTP client), six disjoint owned tickets, manual marking, seven-slot prize picker, refund, invalid-claim feedback and purchase-response loss with activity recreation.
+
+Still required: guest identity refresh/recovery; active-game deletion/end settlement and restore acceptance for this economy; native successful prize/payout/results/refill/repeat-round flow over a complete round; larger text/Hindi/compact devices; new frame-time and concurrent-room latency measurements; managed host migration with both-store backup and restricted-role write/read; LAN APK/physical-phone play. The native activity reload test is not a process-death or reboot test.
 
 Before upgrading the installed host: build a committed candidate, back up both stores, verify no active round is disrupted, apply migrations with owner credentials, reapply reviewed runtime grants, then start restricted runtime credentials and confirm readiness plus a real write/read. An older binary rejects newer migration versions, so rollback cannot be assumed to mean merely copying old jars. Keep the live deletion journal across restore operations.
 

@@ -7,14 +7,17 @@ let armed = false;
 let dropped = 0;
 let commandArmed = false;
 let commandsDropped = 0;
+let matchArmed = false;
+let matchesDropped = 0;
 const proxy = http.createServer((request, response) => {
   const upstream = http.request({ hostname: '127.0.0.1', port: upstreamPort, method: request.method, path: request.url, headers: request.headers }, result => {
     const deletion = armed && request.method === 'POST' && request.url === '/v1/guests/me/delete';
     const command = commandArmed && request.method === 'POST' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/commands$/.test(request.url);
-    if ((deletion || command) && result.statusCode === 200) {
+    const match = matchArmed && request.method === 'POST' && request.url === '/v1/matches';
+    if ((deletion || command || match) && result.statusCode === 200) {
       // The upstream transaction has committed; discard its entire response before disconnecting.
       result.resume();
-      result.once('end', () => { if (deletion) dropped++; else commandsDropped++; response.destroy(); });
+      result.once('end', () => { if (deletion) dropped++; else if (command) commandsDropped++; else matchesDropped++; response.destroy(); });
     } else {
       response.writeHead(result.statusCode, result.headers);
       result.pipe(response);
@@ -46,11 +49,16 @@ const control = http.createServer((request, response) => {
     commandArmed = true;
   } else if (request.method === 'POST' && request.url === '/allow-commands') {
     commandArmed = false;
+  } else if (request.method === 'POST' && request.url === '/arm-match-drop') {
+    if (matchArmed) { response.writeHead(409); response.end(); return; }
+    matchArmed = true;
+  } else if (request.method === 'POST' && request.url === '/allow-matches') {
+    matchArmed = false;
   } else if (request.method !== 'GET' || request.url !== '/status') {
     response.writeHead(404); response.end(); return;
   }
   response.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
-  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped }));
+  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, matchArmed, matchesDropped }));
 });
 for (const server of [proxy, control]) server.on('error', error => { console.error(`Fixture listener failed: ${error.code}`); process.exit(1); });
 proxy.listen(8080, '127.0.0.1', () => console.log('Test proxy listening on loopback 8080; upstream 8081.'));

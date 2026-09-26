@@ -114,12 +114,12 @@ internal fun ClaimArena(
                         Text("$status · ${words(R.string.play_calls_short, table.called.size)}", color = muted, fontSize = 11.sp, lineHeight = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.testTag("play-status"))
                         Text(words(R.string.play_tickets_short, hand.tickets.size), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        if (!largeText) Text(words(R.string.play_prizes_left, remaining), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
+                        if (!largeText) Text(table.coins?.let { words(R.string.coin_pool, it.pool) } ?: words(R.string.play_prizes_left, remaining), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
                     }
                     if (landscape && !table.finished) Box(Modifier.width(110.dp)) { footer() }
                 }
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    if (landscape) TableSidebar(table, ownerId, ink, muted, Modifier.width(if (largeText) 94.dp else 114.dp).fillMaxHeight()) { details = true }
+                    if (landscape) TableSidebar(table, ownerId, ink, muted, Modifier.width(if (largeText) 94.dp else if (table.coins != null) 142.dp else 114.dp).fillMaxHeight()) { details = true }
                     Column(Modifier.weight(1f).fillMaxHeight()) {
                         if (!landscape) Text("$status · ${words(R.string.play_prizes_left, remaining)}", fontSize = 11.sp, color = muted, maxLines = 1,
                             modifier = Modifier.height(22.dp))
@@ -151,7 +151,7 @@ internal fun ClaimArena(
                 IconButton(onClick = { claimTicketId = null }, modifier = Modifier.size(48.dp).testTag("dismiss-claim")
                     .semantics { contentDescription = words(R.string.ui_back_to_game) }) { Text("×", fontSize = 28.sp) }
               }
-            val choices = table.settings.prizes.map { it.name to words.prizeTitle(it) } + table.settings.customPrizes.map { it.id to it.title }
+            val choices = table.settings.prizes.map { prize -> prize.name to (table.coins?.prizes?.firstOrNull { it.prize == prize }?.let { words(R.string.coin_prize_amount, words.prizeTitle(prize), it.coins) } ?: words.prizeTitle(prize)) } + table.settings.customPrizes.map { it.id to it.title }
             Column(Modifier.heightIn(max = 200.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
              choices.chunked(columns).forEach { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -177,9 +177,16 @@ internal fun ClaimArena(
         }
     }
     if (details) ArenaDialog(words(R.string.play_prizes), { details = false }) {
-        Text(words(R.string.play_claim_rules))
-        RuleList(hand)
-        table.players.forEach { player -> Text("${words.playerLabel(player)} · ${table.score(player.id)}") }
+        if (table.coins != null) {
+            Text(words(R.string.coin_pool, table.coins.pool))
+            CoinPrizeGrid(table.coins.prizes, awards = table.awards, onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
+            Text(words(R.string.coin_ties), style = MaterialTheme.typography.bodySmall)
+            table.players.forEach { Text(words.playerLabel(it)) }
+        } else {
+            Text(words(R.string.play_claim_rules))
+            RuleList(hand)
+            table.players.forEach { player -> Text("${words.playerLabel(player)} · ${table.score(player.id)}") }
+        }
     }
     if (board) ArenaDialog(words(R.string.ui_the_number_board), { board = false }) {
         FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -234,7 +241,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(3.dp)) {
         Column(Modifier.weight(1f).fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable(role = Role.Button, onClick = details)
             .semantics(mergeDescendants = true) { contentDescription = words(R.string.play_prizes) }.testTag("prize-rail"), verticalArrangement = Arrangement.SpaceEvenly) {
-            table.settings.prizes.take(6).forEach { prize ->
+            table.settings.prizes.take(if (table.coins != null) 8 else 6).forEach { prize ->
                 val won = table.awards.any { it.prize == prize }
                 val short = when (prize) {
                     Prize.EARLY_FIVE -> R.string.play_early; Prize.CORNERS -> R.string.play_corners
@@ -257,14 +264,17 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                     }
                     Text(if (large) if (prize == Prize.EARLY_FIVE) "5" else if (prize == Prize.EARLY_TEN) "10" else "" else
                         if (prize == Prize.EARLY_TEN || prize.isRankedHouse) words.prizeTitle(prize) else words(short), fontSize = 11.sp, color = if (won) muted else ink, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.semantics { contentDescription = words.prizeTitle(prize) })
+                        modifier = Modifier.weight(1f).semantics { contentDescription = words.prizeTitle(prize) })
+                    table.coins?.prizes?.firstOrNull { it.prize == prize }?.let { slot ->
+                        Text("${slot.coins}", color = if (won) muted else ink, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
-            val extra = (table.settings.prizes.size - 6).coerceAtLeast(0) + table.settings.customPrizes.size
+            val extra = (table.settings.prizes.size - if (table.coins != null) 8 else 6).coerceAtLeast(0) + table.settings.customPrizes.size
             if (extra > 0) Text("+$extra", fontSize = 11.sp, color = muted)
         }
-        Text(words(R.string.play_players_short, table.players.size), color = muted, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        val players = table.players.sortedBy { it.id != ownerId }.take(3)
+        Text(if (table.coins != null) words(R.string.coin_players, table.players.size, table.players.count { it.computer }) else words(R.string.play_players_short, table.players.size), color = muted, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        val players = table.players.sortedBy { it.id != ownerId }.take(if (table.settings.prizes.size > 6) 2 else 3)
         players.forEach { player ->
             Row(Modifier.height(if (large) 28.dp else 34.dp).fillMaxWidth().semantics(mergeDescendants = true) { contentDescription = words.playerLabel(player) },
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {

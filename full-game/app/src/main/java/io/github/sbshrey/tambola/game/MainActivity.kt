@@ -44,11 +44,12 @@ class MainActivity : AppCompatActivity() {
                     invitations.navigated()
                 }
             }
-            LaunchedEffect(state.screen) { online.setActive(state.screen == Screen.ONLINE && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
+            LaunchedEffect(state.screen) { online.setActive(state.screen in setOf(Screen.HOME, Screen.ONLINE) && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
             val playing = (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
                 (state.screen == Screen.ONLINE && onlineState.room?.round?.status == RoundStatus.PLAYING)
             val manualTable = (state.screen == Screen.GAME && state.round?.settings?.manualClaims == true) ||
-                (state.screen == Screen.ONLINE && onlineState.room?.round != null && onlineState.room?.options?.game?.manualClaims == true)
+                (state.screen == Screen.ONLINE && onlineState.room?.round != null && onlineState.room?.options?.game?.manualClaims == true &&
+                    (onlineState.room?.options?.coinGame != true || onlineState.room?.phase == io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE))
             LaunchedEffect(manualTable) {
                 requestedOrientation = if (manualTable) ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             }
@@ -68,13 +69,16 @@ class MainActivity : AppCompatActivity() {
                 Appearance.LIGHT -> false
                 Appearance.DARK -> true
             }
-            LaunchedEffect(dark) {
+            val forestLobby = state.screen in setOf(Screen.HOME, Screen.ONLINE) &&
+                (onlineState.room == null || onlineState.room?.options?.coinGame == true) &&
+                (state.screen == Screen.HOME || onlineState.room?.phase != io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE)
+            LaunchedEffect(dark, forestLobby) {
                 val transparent = android.graphics.Color.TRANSPARENT
                 val lightBar = android.graphics.Color.rgb(255, 249, 240)
                 val darkBar = android.graphics.Color.rgb(18, 29, 43)
                 enableEdgeToEdge(
-                    statusBarStyle = if (dark) SystemBarStyle.dark(transparent) else SystemBarStyle.light(transparent, transparent),
-                    navigationBarStyle = if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
+                    statusBarStyle = if (dark || forestLobby) SystemBarStyle.dark(transparent) else SystemBarStyle.light(transparent, transparent),
+                    navigationBarStyle = if (forestLobby) SystemBarStyle.dark(android.graphics.Color.rgb(11, 53, 46)) else if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
                 )
             }
             TambolaTheme(dark) { TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss) }
@@ -92,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun consumedInviteIntent() = Intent(this, MainActivity::class.java)
         .setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-    override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen == Screen.ONLINE) }
+    override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen in setOf(Screen.HOME, Screen.ONLINE)) }
     override fun onResume() { super.onResume(); GameAudio.get(application).setForeground(true) }
     override fun onPause() { GameAudio.get(application).setForeground(false); super.onPause() }
     override fun onStop() {

@@ -1,0 +1,290 @@
+{
+  "domain": [
+    {
+      "name": "io.github.sbshrey.tambola.domain.AvatarRoundTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.194"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.BadgeTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.028"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.CoinPoolTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.07"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.CustomPrizeTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.058"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.ManualClaimTest",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.074"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.RoundTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.939"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.RuleInspectionTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.061"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.domain.TicketStripTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.355"
+    }
+  ],
+  "client": [
+    {
+      "name": "io.github.sbshrey.tambola.client.OnlineStateTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.477"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.client.ReadyAgreementTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.007"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.client.RoomApiTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.326"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.client.RoomInvitesTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    }
+  ],
+  "server": [
+    {
+      "name": "io.github.sbshrey.tambola.server.AvatarTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.838"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.345"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.708"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.824"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "14.84"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "21.438"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "22.876"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventStreamsTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.336"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HttpTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "9.893"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.018"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.InviteSiteTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.744"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "13.479"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.NativeClientTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.947"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.358"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "10.694"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "25.038"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "205.808"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.04"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.001"
+    }
+  ],
+  "app": [
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.224"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.077"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.168"
+    }
+  ]
+}

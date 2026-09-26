@@ -14,6 +14,21 @@ import org.junit.Test
 import java.util.UUID
 
 class HttpTest : PostgresTest() {
+    @Test fun `match HTTP rejects forged prices and returns a private retryable purchase`() = testApplication {
+        application { roomsModule(database, service, runWorker = false) }
+        val actor = service.register(GuestRequest("Match HTTP QA"), "match-http")
+        val request = MatchRequest(UUID.randomUUID().toString(), 6)
+        assertEquals(HttpStatusCode.Unauthorized, client.post("/v1/matches") { contentType(ContentType.Application.Json); setBody(WireJson.encodeToString(request)) }.status)
+        suspend fun buy(body: String) = client.post("/v1/matches") { bearerAuth(actor.token); contentType(ContentType.Application.Json); setBody(body) }
+        assertEquals(HttpStatusCode.BadRequest, buy("{\"id\":\"${request.id}\",\"tickets\":6,\"price\":0}").status)
+        assertEquals(HttpStatusCode.BadRequest, buy("{\"id\":\"${request.id}\",\"tickets\":7}").status)
+        val first = buy(WireJson.encodeToString(request))
+        assertEquals(HttpStatusCode.OK, first.status)
+        assertEquals("no-store", first.headers[HttpHeaders.CacheControl])
+        assertEquals(first.bodyAsText(), buy(WireJson.encodeToString(request)).bodyAsText())
+        assertEquals(900L, WireJson.decodeFromString<RoomUpdate>(first.bodyAsText()).snapshot.wallet!!.balance)
+        assertFalse(first.bodyAsText().contains(actor.token))
+    }
     @Test fun `wallet endpoints authenticate reject forged amounts and return only spendable balance`() = testApplication {
         application { roomsModule(database, service, runWorker = false) }
         val actor = service.register(GuestRequest("Wallet HTTP QA"), "wallet-http")

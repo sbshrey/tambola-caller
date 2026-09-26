@@ -46,6 +46,51 @@ class RoomService(
         }
     }
 
+    /** Joining, buying tickets and the durable receipt are one transaction. */
+    fun match(token: String, request: MatchRequest): RoomUpdate {
+        validId(request.id)
+        authenticatedRate(token, "match", 20)
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token, lock = true)
+            val hash = digest(WireJson.encodeToString(request))
+            val receipt = connection.query("SELECT request_hash, response FROM match_receipts WHERE actor = ? AND command_id = ?", guest.id, request.id) {
+                Receipt(it.getString(1), it.getString(2))
+            }.singleOrNull()
+            if (receipt != null) {
+                demand(receipt.hash == hash, 409, "id_reused", "This purchase ID already has different ticket choices.")
+                return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
+            }
+            // Serialize lobby selection; guest-before-room ordering is retained.
+            connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+            val now = clock()
+            val existing = connection.query("""SELECT payload FROM rooms WHERE matchable AND phase IN ('LOBBY','ACTIVE')
+                AND expires_at > ? AND id IN (SELECT room_id FROM room_participants WHERE player_id = ?)
+                AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
+                ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
+            val saved = if (existing != null) {
+                // Re-entering an owned game never buys a second entry.
+                touch(connection, existing, guest.id, now)
+            } else {
+                val waiting = connection.query("""SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
+                    AND (payload::jsonb->>'startsAt')::bigint > ? AND jsonb_array_length(payload::jsonb->'members') < 8
+                    ORDER BY (payload::jsonb->>'startsAt')::bigint, id LIMIT 1 FOR UPDATE""", now, now) { decode(it.getString(1)) }.singleOrNull()
+                val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id, coinOptions(),
+                    emptyList(), now + ROOM_LIFETIME, startsAt = now + MATCH_COUNTDOWN).also {
+                    connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, true)",
+                        it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it))
+                }
+                demand(room.startsAt!! > clock(), 409, "sales_closed", "That round is starting. Try Play again.")
+                CoinLedger.open(connection, guest.id, now)
+                changed(connection, room.copy(
+                    members = room.members + Member(guest.id, guest.name, guest.avatar, now, ready = true, lastSeen = now),
+                    purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", now)
+            }
+            val response = update(connection, saved, guest.id, null)
+            connection.execute("INSERT INTO match_receipts VALUES (?, ?, ?, ?, ?)", guest.id, request.id, hash, saved.id, WireJson.encodeToString(response))
+            response
+        }
+    }
+
     fun revoke(token: String) = database.transaction { connection ->
         val guest = authenticate(connection, token, lock = true)
         connection.execute("UPDATE guests SET expires_at = ?, revoked_at = ? WHERE id = ?", clock(), clock(), guest.id)
@@ -149,6 +194,7 @@ class RoomService(
             val remaining = redacted.members.filterNot { it.id == playerId }
             val successor = remaining.minWithOrNull(compareBy<Member> { now - it.lastSeen >= PRESENCE_TIMEOUT }.thenBy { it.joinedAt }.thenBy { it.id })
             val next = redacted.copy(members = remaining,
+                purchases = if (redacted.phase == RoomPhase.LOBBY) redacted.purchases - playerId else redacted.purchases,
                 hostId = if (original.hostId == playerId) successor?.id.orEmpty() else original.hostId,
                 phase = if (remaining.isEmpty()) RoomPhase.CLOSED else original.phase,
                 round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
@@ -167,15 +213,21 @@ class RoomService(
                 connection.execute("UPDATE command_receipts SET response = ? WHERE room_id = ? AND actor = ? AND command_id = ?", WireJson.encodeToString(response.redact(playerId)), original.id, actor, id)
             }
         }
+        connection.forEachRow("SELECT actor, command_id, response FROM match_receipts WHERE room_id IN (SELECT room_id FROM room_participants WHERE player_id = ?) AND actor <> ? ORDER BY actor, command_id FOR UPDATE", playerId, playerId) { row ->
+            val response = WireJson.decodeFromString<RoomUpdate>(row.getString(3))
+            connection.execute("UPDATE match_receipts SET response = ? WHERE actor = ? AND command_id = ?",
+                WireJson.encodeToString(response.redact(playerId)), row.getString(1), row.getString(2))
+        }
         connection.execute("DELETE FROM command_receipts WHERE actor = ?", playerId)
         connection.execute("DELETE FROM room_participants WHERE player_id = ?", playerId)
-        listOf("create", "join", "read", "command", "wallet", "refill").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
+        listOf("create", "join", "read", "command", "wallet", "refill", "match").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
         connection.execute("DELETE FROM guests WHERE id = ?", playerId)
         if (intent.confirmUntil > now) connection.execute("INSERT INTO deletion_receipts VALUES (?, ?, ?) ON CONFLICT (confirmation_hash) DO NOTHING", intent.proof, intent.deletedAt, intent.confirmUntil)
     }
 
     fun create(token: String, request: CreateRoomRequest): RoomUpdate {
         validId(request.id)
+        demand(!request.options.coinGame, 400, "use_matchmaking", "Use Play to enter a coin round.")
         authenticatedRate(token, "create", 10)
         return database.transaction { connection ->
             val guest = authenticate(connection, token, lock = true)
@@ -206,6 +258,7 @@ class RoomService(
             val room = load(connection, code)
             val now = clock()
             val joined = if (room.members.any { it.id == guest.id }) touch(connection, room, guest.id, now) else {
+                demand(!room.options.coinGame, 409, "use_matchmaking", "Use Play to buy tickets for an accepting round.")
                 demand(room.phase == RoomPhase.LOBBY && !room.locked, 409, "room_locked", "This room is not accepting new players.")
                 demand(room.members.size + room.options.computerPlayers < room.options.capacity, 409, "room_full", "This room is full.")
                 changed(connection, room.copy(members = room.members + Member(guest.id, guest.name, guest.avatar, now, lastSeen = now)), "joined", now)
@@ -253,7 +306,7 @@ class RoomService(
             // Take the profile write lock before room locks; do not upgrade a shared
             // profile lock while a concurrent command holds it and waits on this room.
             val guest = authenticate(connection, token, lock = request.action is RoomAction.ChooseAvatar)
-            var room = load(connection, code)
+            var room = load(connection, code, allowClosed = request.action == RoomAction.Leave)
             val hash = digest(WireJson.encodeToString(request))
             val receipt = connection.query("SELECT request_hash, response FROM command_receipts WHERE room_id = ? AND actor = ? AND command_id = ?", room.id, guest.id, request.id) { Receipt(it.getString(1), it.getString(2)) }.singleOrNull()
             if (request.action != RoomAction.Leave || receipt == null) member(room, guest.id)
@@ -261,6 +314,7 @@ class RoomService(
                 demand(receipt.hash == hash, 409, "id_reused", "This command ID was already used for another request.")
                 return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
             }
+            demand(room.expiresAt > clock() && room.phase != RoomPhase.CLOSED, 410, "room_closed", "This room has closed or expired.")
             // A claim is tied to a round/call, not to unrelated readiness/presence or
             // another same-call winner. Future revisions are still invalid.
             demand(room.revision == request.expectedRevision || (request.action is RoomAction.Claim && request.expectedRevision < room.revision),
@@ -295,7 +349,14 @@ class RoomService(
                         event = "host_changed"
                     }
                 }
-                if (room.phase == RoomPhase.ACTIVE && room.nextDrawAt?.let { it <= now } == true) {
+                if (room.phase == RoomPhase.LOBBY && room.options.coinGame && room.startsAt?.let { it <= now } == true) {
+                    // A long host outage refunds the queue instead of spending
+                    // entries after players believe the countdown failed.
+                    room = if (now - requireNotNull(room.startsAt) > 30_000L || room.members.isEmpty())
+                        room.copy(phase = RoomPhase.CLOSED, startsAt = null)
+                    else room.startCoinRound(now)
+                    event = if (room.phase == RoomPhase.CLOSED) "queue_refunded" else "started"
+                } else if (room.phase == RoomPhase.ACTIVE && room.nextDrawAt?.let { it <= now } == true) {
                     room = draw(room, now)
                     event = "drawn"
                 } else if (room.phase == RoomPhase.ACTIVE && room.round?.status == RoundStatus.PLAYING) {
@@ -327,7 +388,14 @@ class RoomService(
         fun host() = demand(room.hostId == actor, 403, "host_only", "Only the host can do that.")
         fun lobby() = demand(room.phase == RoomPhase.LOBBY, 409, "not_lobby", "Settings and membership are locked during a round.")
         fun active() = demand(room.phase == RoomPhase.ACTIVE, 409, "not_active", "There is no active round.")
+        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.BuyTickets || action == RoomAction.Leave,
+            403, "automatic_coin_round", "Coin rounds are managed by the server.")
         return when (action) {
+            is RoomAction.BuyTickets -> {
+                lobby()
+                demand(room.options.coinGame && now < requireNotNull(room.startsAt), 409, "sales_closed", "Ticket sales have closed.")
+                room.copy(purchases = room.purchases + (actor to action.quantity))
+            }
             is RoomAction.Ready -> { lobby(); room.copy(members = room.members.map { if (it.id == actor) it.copy(ready = action.value) else it }) }
             is RoomAction.ChooseAvatar -> {
                 lobby()
@@ -401,6 +469,7 @@ class RoomService(
                 demand(room.phase != RoomPhase.ACTIVE, 409, "round_in_progress", "You can disconnect and rejoin. Leave the group after the round ends.")
                 val remaining = room.members.filterNot { it.id == actor }
                 room.copy(members = remaining, phase = if (remaining.isEmpty()) RoomPhase.CLOSED else room.phase,
+                    purchases = if (room.phase == RoomPhase.LOBBY) room.purchases - actor else room.purchases,
                     hostId = if (room.hostId == actor) remaining.firstOrNull()?.id ?: actor else room.hostId)
             }
         }
@@ -423,11 +492,11 @@ class RoomService(
         return guest
     }
 
-    private fun load(connection: Connection, code: String, lock: Boolean = true): RoomRecord {
+    private fun load(connection: Connection, code: String, lock: Boolean = true, allowClosed: Boolean = false): RoomRecord {
         demand(code.matches(Regex("[A-Z2-9]{8}")), 404, "room_missing", "Room not found.")
         val room = connection.query("SELECT payload FROM rooms WHERE code = ?${if (lock) " FOR UPDATE" else ""}", code) { decode(it.getString(1)) }.singleOrNull()
             ?: fail(404, "room_missing", "Room not found.")
-        demand(room.expiresAt > clock() && room.phase != RoomPhase.CLOSED, 410, "room_closed", "This room has closed or expired.")
+        demand(allowClosed || (room.expiresAt > clock() && room.phase != RoomPhase.CLOSED), 410, "room_closed", "This room has closed or expired.")
         return room
     }
 
@@ -446,7 +515,12 @@ class RoomService(
     }
 
     private fun changed(connection: Connection, room: RoomRecord, type: String, now: Long): RoomRecord {
-        val next = room.copy(revision = room.revision + 1)
+        val next = room.coinLobby().copy(revision = room.revision + 1)
+        if (next.options.coinGame) {
+            val before = connection.query("SELECT payload FROM rooms WHERE id = ?", next.id) { decode(it.getString(1)) }.single()
+            RoomEconomy.reconcile(connection, before, next, now)
+            RoomEconomy.settle(connection, next, now)
+        }
         save(connection, next)
         val event = RoomEvent(next.revision, type, now, next.round?.id)
         connection.execute("INSERT INTO room_events VALUES (?, ?, ?)", next.id, next.revision, WireJson.encodeToString(event))
@@ -467,7 +541,9 @@ class RoomService(
         demand(after == null || after >= 0, 400, "invalid_cursor", "Event cursor must be non-negative.")
         val resync = after == null || after > room.revision || after < maxOf(0, room.revision - EVENT_LIMIT)
         val events = if (resync) emptyList() else connection.query("SELECT payload FROM room_events WHERE room_id = ? AND revision > ? AND revision <= ? ORDER BY revision", room.id, after, room.revision) { WireJson.decodeFromString<RoomEvent>(it.getString(1)) }
-        return RoomUpdate(room.view(actor, clock()), events, resync)
+        return RoomUpdate(room.view(actor, clock()).let { view ->
+            if (room.options.coinGame) view.copy(wallet = CoinLedger.view(connection, actor)) else view
+        }, events, resync)
     }
 
     private fun authenticatedRate(token: String, operation: String, maximum: Int) = database.transaction { connection ->
@@ -491,6 +567,7 @@ class RoomService(
         })
     }
     private fun actionName(action: RoomAction): String = when (action) {
+        is RoomAction.BuyTickets -> "tickets_bought"
         is RoomAction.ChooseAvatar -> "avatar_changed"
         is RoomAction.Claim -> "claimed"
         is RoomAction.Ready -> "ready"; is RoomAction.Configure -> "configured"; is RoomAction.Lock -> "locked"

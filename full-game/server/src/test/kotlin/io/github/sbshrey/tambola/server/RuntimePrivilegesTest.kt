@@ -86,6 +86,15 @@ class RuntimePrivilegesTest {
     }
 
     @Test fun `restricted roles play archive redact retry replay and clean retained records`() {
+        val buyer = service.register(GuestRequest("Restricted coin buyer"), "coin-buyer")
+        val purchase = MatchRequest(UUID.randomUUID().toString(), 6)
+        val purchased = service.match(buyer.token, purchase)
+        assertEquals(900L, purchased.snapshot.wallet!!.balance)
+        assertEquals(purchased, service.match(buyer.token, purchase))
+        val leave = CommandRequest(UUID.randomUUID().toString(), purchased.snapshot.revision, RoomAction.Leave)
+        assertEquals(1500L, service.command(buyer.token, purchased.snapshot.code, leave).snapshot.wallet!!.balance)
+        service.deleteProfile(buyer.token, DeleteProfileRequest(UUID.randomUUID().toString()), "coin-buyer")
+        assertEquals(1, service.replayDeletions())
         val host = service.register(GuestRequest("Role host", 5), "host")
         val peer = service.register(GuestRequest("Role peer", 3), "peer")
         assertEquals(1_500L, service.wallet(host.token).balance)

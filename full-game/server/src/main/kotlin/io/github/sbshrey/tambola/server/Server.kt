@@ -135,6 +135,10 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                 val body = call.body<RefillRequest>()
                 call.respond(withContext(Dispatchers.IO) { service.refill(call.bearer(), body) })
             }
+            post("/matches") {
+                val body = call.body<MatchRequest>()
+                call.respond(withContext(Dispatchers.IO) { service.match(call.bearer(), body) })
+            }
             post("/guests") {
                 val body = call.body<GuestRequest>()
                 val result = withContext(Dispatchers.IO) { service.register(body, call.request.local.remoteHost) }

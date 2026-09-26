@@ -1,6 +1,6 @@
 package io.github.sbshrey.tambola.server
 
-import io.github.sbshrey.tambola.domain.Round
+import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.protocol.*
 import kotlinx.serialization.Serializable
 import java.security.MessageDigest
@@ -39,7 +39,19 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
     val round: Round? = null, val nonce: String? = null, val drawCommitment: String? = null,
     val nextDrawAt: Long? = null,
     val computerClaimsAt: Map<String, Long> = emptyMap(),
+    val purchases: Map<String, Int> = emptyMap(),
+    val startsAt: Long? = null,
+    val coinPool: CoinPool? = null,
 ) {
+    fun coinView(actor: String): CoinTableView? {
+        if (!options.coinGame) return null
+        val tickets = purchases.values.sum() + options.computerPlayers * COMPUTER_TICKETS
+        if (coinPool == null && tickets < 2) return CoinTableView(tickets, tickets * COIN_TICKET_PRICE, emptyList(), purchases[actor] ?: 0, startsAt)
+        val pool = coinPool ?: CoinPool(tickets)
+        val allocations = round?.let(pool::allocations).orEmpty().filter { it.playerId == actor }
+        return CoinTableView(pool.soldTickets, pool.coins, pool.prizes, purchases[actor] ?: 0, startsAt,
+            allocations.filter { it.prize != null }.sumOf { it.coins }, allocations.filter { it.prize == null }.sumOf { it.coins })
+    }
     fun view(actor: String, now: Long): RoomView = RoomView(
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,
         options = options, members = members.map { MemberView(it.id, it.name, it.avatar, it.ready, it.connected && now - it.lastSeen < PRESENCE_TIMEOUT) },
@@ -52,7 +64,8 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
                 game.tickets.filter { it.playerId == player.id }.mapIndexedNotNull { index, ticket ->
                     if (ticket.id in awarded) WinningTicket(ticket.id, player.id, index + 1) else null
                 }
-            }) },
+            }, game.ticketCounts) },
         nextDrawAt = nextDrawAt, expiresAt = expiresAt, serverTime = now,
+        coins = coinView(actor),
     )
 }

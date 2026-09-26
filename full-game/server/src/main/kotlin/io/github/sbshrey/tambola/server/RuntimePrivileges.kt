@@ -11,6 +11,7 @@ internal object RuntimePrivileges {
         "finished_rounds" to Access(setOf("INSERT"), setOf("payload")), "room_participants" to Access(setOf("INSERT", "DELETE")),
         "deletion_receipts" to Access(setOf("INSERT", "DELETE")), "deletion_recovery" to Access(updateColumns = setOf("journal_id", "applied_sequence")),
         "coin_wallets" to Access(setOf("INSERT"), setOf("refill_after")), "coin_ledger" to Access(setOf("INSERT")),
+        "match_receipts" to Access(setOf("INSERT"), setOf("response")),
     )
     private val recovery = mapOf("journal_migrations" to Access(), "profile_deletions" to Access(setOf("INSERT")),
         "deletion_journal_identity" to Access(updateColumns = setOf("head")))

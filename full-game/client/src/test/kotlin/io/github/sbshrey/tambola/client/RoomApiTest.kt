@@ -12,6 +12,32 @@ import org.junit.Test
 import java.util.UUID
 
 class RoomApiTest {
+    @Test fun `wallet refill and purchase use authenticated routes with exact retry identity`() = runBlocking {
+        val match = MatchRequest(UUID.randomUUID().toString(), 6)
+        val refill = RefillRequest(UUID.randomUUID().toString())
+        val bodies = mutableListOf<Pair<String, String>>()
+        val wallet = WalletView(1500, 1, 0)
+        val engine = MockEngine { call ->
+            assertEquals("Bearer private-token", call.headers[HttpHeaders.Authorization])
+            assertFalse(call.url.toString().contains("private-token"))
+            if (call.url.encodedPath == "/v1/wallet") {
+                assertEquals(HttpMethod.Get, call.method)
+                respond(WireJson.encodeToString(wallet), HttpStatusCode.OK)
+            } else {
+                assertEquals(HttpMethod.Post, call.method)
+                bodies += call.url.encodedPath to (call.body as TextContent).text
+                if (call.url.encodedPath == "/v1/wallet/refill") respond(WireJson.encodeToString(wallet), HttpStatusCode.OK)
+                else respond(WireJson.encodeToString(ApiError("database_unavailable", "Retry.")), HttpStatusCode.ServiceUnavailable)
+            }
+        }
+        val api = HttpRoomApi("https://rooms.example", client = HttpClient(engine))
+        assertEquals(wallet, api.wallet("private-token"))
+        repeat(2) { api.refill("private-token", refill) }
+        repeat(2) { try { api.match("private-token", match); fail() } catch (error: RoomApiFailure) { assertEquals(503, error.status) } }
+        assertEquals(bodies[0], bodies[1]); assertEquals(bodies[2], bodies[3])
+        assertEquals("/v1/matches" to WireJson.encodeToString(match), bodies.last())
+        api.close()
+    }
     @Test fun `deletion retry keeps the encrypted request identity and refuses another request's confirmation`() = runBlocking {
         val pending = PendingOperation.DeleteProfile(DeleteProfileRequest(UUID.randomUUID().toString()))
         val restored = WireJson.decodeFromString<PendingOperation>(WireJson.encodeToString<PendingOperation>(pending)) as PendingOperation.DeleteProfile

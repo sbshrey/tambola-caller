@@ -1,0 +1,62 @@
+{
+  "server": [
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "34.908"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HttpTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "16.848"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.643"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "24.702"
+    }
+  ],
+  "app": [
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.492"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.287"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.059"
+    }
+  ]
+}

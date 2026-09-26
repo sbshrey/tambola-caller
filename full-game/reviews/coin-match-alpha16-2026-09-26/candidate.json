@@ -1,0 +1,10 @@
+{
+  "versionCode": 16,
+  "versionName": "0.16.0-alpha16",
+  "variant": "debug",
+  "endpoint": "http://127.0.0.1:8080",
+  "apkBytes": 43282608,
+  "apkSha256": "513a538469c9f21d1aa8efc9d7d10e5b74f14d4ca2f923776e8d68cf87f7116f",
+  "nativeFixture": "emulator-5582 / API 30",
+  "installedWifiHostUpdated": false
+}

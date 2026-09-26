@@ -1,0 +1,35 @@
+<resources>
+    <string name="coin_guest">खिलाड़ी %1$d</string>
+    <string name="coin_low">कम टिकट चुनें या मुफ़्त सिक्के लें।</string>
+    <string name="coin_refill_wait">अगले मुफ़्त सिक्के जल्द मिलेंगे।</string>
+    <string name="coin_refill_not_needed">टिकट के लिए आपके पास सिक्के हैं।</string>
+    <string name="coin_balance">%1$d सिक्के</string>
+    <string name="coin_tickets">आपके टिकट</string>
+    <string name="coin_price">हर टिकट 100 सिक्के</string>
+    <string name="coin_play">खेलें · %1$d</string>
+    <string name="coin_play_again">फिर खेलें · %1$d</string>
+    <string name="coin_collect">500 मुफ़्त सिक्के लें</string>
+    <string name="coin_pool">इनाम राशि · %1$d</string>
+    <string name="coin_pool_preview">अगली इनाम राशि · %1$d</string>
+    <string name="coin_starts">%1$d में शुरू</string>
+    <string name="coin_starting">टिकट बाँट रहे हैं…</string>
+    <string name="coin_cancel">रद्द करें और सिक्के वापस लें</string>
+    <string name="coin_resume">अपने खेल में लौटें</string>
+    <string name="coin_results">राउंड पूरा हुआ</string>
+    <string name="coin_won">%1$d सिक्के जीते</string>
+    <string name="coin_returned">बचे हुए %1$d सिक्के वापस मिले</string>
+    <string name="coin_free">मुफ़्त सिक्के · नकद मूल्य नहीं</string>
+    <string name="coin_joining">आपके लिए खेल ढूँढ रहे हैं…</string>
+    <string name="coin_retry">जुड़ें और जाँचें</string>
+    <string name="coin_pending">पिछली कार्रवाई जाँच रहे हैं</string>
+    <string name="coin_profile">आपकी प्रोफ़ाइल</string>
+    <string name="coin_next">अगला नंबर · %1$d</string>
+    <string name="coin_next_wait">अगला नंबर…</string>
+    <string name="coin_prize_amount">%1$s · %2$d</string>
+    <string name="coin_refill_timer">मुफ़्त सिक्के %1$d:%2$02d में</string>
+    <string name="coin_unavailable">इस बिल्ड में ऑनलाइन खेल उपलब्ध नहीं है।</string>
+    <string name="coin_ties">एक ही कॉल पर सही दावेदार इनाम बाँटते हैं। बचे हुए सिक्के अंत में वापस मिलते हैं।</string>
+    <string name="coin_choose_count">%1$d टिकट</string>
+    <string name="coin_players">%1$d खिलाड़ी · %2$d कंप्यूटर</string>
+    <string name="coin_reset_warning">इस डिवाइस से साइन-इन, सहेजे टिकट और लंबित अनुरोध हट जाएँगे। इस अतिथि खाते के सिक्कों तक आपकी पहुँच खो जाएगी। सर्वर की प्रोफ़ाइल नहीं मिटेगी। लंबित कार्रवाई की पुष्टि के लिए पहले जुड़कर फिर कोशिश करें।</string>
+</resources>

@@ -4,7 +4,7 @@
 
 ## Player experience
 
-- Online multiplayer is the only primary play flow. Short name/avatar entry, then ticket choice and Play. Retain legacy save compatibility internally; do not advertise practice, solo, family, badges or tutorials in the main flow.
+- Online multiplayer is the only primary play flow. Ticket choice and Play create a saved guest identity automatically; profile controls remain secondary. Retain legacy save compatibility internally; do not advertise practice, solo, family, badges or tutorials in the main flow.
 - Manual marking, five-second automatic calls, short caller audio, visible ball entry and dab stamps. No instruction paragraphs during play.
 - Up to six disjoint tickets. Show two readable tickets when height permits, otherwise one. Explicit up/down controls and a page counter. Preserve marks and page across calls and rotation. Never switch pages unexpectedly when a number arrives.
 - Claim belongs beside each ticket and opens a compact prize picker. The command identifies exactly that ticket, chosen prize, round, call and marks. A choice cannot silently claim another ticket or scheme. Closed/already-owned prizes are unavailable; invalid claims get a brief message, not a ticket-destroying penalty.
@@ -25,12 +25,12 @@ These are tuning defaults. Coins are free game currency without purchase, transf
 
 ## Implementation and acceptance order
 
-1. **Reference interaction foundation (implemented, targeted checks passed):** selected-ticket/prize checks, stable pages, picker, marking and delayed computer reactions. JVM tests plus actual native geometry/touch checks. Full revised online-entry acceptance is still pending.
-2. **Economy engine (implemented, domain tests passed):** exact allocation, deterministic tie/refund settlement, per-player ticket quantities and versioned persistence. Covers 2–192 ticket pools, ranked houses, ties, conservation, cancellation and invalid saves. This is not yet a server wallet or purchase flow.
-3. **Durable service:** migrations, wallets, purchases/refills, frozen schedule, idempotency, concurrency, restart recovery and profile deletion. Preserve own-ticket privacy and concealed future draws.
-4. **Online entry/UI:** concise wallet/ticket purchase, Play/matchmaking with computer fill, countdown, coin prizes, settled results and repeat-round purchase. No unrelated features.
+1. **Reference interaction foundation (implemented, targeted checks passed):** selected-ticket/prize checks, stable pages, picker, marking and delayed computer reactions. JVM tests plus actual native geometry/touch checks. The alpha16 native entry/purchase/paging/picker smoke tests passed; full-round mobile acceptance remains.
+2. **Economy engine (implemented, domain tests passed):** exact allocation, deterministic tie/refund settlement, per-player ticket quantities and versioned persistence. Covers 2–192 ticket pools, ranked houses, ties, conservation, cancellation and invalid saves. The engine is now connected to the transactional service wallet and purchase flow.
+3. **Durable service (implemented, JVM/HTTP/restricted-role checks passed):** migrations, wallets, purchases/refills, frozen schedule, idempotency, concurrency, restart recovery and profile deletion. Preserve own-ticket privacy and concealed future draws.
+4. **Online entry/UI (implemented, targeted native checks passed):** concise wallet/ticket purchase, Play/matchmaking with computer fill, countdown, coin prizes, settled results and repeat-round purchase. No unrelated features.
 5. **Persistent Wi-Fi host (installed, recovery checked):** separate durable database/runtime, restricted DB role, independent deletion journal, rotating backups, health probe and hidden restart supervisor. Current-user login startup is installed. Java, TLS proxy, worker and database recovery retained rooms and claim receipts. The [firewall administrator step and operating limits](WIFI_HOST.md) are documented; the shell is not elevated. Phone reachability, reboot behavior and installed-backup restoration remain unverified.
-6. **Wi-Fi candidate:** uniquely versioned APK using the LAN address; two independent clients, purchases, selected claims, payouts, disconnect/rejoin and server restart. Physical-phone Wi-Fi reachability/audio/touch and latency remain required.
+6. **Wi-Fi candidate (pending deployment):** Alpha16 currently targets the isolated loopback test service. Upgrade the installed host from schema 003/protocol 3 to 005/protocol 4 before packaging the matching LAN build. Then validate a uniquely versioned APK using the LAN address; two independent clients, purchases, selected claims, payouts, disconnect/rejoin and server restart. Physical-phone Wi-Fi reachability/audio/touch and latency remain required.
 7. Public TLS, signing, Store and mobile-network testing are later gates. This PC cannot serve during sleep, power loss or lost connectivity. Record tested uptime/restart behavior precisely.
 
 ## Reference evidence

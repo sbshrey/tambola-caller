@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 3
+const val PROTOCOL_VERSION = 4
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -21,10 +21,13 @@ val WireJson = Json { encodeDefaults = true }
     val intervalSeconds: Int = 10,
     val automaticCalling: Boolean = true,
     val computerPlayers: Int = 0,
+    val coinGame: Boolean = false,
 ) {
     init {
         require(game.mode == GameMode.ONLINE && capacity in 2..32 && intervalSeconds in 5..30)
         require(computerPlayers in 0..5 && computerPlayers < capacity)
+        require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
+            game.customPrizes.isEmpty() && automaticCalling && intervalSeconds == 5))
     }
 }
 @Serializable data class CreateRoomRequest(val id: String, val options: RoomOptions = RoomOptions())
@@ -46,6 +49,7 @@ val WireJson = Json { encodeDefaults = true }
     // Defaults allow reading receipts written before native online play was added.
     val players: List<Player> = emptyList(),
     val winningTickets: List<WinningTicket> = emptyList(),
+    val ticketCounts: Map<String, Int> = emptyMap(),
 )
 @Serializable data class RoomEvent(val revision: Long, val type: String, val at: Long, val roundId: String? = null)
 @Serializable data class RoomView(
@@ -62,12 +66,17 @@ val WireJson = Json { encodeDefaults = true }
     val nextDrawAt: Long?,
     val expiresAt: Long,
     val serverTime: Long,
+    val coins: CoinTableView? = null,
+    val wallet: WalletView? = null,
 )
 @Serializable data class RoomUpdate(val snapshot: RoomView, val events: List<RoomEvent>, val resyncRequired: Boolean)
 @Serializable data class EventAck(val revision: Long)
 
 @Serializable data class CommandRequest(val id: String, val expectedRevision: Long, val action: RoomAction)
 @Serializable sealed class RoomAction {
+    @Serializable @SerialName("buy_tickets") data class BuyTickets(val quantity: Int) : RoomAction() {
+        init { require(quantity in 1..6) }
+    }
     @Serializable @SerialName("ready") data class Ready(val value: Boolean) : RoomAction()
     @Serializable @SerialName("avatar") data class ChooseAvatar(val avatar: Int) : RoomAction()
     @Serializable @SerialName("configure") data class Configure(val options: RoomOptions) : RoomAction()

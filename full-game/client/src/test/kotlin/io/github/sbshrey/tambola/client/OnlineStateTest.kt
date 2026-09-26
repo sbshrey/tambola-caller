@@ -10,6 +10,47 @@ import java.util.Random
 import java.util.UUID
 
 class OnlineStateTest {
+    @Test fun `stale claim retries only the same ticket prize marks round and call`() {
+        var game = Round.create(players, round.settings.copy(manualClaims = true), Random(44)).start()
+        repeat(30) { game = game.draw() }
+        val ticket = game.tickets.first { it.playerId == "asha" }
+        val action = RoomAction.Claim(game.id, 30, ticket.numbers.intersect(game.called.toSet()), ClaimSelection(ticket.id, Prize.EARLY_FIVE.name))
+        val pending = PendingOperation.Command("ABCD2345", CommandRequest(UUID.randomUUID().toString(), 1, action))
+        val current = view(game, revision = 3)
+        val retry = pending.rebaseClaim(current, UUID.randomUUID().toString())!!
+        assertEquals(action, retry.request.action); assertEquals(3, retry.request.expectedRevision)
+        assertNull(pending.rebaseClaim(view(game.draw(), 4), UUID.randomUUID().toString()))
+        assertNull(pending.rebaseClaim(current.copy(round = current.round!!.copy(id = "another-round")), UUID.randomUUID().toString()))
+        assertNull(pending.rebaseClaim(current.copy(phase = RoomPhase.FINISHED), UUID.randomUUID().toString()))
+        val won = current.copy(round = current.round!!.copy(awards = listOf(Award(Prize.EARLY_FIVE, 30, listOf(ticket.id), listOf("asha")))))
+        assertNull(pending.rebaseClaim(won, UUID.randomUUID().toString()))
+        val peer = current.copy(round = current.round!!.copy(awards = listOf(Award(Prize.EARLY_FIVE, 30, listOf("peer-ticket"), listOf("bina")))))
+        assertNotNull(pending.rebaseClaim(peer, UUID.randomUUID().toString()))
+        assertNull(pending.rebaseClaim(peer.copy(round = peer.round!!.copy(awards = listOf(Award(Prize.EARLY_FIVE, 29, listOf("peer-ticket"), listOf("bina"))))), UUID.randomUUID().toString()))
+    }
+    @Test fun `wallet revision is independent of room revision and rejects conflicting balances`() {
+        val wallet = WalletView(1200, 2, 0)
+        val current = saved().copy(wallet = wallet, room = view(revision = 8))
+        val olderRoomNewWallet = RoomUpdate(view(revision = 4).copy(wallet = WalletView(1400, 3, 0)), emptyList(), false)
+        val accepted = current.accept(olderRoomNewWallet, false).saved
+        assertEquals(8, accepted.room!!.revision)
+        assertEquals(1400, accepted.wallet!!.balance)
+        val newerRoomOldWallet = RoomUpdate(view(revision = 9).copy(wallet = wallet), emptyList(), false)
+        assertEquals(accepted.wallet, accepted.accept(newerRoomOldWallet, false).saved.wallet)
+        assertThrows(InvalidRoomResponse::class.java) { accepted.acceptWallet(WalletView(999, 3, 0)) }
+        assertThrows(InvalidRoomResponse::class.java) { accepted.acceptWallet(WalletView(-1, 4, 0)) }
+        assertThrows(InvalidRoomResponse::class.java) { accepted.acceptWallet(WalletView(999, 4, 0, ticketPrice = 1)) }
+    }
+
+    @Test fun `purchase and refill IDs survive saving before the first response`() {
+        listOf(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), 6)),
+            PendingOperation.Refill(RefillRequest(UUID.randomUUID().toString()))).forEach { pending ->
+            val session = saved().copy(pending = pending, wallet = WalletView(1500, 1, 0))
+            val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(session))
+            assertEquals(pending, restored.pending)
+            assertEquals(session.wallet, restored.wallet)
+        }
+    }
     @Test fun `claim freezes selected ticket prize marks and call through pending persistence`() {
         var game = Round.create(players, round.settings.copy(manualClaims = true), Random(44)).start()
         repeat(90) { game = game.draw() }

@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.CoinGameTest:.
+
+Time: 26.498
+
+OK (1 test)
+
+

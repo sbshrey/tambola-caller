@@ -16,6 +16,7 @@ data class TableRound(
     val status: RoundStatus,
     val scores: Map<String, Int>,
     val ticketOwners: List<WinningTicket>,
+    val coins: CoinTableView? = null,
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
@@ -33,5 +34,5 @@ fun RoomView.toTable(localMarks: Map<String, Set<Int>>): TableRound? = round?.le
         else localMarks[ticket.id].orEmpty().intersect(ticket.numbers.toSet()).intersect(game.called.toSet())) }
     val ownLabels = game.ownTickets.mapIndexed { index, ticket -> WinningTicket(ticket.id, ticket.playerId, index + 1) }
     TableRound(game.id, options.game, game.players, game.ownTickets, game.called, marks, game.awards,
-        game.customAwards, game.status, game.scores, (ownLabels + game.winningTickets).distinctBy { it.id })
+        game.customAwards, game.status, game.scores, (ownLabels + game.winningTickets).distinctBy { it.id }, coins)
 }

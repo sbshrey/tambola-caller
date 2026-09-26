@@ -446,6 +446,7 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
         Row(Modifier.fillMaxWidth().heightIn(min = 52.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             if (table.finished) ArenaPrimaryAction(words(R.string.ui_see_round_results)) { roomDetails() }
             else if (state.pending) ArenaPrimaryAction(words(R.string.ui_retry_pending_action), enabled = !state.busy && !state.storageFailure) { model.retry() }
+            else if (room.options.coinGame) CoinCallClock(room, state.connection, model::reconnect)
             else if (host && !table.finished) {
                 if (!room.options.automaticCalling && table.status != RoundStatus.PAUSED) FilledTonalButton(
                     onClick = { model.command(RoomAction.Draw) }, enabled = enabled, contentPadding = PaddingValues(8.dp), modifier = Modifier.weight(1f).height(48.dp).testTag("online-next")

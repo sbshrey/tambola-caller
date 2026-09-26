@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 import java.security.MessageDigest
 
 @Serializable sealed class PendingOperation {
+    @Serializable @SerialName("match") data class Match(val request: MatchRequest) : PendingOperation()
+    @Serializable @SerialName("refill") data class Refill(val request: RefillRequest) : PendingOperation()
     @Serializable @SerialName("create") data class Create(val request: CreateRoomRequest) : PendingOperation()
     @Serializable @SerialName("join") data class Join(val code: String) : PendingOperation()
     @Serializable @SerialName("command") data class Command(val code: String, val request: CommandRequest,
@@ -25,11 +27,26 @@ import java.security.MessageDigest
     val pending: PendingOperation? = null,
     val history: List<RoomView> = emptyList(),
     val badges: BadgeProgress = BadgeProgress(),
+    val wallet: WalletView? = null,
 ) {
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }
 
 data class AcceptedRoom(val saved: OnlineSaved, val announcement: Int?, val liveAwards: Boolean = false)
+
+fun WalletView.validate() {
+    if (balance < 0 || revision < 1 || refillAfter < 0 || ticketPrice != COIN_TICKET_PRICE) throw InvalidRoomResponse()
+}
+
+/** Room receipts and live events can arrive out of order independently of wallet writes. */
+fun OnlineSaved.acceptWallet(next: WalletView?): OnlineSaved {
+    if (next == null) return this
+    next.validate()
+    val previous = wallet
+    if (previous != null && previous.revision > next.revision) return this
+    if (previous != null && previous.revision == next.revision && previous != next) throw InvalidRoomResponse()
+    return copy(wallet = next)
+}
 
 /** Apply only current snapshots. Receipt replay may legitimately contain an older revision. */
 fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boolean = false): AcceptedRoom {
@@ -37,7 +54,8 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
     next.validateFor(credentials.playerId)
     val previous = room
     if (previous != null && previous.roomId != next.roomId && !allowRoomChange) throw InvalidRoomResponse()
-    if (previous?.roomId == next.roomId && previous.revision > next.revision) return AcceptedRoom(this, null)
+    val withWallet = acceptWallet(next.wallet)
+    if (previous?.roomId == next.roomId && previous.revision > next.revision) return AcceptedRoom(withWallet, null)
     val previousGame = previous?.round
     val nextGame = next.round
     val sameRound = previousGame != null && previousGame.id == nextGame?.id
@@ -49,7 +67,7 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
         nextGame.called.last() else null
     val progress = badgeProgress().let { current -> nextGame?.let { current.record(it.id, it.status,
         it.awards.hasHouseFor(setOf(credentials.playerId))) } ?: current }
-    return AcceptedRoom(copy(room = next, marks = nextMarks, history = archive, badges = progress,
+    return AcceptedRoom(withWallet.copy(room = next, marks = nextMarks, history = archive, badges = progress,
         avatar = next.members.firstOrNull { it.playerId == credentials.playerId }?.avatar ?: avatar), number,
         live && !update.resyncRequired && sameRound)
 }
@@ -88,6 +106,17 @@ fun RoomView.validateFor(playerId: String) {
         // Version-one cached receipts/snapshots predate round avatars; Player defaults them to zero.
         require(protocolVersion in 1..PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
         require(protocolVersion >= 3 || (!options.game.manualClaims && options.computerPlayers == 0))
+        require(protocolVersion >= 4 || (!options.coinGame && coins == null && wallet == null))
+        require(options.coinGame == (coins != null))
+        wallet?.let { require(it.balance >= 0 && it.revision >= 1 && it.refillAfter >= 0 && it.ticketPrice == COIN_TICKET_PRICE) }
+        coins?.let { economy ->
+            require(wallet != null && economy.ownTickets in 0..6 && economy.tickets in 0..192)
+            require(economy.settledWinnings >= 0 && economy.returnedCoins >= 0)
+            require(economy.pool == economy.tickets * COIN_TICKET_PRICE)
+            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED)
+            if (economy.tickets >= 2) require(economy.prizes == CoinPool(economy.tickets).prizes)
+            require(phase != RoomPhase.LOBBY || economy.startsAt != null)
+        }
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
         require(members.size <= 32 && members.map { it.playerId }.distinct().size == members.size)
         require(members.all { it.displayName.isNotBlank() && it.displayName.length <= 40 && it.avatar in 0 until AVATAR_COUNT })
@@ -99,7 +128,16 @@ fun RoomView.validateFor(playerId: String) {
             require(game.players.count { it.computer } == options.computerPlayers)
             require(protocolVersion >= 3 || (!options.game.manualClaims && game.players.none { it.computer }))
             require(game.players.filter { it.computer }.none { bot -> members.any { it.playerId == bot.id } })
-            require(game.ownTickets.size == options.game.ticketsPerPlayer && game.ownTickets.all { it.playerId == playerId })
+            require(game.ticketCounts.isEmpty() || (protocolVersion >= 4 && game.ticketCounts.keys == game.players.map { it.id }.toSet() &&
+                game.ticketCounts.values.all { it in 1..options.game.ticketsPerPlayer }))
+            val ownCount = game.ticketCounts[playerId] ?: options.game.ticketsPerPlayer
+            require(game.ownTickets.size == ownCount && game.ownTickets.all { it.playerId == playerId })
+            if (options.coinGame) {
+                val economy = requireNotNull(coins)
+                require(game.ticketCounts.isNotEmpty() && economy.ownTickets == ownCount && economy.tickets == game.ticketCounts.values.sum())
+                require(economy.startsAt == null && options.game.prizes == economy.prizes.map { it.prize })
+                require(economy.settledWinnings + economy.returnedCoins <= economy.pool)
+            }
             require(game.ownTickets.map { it.id }.distinct().size == game.ownTickets.size)
             require(game.called.size <= 90 && game.called.distinct() == game.called && game.called.all { it in 1..90 })
             require(game.status != RoundStatus.READY)
@@ -118,7 +156,7 @@ fun RoomView.validateFor(playerId: String) {
             val players = game.players.map { it.id }.toSet()
             val winners = (game.awards.flatMap { it.ticketIds } + game.customAwards.flatMap { it.ticketIds }).toSet()
             require(game.winningTickets.map { it.id }.toSet() == winners && game.winningTickets.size == winners.size)
-            require(game.winningTickets.all { it.playerId in players && it.ordinal in 1..options.game.ticketsPerPlayer })
+            require(game.winningTickets.all { it.playerId in players && it.ordinal in 1..(game.ticketCounts[it.playerId] ?: options.game.ticketsPerPlayer) })
             require(game.awards.map { it.prize }.distinct().size == game.awards.size)
             require(game.awards.all { it.prize in options.game.prizes && it.drawIndex in 1..game.called.size })
             require(game.customAwards.map { it.prizeId }.distinct().size == game.customAwards.size)
