@@ -30,11 +30,13 @@ function run(...command) {
 }
 assert.match(run('emu', 'avd', 'name').split(/\r?\n/)[0], /^tambola_full_game_/);
 if (online) {
+  assert.match(run('reverse', '--list'), /\btcp:8080\s+tcp:8080\b/, 'Map this emulator port 8080 to the isolated room service before online tests');
   const health = await fetch('http://127.0.0.1:8080/health/ready', { signal: AbortSignal.timeout(3_000) });
   assert.ok(health.ok, 'Start the isolated loopback room service before online tests');
 }
 if (faultProxy) {
   assert.ok(online, '--fault-proxy requires --online');
+  assert.match(run('reverse', '--list'), /\btcp:8082\s+tcp:8082\b/, 'Map this emulator port 8082 to the fault fixture before online tests');
   const status = await (await fetch('http://127.0.0.1:8082/status', { signal: AbortSignal.timeout(3_000) })).json();
   assert.equal(status.fixture, 'tambola-delete-drop-v1');
 }
@@ -49,7 +51,7 @@ try {
   if (online) command.push('-e', 'tambolaOnline', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');
   if (selectedClass) command.push('-e', 'class', selectedClass);
-  else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest');
+  else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest');
   command.push('io.github.sbshrey.tambola.game.test/androidx.test.runner.AndroidJUnitRunner');
   const child = spawn(adb, ['-s', serial, ...command], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
   const append = chunk => { output += chunk.toString(); process.stdout.write(chunk); };

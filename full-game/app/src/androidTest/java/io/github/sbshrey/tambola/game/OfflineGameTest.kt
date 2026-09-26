@@ -3,6 +3,7 @@ package io.github.sbshrey.tambola.game
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import io.github.sbshrey.tambola.game.data.PreferenceStore
 import io.github.sbshrey.tambola.game.data.Preferences
@@ -16,14 +17,23 @@ class OfflineGameTest {
 
     private fun exists(text: String) = compose.hasTextNow(text)
     private fun tap(text: String) = compose.tapText(text)
+    private fun awaitHome(phase: String) {
+        try { compose.waitUntil(10_000) { exists("Play solo") } }
+        catch (error: Exception) {
+            runCatching { captureTestScreen("offline-reset-failure") }
+            val state = ViewModelProvider(compose.activity)[GameViewModel::class.java].state.value
+            throw AssertionError("Offline reset $phase: screen=${state.screen}, loading=${state.loading}, saving=${state.saving}, " +
+                "error=${state.error?.resource}, locale=${compose.activity.resources.configuration.locales.toLanguageTags()}", error)
+        }
+    }
 
     @Before fun reset() {
         runBlocking { PreferenceStore(InstrumentationRegistry.getInstrumentation().targetContext).update(Preferences(voice = false, reducedMotion = true)) }
-        compose.waitUntil(10_000) { exists("Play solo") }
+        awaitHome("before deletion")
         tap("Settings")
         tap("Delete all saved rounds")
         tap("Delete rounds")
-        compose.waitUntil(10_000) { exists("Play solo") }
+        awaitHome("after deletion")
     }
 
     @Test fun fullOfflineRoundCanBePlayedSavedAndSharedFromResults() {

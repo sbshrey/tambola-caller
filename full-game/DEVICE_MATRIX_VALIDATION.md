@@ -15,7 +15,7 @@ This slice adds instrumentation and host-side verification. The current test APK
 | `cc9511a4f3c74fbc8bb9c332647cbfc01595793ce2c3923d707839663077699b` | API 36 full 4 KB suite and 16 KB cold locale, before adding the separate native-loader fixture |
 | `5ce819a117a52cc961ce9629508c509c4c7a46ac6f4f333e4729ac732329e257` | Current test build, including the opt-in native-loader fixture |
 
-All devices are dedicated emulators with fictional fixture data. The host uses Android Emulator 37.3.1 and one active AVD at a time. Service-backed cases use the isolated loopback PostgreSQL database, room service and response-loss proxy; they do not establish hosted or physical-network acceptance.
+All devices are dedicated emulators with fictional fixture data. The host uses Android Emulator 37.3.1; game suites run on one AVD at a time. Service-backed cases use the isolated loopback PostgreSQL database, room service and response-loss proxy; they do not establish hosted or physical-network acceptance.
 
 ## Language persistence beyond Activity recreation
 
@@ -25,7 +25,10 @@ On API 33+, a second check stops the app and selects English with Android's `cmd
 
 | Device | Case | Process IDs | Native verification |
 | --- | --- | --- | --- |
+| API 26 / Android 8 | In-app Hindi after termination | 3060 → 3232 | 1/1, 2.841 s |
 | API 30 / Android 11 | In-app Hindi after termination | 10801 → 11025 | 1/1, 6.869 s |
+| API 35 / Android 15 | In-app Hindi after termination | 2305 → 2516 | 1/1, 5.385 s |
+| API 35 / Android 15 | Platform English while stopped | 2305 seed → 2607 | 1/1, 5.238 s |
 | API 36 / Android 16 | In-app Hindi after termination | 3195 → 3352 | 1/1, 5.111 s |
 | API 36 / Android 16 | Platform English while stopped | 3195 seed → 3423 | 1/1, 5.248 s |
 | API 36 / Android 16, 16 KB | In-app Hindi after termination | 3096 → 4036 | 1/1, 13.316 s |
@@ -41,12 +44,25 @@ The first full API 36 run stalled after the deletion/language test's assertions.
 
 | Environment | Page size | Result | Instrumentation |
 | --- | --- | --- | --- |
+| Android 8 / API 26, AOSP x86_64 | 4 KB | 28/28, 273.388 s | `5ce819a1…` test APK |
+| Android 15 / API 35, AOSP x86_64 | 4 KB | 26/28, 288.107 s; storage failures require investigation | `5ce819a1…` test APK |
 | Android 11 / API 30, original alpha09 acceptance | 4 KB | 28/28, 319.029 s | Original release test APK; see original report |
-| Android 16 / API 36, AOSP x86_64 | 4 KB | 28/28, 325.322 s | Current `cc9511a4…` test APK |
+| Android 16 / API 36, AOSP x86_64 | 4 KB | 28/28, 325.322 s | `cc9511a4…` test APK |
+| Android 16 / API 36, Google APIs x86_64 | 16 KB | 27/28 in 354.465 s; failed case passed separately in 12.658 s after fixture repair | `5ce819a1…` test APK |
 
 The API 36 final run covers the same 28 gameplay tests as the original alpha09 suite: appearance, avatars/wins, standard/custom complete rounds, tutorial/badges, languages, recorded audio/music/focus, number/win motion, family play, local recovery/history, private-room host/guest/reconnect/deletion and encrypted-store integrity. Specialized external process/pair/update fixtures are excluded and have their own evidence.
 
 API 36 uses `Android/sdk_phone64_x86_64/emu64x:16/BE2A.250530.026.D1/13818094:userdebug/test-keys`, at 1080×1920, density 420 and font scale 1.0. After the final pass, installed app/test hashes were read back, original animation settings were verified, loopback mappings were removed and the owned AVD was stopped. The final instrumentation build succeeded in 35 seconds; unchanged application/JVM/release-build evidence stays in the original report.
+
+API 26 uses `Android/sdk_phone_x86_64/generic_x86_64:8.0.0/OSR1.180418.004/4931640:userdebug/test-keys`, at 1080×1920, density 420 and default font scale. Cold restoration and the complete 28-case suite passed against the minimum supported Android version. The restored Hindi screen was visually reviewed. Installed hashes were read back, original unset animation settings restored, mappings removed and the AVD stopped. Its older shell has no `getconf`; `/proc/self/smaps` reports a 4 KB kernel page size and the metadata labels that observation method explicitly.
+
+### Open API 35 storage finding
+
+API 35 uses `Android/sdk_phone64_x86_64/emu64x:15/AE3A.240806.019/12368160:userdebug/test-keys`. Its cold-locale checks passed, but the 28-case suite had two failures: offline setup did not return Home after deleting saved rounds, and the profile-deletion journey could not create its prerequisite offline round. The latter's captured screenshot shows **The round could not be saved. Please try again.** The test did reach the save action; this cannot be dismissed as merely a missed UI click or missing network mapping. The app log also records a SQLite pool closing with one connection still in use; that observation is a lead, not a proven cause.
+
+The profile-deletion case passed unchanged on its own in 14.667 seconds. That focused pass does not resolve the storage finding or turn the earlier run into a clean pass. API 35 acceptance remains open until the storage/lifecycle cause is isolated and regression-tested. No app change is part of the completed alpha09 matrix results above. A test-library update was considered during diagnosis but reverted before any build once the storage-error screenshot was inspected.
+
+Subsequent alpha10 work reproduced a closed-connection save and locked history query during rapid Activity close/reopen, then moved database ownership to the Application. [The lifecycle investigation](STORAGE_LIFECYCLE.md) identifies its distinct diagnostic and fixed candidates. Those later results do not turn this original alpha09 run into a pass.
 
 ## 16 KB environment and native loading
 
@@ -57,6 +73,12 @@ The focused `NativeLibraryTest` explicitly loaded `androidx.graphics.path` and `
 Static inspection found 16 KB LOAD alignment in all eight packaged `.so` files, and Build-Tools 36 `zipalign -v -c -P 16 4` passed. The stricter RELRO end-address formula in Android's guidance flags these prebuilts. Inspection of their actual writable LOAD ranges found no additional writable bytes between each RELRO end and the next 16 KB boundary; the x86_64 loading check above also passed. Retain that distinction: these results are not a claim that the simple RELRO formula passed or that untested ARM devices have been accepted.
 
 The 16 KB cold-locale run ID is `57e1f825-5bcc-4289-9e2c-312552a11658`, retaining round hash `a14d1786ec83130398789106a7ac42268f826d53309dc7f153cc48a4293a1519`. An initial attempt encountered a failed settings read immediately after first boot, before fixture mutation; after verifying the settings service was ready, the recorded run passed with locale/animation cleanup verified.
+
+The first 16 KB gameplay run reached profile registration with no ADB reverse mappings; the host service was healthy but unreachable at the app's loopback origin. That localization case timed out. The missing mappings were restored while the suite was still completing offline checks; all remaining cases, including online host/guest/deletion and encrypted storage, passed. The affected localization case then passed unchanged in a separate run. Therefore this is **27 passing cases plus a passing focused rerun**, not a clean 28/28 run. Both logs are retained. The smoke runner now checks device mappings for ports 8080/8082 before starting an online/fault-proxy run.
+
+That preflight was checked on API 35 before creating any reverse mappings: it rejected the run with the expected missing-port-8080 message before instrumentation. The expected rejection is retained separately and is not counted as a passing game case. After mappings were created, the normal suite could start.
+
+After these checks, installed hashes and the disabled fallback properties were read back. Original compatibility properties and animation settings were restored, owned port mappings removed and the 16 KB AVD stopped. Its source, artifacts and x86_64 scope remain distinct from physical ARM64 acceptance.
 
 ## Repeatable commands
 
@@ -73,4 +95,4 @@ The ordinary smoke suite excludes the externally coordinated locale fixture. See
 
 ## Remaining boundaries
 
-The broader API matrix, 16 KB runtime, tablet/foldable layouts, real phones, native-speaker Hindi review, TalkBack, physical audio routing, performance, production signing and hosted operations require their own evidence. A passing emulator test or static APK check does not satisfy those gates.
+The remaining API matrix, tablet/foldable layouts, real phones including ARM64/16 KB devices, native-speaker Hindi review, TalkBack, physical audio routing, performance, production signing and hosted operations require their own evidence. A passing emulator test or static APK check does not satisfy those gates.

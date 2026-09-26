@@ -39,7 +39,7 @@ data class GameUiState(
 
 class GameViewModel(application: Application, private val savedState: SavedStateHandle) : AndroidViewModel(application) {
     private val draftJson = Json { encodeDefaults = true }
-    private val database = GameDatabase.open(application)
+    private val database = (application as TambolaApplication).database
     private val repository = LocalGameRepository(database)
     private val preferences = PreferenceStore(application)
     private val mutex = Mutex()
@@ -53,7 +53,8 @@ class GameViewModel(application: Application, private val savedState: SavedState
     init {
         viewModelScope.launch {
             try { mutable.update { it.copy(round = repository.restore(), loading = false) } }
-            catch (_: Exception) { mutable.update { it.copy(loading = false, error = UiMessage(R.string.error_restore_round)) } }
+            catch (cancelled: CancellationException) { throw cancelled }
+            catch (error: Exception) { reportStorageFailure("restore", error); mutable.update { it.copy(loading = false, error = UiMessage(R.string.error_restore_round)) } }
         }
         viewModelScope.launch { preferences.values.catch { mutable.update { it.copy(error = UiMessage(R.string.error_load_settings)) } }.collect { prefs ->
             GameAudio.get(application).configure(prefs)
@@ -61,7 +62,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
         } }
         viewModelScope.launch {
             var previousCompleted: List<SavedRound>? = null
-            repository.history.catch { mutable.update { it.copy(error = UiMessage(R.string.error_load_history)) } }.collect { rows ->
+            repository.history.catch { error -> reportStorageFailure("history", error); mutable.update { it.copy(error = UiMessage(R.string.error_load_history)) } }.collect { rows ->
             val completed = rows.filter { it.completed }
             val badges = if (completed == previousCompleted) mutable.value.badges else withContext(Dispatchers.Default) {
                 val progress = mutableMapOf<BadgeMode, BadgeProgress>()
@@ -152,7 +153,8 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     audio.stop(); stopTimer(); lastDrawAt = -1_000
                     mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null, winMoment = null) }
                     if (foreground) audio.effect(SoundCue.DEAL)
-                } catch (error: Exception) { mutable.update { it.copy(error = error.uiMessage(R.string.error_save_round)) } }
+                } catch (cancelled: CancellationException) { throw cancelled }
+                catch (error: Exception) { reportStorageFailure("create", error); mutable.update { it.copy(error = error.uiMessage(R.string.error_save_round)) } }
                 finally { mutable.update { it.copy(saving = false) } }
             }
         }
@@ -172,7 +174,8 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     if (liveCall) audio.play(next.latest!!, mutable.value.preferences.language, celebration = moment != null)
                     if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
-                } catch (error: Exception) { mutable.update { it.copy(error = error.uiMessage(R.string.error_save_progress)) } }
+                } catch (cancelled: CancellationException) { throw cancelled }
+                catch (error: Exception) { reportStorageFailure("save-progress", error); mutable.update { it.copy(error = error.uiMessage(R.string.error_save_progress)) } }
             }
         }
     }
@@ -218,8 +221,9 @@ class GameViewModel(application: Application, private val savedState: SavedState
         stopTimer(); audio.stop(); dismissWin()
         viewModelScope.launch { mutex.withLock {
             try { repository.deleteAll(); mutable.update { it.copy(round = null, viewedResult = null, screen = Screen.HOME) } }
-            catch (_: Exception) { mutable.update { it.copy(error = UiMessage(R.string.error_delete_rounds)) } }
+            catch (cancelled: CancellationException) { throw cancelled }
+            catch (error: Exception) { reportStorageFailure("delete", error); mutable.update { it.copy(error = UiMessage(R.string.error_delete_rounds)) } }
         } }
     }
-    override fun onCleared() { audio.stop(); database.close(); super.onCleared() }
+    override fun onCleared() { audio.stop(); super.onCleared() }
 }
