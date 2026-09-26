@@ -36,9 +36,11 @@ The driver adds a local forwarding hop. Do not infer production latency, data-pl
 
 ## Remaining device budgets
 
-### Native long-session fixture — short probe passed; full run pending
+### Native long-session fixture — short probe passed; full run in progress
 
-`LongSessionTest` and `tools/android-long-session.mjs` add an opt-in session on a dedicated emulator. Instrumentation compilation passed in 31 seconds (five executed tasks), and the corrected short probe passed on API30 in **69.444 seconds**, with three deliberately shortened three-call rounds, rematches, history, frame collection and preference/device-setting restoration. The application APK remains `49344972…`; the diagnostic instrumentation is `7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25`. The full nine-game run is still pending.
+`LongSessionTest` and `tools/android-long-session.mjs` add an opt-in session on a dedicated emulator. Instrumentation compilation passed in 31 seconds (five executed tasks), and the corrected short probe passed on API30 in **69.444 seconds**, with three deliberately shortened three-call rounds, rematches, history, frame collection and preference/device-setting restoration. The application APK remains `49344972…`; the diagnostic instrumentation is `7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25`.
+
+Full run `b646f794-6c02-4dd5-9244-856371ae4a71` started at **20:21 IST on 26 September 2026**, using committed fixture source `7b391ff4e070752b50261d2fe5bc507d3d090107`. It is **in progress, not accepted**. The dedicated API30 emulator is the only running emulator; heavy builds/container work are deferred until it finishes. Live reports are under `.test-workspace/alpha14-session-full/`, with detached launcher status in `.test-workspace/alpha14-native-session-status.json`. Verify live process/device identities before relying on those files, and require the full-duration and cleanup outcomes before replacing this pending state.
 
 The first driver attempt read the report before it existed; `adb exec-out` returned the missing-file diagnostic as text, which could not be parsed as JSON. The driver now uses `adb shell` with its remote exit status. That failed attempt remains archived, including its unconfirmed app-preference cleanup. The successful repetition confirms cleanup. [Probe evidence and hashes](reviews/android-performance-alpha14-2026-09-26/probe-validation.json) preserve both outcomes and the compilation transcript.
 
