@@ -1,0 +1,70 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:startScripts UP-TO-DATE
+> Task :server:installDist UP-TO-DATE
+> Task :server:processTestResources NO-SOURCE
+
+> Task :server:compileTestKotlin
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt:203:48 Unnecessary non-null assertion (!!) on a non-null receiver of type 'AutomaticRecoveryLoad.LostResponse'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt:216:78 Unnecessary non-null assertion (!!) on a non-null receiver of type 'AutomaticRecoveryLoad.LostResponse'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt:216:119 Unnecessary non-null assertion (!!) on a non-null receiver of type 'AutomaticRecoveryLoad.LostResponse'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticSoakLoad.kt:184:36 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Process'.
+
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:coinGameLoad
+coin-load[4e9b62795c1e4733]: start-isolated-service
+coin-load[4e9b62795c1e4733]: concurrent-mixed-ticket-purchases
+coin-load[4e9b62795c1e4733]: play-real-five-second-calls
+coin-load[4e9b62795c1e4733]: minimum-10-calls-claims-15
+coin-load[4e9b62795c1e4733]: minimum-20-calls-claims-46
+coin-load[4e9b62795c1e4733]: minimum-30-calls-claims-69
+coin-load[4e9b62795c1e4733]: minimum-40-calls-claims-108
+coin-load[4e9b62795c1e4733]: minimum-50-calls-claims-174
+coin-load[4e9b62795c1e4733]: minimum-60-calls-claims-206
+coin-load[4e9b62795c1e4733]: minimum-70-calls-claims-230
+coin-load[4e9b62795c1e4733]: verify-ledger-settlement-and-replayed-purchases
+coin-load[4e9b62795c1e4733]: completed
+coin-load[4e9b62795c1e4733]: full=true probe=false cleanup=true latency=false
+
+> Task :server:coinGameLoad FAILED
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:coinGameLoad' (registered in build file 'server\build.gradle.kts').
+> Process 'command 'D:\Github\App Ideas\tambola-caller\full-game\.test-workspace\temurin17\jdk-17.0.20.1+1\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 7m 50s
+13 actionable tasks: 2 executed, 11 up-to-date
