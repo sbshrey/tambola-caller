@@ -86,6 +86,10 @@ class LanCoinGameTest {
             compose.onNodeWithTag("coin-play").performScrollTo().performClick()
             until { model.state.value.room?.phase == RoomPhase.LOBBY && !model.state.value.busy }
             val actor = saved().credentials
+            val identity = requireNotNull(saved().deviceIdentity)
+            assertEquals(0L, identity.revision)
+            assertNull(identity.pending)
+            report.put("deviceEnrolled", true)
             mainGuest = actor
             val originalRoom = model.state.value.room!!
             assertEquals(900L, model.state.value.wallet!!.balance)

@@ -1,0 +1,11 @@
+{
+  "versionCode": 17,
+  "versionName": "0.17.0-alpha17-wifi",
+  "origin": "https://192.168.1.4:8443",
+  "variant": "lan",
+  "apkBytes": 41917463,
+  "apkSha256": "575bcd865231a3e5fe96c972c22ac6c657d95e4973beb10a8edcdb73c56dc2e4",
+  "publicCaSha256": "98ef33aa08d19a2a0ad67c097d90864c352a1e2011e725d8f0cdf8ca7c0cc24f",
+  "testApkSha256": "c2d2b2fb6758945db742a2b345425733f06a3fcbd88544d4340a00e8b9312a30",
+  "scope": "Prepared private Wi-Fi debug-signed candidate; native and installed-host acceptance pending"
+}

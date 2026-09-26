@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import https from 'node:https';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
 const root = join(process.env.LOCALAPPDATA, 'TambolaTogetherHost');
 const config = JSON.parse(await readFile(join(root, 'host.json'), 'utf8'));
 assert.match(config.origin, /^https:\/\/192\.168\.\d+\.\d+:8443$/);
@@ -11,6 +11,7 @@ const ca = await readFile(join(root, 'tls-data/caddy/pki/authorities/local/root.
 const guests = [];
 const checks = [];
 const timings = [];
+const deviceKey = randomBytes(32).toString('base64url');
 async function request(path, method = 'GET', body, actor, trust = true) {
   const started = performance.now();
   return new Promise((done, reject) => {
@@ -48,6 +49,19 @@ try {
   assert.equal(first.snapshot.wallet.balance, 900);
   assert.equal(first.snapshot.coins.ownTickets, 6);
   assert.deepEqual(await api('/v1/matches', 'POST', purchase, guests[0]), first);
+  const enrolled = await api('/v1/guests/me/device', 'POST', { deviceKey }, guests[0]);
+  assert.equal(enrolled.playerId, guests[0].playerId); assert.equal(enrolled.revision, 0);
+  const rotation = { expectedRevision: 0, token: randomBytes(32).toString('base64url') };
+  const old = guests[0];
+  const renewed = await api('/v1/guests/me/session', 'POST', rotation, { token: deviceKey });
+  assert.equal(renewed.credentials.playerId, old.playerId); assert.equal(renewed.revision, 1);
+  assert.equal(renewed.credentials.token, rotation.token);
+  guests[0] = renewed.credentials;
+  assert.deepEqual(await api('/v1/guests/me/session', 'POST', rotation, { token: deviceKey }), renewed);
+  assert.equal((await request('/v1/wallet', 'GET', undefined, old)).status, 401);
+  assert.deepEqual(await api('/v1/matches', 'POST', purchase, guests[0]), first);
+  assert.equal((await api('/v1/wallet', 'GET', undefined, guests[0])).balance, 900);
+  checks.push('device enrollment; exact session rotation retry; old access rejected; same wallet and purchase receipt retained');
   const second = await api('/v1/matches', 'POST', { id: randomUUID(), tickets: 2 }, guests[1]);
   assert.equal(second.snapshot.roomId, first.snapshot.roomId);
   assert.equal(second.snapshot.coins.pool, 1400);
@@ -68,7 +82,9 @@ try {
 } finally {
   for (const actor of guests) await api('/v1/guests/me/delete', 'POST', { id: randomUUID() }, actor);
 }
+assert.equal((await request('/v1/guests/me/session', 'POST', { expectedRevision: 1, token: randomBytes(32).toString('base64url') }, { token: deviceKey })).status, 401);
 checks.push('temporary QA profiles deleted');
+checks.push('deleted device credential cannot renew');
 const evidence = { result: 'passed', observedAt: new Date().toISOString(), sourceCommit: config.sourceCommit, origin: config.origin,
   checks, timings, scope: 'PC HTTPS transactions against installed restricted-role service; not physical phone Wi-Fi' };
 await mkdir(resolve('.test-workspace'), { recursive: true });
