@@ -242,15 +242,15 @@ class RoomService(
         verifyJournalPosition(recoveryPosition(connection), journal.position())
     }
 
-    private fun recoveryPosition(connection: Connection): JournalPosition {
+    private fun recoveryPosition(connection: Connection): JournalPosition? {
         recoveryCheck(!replayFailure, "Deletion recovery requires a successful retry")
-        return connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton") {
-            JournalPosition(it.getString(1).orEmpty(), it.getLong(2))
+        return connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton") { row ->
+            row.getString(1)?.let { JournalPosition(it, row.getLong(2)) }
         }.single()
     }
 
-    private fun verifyJournalPosition(saved: JournalPosition, head: JournalPosition) {
-        recoveryCheck(saved.id == head.id && saved.head <= head.head, "Deletion recovery is not initialized or its journal is inconsistent")
+    private fun verifyJournalPosition(saved: JournalPosition?, head: JournalPosition) {
+        recoveryCheck(saved != null && saved.id == head.id && saved.head <= head.head, "Deletion recovery is not initialized or its journal is inconsistent")
     }
 
     private fun applyDeletion(connection: Connection, intent: DeletionIntent) {
@@ -564,7 +564,7 @@ class RoomService(
         }.singleOrNull()
         if (journal != null) {
             val access = journal.accessState(guest?.id)
-            verifyJournalPosition(requireNotNull(saved), access.position)
+            verifyJournalPosition(saved, access.position)
             demand(!access.blocked, 401, "unauthorized", "This profile's credentials were revoked.")
         }
         return guest ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
