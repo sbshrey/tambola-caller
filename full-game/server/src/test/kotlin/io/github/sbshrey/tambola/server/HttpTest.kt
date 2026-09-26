@@ -133,8 +133,10 @@ class HttpTest : PostgresTest() {
                 send(Frame.Text(WireJson.encodeToString(EventAck(hostSnapshot.snapshot.revision))))
                 websocketClient.webSocket("/v1/rooms/${room.code}/events?after=${room.revision}", request = { bearerAuth(other.token) }) {
                     val otherSnapshot = WireJson.decodeFromString<RoomUpdate>((incoming.receive() as Frame.Text).readText())
+                    assertEquals(room.revision, otherSnapshot.snapshot.revision)
                     assertTrue(operations.render(database.poolStats(), null).contains("tambola_websocket_active 2"))
                     assertTrue(otherSnapshot.snapshot.round!!.ownTickets.all { it.playerId == other.playerId })
+                    assertNull(withTimeoutOrNull(1_100) { incoming.receive() })
                     val response = client.post("/v1/rooms/${room.code}/commands") {
                         bearerAuth(host.token); contentType(ContentType.Application.Json)
                         setBody(WireJson.encodeToString(CommandRequest(UUID.randomUUID().toString(), room.revision, RoomAction.Draw)))
@@ -165,6 +167,26 @@ class HttpTest : PostgresTest() {
                 val reason = closeReason.await()
                 assertEquals(CloseReason.Codes.VIOLATED_POLICY.code, reason!!.code)
                 assertEquals("not_member", reason.message)
+            }
+        }
+        websocketClient.close()
+    }
+
+    @Test fun `a quiet authenticated websocket closes after independent logout before primary replay`() = testApplication {
+        val journal = DeletionJournal(additionalDatabase()).also { it.migrate() }
+        service = RoomService(database, now::get, journal); service.replayDeletions()
+        application { roomsModule(database, service, runWorker = false) }
+        val actor = service.register(GuestRequest("Quiet logout fixture"), "quiet-logout")
+        val room = service.match(actor.token, MatchRequest(UUID.randomUUID().toString(), 3)).snapshot
+        val websocketClient = createClient { install(WebSockets) }
+        withTimeout(5_000) {
+            websocketClient.webSocket("/v1/rooms/${room.code}/events?after=${room.revision}", request = { bearerAuth(actor.token) }) {
+                val initial = WireJson.decodeFromString<RoomUpdate>((incoming.receive() as Frame.Text).readText())
+                assertEquals(room.revision, initial.snapshot.revision)
+                journal.revoke(actor.playerId, now.get())
+                val reason = closeReason.await()
+                assertEquals(CloseReason.Codes.VIOLATED_POLICY.code, reason!!.code)
+                assertEquals("unauthorized", reason.message)
             }
         }
         websocketClient.close()

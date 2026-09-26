@@ -188,8 +188,10 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                     }
                     try {
                         while (isActive && receiver.isActive) {
-                            val update = withContext(Dispatchers.IO) { service.pollEvents(token, code, cursor) }
-                            if (update.snapshot.revision != lastSent.get()) {
+                            val update = withContext(Dispatchers.IO) {
+                                service.pollEvents(token, code, cursor, onlyIfChanged = lastSent.get() >= 0)
+                            }
+                            if (update != null && update.snapshot.revision != lastSent.get()) {
                                 // Backpressure cannot create an unbounded application queue.
                                 lastSent.set(update.snapshot.revision)
                                 withTimeout(10_000) { send(Frame.Text(WireJson.encodeToString(update))) }

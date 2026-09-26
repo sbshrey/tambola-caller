@@ -354,21 +354,30 @@ class RoomService(
     internal fun admitEvents(token: String) = authenticatedRate(token, "events", 20)
 
     /** Quiet server-driven polls must not generate rate-limit or row-lock writes. */
-    internal fun pollEvents(token: String, code: String, after: Long? = null): RoomUpdate {
+    internal fun pollEvents(token: String, code: String, after: Long? = null): RoomUpdate =
+        checkNotNull(pollEvents(token, code, after, onlyIfChanged = false))
+
+    /** Suppression is allowed only after a stream has sent its initial snapshot. */
+    internal fun pollEvents(token: String, code: String, after: Long?, onlyIfChanged: Boolean): RoomUpdate? {
+        fun response(connection: Connection, room: RoomRecord, actor: String): RoomUpdate? =
+            if (onlyIfChanged && after == room.revision) null else update(connection, room, actor, after)
+
+        var renewPresence = false
         val quiet = database.transaction(readOnly = true) { connection ->
             val guest = authenticate(connection, token, protect = false)
             val room = load(connection, code, lock = false)
             member(room, guest.id)
-            if (needsTouch(room, guest.id, clock())) null else update(connection, room, guest.id, after)
+            renewPresence = needsTouch(room, guest.id, clock())
+            if (renewPresence) null else response(connection, room, guest.id)
         }
-        if (quiet != null) return quiet
+        if (!renewPresence) return quiet
         // Revalidate under the normal guest-before-room locks before renewing presence.
         // Never upgrade room locks ahead of a profile deletion's guest lock.
         return database.transaction { connection ->
             val guest = authenticate(connection, token)
             val room = load(connection, code)
             member(room, guest.id)
-            update(connection, touch(connection, room, guest.id, clock()), guest.id, after)
+            response(connection, touch(connection, room, guest.id, clock()), guest.id)
         }
     }
 
