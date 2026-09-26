@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-09-26T19:48:40.4625690+00:00",
+  "supervisorStatus": "ready",
+  "supervisorCheckedAt": "2026-09-26T19:48:40.1161883Z",
+  "readinessAgeSeconds": 0.3349352,
+  "installedLibrariesMatchAlpha17": true,
+  "checkedLibraries": 51,
+  "expectedSourceCommit": "9fe335d47b5b76688c0a148f64e074af4630fbdf"
+}

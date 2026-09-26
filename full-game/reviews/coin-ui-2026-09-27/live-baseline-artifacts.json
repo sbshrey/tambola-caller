@@ -1,0 +1,5 @@
+{
+  "installedAppSha256": "575bcd865231a3e5fe96c972c22ac6c657d95e4973beb10a8edcdb73c56dc2e4",
+  "instrumentationSha256": "f5bc5a9da49feb9066b650fa30a265d0ff7244d7cf6f99242c8e7f1f5c0e1a65",
+  "clock": "ActivityScenario, real coroutine clock, no Compose rule"
+}

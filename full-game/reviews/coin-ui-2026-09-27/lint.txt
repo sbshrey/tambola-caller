@@ -1,0 +1,386 @@
+D:\Github\App Ideas\tambola-caller\full-game\app\build.gradle.kts:21: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdk = 36
+        ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application or sdk runs on a version of Android that is more
+   recent than your targetSdk specifies that it has been tested with, various
+   compatibility modes kick in. This ensures that your application continues
+   to work, but it may look out of place. For example, if the targetSdk is
+   less than 14, your app may get an option button in the UI.
+
+   To fix this issue, set the targetSdk to the highest available value. Then
+   test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\AndroidManifest.xml:5: Warning: Attribute localeConfig is only used in API level 33 and higher (current min is 26) [UnusedAttribute]
+    <application android:name=".TambolaApplication" android:networkSecurityConfig="@xml/network_security_config" android:allowBackup="false" android:fullBackupContent="false" android:dataExtractionRules="@xml/data_extraction_rules" android:label="Tambola Together" android:icon="@drawable/ic_tambola" android:supportsRtl="true" android:theme="@style/AppTheme" android:localeConfig="@xml/locales_config">
+                                                                                                                                                                                                                                                                                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedAttribute":
+   This check finds attributes set in XML files that were introduced in a
+   version newer than the oldest version targeted by your application (with
+   the minSdkVersion attribute).
+
+   This is not an error; the application will simply ignore the attribute.
+   However, if the attribute is important to the appearance or functionality
+   of your application, you should consider finding an alternative way to
+   achieve the same result with only available attributes, and then you can
+   optionally create a copy of the layout in a layout-vNN folder which will be
+   used on API NN or higher where you can take advantage of the newer
+   attribute.
+
+   Note: This check does not only apply to attributes. For example, some tags
+   can be unused too, such as the new <tag> element in layouts introduced in
+   API 21.
+
+D:\Github\App Ideas\tambola-caller\full-game\app\build.gradle.kts:17: Warning: A newer version of compileSdk than 36 is available: 37 [GradleDependency]
+    compileSdk = 36
+    ~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\claims.xml:17: Warning: Formatting %d followed by words ("prizes"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="play_prizes_left">%1$d prizes left</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\claims.xml:18: Warning: Formatting %d followed by words ("players"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="play_players_short">%1$d players</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\claims.xml:19: Warning: Formatting %d followed by words ("tickets"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="play_tickets_short">%1$d tickets · yours</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\coins.xml:6: Warning: Formatting %d followed by words ("coins"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="coin_balance">%1$d coins</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\coins.xml:19: Warning: Formatting %d followed by words ("coins"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="coin_won">%1$d coins won</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\coins.xml:21: Warning: Formatting %d followed by words ("unclaimed"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="coin_returned">%1$d unclaimed coins returned</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\coins.xml:33: Warning: Formatting %d followed by words ("tickets"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="coin_choose_count">%1$d tickets</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\coins.xml:34: Warning: Formatting %d followed by words ("players"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="coin_players">%1$d players · %2$d computer</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "PluralsCandidate":
+   This lint check looks for potential errors in internationalization where
+   you have translated a message which involves a quantity and it looks like
+   other parts of the string may need grammatical changes.
+
+   For example, rather than something like this:
+     <string name="try_again">Try again in %d seconds.</string>
+   you should be using a plural:
+      <plurals name="try_again">
+           <item quantity="one">Try again in %d second</item>
+           <item quantity="other">Try again in %d seconds</item>
+       </plurals>
+   This will ensure that in other languages the right set of translations are
+   provided for the different quantity classes.
+
+   (This check depends on some heuristics, so it may not accurately determine
+   whether a string really should be a quantity. You can use tools:ignore to
+   filter out false positives.
+
+   https://developer.android.com/guide/topics/resources/string-resource.html#Plurals
+
+D:\Github\App Ideas\tambola-caller\full-game\app\build.gradle.kts:179: Warning: This library supports using KSP instead of kapt, which greatly improves performance. Learn more: https://developer.android.com/studio/build/migrate-to-ksp [KaptUsageInsteadOfKsp]
+    implementation(libs.room.runtime); kapt(libs.room.compiler); implementation(libs.datastore)
+                                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "KaptUsageInsteadOfKsp":
+   KSP is a more efficient replacement for kapt. For libraries that support
+   both, KSP should be used to improve build times.
+
+   https://developer.android.com/studio/build/migrate-to-ksp
+
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\claims.xml:7: Warning: The resource R.string.play_claim_hint appears to be unused [UnusedResources]
+    <string name="play_claim_hint">Tap numbers. Make your claim.</string>
+            ~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\coins.xml:23: Warning: The resource R.string.coin_joining appears to be unused [UnusedResources]
+    <string name="coin_joining">Finding your table…</string>
+            ~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\play.xml:2: Warning: The resource R.string.play_quick appears to be unused [UnusedResources]
+    <string name="play_quick">Quick play</string>
+            ~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\play.xml:4: Warning: The resource R.string.play_quick_details appears to be unused [UnusedResources]
+    <string name="play_quick_details">3 tickets · 2 computer players · 5s calls</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\play.xml:5: Warning: The resource R.string.play_free appears to be unused [UnusedResources]
+    <string name="play_free">Free play · Works offline</string>
+            ~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\play.xml:6: Warning: The resource R.string.play_custom appears to be unused [UnusedResources]
+    <string name="play_custom">Custom game</string>
+            ~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\play.xml:8: Warning: The resource R.string.play_friends appears to be unused [UnusedResources]
+    <string name="play_friends">With friends</string>
+            ~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\play.xml:9: Warning: The resource R.string.play_family appears to be unused [UnusedResources]
+    <string name="play_family">Pass &amp; play</string>
+            ~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\strings.xml:2: Warning: The resource R.string.your_ticket appears to be unused [UnusedResources]
+    <string name="your_ticket">Your ticket</string>
+            ~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\strings.xml:3: Warning: The resource R.string.named_ticket appears to be unused [UnusedResources]
+    <string name="named_ticket">%1$s\'s ticket</string>
+            ~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\strings.xml:4: Warning: The resource R.plurals.numbers_called appears to be unused [UnusedResources]
+    <plurals name="numbers_called">
+             ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:10: Warning: The resource R.string.ui_computer appears to be unused [UnusedResources]
+    <string name="ui_computer">" · computer"</string>
+            ~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:15: Warning: The resource R.string.ui_called_ticket appears to be unused [UnusedResources]
+    <string name="ui_called_ticket">"%1$s called · ticket %2$s"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:16: Warning: The resource R.string.ui_enlarge appears to be unused [UnusedResources]
+    <string name="ui_enlarge">"Enlarge"</string>
+            ~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:17: Warning: The resource R.string.ui_mark_ticket appears to be unused [UnusedResources]
+    <string name="ui_mark_ticket">"Mark ticket"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:18: Warning: The resource R.string.ui_numbers_are_marked_automatically appears to be unused [UnusedResources]
+    <string name="ui_numbers_are_marked_automatically">"Numbers are marked automatically."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:19: Warning: The resource R.string.ui_tap_a_called_number_to_mark_or_unmark appears to be unused [UnusedResources]
+    <string name="ui_tap_a_called_number_to_mark_or_unmark">"Tap a called number to mark or unmark it. Amber numbers have been called."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:20: Warning: The resource R.string.ui_top_line appears to be unused [UnusedResources]
+    <string name="ui_top_line">"Top line"</string>
+            ~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:21: Warning: The resource R.string.ui_middle_line appears to be unused [UnusedResources]
+    <string name="ui_middle_line">"Middle line"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:22: Warning: The resource R.string.ui_bottom_line appears to be unused [UnusedResources]
+    <string name="ui_bottom_line">"Bottom line"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:23: Warning: The resource R.string.ui_number appears to be unused [UnusedResources]
+    <string name="ui_number">"Number %1$s"</string>
+            ~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:24: Warning: The resource R.string.ui_marked appears to be unused [UnusedResources]
+    <string name="ui_marked">"Marked"</string>
+            ~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:25: Warning: The resource R.string.ui_called_unmarked appears to be unused [UnusedResources]
+    <string name="ui_called_unmarked">"Called, unmarked"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:27: Warning: The resource R.string.ui_done appears to be unused [UnusedResources]
+    <string name="ui_done">"Done"</string>
+            ~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:123: Warning: The resource R.string.ui_a_game_night_anywhere appears to be unused [UnusedResources]
+    <string name="ui_a_game_night_anywhere">"A GAME NIGHT, ANYWHERE"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:165: Warning: The resource R.string.ui_the_rules_for_this_round appears to be unused [UnusedResources]
+    <string name="ui_the_rules_for_this_round">"The rules for this round"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:168: Warning: The resource R.string.ui_the_server_calls_a_number_every_seconds appears to be unused [UnusedResources]
+    <string name="ui_the_server_calls_a_number_every_seconds">"The server calls a number every %1$s seconds."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:314: Warning: The resource R.string.ui_good_company_great_numbers appears to be unused [UnusedResources]
+    <string name="ui_good_company_great_numbers">"GOOD COMPANY. GREAT NUMBERS."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:315: Warning: The resource R.string.ui_make_room_nfor_a_little_joy appears to be unused [UnusedResources]
+    <string name="ui_make_room_nfor_a_little_joy">"Make room\nfor a little joy."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:316: Warning: The resource R.string.ui_your_tickets_your_people_one_happy_game_night appears to be unused [UnusedResources]
+    <string name="ui_your_tickets_your_people_one_happy_game_night">"Your tickets, your people, one happy game night."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:317: Warning: The resource R.string.ui_new_to_tambola appears to be unused [UnusedResources]
+    <string name="ui_new_to_tambola">"NEW TO TAMBOLA?"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:318: Warning: The resource R.string.ui_try_a_ticket_make_a_call_find_your appears to be unused [UnusedResources]
+    <string name="ui_try_a_ticket_make_a_call_find_your">"Try a ticket. Make a call. Find your first win."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:319: Warning: The resource R.string.ui_learn_with_a_sample_ticket appears to be unused [UnusedResources]
+    <string name="ui_learn_with_a_sample_ticket">"Learn with a sample ticket"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:320: Warning: The resource R.string.ui_maybe_later appears to be unused [UnusedResources]
+    <string name="ui_maybe_later">"Maybe later"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:321: Warning: The resource R.string.ui_your_table_is_waiting appears to be unused [UnusedResources]
+    <string name="ui_your_table_is_waiting">"YOUR TABLE IS WAITING"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:322: Warning: The resource R.string.ui_resume_round appears to be unused [UnusedResources]
+    <string name="ui_resume_round">"Resume round"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:323: Warning: The resource R.string.ui_play_your_way appears to be unused [UnusedResources]
+    <string name="ui_play_your_way">"PLAY YOUR WAY"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:324: Warning: The resource R.string.ui_a_little_me_time appears to be unused [UnusedResources]
+    <string name="ui_a_little_me_time">"A little me time"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:325: Warning: The resource R.string.ui_practice_at_your_pace_or_invite_some_friendly appears to be unused [UnusedResources]
+    <string name="ui_practice_at_your_pace_or_invite_some_friendly">"Practice at your pace, or invite some friendly computer players."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:326: Warning: The resource R.string.ui_play_solo appears to be unused [UnusedResources]
+    <string name="ui_play_solo">"Play solo"</string>
+            ~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:327: Warning: The resource R.string.ui_bring_everyone_together appears to be unused [UnusedResources]
+    <string name="ui_bring_everyone_together">"Bring everyone together"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:328: Warning: The resource R.string.ui_pass_one_phone_around_every_player_gets_their appears to be unused [UnusedResources]
+    <string name="ui_pass_one_phone_around_every_player_gets_their">"Pass one phone around. Every player gets their own digital tickets."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:329: Warning: The resource R.string.ui_play_on_one_device appears to be unused [UnusedResources]
+    <string name="ui_play_on_one_device">"Play on one device"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:330: Warning: The resource R.string.ui_meet_at_a_private_table appears to be unused [UnusedResources]
+    <string name="ui_meet_at_a_private_table">"Meet at a private table"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:331: Warning: The resource R.string.ui_play_together_on_your_own_phones_with_a appears to be unused [UnusedResources]
+    <string name="ui_play_together_on_your_own_phones_with_a">"Play together on your own phones with a room code."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:332: Warning: The resource R.string.ui_play_online appears to be unused [UnusedResources]
+    <string name="ui_play_online">"Play online"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:334: Warning: The resource R.string.ui_how_to_play appears to be unused [UnusedResources]
+    <string name="ui_how_to_play">"How to play"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:335: Warning: The resource R.string.ui_development_alpha_private_rooms_require_the_configured_room appears to be unused [UnusedResources]
+    <string name="ui_development_alpha_private_rooms_require_the_configured_room">"Development alpha · Private rooms require the configured room service."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:341: Warning: The resource R.string.ui_resume_calling appears to be unused [UnusedResources]
+    <string name="ui_resume_calling">"Resume calling"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:342: Warning: The resource R.string.ui_call_next_now appears to be unused [UnusedResources]
+    <string name="ui_call_next_now">"Call next now"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:343: Warning: The resource R.string.ui_call_next_number appears to be unused [UnusedResources]
+    <string name="ui_call_next_number">"Call next number"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:344: Warning: The resource R.string.ui_stop_auto appears to be unused [UnusedResources]
+    <string name="ui_stop_auto">"Stop auto"</string>
+            ~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:346: Warning: The resource R.string.ui_pause appears to be unused [UnusedResources]
+    <string name="ui_pause">"Pause"</string>
+            ~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:393: Warning: The resource R.string.ui_take_a_breather_paused appears to be unused [UnusedResources]
+    <string name="ui_take_a_breather_paused">"TAKE A BREATHER · PAUSED"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:394: Warning: The resource R.string.ui_let_the_good_times_roll appears to be unused [UnusedResources]
+    <string name="ui_let_the_good_times_roll">"LET THE GOOD TIMES ROLL"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:395: Warning: The resource R.string.ui_ready_when_you_are appears to be unused [UnusedResources]
+    <string name="ui_ready_when_you_are">"Ready when you are"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:399: Warning: The resource R.string.ui_recent_calls appears to be unused [UnusedResources]
+    <string name="ui_recent_calls">"RECENT CALLS"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:400: Warning: The resource R.string.ui_your_table appears to be unused [UnusedResources]
+    <string name="ui_your_table">"Your table"</string>
+            ~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:401: Warning: The resource R.string.ui_amber_outline_called_green_marked_tap_mark_ticket appears to be unused [UnusedResources]
+    <string name="ui_amber_outline_called_green_marked_tap_mark_ticket">"Amber outline: called · Green: marked. Tap Mark ticket for large, comfortable number buttons."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:402: Warning: The resource R.string.ui_check_claims_verified appears to be unused [UnusedResources]
+    <string name="ui_check_claims_verified">"Check claims · %1$s verified"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:405: Warning: The resource R.string.ui_call_history appears to be unused [UnusedResources]
+    <string name="ui_call_history">"Call history"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:406: Warning: The resource R.string.ui_no_numbers_yet appears to be unused [UnusedResources]
+    <string name="ui_no_numbers_yet">"No numbers yet"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:407: Warning: The resource R.string.ui_back_to_table appears to be unused [UnusedResources]
+    <string name="ui_back_to_table">"Back to table"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:408: Warning: The resource R.string.ui_fair_wins_happy_faces appears to be unused [UnusedResources]
+    <string name="ui_fair_wins_happy_faces">"Fair wins, happy faces"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:409: Warning: The resource R.string.ui_winners_are_verified_from_called_numbers_even_if appears to be unused [UnusedResources]
+    <string name="ui_winners_are_verified_from_called_numbers_even_if">"Winners are verified from called numbers, even if someone forgets to mark. Tickets completing a prize on the same call tie."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:410: Warning: The resource R.string.ui_assisted_marking_is_on_for_everyone appears to be unused [UnusedResources]
+    <string name="ui_assisted_marking_is_on_for_everyone">"Assisted marking is on for everyone."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:411: Warning: The resource R.string.ui_manual_marking_mark_your_own_called_numbers appears to be unused [UnusedResources]
+    <string name="ui_manual_marking_mark_your_own_called_numbers">"Manual marking · mark your own called numbers."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:412: Warning: The resource R.string.ui_manual_marking_computer_tickets_mark_automatically appears to be unused [UnusedResources]
+    <string name="ui_manual_marking_computer_tickets_mark_automatically">"Manual marking · computer tickets mark automatically."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:414: Warning: The resource R.string.ui_a_verified_win appears to be unused [UnusedResources]
+    <string name="ui_a_verified_win">"A VERIFIED WIN"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:415: Warning: The resource R.string.ui_good_times_shared appears to be unused [UnusedResources]
+    <string name="ui_good_times_shared">"Good times, shared."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:416: Warning: The resource R.string.ui_a_little_round_of_applause appears to be unused [UnusedResources]
+    <string name="ui_a_little_round_of_applause">"A little round of applause!"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:417: Warning: The resource R.string.ui_call_number appears to be unused [UnusedResources]
+    <string name="ui_call_number">"Call %1$s · number %2$s"</string>
+            ~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:418: Warning: The resource R.string.ui_and_more appears to be unused [UnusedResources]
+    <string name="ui_and_more">" and %1$s more"</string>
+            ~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:419: Warning: The resource R.string.ui_each_tied appears to be unused [UnusedResources]
+    <string name="ui_each_tied">" each · tied"</string>
+            ~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:420: Warning: The resource R.string.ui_more_verified_prizes_on_this_call appears to be unused [UnusedResources]
+    <string name="ui_more_verified_prizes_on_this_call">"%1$s more verified prizes on this call."</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:421: Warning: The resource R.string.ui_see_winning_tickets appears to be unused [UnusedResources]
+    <string name="ui_see_winning_tickets">"See winning tickets"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:\Github\App Ideas\tambola-caller\full-game\app\src\main\res\values\ui_strings.xml:422: Warning: The resource R.string.ui_dismiss_celebration appears to be unused [UnusedResources]
+    <string name="ui_dismiss_celebration">"Dismiss celebration"</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedResources":
+   Unused resources make applications larger and slow down builds.
+
+
+   The unused resource check can ignore tests. If you want to include
+   resources that are only referenced from tests, consider packaging them in a
+   test source set instead.
+
+   You can include test sources in the unused resource check by setting the
+   system property lint.unused-resources.include-tests=true, and to exclude
+   them (usually for performance reasons), use
+   lint.unused-resources.exclude-tests=true.
+
+   Available options:
+
+   **skip-libraries** (default is true):
+   Whether the unused resource check should skip reporting unused resources in libraries.
+
+   Many libraries will declare resources that are part of the library surface; other modules depending on the library will also reference the resources. To avoid reporting all these resources as unused (in the context of a library), the unused resource check normally skips reporting unused resources in libraries. Instead, run the unused resource check on the consuming app module (along with `checkDependencies=true`).
+
+   However, there are cases where you want to check that all the resources declared in a library are used; in that case, you can disable the skip option.
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UnusedResources">
+           <option name="skip-libraries" value="true" />
+       </issue>
+   </lint>
+   ```
+
+D:\Github\App Ideas\tambola-caller\full-game\app\build.gradle.kts:47: Warning: If enabling minification, also set isShrinkResources = true [NotShrinkingResources]
+            isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            ~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NotShrinkingResources":
+   When minification / dex optimization is enabled, you should also enable
+   resource shrinking, since it enables considerable download and storage
+   savings, and optimizes your app's resource table.
+
+   https://developer.android.com/topic/performance/app-optimization/enable-app-optimization
+
+0 errors, 90 warnings

@@ -1,0 +1,15 @@
+{
+  "appSourceCommit": "e4ac50422bb4856a59086b4394a40be3f21ab6e7",
+  "installedServiceSourceCommit": "9fe335d47b5b76688c0a148f64e074af4630fbdf",
+  "serviceUnchanged": true,
+  "versionCode": 18,
+  "versionName": "0.18.0-alpha18-wifi",
+  "apk": "releases/0.18.0-alpha18-wifi/Tambola-Together-0.18.0-alpha18-wifi.apk",
+  "apkSha256": "fb90428ba2eb51b3b7434b7f9534bcc47e7c54b49a99945f571e19925ca1cbf0",
+  "bytes": 41917571,
+  "signingCertificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "instrumentationSha256": "e4f50882c107337b577bc512738e0490f96f69de32712fca123b351fefacf045",
+  "layoutFixtureDebugApkSha256": "2375c39da3e8814674bffa635e04a6315718f34b6349d1a53fc7cb492f34a2b7",
+  "origin": "https://192.168.1.4:8443",
+  "publicCaSha256": "98ef33aa08d19a2a0ad67c097d90864c352a1e2011e725d8f0cdf8ca7c0cc24f"
+}

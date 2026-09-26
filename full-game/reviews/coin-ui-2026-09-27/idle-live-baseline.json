@@ -1,0 +1,7 @@
+{
+  "sampleMs": 3202,
+  "compositionPasses": 64,
+  "observedCompositions": 3,
+  "screen": "idle coin entry",
+  "scope": "Dedicated Android emulator, no guest or room; onBeginComposition callbacks"
+}

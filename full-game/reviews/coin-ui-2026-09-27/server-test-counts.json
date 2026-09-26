@@ -1,0 +1,10 @@
+{
+  "tests": 20,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "classes": [
+    "io.github.sbshrey.tambola.server.CoinLedgerTest",
+    "io.github.sbshrey.tambola.server.CoinMatchTest"
+  ]
+}

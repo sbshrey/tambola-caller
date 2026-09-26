@@ -1,0 +1,10 @@
+{
+  "installedApkSha256": "fb90428ba2eb51b3b7434b7f9534bcc47e7c54b49a99945f571e19925ca1cbf0",
+  "exactPackagedApk": true,
+  "adbReverseMappings": [],
+  "nativeRoundJunit": "OK (1 test)",
+  "cleanupEvidence": "JUnit passed after four QA profile deletions and preference restoration; runner confirmed original animation settings restored",
+  "installedInstrumentationSha256": "e4f50882c107337b577bc512738e0490f96f69de32712fca123b351fefacf045",
+  "emptyProfileAfterRound": true,
+  "afterRoundIdleCompositionPasses": 0
+}

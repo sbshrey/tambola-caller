@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.LanCoinGameTest:.
+
+Time: 469.335
+
+OK (1 test)
+
+

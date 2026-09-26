@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.CoinPoolTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-26T19:35:38.822Z" hostname="DESKTOP-SBSHREY" time="0.049">
+  <properties/>
+  <testcase name="independent ticket purchases preserve disjoint hands and round restoration" classname="io.github.sbshrey.tambola.domain.CoinPoolTest" time="0.016"/>
+  <testcase name="pool cannot be reused with a different purchase count or prize schedule" classname="io.github.sbshrey.tambola.domain.CoinPoolTest" time="0.003"/>
+  <testcase name="round cancellation returns only unawarded pool and never duplicates paid winnings" classname="io.github.sbshrey.tambola.domain.CoinPoolTest" time="0.013"/>
+  <testcase name="every allowed ticket count allocates exactly the pool and unlocks only fixed house thresholds" classname="io.github.sbshrey.tambola.domain.CoinPoolTest" time="0.004"/>
+  <testcase name="an uneven tie gives deterministic remainder without creating or losing coins" classname="io.github.sbshrey.tambola.domain.CoinPoolTest" time="0.004"/>
+  <testcase name="ties stay provisional and distribute every coin independently of claim arrival" classname="io.github.sbshrey.tambola.domain.CoinPoolTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+
+io.github.sbshrey.tambola.game.CoinIdleTest:.
+
+Time: 6.797
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
