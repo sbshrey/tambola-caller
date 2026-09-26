@@ -85,3 +85,5 @@ See [service validation](VALIDATION.md) and the repository execution ledger for 
 Protocol v1 native-client additions: `PublicRound.players` retains the immutable round roster, while `winningTickets` contains owner IDs and ordinals only for already awarded tickets. Neither field exposes another player's card numbers. Defaults permit decoding older persisted receipts; no previously released APK consumed this room protocol.
 
 Retained-history deletion now streams records within its atomic transaction, and background replay defers work already locked by a live operation. See [the memory/contention regression, tests and evidence](HISTORY_DELETION_VALIDATION.md). No schema, grant or protocol change is required.
+
+The opt-in [automatic recovery fixture](AUTOMATIC_RECOVERY.md) completes a full 32-player game across two service processes, lost responses, host succession, slow native consumption and service outages. [Exact validation](AUTOMATIC_RECOVERY_VALIDATION.md) records the passing candidate and remaining hosted, Android-device, capacity and soak limits.

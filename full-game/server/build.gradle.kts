@@ -42,3 +42,14 @@ tasks.register<JavaExec>("historyDeletionLoad") {
     environment("TAMBOLA_DATABASE_USER", System.getenv("TAMBOLA_TEST_DATABASE_USER") ?: "")
     environment("TAMBOLA_DATABASE_PASSWORD", System.getenv("TAMBOLA_TEST_DATABASE_PASSWORD") ?: "")
 }
+
+// Full 90-call automatic game with real process/network interruptions; opt-in, about ten minutes.
+tasks.register<JavaExec>("automaticRecoveryLoad") {
+    dependsOn(tasks.testClasses, tasks.installDist)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("io.github.sbshrey.tambola.server.AutomaticRecoveryLoad")
+    workingDir = rootProject.projectDir
+    maxHeapSize = "512m"
+    jvmArgs("-XX:ActiveProcessorCount=4")
+    timeout.set(Duration.ofMinutes(20))
+}
