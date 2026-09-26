@@ -1,0 +1,6 @@
+-- Keep full/sold lobbies out of the lookup performed while matchmaking is serialized.
+-- The indexed expression and predicate match the query; room writes maintain it atomically.
+CREATE INDEX rooms_open_coin_lobbies
+    ON rooms (((payload::jsonb->>'startsAt')::bigint), id)
+    WHERE matchable AND phase = 'LOBBY'
+      AND jsonb_array_length(payload::jsonb->'members') < 8;

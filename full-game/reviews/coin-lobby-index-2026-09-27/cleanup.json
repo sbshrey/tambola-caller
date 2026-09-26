@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-09-26T22:32:08.5315482+00:00",
+  "databasesRemaining": [],
+  "runs": [
+    {
+      "runId": "6fef913ceb89414a",
+      "serverPid": 19520,
+      "pidAbsent": true,
+      "fixtureCleanup": true
+    },
+    {
+      "runId": "02d22d90cc834f82",
+      "serverPid": 20896,
+      "pidAbsent": true,
+      "fixtureCleanup": true
+    },
+    {
+      "runId": "e393584012fc4e8e",
+      "serverPid": 17896,
+      "pidAbsent": true,
+      "fixtureCleanup": true
+    },
+    {
+      "runId": "53a6104560074861",
+      "serverPid": 3316,
+      "pidAbsent": true,
+      "fixtureCleanup": true
+    },
+    {
+      "runId": "ce7eb22d72504229",
+      "serverPid": 10304,
+      "pidAbsent": true,
+      "fixtureCleanup": true
+    }
+  ]
+}

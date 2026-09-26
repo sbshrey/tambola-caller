@@ -1,0 +1,42 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:startScripts UP-TO-DATE
+> Task :server:installDist UP-TO-DATE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:compileTestKotlin
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:coinGameLoad
+coin-load[e393584012fc4e8e]: start-isolated-service
+coin-load[e393584012fc4e8e]: prepare-registered-wallets-through-api
+coin-load[e393584012fc4e8e]: concurrent-mixed-ticket-purchases
+coin-load[e393584012fc4e8e]: play-real-five-second-calls
+coin-load[e393584012fc4e8e]: probe-passed
+coin-load[e393584012fc4e8e]: full=false probe=true cleanup=true latency=false
+
+BUILD SUCCESSFUL in 51s
+13 actionable tasks: 2 executed, 11 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

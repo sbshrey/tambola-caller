@@ -1,0 +1,144 @@
+{
+  "files": [
+    {
+      "file": "baseline-profile/evidence.json",
+      "bytes": 7797,
+      "sha256": "5ac580b8c4b9e2cb5818ad71d9c3a8948d733a89c099c547c46d74b3934cce88"
+    },
+    {
+      "file": "baseline-profile/sql-profile-summary.json",
+      "bytes": 1780,
+      "sha256": "35953245efad928ccca6ca842e58f8982e071c9f864b38884953305657b1e536"
+    },
+    {
+      "file": "baseline-profile/sql-timings.txt",
+      "bytes": 80316,
+      "sha256": "7126771bda663d933cd079cc3b1d3f03e02684d0d4e27caa45372a25e179ae75"
+    },
+    {
+      "file": "baseline-profile/transcript.txt",
+      "bytes": 1883,
+      "sha256": "834969603db916bf66320847be61f9e55c9cbdf1bcce415b3bd8f911d0100c43"
+    },
+    {
+      "file": "cleanup.json",
+      "bytes": 774,
+      "sha256": "c0fc85d598b505a3921731d3111db2d3e076058238c00ed08aa7ae6051bd9f5f"
+    },
+    {
+      "file": "expression-index-experiment.sql.txt",
+      "bytes": 377,
+      "sha256": "0d1e478a387ac2e83e23bdfdfc909d9a146502b039d633d17cf6b81ade0ae93a"
+    },
+    {
+      "file": "expression-profile/allocation-query-plan.json",
+      "bytes": 3338,
+      "sha256": "7b512f9517e6f2941d4f45b07354ad6aa5e1dfc80267c79760a79c3be05ac9cb"
+    },
+    {
+      "file": "expression-profile/evidence.json",
+      "bytes": 7797,
+      "sha256": "45827f4a3cc7e1b5fdda2682c884692a886d83b0947b4cdd70a1925b784c5163"
+    },
+    {
+      "file": "expression-profile/sql-profile-summary.json",
+      "bytes": 1757,
+      "sha256": "f53ad23a56fd432e1deb0083bee9894379e7652660a1cee3fd9ff0c4fb6acacd"
+    },
+    {
+      "file": "expression-profile/sql-timings.txt",
+      "bytes": 80196,
+      "sha256": "31729869306ece020b968255a5722670341606464ce0a3b78f5179628b0b6c9f"
+    },
+    {
+      "file": "expression-profile/transcript.txt",
+      "bytes": 1816,
+      "sha256": "ea9c9fdc7f1c36bbb655e1a3cb284a5849c82d911d4eb45874085b1ca22e590d"
+    },
+    {
+      "file": "expression-short/allocation-query-plan.json",
+      "bytes": 3327,
+      "sha256": "b4f247ac307b045f06cb21b2fd6d2b4f142a0522a1aa485dcd552b2e8239ff1a"
+    },
+    {
+      "file": "expression-short/evidence.json",
+      "bytes": 7912,
+      "sha256": "51376747c632173c3346e8e012edfbeb1e403314fb7ab4786ae95e12d8745f16"
+    },
+    {
+      "file": "expression-short/sql-profile-summary.json",
+      "bytes": 1740,
+      "sha256": "627c7297dd446000fa6022f21ebce95fbca02ba8e7ffca6152e1225f4e5813f2"
+    },
+    {
+      "file": "expression-short/sql-timings.txt",
+      "bytes": 20202,
+      "sha256": "b986358ecfd1589562f268c248cff3e56a29c2edab5725d8d3d4832a39fe22de"
+    },
+    {
+      "file": "expression-short/transcript.txt",
+      "bytes": 1883,
+      "sha256": "76f7bcc46bcf5b796ba337e37cf873143b73edf5c27e53ffa7236f943ea56a18"
+    },
+    {
+      "file": "full-run/evidence.json",
+      "bytes": 8032,
+      "sha256": "73fc0569f6fa94ba9e1db06815212e534cbf71e38ffc98cbd0c106d4ff0183d8"
+    },
+    {
+      "file": "full-run/gc.log",
+      "bytes": 110860,
+      "sha256": "a8b2f82231a5ffd11f9a859f80b080db41794a59b05c33d9b5ce48cef7db10c4"
+    },
+    {
+      "file": "full-run/transcript.txt",
+      "bytes": 2775,
+      "sha256": "d81b63de86b34f1f39c6e56b2b8a87e756426494ea6bac33c8d6e5e53f34769d"
+    },
+    {
+      "file": "generated-profile/allocation-query-plan.json",
+      "bytes": 3251,
+      "sha256": "0b3eb5c6cc99c395b79189cbae91973715577fd7eb70caf8006bed45242d1b7b"
+    },
+    {
+      "file": "generated-profile/evidence.json",
+      "bytes": 8020,
+      "sha256": "0c1c256ef4a51d3a1e7fcfc3aa1277ff5927c748c25a8ad0001fd434b6d76483"
+    },
+    {
+      "file": "generated-profile/sql-profile-summary.json",
+      "bytes": 1752,
+      "sha256": "b9eed723f5b794da21c78abe9979711e264dcd062c911870b12b6538376aa083"
+    },
+    {
+      "file": "generated-profile/sql-timings.txt",
+      "bytes": 80086,
+      "sha256": "d3ce14f2c6c28ba41e51f4669fdf40dd5eb3072f4fcc4b729d06edb2bb25a640"
+    },
+    {
+      "file": "generated-profile/transcript.txt",
+      "bytes": 1860,
+      "sha256": "40b65c481293e18038e68b337f954355f57c8c025629adc6827a46568dfa98f1"
+    },
+    {
+      "file": "host-health.json",
+      "bytes": 467,
+      "sha256": "7461214478fc5cc084e8a77584955d20b6c39551ccccbd9ce644770ef53393e7"
+    },
+    {
+      "file": "README.md",
+      "bytes": 7424,
+      "sha256": "aab30f5dae05efefe18b772d2d131258c9c012dc58fa49a9fa6cfeec05e6cad0"
+    },
+    {
+      "file": "regression-tests-transcript.txt",
+      "bytes": 1430,
+      "sha256": "f326f4834cfd864a04dcbaf7d19d218130fce9179c46c99268c0dcb77896330a"
+    },
+    {
+      "file": "regression-tests.json",
+      "bytes": 1818,
+      "sha256": "57967520972841082d007a0a6ea1b3e8c625cf981772a068c60cdb86929aba9c"
+    }
+  ]
+}

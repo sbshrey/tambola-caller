@@ -1,0 +1,74 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "5.798",
+    "timestamp": "2026-09-26T22:18:02.419Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+    "tests": "8",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "15.283",
+    "timestamp": "2026-09-26T22:18:08.224Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "10.811",
+    "timestamp": "2026-09-26T22:18:23.509Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+    "tests": "13",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "27.399",
+    "timestamp": "2026-09-26T22:18:34.324Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+    "tests": "6",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "13.294",
+    "timestamp": "2026-09-26T22:19:01.738Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.HttpTest",
+    "tests": "7",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "15.224",
+    "timestamp": "2026-09-26T22:19:15.039Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "5.737",
+    "timestamp": "2026-09-26T22:19:30.275Z"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+    "tests": "9",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "153.478",
+    "timestamp": "2026-09-26T22:19:36.028Z"
+  }
+]
