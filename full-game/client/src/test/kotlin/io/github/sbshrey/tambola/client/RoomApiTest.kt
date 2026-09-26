@@ -12,6 +12,31 @@ import org.junit.Test
 import java.util.UUID
 
 class RoomApiTest {
+    @Test fun `HTTP date anchors server time even on cooldown rejection and ignores malformed dates`() = runBlocking {
+        var date = "Sat, 26 Sep 2026 20:54:43 GMT"
+        var rejected = false
+        val engine = MockEngine {
+            val headers = headersOf(HttpHeaders.Date, date)
+            if (rejected) respond(WireJson.encodeToString(ApiError("refill_wait", "Wait.")), HttpStatusCode.TooManyRequests, headers)
+            else respond(WireJson.encodeToString(WalletView(0, 2, 0)), HttpStatusCode.OK, headers)
+        }
+        val api = HttpRoomApi("https://rooms.example", client = HttpClient(engine))
+        assertNull(api.serverTime)
+        api.wallet("private-token")
+        val first = requireNotNull(api.serverTime)
+        assertEquals(1790456083000L, first.epochMillis)
+        assertEquals(first.epochMillis + 1200, first.currentTimeMillis(first.receivedNanos + 1_200_000_000L))
+        date = "Sat, 26 Sep 2026 20:54:45 GMT"; rejected = true
+        try { api.refill("private-token", RefillRequest(UUID.randomUUID().toString())); fail() }
+        catch (error: RoomApiFailure) { assertEquals("refill_wait", error.code) }
+        val fresh = requireNotNull(api.serverTime)
+        assertEquals(first.epochMillis + 2000, fresh.epochMillis)
+        date = "invalid"; rejected = false
+        api.wallet("private-token")
+        assertEquals(fresh, api.serverTime)
+        api.close()
+    }
+
     @Test fun `wallet refill and purchase use authenticated routes with exact retry identity`() = runBlocking {
         val match = MatchRequest(UUID.randomUUID().toString(), 6)
         val refill = RefillRequest(UUID.randomUUID().toString())

@@ -33,6 +33,8 @@ data class OnlineUiState(
     val playerId: String? = null,
     val room: RoomView? = null,
     val wallet: WalletView? = null,
+    val preferredTickets: Int = 3,
+    val serverTime: ServerTime? = null,
     val marks: Map<String, Set<Int>> = emptyMap(),
     val history: List<RoomView> = emptyList(),
     val badges: BadgeProgress = BadgeProgress(),
@@ -78,7 +80,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 restored?.room?.validateFor(restored.credentials.playerId)
                 restored?.wallet?.validate()
                 restored?.deviceIdentity?.validate()
-                saved = restored?.acceptWallet(restored.room?.wallet)
+                saved = restored?.acceptWallet(restored.room?.wallet)?.let { it.copy(preferredTickets = it.ticketPreference()) }
                 publish()
             } catch (_: Exception) {
                 mutable.update { it.copy(storageFailure = true, error = UiMessage(R.string.error_online_restore)) }
@@ -92,6 +94,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val value = saved
         mutable.update { it.copy(name = value?.displayName, avatar = value?.avatar ?: 0, playerId = value?.credentials?.playerId,
             room = value?.room, wallet = value?.wallet, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
+            preferredTickets = value?.ticketPreference() ?: 3, serverTime = api?.serverTime,
             badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null,
             deletingProfile = value?.pending is PendingOperation.DeleteProfile,
             claimMessage = it.claimMessage?.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id },
@@ -169,8 +172,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 val avatar = Random.nextInt(io.github.sbshrey.tambola.domain.AVATAR_COUNT)
                 val credentials = api.guest(GuestRequest(name, avatar))
                 mutex.withLock {
-                    persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, name, avatar,
-                        pending = PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets))))
+                    persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, name, avatar)
+                        .withPending(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets))))
                 }
                 performPending()
             } catch (error: CancellationException) { throw error }
@@ -211,7 +214,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 if (pending is PendingOperation.DeleteProfile || pending == PendingOperation.Logout) walletJob?.join()
                 if (pending is PendingOperation.DeleteProfile) sessions?.settleBeforeDeletion()
-                mutex.withLock { persist(saved!!.copy(pending = pending)) }; performPending()
+                mutex.withLock { persist(saved!!.withPending(pending)) }; performPending()
             }
             catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
@@ -408,6 +411,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     private fun showFailure(error: Exception) {
+        mutable.update { it.copy(serverTime = api?.serverTime) }
         if (error is RoomApiFailure && error.code in setOf("no_valid_claim", "claim_window_closed", "claim_round_changed", "invalid_claim_marks", "invalid_claim_selection")) {
             val resource = when (error.code) {
                 "claim_window_closed", "claim_round_changed" -> R.string.play_claim_late

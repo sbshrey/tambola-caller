@@ -23,6 +23,20 @@ tasks.test {
     environment("TAMBOLA_DATABASE_PASSWORD", System.getenv("TAMBOLA_TEST_DATABASE_PASSWORD") ?: "")
 }
 
+// Explicit native/real-PostgreSQL refill fixture; never packaged into the service.
+tasks.register<JavaExec>("coinRefillAndroid") {
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("io.github.sbshrey.tambola.server.CoinRefillAndroid")
+    workingDir = rootProject.projectDir
+    maxHeapSize = "512m"
+    jvmArgs("-XX:ActiveProcessorCount=4")
+    timeout.set(Duration.ofMinutes(4))
+    environment("TAMBOLA_DATABASE_URL", System.getenv("TAMBOLA_TEST_DATABASE_URL") ?: "")
+    environment("TAMBOLA_DATABASE_USER", System.getenv("TAMBOLA_TEST_DATABASE_USER") ?: "")
+    environment("TAMBOLA_DATABASE_PASSWORD", System.getenv("TAMBOLA_TEST_DATABASE_PASSWORD") ?: "")
+}
+
 // Opt-in real-process capacity fixture. Never part of the ordinary unit-test task.
 tasks.register<JavaExec>("loadTest") {
     dependsOn(tasks.testClasses, tasks.installDist)

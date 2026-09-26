@@ -9,6 +9,8 @@ let commandArmed = false;
 let commandsDropped = 0;
 let matchArmed = false;
 let matchesDropped = 0;
+let refillArmed = false;
+let refillsDropped = 0;
 let sessionArmed = false;
 let sessionsDropped = 0;
 let rejectWallet = false;
@@ -24,10 +26,11 @@ const proxy = http.createServer((request, response) => {
     const command = commandArmed && request.method === 'POST' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/commands$/.test(request.url);
     const match = matchArmed && request.method === 'POST' && request.url === '/v1/matches';
     const session = sessionArmed && request.method === 'POST' && request.url === '/v1/guests/me/session';
-    if ((deletion || command || match || session) && result.statusCode === 200) {
+    const refill = refillArmed && request.method === 'POST' && request.url === '/v1/wallet/refill';
+    if ((deletion || command || match || session || refill) && result.statusCode === 200) {
       // The upstream transaction has committed; discard its entire response before disconnecting.
       result.resume();
-      result.once('end', () => { if (deletion) dropped++; else if (command) commandsDropped++; else if (match) matchesDropped++; else sessionsDropped++; response.destroy(); });
+      result.once('end', () => { if (deletion) dropped++; else if (command) commandsDropped++; else if (match) matchesDropped++; else if (refill) refillsDropped++; else sessionsDropped++; response.destroy(); });
     } else {
       response.writeHead(result.statusCode, result.headers);
       result.pipe(response);
@@ -64,6 +67,11 @@ const control = http.createServer((request, response) => {
     matchArmed = true;
   } else if (request.method === 'POST' && request.url === '/allow-matches') {
     matchArmed = false;
+  } else if (request.method === 'POST' && request.url === '/arm-refill-drop') {
+    if (refillArmed) { response.writeHead(409); response.end(); return; }
+    refillArmed = true;
+  } else if (request.method === 'POST' && request.url === '/allow-refills') {
+    refillArmed = false;
   } else if (request.method === 'POST' && request.url === '/arm-session-drop') {
     if (sessionArmed) { response.writeHead(409); response.end(); return; }
     sessionArmed = true;
@@ -75,7 +83,7 @@ const control = http.createServer((request, response) => {
     response.writeHead(404); response.end(); return;
   }
   response.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
-  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, matchArmed, matchesDropped, sessionArmed, sessionsDropped, rejectWallet }));
+  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, matchArmed, matchesDropped, refillArmed, refillsDropped, sessionArmed, sessionsDropped, rejectWallet }));
 });
 for (const server of [proxy, control]) server.on('error', error => { console.error(`Fixture listener failed: ${error.code}`); process.exit(1); });
 proxy.listen(8080, '127.0.0.1', () => console.log('Test proxy listening on loopback 8080; upstream 8081.'));

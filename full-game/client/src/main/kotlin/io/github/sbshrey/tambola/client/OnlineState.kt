@@ -29,9 +29,19 @@ import java.security.MessageDigest
     val badges: BadgeProgress = BadgeProgress(),
     val wallet: WalletView? = null,
     val deviceIdentity: DeviceIdentity? = null,
+    val preferredTickets: Int? = null,
 ) {
+    init { require(preferredTickets == null || preferredTickets in 1..6) }
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }
+
+/** Older profiles recover their choice from the purchase or table they already own. */
+fun OnlineSaved.ticketPreference(): Int = (pending as? PendingOperation.Match)?.request?.tickets
+    ?: preferredTickets ?: room?.coins?.ownTickets?.takeIf { it in 1..6 } ?: 3
+
+/** Persist the confirmed quantity alongside the exact retryable purchase, never its affordable preview. */
+fun OnlineSaved.withPending(operation: PendingOperation): OnlineSaved = copy(pending = operation,
+    preferredTickets = (operation as? PendingOperation.Match)?.request?.tickets ?: ticketPreference())
 
 data class AcceptedRoom(val saved: OnlineSaved, val announcement: Int?, val liveAwards: Boolean = false)
 

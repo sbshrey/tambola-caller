@@ -203,11 +203,15 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             assertEquals(3300L, balance())
             assertEquals(6000L, balance() + runBlocking { peers.sumOf { api.wallet(it.token).balance } })
             report.put("finishedCalls", result.round!!.called.size).put("settledWinnings", 2400).put("finalBalance", 3300)
+            assertTrue(node("buy-tickets-6").isSelected)
+            assertTrue(textOf(node("coin-play")).contains("600"))
+            report.put("rememberedSixTickets", true)
             device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
             tap("buy-tickets-3"); tap("coin-play"); node("cancel-match")
             assertEquals(3000L, balance())
             tap("cancel-match"); node("coin-play")
             until { balance() == 3300L }
+            assertTrue(node("buy-tickets-3").isSelected)
             report.put("newRoundPurchasedAndRefunded", true).put("completed", true)
             checkpoint("passed")
     }

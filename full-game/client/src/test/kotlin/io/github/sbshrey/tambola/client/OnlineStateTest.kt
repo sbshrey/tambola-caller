@@ -10,6 +10,32 @@ import java.util.Random
 import java.util.UUID
 
 class OnlineStateTest {
+    @Test fun `confirmed ticket choice survives completion cancellation wallet changes and reload`() {
+        val purchase = PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), 6))
+        val confirmed = saved().withPending(purchase)
+        val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(confirmed))
+        assertEquals(purchase, restored.pending)
+        assertEquals(6, restored.ticketPreference())
+        val lowWallet = restored.copy(pending = null, room = null).acceptWallet(WalletView(230, 4, 0))
+        assertEquals(6, lowWallet.ticketPreference())
+        assertEquals(6, lowWallet.withPending(PendingOperation.Refill(RefillRequest(UUID.randomUUID().toString()))).ticketPreference())
+        val smaller = lowWallet.withPending(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), 2)))
+        assertEquals(2, smaller.copy(pending = null).ticketPreference())
+        assertThrows(IllegalArgumentException::class.java) { saved().copy(preferredTickets = 7) }
+    }
+
+    @Test fun `legacy profiles infer only owned coin tickets or exact pending purchase`() {
+        val old = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(saved()))
+        assertNull(old.preferredTickets)
+        assertEquals(3, old.ticketPreference())
+        val table = old.copy(room = view().copy(coins = CoinTableView(8, 800, CoinPool(8).prizes, 5, null)))
+        assertEquals(5, table.ticketPreference())
+        val leaving = table.withPending(PendingOperation.Command("ABCD2345", CommandRequest(UUID.randomUUID().toString(), 1, RoomAction.Leave)))
+        assertEquals(5, leaving.copy(room = null, pending = null).ticketPreference())
+        val pending = PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), 2))
+        assertEquals(2, table.copy(pending = pending).ticketPreference())
+    }
+
     @Test fun `stale claim retries only the same ticket prize marks round and call`() {
         var game = Round.create(players, round.settings.copy(manualClaims = true), Random(44)).start()
         repeat(30) { game = game.draw() }

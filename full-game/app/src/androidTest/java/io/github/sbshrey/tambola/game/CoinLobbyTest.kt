@@ -12,6 +12,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewModelProvider
 import io.github.sbshrey.tambola.domain.*
+import io.github.sbshrey.tambola.client.ServerTime
 import io.github.sbshrey.tambola.game.online.*
 import io.github.sbshrey.tambola.game.ui.*
 import io.github.sbshrey.tambola.protocol.*
@@ -100,5 +101,56 @@ class CoinLobbyTest {
         compose.onNodeWithTag("match-countdown").assertTextEquals(words(R.string.coin_starting))
         compose.runOnIdle { room = room.copy(serverTime = 20_000, coins = room.coins!!.copy(startsAt = 23_000)) }
         compose.onNodeWithTag("match-countdown").assertTextEquals(words(R.string.coin_starts, 3L))
+    }
+
+    @Test fun replayRetainsChoiceAcrossRemountAndOffersOnlyAffordableTickets() {
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        var shown by mutableStateOf(true)
+        var state by mutableStateOf(OnlineUiState(loading = false, available = true, name = "You", playerId = "a",
+            room = finished(), preferredTickets = 6, wallet = WalletView(1500, 1, 0)))
+        var purchased = 0
+        compose.setContent { TambolaTheme { if (shown) CoinLobby(state, model, { purchased = it }, {}, {}) } }
+        compose.onNodeWithTag("buy-tickets-6").performScrollTo().assertIsSelected()
+        compose.runOnIdle { shown = false }
+        compose.runOnIdle { shown = true }
+        compose.onNodeWithTag("buy-tickets-6").performScrollTo().assertIsSelected()
+        compose.runOnIdle { state = state.copy(wallet = WalletView(230, 2, 0)) }
+        compose.onNodeWithTag("buy-tickets-2").assertIsSelected().assertIsEnabled()
+        compose.onNodeWithTag("buy-tickets-3").assertIsNotEnabled()
+        compose.onNodeWithTag("buy-tickets-6").assertIsNotEnabled()
+        val words = GameText(compose.activity.resources)
+        compose.onNodeWithTag("coin-play").performScrollTo().assertTextEquals(words(R.string.coin_play_again, 200L)).performClick()
+        assertEquals(2, purchased)
+        captureTestScreen("coin-affordable-replay")
+        compose.onNodeWithTag("buy-tickets-1").performScrollTo().performClick()
+        compose.runOnIdle { state = state.copy(wallet = WalletView(500, 3, 0)) }
+        compose.onNodeWithTag("buy-tickets-1").assertIsSelected()
+        compose.onNodeWithTag("buy-tickets-5").assertIsEnabled()
+        compose.onNodeWithTag("buy-tickets-6").assertIsNotEnabled()
+    }
+
+    @Test fun refillUsesFreshServerClockAndRemountDoesNotRestartCooldown() {
+        var shown by mutableStateOf(true)
+        // Deliberately nowhere near the device wall clock or the old finished-table timestamp.
+        val clock = ServerTime(500_000, System.nanoTime())
+        var collected = 0
+        compose.setContent { TambolaTheme { if (shown) CoinRefill(clock, 502_000, true) { collected++ } } }
+        compose.onNodeWithTag("coin-refill").assertIsNotEnabled()
+        compose.runOnIdle { shown = false }
+        SystemClock.sleep(2100)
+        compose.runOnIdle { shown = true }
+        compose.onNodeWithTag("coin-refill").assertIsEnabled().performClick()
+        assertEquals(1, collected)
+    }
+
+    @Test fun brokeWalletShowsFreeCoinsInsteadOfAnyPurchase() {
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        val state = OnlineUiState(loading = false, available = true, name = "You", preferredTickets = 6,
+            room = finished(), wallet = WalletView(99, 2, 0), serverTime = ServerTime(500_000, System.nanoTime()))
+        compose.setContent { TambolaTheme { CoinLobby(state, model, { fail("Must collect coins before buying") }, {}, {}) } }
+        compose.onNodeWithTag("coin-play").assertDoesNotExist()
+        compose.onNodeWithTag("coin-refill").performScrollTo().assertIsEnabled()
+        (1..6).forEach { compose.onNodeWithTag("buy-tickets-$it").assertIsNotEnabled().assertIsNotSelected() }
+        captureTestScreen("coin-free-refill")
     }
 }

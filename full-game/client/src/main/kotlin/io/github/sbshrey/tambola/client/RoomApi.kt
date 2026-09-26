@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.io.readByteArray
 import kotlinx.serialization.encodeToString
 import java.net.URI
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 const val MAX_RESPONSE_BYTES = 524_288
@@ -36,6 +38,7 @@ fun checkedEndpoint(value: String, allowLocalHttp: Boolean = false): String {
 }
 
 interface RoomApi : AutoCloseable {
+    val serverTime: ServerTime? get() = null
     suspend fun guest(request: GuestRequest): GuestCredentials
     suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment
     suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession
@@ -54,6 +57,8 @@ interface RoomApi : AutoCloseable {
 class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     private val client: HttpClient = roomHttpClient()) : RoomApi {
     private val base = checkedEndpoint(endpoint, allowLocalHttp)
+    @Volatile override var serverTime: ServerTime? = null
+        private set
     private fun roomPath(code: String): String {
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
         return "/v1/rooms/$code"
@@ -64,6 +69,10 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
             token?.let { bearerAuth(it) }
             if (body != null) { contentType(ContentType.Application.Json); setBody(body) }
         }.execute { response ->
+            response.headers[HttpHeaders.Date]?.let { date ->
+                runCatching { ZonedDateTime.parse(date, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant().toEpochMilli() }
+                    .getOrNull()?.takeIf { it >= 0 }?.let { serverTime = ServerTime(it, System.nanoTime()) }
+            }
             if ((response.contentLength() ?: 0) > MAX_RESPONSE_BYTES) throw InvalidRoomResponse()
             val bytes = response.bodyAsChannel().readRemaining((MAX_RESPONSE_BYTES + 1).toLong()).readByteArray()
             if (bytes.size > MAX_RESPONSE_BYTES) throw InvalidRoomResponse()

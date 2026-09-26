@@ -20,6 +20,8 @@ import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.online.*
 import io.github.sbshrey.tambola.game.presentation.ownCoinWins
+import io.github.sbshrey.tambola.game.presentation.affordableTickets
+import io.github.sbshrey.tambola.client.ServerTime
 import io.github.sbshrey.tambola.protocol.*
 
 private val CoinGold = Color(0xFFF4C879)
@@ -33,12 +35,13 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     val finished = room?.phase == RoomPhase.FINISHED
     val active = room?.phase == RoomPhase.ACTIVE
     val enabled = !state.loading && !state.busy && !state.pending && !state.storageFailure && !state.sessionExpired && state.available
-    var tickets by rememberSaveable { mutableIntStateOf(3) }
+    var chosenTickets by rememberSaveable(state.playerId, state.preferredTickets) { mutableIntStateOf(state.preferredTickets) }
     var profile by remember { mutableStateOf(false) }
     var delete by remember { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
     var gameData by remember { mutableStateOf(false) }
     val balance = state.wallet?.balance ?: if (state.name == null) COIN_STARTER_BALANCE else null
+    val tickets = affordableTickets(chosenTickets, balance)
     val cost = tickets * COIN_TICKET_PRICE
     Surface(Modifier.fillMaxSize().testTag("coin-lobby"), color = Color(0xFF0B352E), contentColor = Ivory) {
       BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding()) {
@@ -101,10 +104,12 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                               (1..6).toList().chunked(columns).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 row.forEach { count ->
                                     val selected = tickets == count
-                                    Surface(onClick = { tickets = count }, enabled = enabled, shape = RoundedCornerShape(13.dp),
-                                        color = if (selected) Color(0xFF21634D) else Color.White, contentColor = if (selected) Color.White else Ink,
+                                    val affordable = balance == null || balance >= count * COIN_TICKET_PRICE
+                                    Surface(onClick = { chosenTickets = count }, enabled = enabled && affordable, shape = RoundedCornerShape(13.dp),
+                                        color = if (selected && affordable) Color(0xFF21634D) else Color.White,
+                                        contentColor = if (!affordable) Ink.copy(alpha = .38f) else if (selected) Color.White else Ink,
                                         modifier = Modifier.weight(1f).heightIn(min = 52.dp).testTag("buy-tickets-$count")
-                                            .semantics { this.selected = selected; contentDescription = words(R.string.coin_choose_count, count) }) {
+                                            .semantics { this.selected = selected && affordable; contentDescription = words(R.string.coin_choose_count, count) }) {
                                         Box(contentAlignment = Alignment.Center) { Text("$count", fontSize = 22.sp, fontWeight = FontWeight.Black) }
                                     }
                                 }
@@ -112,7 +117,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             }
                         }
                         if (balance != null && balance < COIN_TICKET_PRICE) {
-                            CoinRefill(room, state.wallet?.refillAfter, enabled, model::refill)
+                            CoinRefill(state.serverTime, state.wallet?.refillAfter, enabled, model::refill)
                         } else {
                             Button(onClick = { play(tickets) }, enabled = enabled && (balance == null || balance >= cost),
                                 colors = ButtonDefaults.buttonColors(containerColor = CoinGold, contentColor = Ink),
@@ -203,9 +208,11 @@ internal fun MatchCountdown(room: RoomView) {
 }
 
 @Composable
-private fun CoinRefill(room: RoomView?, refillAfter: Long?, enabled: Boolean, refill: () -> Unit) {
+internal fun CoinRefill(serverTime: ServerTime?, refillAfter: Long?, enabled: Boolean, refill: () -> Unit) {
     val words = gameText()
-    val seconds by countdownSeconds(remainingCoinTime(refillAfter, room?.serverTime, room?.roomId))
+    // A finished room can be hours old. Anchor to the fresh HTTP clock on each mount/update.
+    val reference = remember(serverTime, refillAfter) { serverTime?.currentTimeMillis() ?: System.currentTimeMillis() }
+    val seconds by countdownSeconds(remainingCoinTime(refillAfter, reference, null))
     Button(onClick = refill, enabled = enabled && seconds == 0L,
         modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).testTag("coin-refill")) {
         Text(if (seconds > 0) words(R.string.coin_refill_timer, seconds / 60, seconds % 60) else words(R.string.coin_collect))
