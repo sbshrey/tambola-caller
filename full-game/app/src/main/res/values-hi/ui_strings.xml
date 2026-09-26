@@ -131,7 +131,7 @@
     <string name="ui_retry_safely_to_recover_the_original_result_other">"मूल नतीजा पाने के लिए सुरक्षित रूप से फिर कोशिश करें। इस कार्रवाई की पुष्टि होने तक दूसरे बदलाव रुकेंगे।"</string>
     <string name="ui_checking">"जाँच रहे हैं…"</string>
     <string name="ui_retry_pending_action">"बाकी कार्रवाई फिर आज़माएँ"</string>
-    <string name="ui_your_online_session_has_expired">"आपके ऑनलाइन सत्र की अवधि खत्म हो गई है।"</string>
+    <string name="ui_your_online_session_has_expired">"आपका ऑनलाइन सत्र अब सक्रिय नहीं है।"</string>
     <string name="ui_your_saved_online_data_needs_attention">"आपके सहेजे गए ऑनलाइन डेटा में समस्या है।"</string>
     <string name="ui_resetting_removes_the_online_profile_cached_tickets_online">"रीसेट करने पर इस डिवाइस से ऑनलाइन प्रोफ़ाइल, कैश किए टिकट, ऑनलाइन इतिहास और ऑनलाइन बैज हटेंगे। ऑफ़लाइन दौर उपलब्ध रहेंगे। नई प्रोफ़ाइल से पुरानी प्रोफ़ाइल के टिकट वापस नहीं मिलेंगे।"</string>
     <string name="ui_reset_online_data">"ऑनलाइन डेटा रीसेट करें"</string>
@@ -170,7 +170,7 @@
     <string name="ui_pts_n">"%1$s · %2$s अंक\n%3$s"</string>
     <string name="ui_ties_on_the_same_call_share_full_points">"एक ही पुकार पर जीतने वाले सभी खिलाड़ियों को पूरे अंक मिलते हैं। तैयार होने का मतलब है कि आप इन नियमों से सहमत हैं। नियम बदलने पर सभी को फिर तैयार होना होगा।"</string>
     <string name="ui_edit_room_rules">"रूम के नियम बदलें"</string>
-    <string name="ui_lock_room">"रूम बंद करें"</string>
+    <string name="ui_lock_room">"रूम लॉक करें"</string>
     <string name="ui_prevent_new_players_from_joining">"नए खिलाड़ियों को जुड़ने से रोकें।"</string>
     <string name="ui_the_room_continues_when_you_leave_the_app">"ऐप छोड़ने पर भी रूम में खेल जारी रहता है। मेज़बान दूर रहे तो कोई दूसरा जुड़ा हुआ खिलाड़ी मेज़बान बन जाता है। सभी खिलाड़ी फिर जुड़कर अपने टिकट देख सकते हैं।"</string>
     <string name="ui_leave_room">"रूम छोड़ें"</string>

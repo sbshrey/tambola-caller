@@ -131,7 +131,7 @@
     <string name="ui_retry_safely_to_recover_the_original_result_other">"Retry safely to recover the original result. Other changes wait until this action is resolved."</string>
     <string name="ui_checking">"Checking…"</string>
     <string name="ui_retry_pending_action">"Retry pending action"</string>
-    <string name="ui_your_online_session_has_expired">"Your online session has expired."</string>
+    <string name="ui_your_online_session_has_expired">"Your online session is no longer active."</string>
     <string name="ui_your_saved_online_data_needs_attention">"Your saved online data needs attention."</string>
     <string name="ui_resetting_removes_the_online_profile_cached_tickets_online">"Resetting removes the online profile, cached tickets, online history and online badges from this device. Offline rounds stay available. A new profile cannot reclaim the old profile\'s tickets."</string>
     <string name="ui_reset_online_data">"Reset online data"</string>
