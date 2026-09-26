@@ -141,7 +141,7 @@ internal fun ClaimArena(
     }
     hand.tickets.firstOrNull { it.id == claimTicketId }?.let { ticket ->
         Dialog(onDismissRequest = { claimTicketId = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-          Surface(Modifier.fillMaxWidth(.9f).widthIn(max = 640.dp), shape = RoundedCornerShape(20.dp), tonalElevation = 6.dp) {
+          Surface(Modifier.fillMaxWidth(.9f).widthIn(max = 640.dp).semantics { testTagsAsResourceId = true }, shape = RoundedCornerShape(20.dp), tonalElevation = 6.dp) {
            BoxWithConstraints(Modifier.padding(16.dp)) {
             val columns = if (maxWidth > 420.dp) 3 else 2
             Column {

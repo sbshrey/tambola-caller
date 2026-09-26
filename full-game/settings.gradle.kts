@@ -5,4 +5,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "TambolaTogether"
 include(":domain", ":protocol", ":client", ":server")
-if (!providers.gradleProperty("serverOnly").map(String::toBoolean).getOrElse(false)) include(":app")
+if (!providers.gradleProperty("serverOnly").map(String::toBoolean).getOrElse(false)) {
+    include(":app")
+    if (providers.gradleProperty("tambolaBenchmarks").map(String::toBoolean).getOrElse(false)) include(":macrobenchmark")
+}

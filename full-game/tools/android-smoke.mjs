@@ -12,6 +12,7 @@ const lan = args.includes('--lan');
 const faultProxy = args.includes('--fault-proxy');
 const animations = args.includes('--animations');
 const idleGuard = args.includes('--idle-guard');
+const benchmark = args.includes('--benchmark');
 function option(name, fallback) {
   const index = args.indexOf(name);
   return index < 0 ? fallback : args[index + 1];
@@ -21,7 +22,9 @@ const label = option('--label', online ? 'android-online-smoke' : 'android-offli
 const selectedClass = option('--class', undefined);
 assert.match(serial, /^emulator-\d+$/);
 assert.match(label, /^[a-z0-9-]+$/);
-if (selectedClass) assert.match(selectedClass, /^io\.github\.sbshrey\.tambola\.game\.[A-Za-z0-9_.#]+$/);
+if (selectedClass) assert.match(selectedClass, /^io\.github\.sbshrey\.tambola\.(game|benchmark)\.[A-Za-z0-9_.#]+$/);
+if (benchmark) assert.ok(selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.') && !online && !faultProxy && !idleGuard);
+else assert.ok(!selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.'), 'Use --benchmark for the separate optimized-app driver');
 if (idleGuard) assert.equal(selectedClass, 'io.github.sbshrey.tambola.game.CoinIdleTest');
 if (lan) assert.ok(!online && selectedClass, '--lan requires an explicit test class and no loopback fixture');
 const sdk = process.env.ANDROID_SDK_ROOT || (process.env.LOCALAPPDATA && resolve(process.env.LOCALAPPDATA, 'Android/Sdk'));
@@ -56,9 +59,10 @@ try {
   if (lan) command.push('-e', 'tambolaLan', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');
   if (idleGuard) command.push('-e', 'tambolaIdleGuard', 'true');
+  if (benchmark) command.push('-e', 'tambolaBenchmark', 'true', '-e', 'androidx.benchmark.suppressErrors', 'EMULATOR');
   if (selectedClass) command.push('-e', 'class', selectedClass);
   else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest,io.github.sbshrey.tambola.game.LongSessionTest,io.github.sbshrey.tambola.game.CoinIdleTest');
-  command.push('io.github.sbshrey.tambola.game.test/androidx.test.runner.AndroidJUnitRunner');
+  command.push(`${benchmark ? 'io.github.sbshrey.tambola.benchmark' : 'io.github.sbshrey.tambola.game.test'}/androidx.test.runner.AndroidJUnitRunner`);
   const child = spawn(adb, ['-s', serial, ...command], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
   const append = chunk => { output += chunk.toString(); process.stdout.write(chunk); };
   child.stdout.on('data', append); child.stderr.on('data', append);
@@ -74,6 +78,32 @@ try {
   for (const [name, value] of previous) assert.equal(run('shell', 'settings', 'get', 'global', name), value, `Restore ${name}`);
   await mkdir(resolve(root, '.test-workspace'), { recursive: true });
   await writeFile(resolve(root, '.test-workspace', `${label}.txt`), output);
+  if (benchmark) {
+    // Macrobenchmark clears its shared output directory at the next invocation.
+    const destination = resolve(root, '.test-workspace', `${label}-benchmark`);
+    await mkdir(destination, { recursive: true });
+    const copied = spawnSync(adb, ['-s', serial, 'pull', '/sdcard/Android/media/io.github.sbshrey.tambola.benchmark', destination],
+      { encoding: 'utf8', windowsHide: true, timeout: 60_000 });
+    await writeFile(resolve(destination, 'collection.txt'), `${copied.stdout || ''}${copied.stderr || ''}`);
+    assert.equal(copied.status, 0, 'Collect benchmark reports before another invocation');
+    if (selectedClass?.endsWith('#realCoinRound')) {
+      for (const name of ['coin-release-journey.json', 'coin-release-results.png', 'coin-release-failure.png', 'coin-release-failure.xml']) {
+        // exec-out does not reliably propagate a missing remote file's exit status.
+        const exists = spawnSync(adb, ['-s', serial, 'shell', 'run-as', 'io.github.sbshrey.tambola.benchmark', 'test', '-f', `files/${name}`],
+          { windowsHide: true, timeout: 30_000 });
+        if (exists.status !== 0) {
+          assert.notEqual(name, 'coin-release-journey.json', 'The journey must produce a safe cleanup report');
+          continue;
+        }
+        const file = spawnSync(adb, ['-s', serial, 'exec-out', 'run-as', 'io.github.sbshrey.tambola.benchmark', 'cat', `files/${name}`],
+          { windowsHide: true, timeout: 30_000, maxBuffer: 8 * 1024 * 1024 });
+        assert.equal(file.status, 0, `Collect ${name}`);
+        if (name.endsWith('.png')) assert.equal(file.stdout.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `Validate ${name}`);
+        if (name.endsWith('.json')) JSON.parse(file.stdout.toString('utf8'));
+        await writeFile(resolve(destination, name), file.stdout);
+      }
+    }
+  }
 }
 // Android's am instrument may exit zero despite JUnit failures.
 assert.equal(exitCode, 0, 'Instrumentation process failed');

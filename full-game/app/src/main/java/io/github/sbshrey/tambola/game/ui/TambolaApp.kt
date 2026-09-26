@@ -18,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +42,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
         onlineState.room?.roomId.takeIf { state.screen == Screen.ONLINE },
         invitation.revision.takeIf { state.screen == Screen.ONLINE },
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
-    Surface(Modifier.fillMaxSize().testTag("app-background"), color = MaterialTheme.colorScheme.background) {
+    Surface(Modifier.fillMaxSize().testTag("app-background").semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
         if (!state.loading && state.screen == Screen.GAME && state.round != null) {
             OfflineArena(state.round, state, model)
         } else if (!state.loading && state.screen == Screen.ONLINE && onlineState.room?.round != null &&

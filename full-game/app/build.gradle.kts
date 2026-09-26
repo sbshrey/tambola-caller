@@ -45,6 +45,15 @@ android {
             manifestPlaceholders["inviteHost"] = if (endpoint.isEmpty()) "disabled.invalid" else URI(endpoint).host.lowercase(Locale.ROOT)
             manifestPlaceholders["verifyInvites"] = endpoint.isNotEmpty().toString()
             isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isShrinkResources = true
+        }
+        create("lanRelease") {
+            initWith(getByName("release"))
+            matchingFallbacks += "release"
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            versionNameSuffix = "-wifi-optimized"
+            manifestPlaceholders["verifyInvites"] = "false"
         }
     }
     androidResources.noCompress += "wav"
@@ -54,8 +63,9 @@ android {
 kotlin { jvmToolchain(17) }
 kapt { arguments { arg("room.schemaLocation", "$projectDir/schemas") } }
 // Generic assemble/build tasks must not require a developer's private host CA.
-androidComponents.beforeVariants(androidComponents.selector().withBuildType("lan")) { variant ->
-    variant.enable = providers.gradleProperty("tambolaLanCa").isPresent
+androidComponents.beforeVariants { variant ->
+    if (variant.buildType in setOf("lan", "lanRelease"))
+        variant.enable = providers.gradleProperty("tambolaLanCa").isPresent
 }
 
 // Lint has its own tool classpath; root buildscript constraints do not reach it.
@@ -157,7 +167,7 @@ val prepareSounds = tasks.register<GeneratedGameAssets>("prepareSounds") {
     }
 }
 androidComponents.onVariants { variant ->
-    if (variant.buildType == "lan") variant.sources.res?.addGeneratedSourceDirectory(prepareLanTrust) { it.generatedRoot }
+    if (variant.buildType in setOf("lan", "lanRelease")) variant.sources.res?.addGeneratedSourceDirectory(prepareLanTrust) { it.generatedRoot }
     variant.sources.assets?.addGeneratedSourceDirectory(prepareVoices) { it.generatedRoot }
     variant.sources.assets?.addGeneratedSourceDirectory(prepareSounds) { it.generatedRoot }
 }
