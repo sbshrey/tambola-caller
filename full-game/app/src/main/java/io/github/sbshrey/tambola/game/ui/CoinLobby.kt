@@ -1,6 +1,5 @@
 package io.github.sbshrey.tambola.game.ui
 
-import android.os.SystemClock
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -10,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
@@ -21,28 +19,16 @@ import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.online.*
+import io.github.sbshrey.tambola.game.presentation.ownCoinWins
 import io.github.sbshrey.tambola.protocol.*
-import kotlinx.coroutines.delay
 
 private val CoinGold = Color(0xFFF4C879)
-
-/** A server timestamp plus elapsed time avoids jumps when the device clock changes. */
-@Composable
-internal fun serverNow(room: RoomView?): Long {
-    val anchor = remember(room?.roomId, room?.serverTime) { SystemClock.elapsedRealtime() }
-    var elapsed by remember(room?.roomId, room?.serverTime) { mutableLongStateOf(0) }
-    LaunchedEffect(room?.roomId, room?.serverTime) {
-        while (true) { elapsed = SystemClock.elapsedRealtime() - anchor; delay(200) }
-    }
-    return (room?.serverTime ?: remember { System.currentTimeMillis() }) + elapsed
-}
 
 @Composable
 fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit) {
     val words = gameText()
     val room = state.room
     val coins = room?.coins
-    val now = serverNow(room)
     val waiting = room?.phase == RoomPhase.LOBBY
     val finished = room?.phase == RoomPhase.FINISHED
     val active = room?.phase == RoomPhase.ACTIVE
@@ -70,9 +56,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
             val hero: @Composable () -> Unit = {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (waiting) {
-                        val seconds = (((coins?.startsAt ?: now) - now + 999) / 1000).coerceAtLeast(0)
-                        Text(if (seconds > 0) words(R.string.coin_starts, seconds) else words(R.string.coin_starting),
-                            fontSize = 28.sp, fontWeight = FontWeight.Black, modifier = Modifier.testTag("match-countdown"))
+                        MatchCountdown(room)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             room.members.take(8).forEach { member -> AvatarBadge(member.avatar, size = 40.dp) }
                         }
@@ -88,7 +72,11 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             Text(words(R.string.coin_won, coins?.settledWinnings ?: 0), color = CoinGold, fontSize = 28.sp, fontWeight = FontWeight.Black,
                                 modifier = Modifier.testTag("coin-winnings"))
                             if ((coins?.returnedCoins ?: 0) > 0) Text(words(R.string.coin_returned, coins!!.returnedCoins), fontSize = 13.sp, color = Color(0xFFB7D0C0))
-                            CoinPrizeGrid(coins?.prizes.orEmpty(), Modifier.fillMaxWidth(), room?.round?.awards.orEmpty())
+                            val ownWins = remember(coins?.prizes, room.round?.awards, room.round?.ownTickets) {
+                                ownCoinWins(coins?.prizes.orEmpty(), room.round?.awards.orEmpty(), room.round?.ownTickets.orEmpty().map { it.id }.toSet())
+                            }
+                            CoinPrizeGrid(ownWins.map { it.prize }, Modifier.fillMaxWidth(), awarded = ownWins.map { it.prize.prize }.toSet(),
+                                shared = ownWins.filter { it.shared }.map { it.prize.prize }.toSet())
                         } else Box(Modifier.fillMaxWidth().height(if (wide) 132.dp else 168.dp)) { GameNightArtwork() }
                     }
                 }
@@ -124,11 +112,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             }
                         }
                         if (balance != null && balance < COIN_TICKET_PRICE) {
-                            val seconds = (((state.wallet?.refillAfter ?: 0) - now + 999) / 1000).coerceAtLeast(0)
-                            Button(onClick = model::refill, enabled = enabled && seconds == 0L,
-                                modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).testTag("coin-refill")) {
-                                Text(if (seconds > 0) words(R.string.coin_refill_timer, seconds / 60, seconds % 60) else words(R.string.coin_collect))
-                            }
+                            CoinRefill(room, state.wallet?.refillAfter, enabled, model::refill)
                         } else {
                             Button(onClick = { play(tickets) }, enabled = enabled && (balance == null || balance >= cost),
                                 colors = ButtonDefaults.buttonColors(containerColor = CoinGold, contentColor = Ink),
@@ -178,14 +162,18 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
 }
 
 @Composable
-internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifier, awards: List<Award> = emptyList(), onDark: Boolean = true) {
+internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifier, awarded: Set<Prize> = emptySet(), shared: Set<Prize> = emptySet(), onDark: Boolean = true) {
     val words = gameText()
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         prizes.chunked(3).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             row.forEach { entry ->
-                Column(Modifier.weight(1f).background(Color.White.copy(alpha = .07f), RoundedCornerShape(12.dp)).padding(9.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text((if (awards.any { it.prize == entry.prize }) "✓ " else "") + words.prizeTitle(entry.prize), fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("${entry.coins}", color = if (onDark) CoinGold else MaterialTheme.colorScheme.primary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Column(Modifier.weight(1f).background(Color.White.copy(alpha = .07f), RoundedCornerShape(12.dp)).padding(9.dp)
+                    .testTag("coin-prize-${entry.prize.name}"), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text((if (entry.prize in awarded) "✓ " else "") + words.prizeTitle(entry.prize), fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("${entry.coins}", color = if (onDark) CoinGold else MaterialTheme.colorScheme.primary, fontSize = 18.sp, fontWeight = FontWeight.Bold,
+                        modifier = Modifier.testTag("coin-prize-value-${entry.prize.name}"))
+                    if (shared.isNotEmpty()) Text(if (entry.prize in shared) words(R.string.coin_shared) else "", fontSize = 10.sp, maxLines = 1,
+                        modifier = Modifier.testTag("coin-prize-share-${entry.prize.name}"))
                 }
             }
             repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
@@ -196,12 +184,30 @@ internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifie
 @Composable
 internal fun CoinCallClock(room: RoomView, connection: Connection, reconnect: () -> Unit) {
     val words = gameText()
-    val now = serverNow(room)
-    val remaining = ((room.nextDrawAt ?: now) - now).coerceAtLeast(0)
     if (connection != Connection.LIVE) TextButton(onClick = reconnect) { Text(words(R.string.play_reconnecting), fontSize = 11.sp) }
     else Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(if (remaining > 0) words(R.string.coin_next, (remaining + 999) / 1000) else words(R.string.coin_next_wait),
+        val remaining = remainingCoinTime(room.nextDrawAt, room.serverTime, room.roomId)
+        val seconds by countdownSeconds(remaining)
+        Text(if (seconds > 0) words(R.string.coin_next, seconds) else words(R.string.coin_next_wait),
             fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        LinearProgressIndicator(progress = { (remaining / 5000f).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = CoinGold)
+        LinearProgressIndicator(progress = { (remaining.value / 5000f).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = CoinGold)
+    }
+}
+
+@Composable
+internal fun MatchCountdown(room: RoomView) {
+    val words = gameText()
+    val seconds by countdownSeconds(remainingCoinTime(room.coins?.startsAt, room.serverTime, room.roomId))
+    Text(if (seconds > 0) words(R.string.coin_starts, seconds) else words(R.string.coin_starting),
+        fontSize = 28.sp, fontWeight = FontWeight.Black, modifier = Modifier.testTag("match-countdown"))
+}
+
+@Composable
+private fun CoinRefill(room: RoomView?, refillAfter: Long?, enabled: Boolean, refill: () -> Unit) {
+    val words = gameText()
+    val seconds by countdownSeconds(remainingCoinTime(refillAfter, room?.serverTime, room?.roomId))
+    Button(onClick = refill, enabled = enabled && seconds == 0L,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp).testTag("coin-refill")) {
+        Text(if (seconds > 0) words(R.string.coin_refill_timer, seconds / 60, seconds % 60) else words(R.string.coin_collect))
     }
 }

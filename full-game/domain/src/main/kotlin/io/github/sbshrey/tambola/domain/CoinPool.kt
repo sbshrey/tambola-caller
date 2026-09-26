@@ -8,6 +8,15 @@ const val COIN_STARTER_BALANCE = 1_500L
 @Serializable data class CoinPrize(val prize: Prize, val coins: Long)
 data class CoinAllocation(val key: String, val ticketId: String, val playerId: String, val coins: Long, val prize: Prize? = null)
 
+/** Shared by settlement and display. Remainders follow ticket ID, never player or arrival order. */
+fun coinShares(amount: Long, ticketIds: List<String>): Map<String, Long> {
+    require(amount >= 0 && ticketIds.isNotEmpty() && ticketIds.distinct().size == ticketIds.size)
+    val ordered = ticketIds.sorted()
+    val base = amount / ordered.size
+    val extra = amount % ordered.size
+    return ordered.mapIndexed { index, id -> id to base + if (index < extra) 1 else 0 }.toMap()
+}
+
 /** Immutable policy v1, fixed before any numbers are revealed. These coins have no cash value. */
 @Serializable
 data class CoinPool(val soldTickets: Int, val version: Int = 1) {
@@ -45,12 +54,9 @@ data class CoinPool(val soldTickets: Int, val version: Int = 1) {
     }
 
     private fun share(amount: Long, tickets: List<Ticket>, prefix: String, prize: Prize?): List<CoinAllocation> {
-        require(amount >= 0 && tickets.isNotEmpty())
-        val ordered = tickets.sortedBy { it.id }
-        val base = amount / ordered.size
-        val extra = amount % ordered.size
-        return ordered.mapIndexedNotNull { index, ticket ->
-            val value = base + if (index < extra) 1 else 0
+        val byId = tickets.associateBy { it.id }
+        return coinShares(amount, tickets.map { it.id }).mapNotNull { (id, value) ->
+            val ticket = byId.getValue(id)
             if (value == 0L) null else CoinAllocation("$prefix:${ticket.id}", ticket.id, ticket.playerId, value, prize)
         }
     }

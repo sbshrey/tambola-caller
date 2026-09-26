@@ -17,6 +17,7 @@
     <string name="coin_resume">अपने खेल में लौटें</string>
     <string name="coin_results">राउंड पूरा हुआ</string>
     <string name="coin_won">%1$d सिक्के जीते</string>
+    <string name="coin_shared">साझा इनाम</string>
     <string name="coin_returned">बचे हुए %1$d सिक्के वापस मिले</string>
     <string name="coin_free">मुफ़्त सिक्के · नकद मूल्य नहीं</string>
     <string name="coin_joining">आपके लिए खेल ढूँढ रहे हैं…</string>

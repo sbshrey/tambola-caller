@@ -17,6 +17,7 @@
     <string name="coin_resume">Back to your table</string>
     <string name="coin_results">Round complete</string>
     <string name="coin_won">%1$d coins won</string>
+    <string name="coin_shared">Shared prize</string>
     <string name="coin_returned">%1$d unclaimed coins returned</string>
     <string name="coin_free">Free coins · no cash value</string>
     <string name="coin_joining">Finding your table…</string>

@@ -183,7 +183,7 @@ internal fun ClaimArena(
     if (details) ArenaDialog(words(R.string.play_prizes), { details = false }) {
         if (table.coins != null) {
             Text(words(R.string.coin_pool, table.coins.pool))
-            CoinPrizeGrid(table.coins.prizes, awards = table.awards, onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
+            CoinPrizeGrid(table.coins.prizes, awarded = table.awards.map { it.prize }.toSet(), onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
             Text(words(R.string.coin_ties), style = MaterialTheme.typography.bodySmall)
             table.players.forEach { Text(words.playerLabel(it)) }
         } else {

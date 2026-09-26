@@ -11,6 +11,7 @@ const online = args.includes('--online');
 const lan = args.includes('--lan');
 const faultProxy = args.includes('--fault-proxy');
 const animations = args.includes('--animations');
+const idleGuard = args.includes('--idle-guard');
 function option(name, fallback) {
   const index = args.indexOf(name);
   return index < 0 ? fallback : args[index + 1];
@@ -21,6 +22,7 @@ const selectedClass = option('--class', undefined);
 assert.match(serial, /^emulator-\d+$/);
 assert.match(label, /^[a-z0-9-]+$/);
 if (selectedClass) assert.match(selectedClass, /^io\.github\.sbshrey\.tambola\.game\.[A-Za-z0-9_.#]+$/);
+if (idleGuard) assert.equal(selectedClass, 'io.github.sbshrey.tambola.game.CoinIdleTest');
 if (lan) assert.ok(!online && selectedClass, '--lan requires an explicit test class and no loopback fixture');
 const sdk = process.env.ANDROID_SDK_ROOT || (process.env.LOCALAPPDATA && resolve(process.env.LOCALAPPDATA, 'Android/Sdk'));
 assert.ok(sdk, 'Set ANDROID_SDK_ROOT');
@@ -53,8 +55,9 @@ try {
   if (online) command.push('-e', 'tambolaOnline', 'true');
   if (lan) command.push('-e', 'tambolaLan', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');
+  if (idleGuard) command.push('-e', 'tambolaIdleGuard', 'true');
   if (selectedClass) command.push('-e', 'class', selectedClass);
-  else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest,io.github.sbshrey.tambola.game.LongSessionTest');
+  else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest,io.github.sbshrey.tambola.game.LongSessionTest,io.github.sbshrey.tambola.game.CoinIdleTest');
   command.push('io.github.sbshrey.tambola.game.test/androidx.test.runner.AndroidJUnitRunner');
   const child = spawn(adb, ['-s', serial, ...command], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
   const append = chunk => { output += chunk.toString(); process.stdout.write(chunk); };
