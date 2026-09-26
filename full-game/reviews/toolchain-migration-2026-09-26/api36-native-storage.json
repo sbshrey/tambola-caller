@@ -1,0 +1,19 @@
+{
+  "recordedAtUtc": "2026-09-26T13:00:52.217460+00:00",
+  "api": "36",
+  "fingerprint": "google/sdk_gphone16k_x86_64/emu64xa16k:16/BE2A.250530.026.F3/13894323:userdebug/dev-keys",
+  "pageBytes": 16384,
+  "renderer": "skiagl",
+  "packages": {
+    "io.github.sbshrey.tambola.game": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+    "io.github.sbshrey.tambola.game.test": "81802f7c7cf0a09c6c57831605e3aa3f6b52b7ed3e76c48edf8a4c6e81d8af5c"
+  },
+  "passed": 6,
+  "skipped": 0,
+  "seconds": 118.369,
+  "scope": [
+    "four core gameplay methods",
+    "two native libraries explicitly loaded in 16KB process",
+    "40 close/reopen/create/delete cycles"
+  ]
+}

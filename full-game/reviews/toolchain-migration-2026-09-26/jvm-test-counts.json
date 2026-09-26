@@ -1,0 +1,29 @@
+{
+  "counts": {
+    "domain": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "client": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "server": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "app": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "note": "Domain/client/server reports retained from the fresh full migration run; app reports refreshed by the final clean Android build. Full-build transcript is the evidence for the earlier fresh 130-test run."
+}

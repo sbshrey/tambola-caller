@@ -1,0 +1,5 @@
+Preparing draw with a committed response deliberately dropped.
+draw: verified a new process, original pending identity, service reconciliation and preserved offline progress.
+Preparing delete with a committed response deliberately dropped.
+delete: verified a new process, original pending identity, service reconciliation and preserved offline progress.
+Selected cold-process cases passed; owned services stopped and device settings/mappings restored.

@@ -1,0 +1,19 @@
+{
+  "serial": "emulator-5586",
+  "api": "26",
+  "candidateSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "instrumentationSha256": "dcd8b9dbc7cb87c7add974ab6d6f80625008eaed6000d251c43389cc97381edc",
+  "glyphChecks": true,
+  "renderer": "platform-default",
+  "originalRenderer": "",
+  "cases": [
+    {
+      "name": "phone",
+      "size": "1080x1920",
+      "density": "420",
+      "font": "1.0",
+      "passed": true
+    }
+  ],
+  "restored": true
+}

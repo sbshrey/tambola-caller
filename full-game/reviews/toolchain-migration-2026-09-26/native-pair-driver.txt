@@ -1,0 +1,3 @@
+Native host created a room; independent guest UI is joining and readying.
+Both native UIs finished 90 calls with matching scores, awards and draw audit.
+Independent native pair passed; original settings restored and owned service stopped.

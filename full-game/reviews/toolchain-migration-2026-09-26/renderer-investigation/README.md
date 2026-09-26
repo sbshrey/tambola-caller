@@ -1,0 +1,11 @@
+# Closed preview investigation: no ticket-rendering defect established
+
+26 September 2026. **The original saved PNGs contain complete digits.** Full-screen previews appeared to lose leading strokes, but enlarged crops and direct bitmap pixel measurements disprove that interpretation. This directory retains the earlier comparison images; their geometry-test results are real, while the earlier visual-defect interpretation is withdrawn.
+
+The [pixel evidence and enlarged crops](../preview-verification/README.md) come from the unchanged clean alpha14 APK `49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891`. The six-ticket strip provides every number 1-90, with repeated samples of each digit. In the retained Hindi light and dark captures, each measured glyph has the same dark-ink count as its corresponding digit reference; the supposed incomplete 29, 51, 80, 84, 88 and 89 are complete in enlarged crops. Windows also decodes the original as an opaque 24-bit RGB image. A precise cause in the full-screen preview path has not been established.
+
+Renderer-property changes, a fresh emulator boot and alpha13 comparisons did not establish an application bug. Widening labels, resetting card identity, removing cell clips, changing numeric locale, disabling text overflow clipping and drawing vector glyphs were exploratory changes only. **All application-source experiments and diagnostic logging were removed.** No alternate renderer or special number artwork is shipped.
+
+The test helper now supports unique labels, an explicit APK comparison path and optional renderer selection while restoring the original emulator properties. New pixel checks compare actual ink from the saved bitmap, with candidate/test hashes and raw counts retained by `--glyph-checks`. They detect substantial missing strokes; they are not OCR, an exact typography comparison or physical-device acceptance.
+
+Earlier renderer matrices identify APK `9a0cce35e00f893418f495c15df1d52d1c792ed6597ae8f624fd90b770e4f042`, an incremental diagnostic-free rebuild. A subsequent clean build exactly reproduces `49344972...`. The API36/16KB comparison uses that clean candidate and passes 12 layouts plus four gameplay methods, explicit native loading and 40 storage lifecycle cycles. Final acceptance uses the clean candidate and updated instrumentation.

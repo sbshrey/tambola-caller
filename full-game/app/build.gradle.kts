@@ -1,12 +1,13 @@
 import java.security.MessageDigest
 import java.util.Locale
 import java.net.URI
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.OutputDirectory
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.legacy.kapt)
     alias(libs.plugins.kotlin.serialization)
 }
 android {
@@ -16,10 +17,9 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 13
-        versionName = "0.13.0-alpha13"
+        versionCode = 14
+        versionName = "0.14.0-alpha14"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations += listOf("en", "hi")
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
@@ -39,22 +39,41 @@ android {
             isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/voiceAssets"))
-    sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/soundAssets"))
     androidResources.noCompress += "wav"
+    androidResources.localeFilters += listOf("en", "hi")
     lint { abortOnError = true }
 }
 kotlin { jvmToolchain(17) }
 kapt { arguments { arg("room.schemaLocation", "$projectDir/schemas") } }
 
-val prepareVoices by tasks.registering(Sync::class) {
-    into(layout.buildDirectory.dir("generated/voiceAssets/voices"))
+// Lint has its own tool classpath; root buildscript constraints do not reach it.
+configurations.matching { it.name == "androidLintTool" }.configureEach {
+    listOf(
+        "org.apache.commons:commons-lang3:3.20.0",
+        "org.apache.httpcomponents:httpclient:4.5.14",
+        "org.bouncycastle:bcprov-jdk18on:1.85",
+        "org.bouncycastle:bcpkix-jdk18on:1.85",
+        "org.bouncycastle:bcutil-jdk18on:1.85",
+    ).forEach { coordinate ->
+        dependencyConstraints.add(project.dependencies.constraints.create(coordinate) {
+            because("Reviewed build-only advisory fixes; see BUILD_TOOL_REVIEW.md")
+        })
+    }
+}
+
+abstract class GeneratedGameAssets : Sync() {
+    @get:OutputDirectory abstract val generatedRoot: DirectoryProperty
+}
+
+val prepareVoices = tasks.register<GeneratedGameAssets>("prepareVoices") {
+    generatedRoot.set(layout.buildDirectory.dir("generated/voiceAssets"))
+    into(generatedRoot.dir("voices"))
     mapOf("en" to "../audio", "hi" to "../audio/hi", "hinglish" to "../audio/hinglish").forEach { (lang, path) ->
         from(rootProject.file(path)) { include("manifest.json", "numbers/*.mp3"); into(lang) }
     }
     doLast {
         listOf("en", "hi", "hinglish").forEach { lang ->
-            val folder = layout.buildDirectory.dir("generated/voiceAssets/voices/$lang").get().asFile
+            val folder = generatedRoot.dir("voices/$lang").get().asFile
             val manifest = groovy.json.JsonSlurper().parse(folder.resolve("manifest.json")) as Map<*, *>
             val clips = manifest["clips"] as Map<*, *>
             (1..90).forEach { number ->
@@ -67,9 +86,10 @@ val prepareVoices by tasks.registering(Sync::class) {
         }
     }
 }
-val prepareSounds by tasks.registering(Sync::class) {
+val prepareSounds = tasks.register<GeneratedGameAssets>("prepareSounds") {
     from(rootProject.file("media/sound")) { include("*.wav", "manifest.json") }
-    into(layout.buildDirectory.dir("generated/soundAssets/sound"))
+    generatedRoot.set(layout.buildDirectory.dir("generated/soundAssets"))
+    into(generatedRoot.dir("sound"))
     doLast {
         val folder = destinationDir
         val manifest = groovy.json.JsonSlurper().parse(folder.resolve("manifest.json")) as Map<*, *>
@@ -84,8 +104,16 @@ val prepareSounds by tasks.registering(Sync::class) {
         }
     }
 }
-tasks.named("preBuild") { dependsOn(prepareVoices, prepareSounds) }
+androidComponents.onVariants { variant ->
+    variant.sources.assets?.addGeneratedSourceDirectory(prepareVoices) { it.generatedRoot }
+    variant.sources.assets?.addGeneratedSourceDirectory(prepareSounds) { it.generatedRoot }
+}
 dependencies {
+    constraints {
+        add("kapt", "org.jetbrains.kotlin:kotlin-metadata-jvm:${libs.versions.kotlin.get()}") {
+            because("Room's metadata reader must support the selected Kotlin compiler; build-only constraint")
+        }
+    }
     implementation(libs.appcompat)
     implementation(project(":domain"))
     implementation(project(":protocol"))

@@ -1,0 +1,40 @@
+{
+  "serial": "emulator-5582",
+  "api": "30",
+  "candidateSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "instrumentationSha256": "dcd8b9dbc7cb87c7add974ab6d6f80625008eaed6000d251c43389cc97381edc",
+  "glyphChecks": true,
+  "renderer": "opengl",
+  "originalRenderer": "opengl",
+  "cases": [
+    {
+      "name": "small",
+      "size": "720x1280",
+      "density": "320",
+      "font": "1.0",
+      "passed": true
+    },
+    {
+      "name": "small-large-text",
+      "size": "720x1280",
+      "density": "320",
+      "font": "2.0",
+      "passed": true
+    },
+    {
+      "name": "phone",
+      "size": "1080x1920",
+      "density": "420",
+      "font": "1.0",
+      "passed": true
+    },
+    {
+      "name": "landscape",
+      "size": "1280x720",
+      "density": "320",
+      "font": "1.0",
+      "passed": true
+    }
+  ],
+  "restored": true
+}

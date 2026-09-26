@@ -1,0 +1,87 @@
+{
+  "screenshots": 48,
+  "pixelCheckedScreenshots": 16,
+  "glyphComparisons": 2736,
+  "checks": [
+    {
+      "path": "verified-layout-api30/landscape/arena-en-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 0.9888888888888889
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 0.9888888888888889
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-dark-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-light-6-glyphs.txt",
+      "glyphs": 171,
+      "minimumInkRatio": 1.0
+    }
+  ]
+}

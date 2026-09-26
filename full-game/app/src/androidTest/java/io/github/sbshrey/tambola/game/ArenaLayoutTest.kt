@@ -1,5 +1,11 @@
 package io.github.sbshrey.tambola.game
 
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import androidx.compose.ui.geometry.Rect
+import java.io.File
+import kotlin.math.ceil
+import kotlin.math.floor
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -66,9 +72,49 @@ class ArenaLayoutTest {
                     // does not flush theme/graphics transitions controlled by that clock.
                     compose.mainClock.advanceTimeBy(100)
                     compose.waitForIdle()
-                    captureTestScreen("arena-$language-${appearance.name.lowercase()}-$count")
+                    val screenshot = "arena-$language-${appearance.name.lowercase()}-$count"
+                    val values = model.state.value.round!!.tickets.flatMap { it.cells.filter { value -> value != 0 } }
+                    val glyphBounds = numbers.fetchSemanticsNodes().map { it.boundsInWindow }
+                    captureTestScreen(screenshot)
+                    if (count == 6) assertCompleteDigits(screenshot, values.zip(glyphBounds))
                 }
             }
         }
     }
+    /** A complete strip supplies repeated samples of every digit. Bounds and scaled previews
+     * alone cannot establish complete glyphs; compare ink in the original saved screenshot.
+     * This is a loss-of-strokes check, not OCR or a substitute for visual review.
+     */
+    private fun assertCompleteDigits(screenshot: String, labels: List<Pair<Int, Rect>>) {
+        val directory = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+        val bitmap = checkNotNull(BitmapFactory.decodeFile(File(directory, "$screenshot.png").path))
+        data class Glyph(val number: Int, val digit: Int, val position: Int, val pixels: Int)
+        try {
+            assertEquals((1..90).toList(), labels.map { it.first }.sorted())
+            val samples = labels.flatMap { (number, bounds) ->
+                val text = number.toString()
+                text.mapIndexed { index, digit ->
+                    val left = floor(bounds.left + bounds.width * index / text.length).toInt().coerceIn(0, bitmap.width)
+                    val right = ceil(bounds.left + bounds.width * (index + 1) / text.length).toInt().coerceIn(0, bitmap.width)
+                    var ink = 0
+                    for (y in floor(bounds.top).toInt().coerceAtLeast(0) until ceil(bounds.bottom).toInt().coerceAtMost(bitmap.height)) {
+                        for (x in left until right) {
+                            val color = bitmap.getPixel(x, y)
+                            if (Color.red(color) < 100 && Color.green(color) < 110 && Color.blue(color) < 120) ink++
+                        }
+                    }
+                    Glyph(number, digit.digitToInt(), index, ink)
+                }
+            }
+            // Trailing digits are independent reference samples; every digit occurs at least nine times.
+            val reference = samples.filter { it.number < 10 || it.position == 1 }
+                .groupBy { it.digit }.mapValues { (_, values) -> values.maxOf { it.pixels } }
+            val failures = samples.filter { it.pixels < (reference.getValue(it.digit) * .70f).toInt() || it.pixels < 8 }
+            File(directory, "$screenshot-glyphs.txt").writeText(samples.joinToString("\n") {
+                "number=${it.number} position=${it.position} digit=${it.digit} ink=${it.pixels} reference=${reference.getValue(it.digit)}"
+            })
+            assertTrue("Incomplete ticket digits in $screenshot: ${failures.take(12)}", failures.isEmpty())
+        } finally { bitmap.recycle() }
+    }
+
 }

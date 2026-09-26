@@ -28,7 +28,7 @@ gradle.projectsEvaluated {
                     }.sort { a, b -> "${a.group}:${a.name}:${a.file}" <=> "${b.group}:${b.name}:${b.file}" }
                 [project: target[0], configuration: target[1], components: components, artifacts: artifacts]
             }
-            def output = rootProject.file('.test-workspace/runtime-dependencies.json')
+            def output = rootProject.file(rootProject.findProperty('runtimeInventoryOutput') ?: '.test-workspace/runtime-dependencies.json')
             output.parentFile.mkdirs()
             output.text = JsonOutput.prettyPrint(JsonOutput.toJson([formatVersion: 1,
                 scope: 'Selected runtime configurations; build plugins and test-only dependencies excluded', scopes: scopes])) + '\n'

@@ -1,0 +1,1481 @@
+{
+  "recordedAtUtc": "2026-09-26T13:24:33.628622+00:00",
+  "sourceBaseCommit": "4c7b933f71976e9fc7ebd6f9e4f3332bca54d6bf",
+  "productionReady": false,
+  "localMigrationAcceptance": true,
+  "toolchain": {
+    "gradle": "9.7.1",
+    "agp": "9.3.3",
+    "kotlin": "2.4.20",
+    "jdk": "Temurin 17.0.20.1+1"
+  },
+  "jvmTests": 130,
+  "lint": {
+    "errorsPerVariant": 0,
+    "warningsPerVariant": 72
+  },
+  "mavenScans": {
+    "buildVersionPairs": 469,
+    "runtimeVersionPairs": 225,
+    "activeMatches": 0
+  },
+  "embeddedGradleFindings": {
+    "medium": 3,
+    "suppressed": 0
+  },
+  "checksumTrust": {
+    "oldEntriesPreserved": 1321,
+    "newEntriesFreshlyVerified": 314
+  },
+  "artifacts": {
+    "debugApk": {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "bytes": 42497990,
+      "sha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891"
+    },
+    "instrumentationApk": {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "bytes": 1293203,
+      "sha256": "dcd8b9dbc7cb87c7add974ab6d6f80625008eaed6000d251c43389cc97381edc"
+    },
+    "unsignedReleaseApk": {
+      "path": "app/build/outputs/apk/release/app-release-unsigned.apk",
+      "bytes": 28858734,
+      "sha256": "c433330e970d386b113ee659eedcea75d252dbaf2abcfa11d3894b24f46fc097"
+    },
+    "releaseBundle": {
+      "path": "app/build/outputs/bundle/release/app-release.aab",
+      "bytes": 29968954,
+      "sha256": "184555d7a45834b79fccc05fa3c9e9eb9581fba3885d77c61c89130a73822a73"
+    }
+  },
+  "serviceRuntime": {
+    "jarCount": 51,
+    "serviceJarSha256": "0e9d7650a48570f9dfef57109a5e040e43dab6c9814b46576a0759af3cfa8c55",
+    "serviceRuntimeSha256": "ff5978407960993fee3fc2d17d76016caac346757fd1ccaa3576b9c94ed8a72b",
+    "serviceRuntimeManifest": "07be99758b699e194f70fb9784d94202dc6c98212877829e3d72b020f2660576  alpn-api-1.1.3.v20160715.jar\n7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05  annotations-23.0.0.jar\n857658c8bdcbff794949a8d9922f88d63ee3751c203c7cd7d21ea97f9e745288  checker-qual-3.55.1.jar\n4a4b0affb22a9572409d3a6bde99ce3f2045c551cadc1ca7fe09690892c526c3  config-1.4.5.jar\n6674af42f8b7a7c6c189e10d953d49be78a44f428f68a86fbe5eae9147f24a76  domain.jar\n07c6344059af30a135144209c7c8bd666b8823124422ec859864d209d4ab7ca1  HikariCP-6.3.0.jar\n0b7b8b003a90ea491579b62f5118828e45112914c65589b00faa49d6ec785839  jansi-2.4.2.jar\n44380abf37d245ce5c0f294f43512d1c39a59642bfa463922c74e96877cf49f8  kotlin-reflect-2.2.21.jar\n2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f  kotlin-stdlib-2.4.20.jar\n5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd  kotlinx-coroutines-core-jvm-1.10.2.jar\n3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775  kotlinx-io-bytestring-jvm-0.8.0.jar\n610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13  kotlinx-io-core-jvm-0.8.0.jar\n1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c  kotlinx-serialization-core-jvm-1.9.0.jar\n98abb132b03e11b80318d45350ec9ebbb5453d26505e81331bf2eea7143b6fbe  kotlinx-serialization-json-io-jvm-1.9.0.jar\nd94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8  kotlinx-serialization-json-jvm-1.9.0.jar\n0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea  ktor-events-jvm-3.3.3.jar\nff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f  ktor-http-cio-jvm-3.3.3.jar\n7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085  ktor-http-jvm-3.3.3.jar\nc1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710  ktor-io-jvm-3.3.3.jar\nf50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626  ktor-network-jvm-3.3.3.jar\n5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7  ktor-serialization-jvm-3.3.3.jar\nf29c0b2be7ec7dea560c19ebe5a0442fa2736d90c5078b249d6c7bca80245b94  ktor-serialization-kotlinx-json-jvm-3.3.3.jar\n6d5366c19b87a681a8feefec7358e91fbc70559055137ec474a9b2a8bb84be17  ktor-serialization-kotlinx-jvm-3.3.3.jar\nbbe6998103727e036936f49d28bad388eb64acef8c1031b721a2b10eb1d426fb  ktor-server-content-negotiation-jvm-3.3.3.jar\n99d298bf02246cd87ff73d5ca7808535f4cc75ab1457279ccd80c7298bbda631  ktor-server-core-jvm-3.3.3.jar\nc377fe92938a04e0979dbc37a4f49d2b6846c11711dca464a83d1dfaf95692be  ktor-server-netty-jvm-3.3.3.jar\n6eddbc82077fcf55cb3348d94b35e3453d65a6651ef3a417a1214a5671b239b1  ktor-server-status-pages-jvm-3.3.3.jar\nebc5131dda06ffb4d0680e3ca38dc549912bb0fe69f62b3df6c8e27a8ffff3db  ktor-server-websockets-jvm-3.3.3.jar\nad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a  ktor-utils-jvm-3.3.3.jar\n3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82  ktor-websocket-serialization-jvm-3.3.3.jar\n129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894  ktor-websockets-jvm-3.3.3.jar\n16ccdfd1847eca169d5651c5f799ea990472350e0c38f68fd6bc47d705ef4a0a  logback-classic-1.6.4.jar\n1b67779e224455ae7e00bd4ccadaf05c38531927ea4363f66412359373f2e9d7  logback-core-1.6.4.jar\nfdf236d2b76aa9710684401fdad7dff9dec56e43da5d39172c9a55ba5f14b360  netty-buffer-4.2.18.Final.jar\n7e4612bead7ba88ac6f7908fa722f90ad6835ea96505c9e40b2f93686c1f61f3  netty-codec-base-4.2.18.Final.jar\n9d8a4b9a6a2a166ec5a4bbe51a78b4f6a726457c51d81495743c7e7ccb9f4765  netty-codec-compression-4.2.18.Final.jar\n2d50765eb58591ce35146c54ca032a257808d2165d8985a8522c70ea1470e8d7  netty-codec-http-4.2.18.Final.jar\na45a2b06c377b9c87c21ae2b37f04c8d808192590a73d977e7a60fd59921f283  netty-codec-http2-4.2.18.Final.jar\n5d97cae5669685872339698efe13f74fe3cdb2dccdb36963b2352bd95acf7070  netty-common-4.2.18.Final.jar\n6d5a08d9dd6d7d0211202e22dbb1629b23a62550335c7e80892da1d4cb115540  netty-handler-4.2.18.Final.jar\n68373ec544cf769ba17bf2ef455166d98f2c260dff536edf35ef57067a9c155f  netty-resolver-4.2.18.Final.jar\neac4f12068db4489e60c6520fad663e5d872f0436a7c641aa9e08db649947863  netty-transport-4.2.18.Final.jar\n3677ca998f3db749d3fdb0fb1b1674f9809f4fbe8f819a346f4858dfb16c4d95  netty-transport-classes-epoll-4.2.18.Final.jar\nbe48ee5b8a2328a1f4f2160270344175612dd9567787727de0dbaecb694beb51  netty-transport-classes-kqueue-4.2.18.Final.jar\n15efbb26cde751e9bab669cc52da5e909f41626f9e04378e2c4cd61202d1359e  netty-transport-native-epoll-4.2.18.Final.jar\n4ee651cdac49aedac42d0d22e726cb4a578f0c02286fc041153ec58925cac818  netty-transport-native-kqueue-4.2.18.Final.jar\ncada7023d09136af128511ca94421d69dc84d0f1f64c9e1f127a1271bb62932a  netty-transport-native-unix-common-4.2.18.Final.jar\n6e0e4cc2d8cae902084f8a2b18728b073a6fd9d1f87c9d8bff8f298c18185b93  postgresql-42.7.13.jar\nd4d89e6cf3b369d6f31caa754b9286680e83c76db75a5dd5f027b91bf7215884  protocol.jar\n0e9d7650a48570f9dfef57109a5e040e43dab6c9814b46576a0759af3cfa8c55  server.jar\ne91ff6d720609e7a194ffe758c3ed5c84e798617ae07b0a0f6a4fe229741b4bb  slf4j-api-2.0.19.jar\n"
+  },
+  "native": {
+    "layoutCombinations": 72,
+    "originalPixelGlyphComparisons": 3420,
+    "api30BroadOffline": {
+      "passed": 33,
+      "skippedOnlineOnly": 8
+    },
+    "api26": {
+      "gameplayMethods": 4,
+      "offlineMethods": 4,
+      "layoutCombinations": 12
+    },
+    "api36": {
+      "gameplayMethods": 4,
+      "nativeLibraryMethod": 1,
+      "storageLifecycleMethod": 1,
+      "storageCycles": 40,
+      "pageBytes": 16384
+    },
+    "inPlaceAlpha13Upgrade": true,
+    "twoNativeClients90CallsAndRematch": true,
+    "coldCommittedDrawAndDeletionRecovery": true
+  },
+  "previewInvestigation": {
+    "appDefectEstablished": false,
+    "speculativeRenderingChangesRetained": false,
+    "directPixelAndCropVerification": true,
+    "negativeControlBelowInkThreshold": true
+  },
+  "evidence": [
+    {
+      "path": "alpha13-layout-comparison.txt",
+      "bytes": 157,
+      "sha256": "f0b7b498ef882b4844a2fd0f4c6f0b935fd59c89063b0317143cfb7a6b97960e"
+    },
+    {
+      "path": "alpha14-layout-isolation.txt",
+      "bytes": 157,
+      "sha256": "4064f77e6a2a4e2e472973eac79f53f72fadd07348b4aad510a29d9ca69bd276"
+    },
+    {
+      "path": "api26-acceptance.json",
+      "bytes": 494,
+      "sha256": "937400b1cae5e2361639322dae51b35b0af59d07d643c88d228f299b75f23c1e"
+    },
+    {
+      "path": "api26-layout-phone.txt",
+      "bytes": 86,
+      "sha256": "6f46bebf272ba159eab354bf8081723d6b6efdfd80946432ace93fbca8daa929"
+    },
+    {
+      "path": "api26-offline.txt",
+      "bytes": 91,
+      "sha256": "0c970bb0269f5dafdcff9664bbdfab4c2c02f1bc907b95134de660b8ee9f9f04"
+    },
+    {
+      "path": "api26-play.txt",
+      "bytes": 94,
+      "sha256": "07d1d86210a21a52d22e64c7f3c18afb3867ea4594ef5264c93fd8a86c04a4aa"
+    },
+    {
+      "path": "api36-layout/evidence-phone.json",
+      "bytes": 358,
+      "sha256": "564155d885025fb4b993ba5f857e72caac7f21398c08f74a81127878a891b6db"
+    },
+    {
+      "path": "api36-layout/native.txt",
+      "bytes": 87,
+      "sha256": "d60b034d6bcedb490e29630e03265af6e8339773f91f0748f9b06f4b13497639"
+    },
+    {
+      "path": "api36-layout/phone/arena-en-dark-1.png",
+      "bytes": 122669,
+      "sha256": "3c5a2a74a777f39e2e20e51ebfd16a00c3c730480b1e778e6b2b116754e9abdf"
+    },
+    {
+      "path": "api36-layout/phone/arena-en-dark-3.png",
+      "bytes": 178279,
+      "sha256": "c77cac5e8a547030d226899d9b4691e60abe68feca6beab154ddb3101eddfcc5"
+    },
+    {
+      "path": "api36-layout/phone/arena-en-dark-6.png",
+      "bytes": 198321,
+      "sha256": "3ee618242dd79914923259e965b230da6d2dc48b788f25af5ca7c4b3da87187f"
+    },
+    {
+      "path": "api36-layout/phone/arena-en-light-1.png",
+      "bytes": 120977,
+      "sha256": "b8026c6d84beac89437ddbe4c397f0142abc42c3808ef6bb13b9fa348b095861"
+    },
+    {
+      "path": "api36-layout/phone/arena-en-light-3.png",
+      "bytes": 173995,
+      "sha256": "0430c5ed49f46425342499d165a212335bbb9e77894bfb9cca105061cd5f1005"
+    },
+    {
+      "path": "api36-layout/phone/arena-en-light-6.png",
+      "bytes": 201914,
+      "sha256": "c67cf5bb783223d10cc6a358e31377a25cd9f7847615a94550ea29a5227e9adf"
+    },
+    {
+      "path": "api36-layout/phone/arena-hi-dark-1.png",
+      "bytes": 123690,
+      "sha256": "f36a00af0f5bcfc86671aea0ca5c831181533d23b77b1d1b59b1d034ad090e19"
+    },
+    {
+      "path": "api36-layout/phone/arena-hi-dark-3.png",
+      "bytes": 179496,
+      "sha256": "409cd4cda8baba19264a229c738457170e94f86943c4eece816a1e7a18bfc9e8"
+    },
+    {
+      "path": "api36-layout/phone/arena-hi-dark-6.png",
+      "bytes": 208485,
+      "sha256": "003b6a3e24b0a247553040b0b4bba712d7ceca60319fa1f132d85c8ac59b66ca"
+    },
+    {
+      "path": "api36-layout/phone/arena-hi-light-1.png",
+      "bytes": 117516,
+      "sha256": "876e1710b838ed851e56684b3ad7cd69bb7ad49c74404f4b7f38395b3bcc31e6"
+    },
+    {
+      "path": "api36-layout/phone/arena-hi-light-3.png",
+      "bytes": 175481,
+      "sha256": "8038781ef61d9c8dce9ad42b732737fe694f5f9e7250290fc20e6fbafc715b1b"
+    },
+    {
+      "path": "api36-layout/phone/arena-hi-light-6.png",
+      "bytes": 200554,
+      "sha256": "1fcc87033713de1fda98f7a79ba93814ee133e5bc2c1dffb85d1ef7d90053552"
+    },
+    {
+      "path": "api36-native-storage.json",
+      "bytes": 694,
+      "sha256": "c898d0337f07a535186c65675a444d7de58c9e13c9d7ef53af7003306344b6df"
+    },
+    {
+      "path": "api36-native-storage.txt",
+      "bytes": 202,
+      "sha256": "8c1e6619ade3d0b7870109a85d26711b4573f975f736061c90952096a4e7e77e"
+    },
+    {
+      "path": "audio-asset-parity.json",
+      "bytes": 281,
+      "sha256": "146fecb46f96576d75e1e73be0b506d81e462e876160d7320bfa9c09a8ce862c"
+    },
+    {
+      "path": "bash-wrapper.txt",
+      "bytes": 609,
+      "sha256": "923c3efa66e09de558571b9a2a90b1024576ed576a76f574401be416cec3f8d7"
+    },
+    {
+      "path": "candidate-artifacts.json",
+      "bytes": 969,
+      "sha256": "cedcd51d019faac2622de46a90c9752598988396f42bf718cc2b10c813b05797"
+    },
+    {
+      "path": "checksum-coverage.json",
+      "bytes": 754,
+      "sha256": "3c1ffd74390b98841092fc595e32a459096c6f534c7f7e85aa2d240acac17f37"
+    },
+    {
+      "path": "clean-android-build.txt",
+      "bytes": 8008,
+      "sha256": "619ded2753faaf2272f675cb3fe6c7cbdd0c552e63a3ada8e01e3081bd22075f"
+    },
+    {
+      "path": "clean-lint.txt",
+      "bytes": 3869,
+      "sha256": "137ebb30dc07a58152394329264bd76d4d9d23c4db15451594603b1ef6f96095"
+    },
+    {
+      "path": "compiler-checksums.json",
+      "bytes": 1818,
+      "sha256": "1bbe905142ce828568a7c22fd52a727b4eeba48891ae3086c6fbfdad7836f8a6"
+    },
+    {
+      "path": "configuration-advisories.json",
+      "bytes": 18118,
+      "sha256": "acf74019f986d2d674e3620a7725b0ff01a70052aa42be5fa3f7bcd73d4535b6"
+    },
+    {
+      "path": "configuration-checksums.json",
+      "bytes": 167447,
+      "sha256": "07f0ad7f69207489f98835f45edb65672cd24f7250f6da2901a65b56765bde0d"
+    },
+    {
+      "path": "configuration-inventory.json",
+      "bytes": 60720,
+      "sha256": "4b9e6abf75e04c9b79af14e60080ef62f7d390212974eb02baefb4630e2a1958"
+    },
+    {
+      "path": "confirmed-android-build.txt",
+      "bytes": 8008,
+      "sha256": "c3d7422f91f00683d3dc8e9c9de0f16615c2e9e3f1885382cfd28d65bdb186f4"
+    },
+    {
+      "path": "debug-alignment.txt",
+      "bytes": 47277,
+      "sha256": "efb86e77b1fb673da9660149184c156fcf51eded3187fdf74d477a61c10f31d8"
+    },
+    {
+      "path": "debug-signature.txt",
+      "bytes": 972,
+      "sha256": "ac175ec1777974def2dc0c4f34f186c039266f56d60059370e18c7076fca8f95"
+    },
+    {
+      "path": "diagnostic-text-metrics.txt",
+      "bytes": 8465,
+      "sha256": "c512be0ae0b6def617de77e20ec85c15efb8884f3bdf8a6798463d4aa6877bb3"
+    },
+    {
+      "path": "failed-first-build.txt",
+      "bytes": 7551,
+      "sha256": "79c157b3bb62ec248bec3b75752b13b7e0e3b2ef0bcc24998aea50d7c6e3a02f"
+    },
+    {
+      "path": "final-build-advisories.json",
+      "bytes": 73964,
+      "sha256": "04187d255b47797e452b3b256a026816d7f851d0aeaf553e7bd742f31accd7f9"
+    },
+    {
+      "path": "final-build-inventory.json",
+      "bytes": 1084874,
+      "sha256": "3d2e319b7ace8ff679896224e52afbda3ea50f5ea9d5dcf761fb304b82a0e711"
+    },
+    {
+      "path": "final-incremental-build.txt",
+      "bytes": 11678,
+      "sha256": "6304de617048ecb835a6eeffe03bd0d3ef5dc0f13e2f8f15db417233dbee544f"
+    },
+    {
+      "path": "full-build-advisories-before-lint-fix.json",
+      "bytes": 154078,
+      "sha256": "be6a2e43af80293ae72503d210ce9bc5b8633d66985a4658e22ebec50e829e45"
+    },
+    {
+      "path": "full-build-inventory-before-lint-fix.json",
+      "bytes": 995095,
+      "sha256": "cb1c34386f8c9252019975448842afdca8fa70e2ca1be2b7feb66da33275e409"
+    },
+    {
+      "path": "full-build.txt",
+      "bytes": 11934,
+      "sha256": "6f4e5dfb4479e78c2f23941de1feb183fa99ada196da9a6d026a5cbbb57b49fe"
+    },
+    {
+      "path": "gradle-feature-references.json",
+      "bytes": 54001,
+      "sha256": "cb57e7881bafea09778ec9d13f10dfcf168cf35eae3421b26f378d6c2b657a76"
+    },
+    {
+      "path": "jdk-provenance.json",
+      "bytes": 690,
+      "sha256": "53a12ab57c14372857a557e755dfd59346c32673c89c9a2bfb64b2a6d6374f4f"
+    },
+    {
+      "path": "jdk-signature.json",
+      "bytes": 346,
+      "sha256": "cf4627f342cac45be17878c48603a40ad70056a2408b02c15f4655a91142dcbb"
+    },
+    {
+      "path": "jvm-test-counts.json",
+      "bytes": 666,
+      "sha256": "584e4423293a06705bdd53a8fa5b15706dfd60877a654c46650fbb66c44d354a"
+    },
+    {
+      "path": "lint-before-library-fix.txt",
+      "bytes": 4503,
+      "sha256": "2fc6b18b30b21bf14c9607338a3d4899fa5f5aff2797eb9a7dc1b95676496f4a"
+    },
+    {
+      "path": "lint-debug.xml",
+      "bytes": 83163,
+      "sha256": "410aa7f09538f27241be9fbc31a7bb6f1794560e545cb6181ebf80ebf7b95758"
+    },
+    {
+      "path": "lint-release.xml",
+      "bytes": 83163,
+      "sha256": "410aa7f09538f27241be9fbc31a7bb6f1794560e545cb6181ebf80ebf7b95758"
+    },
+    {
+      "path": "native-pair/evidence.json",
+      "bytes": 895,
+      "sha256": "0527b40de50bbd014b21573f98b36b5ad996e656485655a5acc0fc45c099dfce"
+    },
+    {
+      "path": "native-pair/guest-instrumentation.txt",
+      "bytes": 86,
+      "sha256": "9f3b71c7755175ab9f8873a48dd659c8ddce4f48e7f1f192037b78ea37908aa0"
+    },
+    {
+      "path": "native-pair/host-instrumentation.txt",
+      "bytes": 86,
+      "sha256": "f41f4c249c58ccc7931a2bea1ce502b508d9395888ab23a36a11e9fc3328bd51"
+    },
+    {
+      "path": "native-pair/native-pair-guest-finished.png",
+      "bytes": 140881,
+      "sha256": "d0fc06c3f2218a4e458258b99874556da719873d34d594ea114fb70c8ea3bfbb"
+    },
+    {
+      "path": "native-pair/native-pair-guest-playing.png",
+      "bytes": 138034,
+      "sha256": "c5ad0faf1cbafc224a3a2a2e37c9a8b4233cff52f0e3f6a921464361b9815581"
+    },
+    {
+      "path": "native-pair/native-pair-guest-rematch-result.png",
+      "bytes": 141370,
+      "sha256": "c118006ce1e119d78cd0e0e1954a470aa181b847c776a053d0f97e5be29a5cac"
+    },
+    {
+      "path": "native-pair/native-pair-host-finished.png",
+      "bytes": 129867,
+      "sha256": "1455b8e984e224992e8a9baf26c3a1e36c63c3e2ba37234a20125ec92c61f789"
+    },
+    {
+      "path": "native-pair/native-pair-host-playing.png",
+      "bytes": 131211,
+      "sha256": "5d3295b03855764bd8c03748927911e9d91241b711e0f2dc189436408a4d82ab"
+    },
+    {
+      "path": "native-pair/native-pair-host-rematch-result.png",
+      "bytes": 120460,
+      "sha256": "c7e289c0f3af1008b2fd65745786934bbefe2be97d20924f7fe697cc54e1dead"
+    },
+    {
+      "path": "native-pair-driver.txt",
+      "bytes": 242,
+      "sha256": "36f21f9987546cc067bae59311e3ebebe8cd5ab315bf3b8912aa382ebbb5986a"
+    },
+    {
+      "path": "offline-native.txt",
+      "bytes": 1005,
+      "sha256": "73116c6601bea9df1beb0a0c1727927cbfc88c1fad940ad3cc30b5099bd15e8c"
+    },
+    {
+      "path": "preview-verification/arena-hi-dark-6-glyphs.txt",
+      "bytes": 8711,
+      "sha256": "ccbd497ff655e56e505501b730b82f22fd9f0fee1bd9e3b0c1e91fa75f5bfea2"
+    },
+    {
+      "path": "preview-verification/arena-hi-light-6-glyphs.txt",
+      "bytes": 8711,
+      "sha256": "f431790adbb4f1baf9aa7de7dd89367e8e7560a2689229ea12ce15ae69e19f54"
+    },
+    {
+      "path": "preview-verification/arena-hi-light-6.png",
+      "bytes": 191940,
+      "sha256": "c6e21a126543ab48680395d45f9c066663cf296ecd838afcec68cf3b7d9f605b"
+    },
+    {
+      "path": "preview-verification/native-pixel-check.txt",
+      "bytes": 87,
+      "sha256": "3c4a8ec1b70e584268e03b5d22a65bb47d78c4f527f72eee7246901915ec7043"
+    },
+    {
+      "path": "preview-verification/negative-control-erased-leading-2.png",
+      "bytes": 2820,
+      "sha256": "05f37fc13e5f7e1318ffb2bf533ae2759ebcb6ee27986c3b63cab3cfdfe4050d"
+    },
+    {
+      "path": "preview-verification/negative-control.json",
+      "bytes": 249,
+      "sha256": "adff5e8fe8eecb3e35a7bbccefb9a9ed79461c432f6f0fc5b8cce41346686d17"
+    },
+    {
+      "path": "preview-verification/number-29.png",
+      "bytes": 3303,
+      "sha256": "f1a7dd960762753aef915f649b294ba7bedd7ec68e016bfb4c10689d06e99e44"
+    },
+    {
+      "path": "preview-verification/numbers-51-89.png",
+      "bytes": 13221,
+      "sha256": "5d675c26c081d7e76ca0ccfe569dfae8b36bbad1dbcbf1eeb1ee389c5aa3429d"
+    },
+    {
+      "path": "preview-verification/numbers-80-82.png",
+      "bytes": 3771,
+      "sha256": "263c6f410e0eee3e1bce6eb4b24ebf74d824db072f23a2c6ea1fe25e8d1615ba"
+    },
+    {
+      "path": "process-recovery/delete-seed-intentionally-killed.txt",
+      "bytes": 129,
+      "sha256": "3ce9ed196db222cb9ac14c4ad4eb487574a037235d221b539549e573a00e38db"
+    },
+    {
+      "path": "process-recovery/delete-verify.txt",
+      "bytes": 90,
+      "sha256": "ffb5c6f50ad71eeec321dcba81472bf9f44b1a8a26312426d5df789843ae9317"
+    },
+    {
+      "path": "process-recovery/draw-seed-intentionally-killed.txt",
+      "bytes": 129,
+      "sha256": "3ce9ed196db222cb9ac14c4ad4eb487574a037235d221b539549e573a00e38db"
+    },
+    {
+      "path": "process-recovery/draw-verify.txt",
+      "bytes": 90,
+      "sha256": "5f4ba8fccb312f00818aa3bcafc3455e4597f75d44e31aa897cbdaa42a07a945"
+    },
+    {
+      "path": "process-recovery/evidence.json",
+      "bytes": 791,
+      "sha256": "822c67db12dcb899d2837a6bd996a585c73586e6d6988722ea6ec0ccf632549e"
+    },
+    {
+      "path": "process-recovery/process-delete-pending.png",
+      "bytes": 135747,
+      "sha256": "388659a66d58a13fbca8a46593bd2221532f18cc715fc67bc18f02185a939d1d"
+    },
+    {
+      "path": "process-recovery/process-delete-recovered.png",
+      "bytes": 153395,
+      "sha256": "7dd8138bbd78995bfdbc4fbaa146953a92313d7be266652bbccc8663e4d8dfd0"
+    },
+    {
+      "path": "process-recovery/process-draw-pending.png",
+      "bytes": 124019,
+      "sha256": "be8f857b11b62dc87f5aaf964a765c264c9fb31ae26d7468e3bfb30b86b4abec"
+    },
+    {
+      "path": "process-recovery/process-draw-recovered.png",
+      "bytes": 113724,
+      "sha256": "64dfc606d8aa464bf4a682a49ee68667baed39d060501beac3b937044061229b"
+    },
+    {
+      "path": "process-recovery-driver.txt",
+      "bytes": 457,
+      "sha256": "adf053b8837a6e1a0a5dc89aa752f61c7d1da6cd0adaf3c8c718e2fbe83bbe3f"
+    },
+    {
+      "path": "release-alignment.txt",
+      "bytes": 34405,
+      "sha256": "f61747802cceb33bbb18220b23a3a7b519a9cfc0768482104605ef9b7af6b028"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/evidence-phone.json",
+      "bytes": 358,
+      "sha256": "babc8598995283bfe73e736e25edf01446e454c83c4f4a3bba03ff7a2d7a8228"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/native.txt",
+      "bytes": 87,
+      "sha256": "61bacf10a3a2a2f5b20f3e5421a56b9d55b0fa6512112fb53ab8c1e6c367ca73"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-en-dark-1.png",
+      "bytes": 112980,
+      "sha256": "d9ca4e6ff508515db4ef6884cd72ae52dc3bf4a7a6a837c26c4864167857f0ef"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-en-dark-3.png",
+      "bytes": 166980,
+      "sha256": "1535751505b131e3f64cfe4fc9b7351bf1534975e3f24cc94a4734e44648b176"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-en-dark-6.png",
+      "bytes": 203185,
+      "sha256": "d9a2ac662bac91c9970e8367f27a7b8e87b820a0eaedfac13426d78168902b9d"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-en-light-1.png",
+      "bytes": 110404,
+      "sha256": "0e578e7052358580ba45710ae05400937a7caa78a189e042922cd8d3f1f83aaa"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-en-light-3.png",
+      "bytes": 168667,
+      "sha256": "d6d11c8bb8d4557098aa6d28eaacc9bb794d8b23e0f46dcd77bf4eb635c60466"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-en-light-6.png",
+      "bytes": 199717,
+      "sha256": "d74de9acc510cf686a9d486797002c3dea8ce0852f47c6806fce656188f4ba96"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-hi-dark-1.png",
+      "bytes": 113257,
+      "sha256": "60f46a503fd3b2005f2ed26eb99106798f80e2d79ff3078f903a81eac78066e8"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-hi-dark-3.png",
+      "bytes": 166805,
+      "sha256": "5c5338f65a53b20fe3feda6969a1e56ddd46841a1c6e7ef6ae205610ca81a385"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-hi-dark-6.png",
+      "bytes": 201600,
+      "sha256": "da62732462bfcce2fce4a1b89b2b93fafb7e11a3ea7ec40712469adf70ecc69e"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-hi-light-1.png",
+      "bytes": 108957,
+      "sha256": "d15876e842079ff0d68db3ab98d1aa665d2e9c8e69bbb822c1de8d1aae1f6cc5"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-hi-light-3.png",
+      "bytes": 164919,
+      "sha256": "a9bf06758f75901cd48f04e2d06afc81f5ea3bcbb7ad941c333b44a8d6395463"
+    },
+    {
+      "path": "renderer-investigation/alpha13-api30-fresh/phone/arena-hi-light-6.png",
+      "bytes": 201800,
+      "sha256": "916a934292884e7e474b1fedbd6fb7feecaff57e95437d2ca52be9d3d26b17ee"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/evidence-phone.json",
+      "bytes": 358,
+      "sha256": "f04e9a3e757f41779c61248fff5b55e331a47fc823fd1d98123dba39165f6368"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/native.txt",
+      "bytes": 87,
+      "sha256": "c72793d80f8a76d635e0b833bf5ce3da7bcade54dccb8fd780d4042f081f8ab3"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-en-dark-1.png",
+      "bytes": 114974,
+      "sha256": "b8d203329cf0a2950c19e64ac48124bbd721a3843d9db7be622bb50705d85352"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-en-dark-3.png",
+      "bytes": 169867,
+      "sha256": "e684780c1601ebbb91fec78ce4698912f9fa89056c199b9d518d30a9e5304fa5"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-en-dark-6.png",
+      "bytes": 201751,
+      "sha256": "85fdd9a2dabddd3df6384b34d2cb00204c0afe339de768cc80a7f3c987469b04"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-en-light-1.png",
+      "bytes": 107384,
+      "sha256": "8483962ff3f47b4fae4ed88c9588af2d55ae2b790222400bb5ab7895de5f6ee1"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-en-light-3.png",
+      "bytes": 162951,
+      "sha256": "704c05c10da460924803f73800de16c6ff346fec93e12e8980640bd4e0c1ae1e"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-en-light-6.png",
+      "bytes": 198202,
+      "sha256": "2d40dfc9268714abbfa36851388a1f287f05a40850719dd6a25a9ab2290f5577"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-hi-dark-1.png",
+      "bytes": 116281,
+      "sha256": "26e9cb8b21d5a5eaa723fccbc501b71a8e04571188aa1fd17d650a242ad5a914"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-hi-dark-3.png",
+      "bytes": 169715,
+      "sha256": "15ad1bb4c060170c7b3d539e473c207026a5be973d0a1cbc5a967d97cec5ef8a"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-hi-dark-6.png",
+      "bytes": 204864,
+      "sha256": "d0415ed44ac2009906a8e924f7f8994dd8d24da41e578ce90f3c6dd46a80af02"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-hi-light-1.png",
+      "bytes": 106935,
+      "sha256": "f3ff0f8fe30aa4f0271d742841d583b7f04a87fb5e9dd57c80959ba14b68481e"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-hi-light-3.png",
+      "bytes": 160986,
+      "sha256": "e67e76abcd5699a2b983f9ef5da11c181788fce178d281b726d4a951a443fd2c"
+    },
+    {
+      "path": "renderer-investigation/alpha14-api30-fresh/phone/arena-hi-light-6.png",
+      "bytes": 198871,
+      "sha256": "62a76206ca989eb07845dad816b193b6c3a0a5cb2f0343f1207d3878391adec2"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/alpha14-renderer-opengl-driver.txt",
+      "bytes": 208,
+      "sha256": "c8322c4f066e513c7a015d6dc0e99e20a9fb021d63d6385b3cbcb0d077074872"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/alpha14-renderer-opengl-phone.txt",
+      "bytes": 87,
+      "sha256": "020e162cc675b43991353993c5d48ce6cfc0f8aa88ddd75e9ea6af03fa5d71ac"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/evidence-phone.json",
+      "bytes": 358,
+      "sha256": "ff1a3c5fc3fce255d8e2cdf58d4b6279618db0dcad18151e2b76eac60a5bf6b2"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-en-dark-1.png",
+      "bytes": 114856,
+      "sha256": "209d7059cb1c1135e846e53f680faa88d91fc60dde2376707c92cbfadd90e829"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-en-dark-3.png",
+      "bytes": 171613,
+      "sha256": "d6b0b23065ccf870a56140b85a1026a7e401050859e2a8f77b6dcde2740045ea"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-en-dark-6.png",
+      "bytes": 205072,
+      "sha256": "ae67fdb6f3b9c80aa5b04eb6b512ae9ae80b28083f716443c82ccde455068208"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-en-light-1.png",
+      "bytes": 107981,
+      "sha256": "993c0093fb97ae3847e231d78da836b80706488c47e8e344f3eb46c7c20a7e75"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-en-light-3.png",
+      "bytes": 166751,
+      "sha256": "fb973ee1893340d20c09b4bea9f53f37e8075b53f31e1ca43e5ba75f0c823eb3"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-en-light-6.png",
+      "bytes": 195394,
+      "sha256": "b9ad0a247de7045be30bbfe5df778867f8c5a60813130d9b96ad82e8aba7c893"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-hi-dark-1.png",
+      "bytes": 111340,
+      "sha256": "c438258f1714a71735ec7b03f530347822bad745cc0cdff7cc0f14bb9766def3"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-hi-dark-3.png",
+      "bytes": 166193,
+      "sha256": "c3c0c0c1104a78980cc64f3ae53dab2dc5c072a96ba001136ddf3eb6de2b5569"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-hi-dark-6.png",
+      "bytes": 200398,
+      "sha256": "bf4593c2b21cf42008c1f10d239e825e34f73d7e01b038e7aad75da771206db5"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-hi-light-1.png",
+      "bytes": 110811,
+      "sha256": "4f635bad1c29ff07d9529b22ae4162f7b112fe7b4c319953197a91e4d15533cf"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-hi-light-3.png",
+      "bytes": 168375,
+      "sha256": "a1253c0833767aa0c91b4fa2ea3a6f3c0673031fe798aae38d9acdeb912ff67d"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-opengl/phone/arena-hi-light-6.png",
+      "bytes": 198571,
+      "sha256": "6afb54242016dc5273e4512ce6bc78df996856ec95d54c1d0913f7f96a4fe5bb"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/alpha14-renderer-skiagl-driver.txt",
+      "bytes": 846,
+      "sha256": "98254aff6ee615ad6610c0a63605c6282a64a8f64ef5381f667ae002ad80b64b"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/alpha14-renderer-skiagl-landscape.txt",
+      "bytes": 87,
+      "sha256": "dd685fad5beb2348ea2816a12b071a44bc7b378f26c9d3428cf72cb7a467fa6f"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/alpha14-renderer-skiagl-phone.txt",
+      "bytes": 87,
+      "sha256": "22c21b8d38fb791e0ff3a613a1013798b8b3f21b9db49db5124bf24d71613cd9"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/alpha14-renderer-skiagl-small-large-text.txt",
+      "bytes": 86,
+      "sha256": "a4ebd544d539b97aad07c957602a26bd4eab0bcefbc3cd7e208fed411612c2f4"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/alpha14-renderer-skiagl-small.txt",
+      "bytes": 87,
+      "sha256": "4a3928e9372b682dfc90d9894a3f6b8e8f8a6fb5b6e75b83ac32690d632fb9db"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/evidence-all.json",
+      "bytes": 757,
+      "sha256": "7e8e1b10c1a8127c22e97b7ef425e7426285b9a7ea0ad7a5dd8eeb8564028859"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-en-dark-1.png",
+      "bytes": 53261,
+      "sha256": "d4479d5bcf6fe031de511cbf8f38491e7cb7f214b7e0356cfc5e97afbe53900b"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-en-dark-3.png",
+      "bytes": 57023,
+      "sha256": "c2514dad4f3bd538b40da93c925e81a7bac27c35dc570712bd2ab402a6b67d64"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-en-dark-6.png",
+      "bytes": 76311,
+      "sha256": "911164b23b5393f548880f13770d5fdcfaac44bb62b2a22c0dbf50014b56b1bd"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-en-light-1.png",
+      "bytes": 51773,
+      "sha256": "1248a77cfe8f1069b291d7160547baa3088d3aaa66f6107b7c82ba03f6c2ebac"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-en-light-3.png",
+      "bytes": 55770,
+      "sha256": "86711a8738aad9d2844e5485b08918d97e0160ee3d026ce44ee1619f9cd16381"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-en-light-6.png",
+      "bytes": 74339,
+      "sha256": "9b98a8867254d8cccf4dd76097cdd5b01feb31c0bac4746a789f9f138ff74ca9"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-hi-dark-1.png",
+      "bytes": 57941,
+      "sha256": "d312a7c92bf988f1a5b5f78c2ff737d95eaf01c9610eda2761680272a81a0f71"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-hi-dark-3.png",
+      "bytes": 59704,
+      "sha256": "410800d8e60364504a55303ce8f006130c1cd3db126288336dfb76908d637fa0"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-hi-dark-6.png",
+      "bytes": 79760,
+      "sha256": "feb1e408839255ae8d7b434694c9deaf0b3040ae0354cb18d71b570e1269350e"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-hi-light-1.png",
+      "bytes": 53500,
+      "sha256": "6089a62f0e6d96fb9d5a4a6be03be156cb0722c1af75eb20714161059c8f9963"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-hi-light-3.png",
+      "bytes": 57419,
+      "sha256": "6df93a2df805ec473400d7e07a4cb0b11d5f9ec55f8ed6916db64cc602d83641"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/landscape/arena-hi-light-6.png",
+      "bytes": 77933,
+      "sha256": "d5c2c6be16b2aee810ec6e5bce906df69c287a9f1084108dc2eab1b97ec34967"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-en-dark-1.png",
+      "bytes": 113180,
+      "sha256": "2f371a5d24324950bf3d7001231f6500557208ff259e72ec9d64912a5fcd0fb1"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-en-dark-3.png",
+      "bytes": 169283,
+      "sha256": "5cc32f1a0f841510bee0f6e3657dc7466e001faeb2ac05dbb55d05d99599e6bd"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-en-dark-6.png",
+      "bytes": 205456,
+      "sha256": "5d1ef1226587f8fe7d1d02fda09499952dfef970bef0324996308cb374d9afad"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-en-light-1.png",
+      "bytes": 107623,
+      "sha256": "8e42460e3a44eb9b4a52458302ea2bbc00c46c1bd7d45e0f583996cc9867f2ba"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-en-light-3.png",
+      "bytes": 166857,
+      "sha256": "fd45a1e84448c3e61b61222a2d636c58244b988bffb38d9bc9ccf96f12324359"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-en-light-6.png",
+      "bytes": 201027,
+      "sha256": "86efa96041341b0579792114a22fa28279ac43f1846c7d217b8ea85e702d09db"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-hi-dark-1.png",
+      "bytes": 115405,
+      "sha256": "1775e2a2d127dc73bf3caf638aa48dd0484ae39c0de726d71e1b98bcb6dd8660"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-hi-dark-3.png",
+      "bytes": 168393,
+      "sha256": "0bfd6af2842e5175560a332745ee98b1200f035931786d95764b665e68fb37ca"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-hi-dark-6.png",
+      "bytes": 197632,
+      "sha256": "e43fe385e75f2fcc76433a45bb77c3e612c85d5744ba212f1f77360b1be4837f"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-hi-light-1.png",
+      "bytes": 109228,
+      "sha256": "7cf4944ef0431336bbc929d0536528c4bc1335e54647bc73b74e2afe9c3796d7"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-hi-light-3.png",
+      "bytes": 164478,
+      "sha256": "154dc39f9edd4a6b6e583cfda46c260937a14fb0f2c7da093066bddc9ed75837"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/phone/arena-hi-light-6.png",
+      "bytes": 197060,
+      "sha256": "6003242de53dd3e63271ce60a9909dd0583216523d5dd743980ae3949aec0c76"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-en-dark-1.png",
+      "bytes": 79287,
+      "sha256": "457af2258dea5ab33b04fe568b83763fdd29c470b3fb15ff2757ecc5574c251f"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-en-dark-3.png",
+      "bytes": 107011,
+      "sha256": "65c37d2be7beaab1460dcab397a6a45325297d5dcbdb833207ddb9c216ab971e"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-en-dark-6.png",
+      "bytes": 123766,
+      "sha256": "f41e75cd59514e66987ca226ebc81053347cd9a0a94556f2f270c9788dd8381f"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-en-light-1.png",
+      "bytes": 76308,
+      "sha256": "a558de51d9c3ed0766518f4d15060ad51284d43ac1c5b645ca230410666f293d"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-en-light-3.png",
+      "bytes": 103604,
+      "sha256": "1cc5b1dd358af199d5cc3e7b9ea96bc17e0fa480a14a5d3177e00553eb96d3a2"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-en-light-6.png",
+      "bytes": 124216,
+      "sha256": "46a66c262be111d57a97ed0ff146f0fcfdde7b6586c456439c10eefe5b276ffe"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-hi-dark-1.png",
+      "bytes": 79949,
+      "sha256": "9d57055c313d022072adfead2a50062c639ce49312e68e58d63545dca3276ad8"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-hi-dark-3.png",
+      "bytes": 106323,
+      "sha256": "10c771e81b111cbb13e16863b6fea7ef9614c429241616eda6ec36fa4c474076"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-hi-dark-6.png",
+      "bytes": 125288,
+      "sha256": "ec436925e40ee7e2cd575aa841fbe7c801bca71a248c3ebf745bdc9ecf236a63"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-hi-light-1.png",
+      "bytes": 78736,
+      "sha256": "10b75a4a6f4d5e516f9f674cbe790ff0f78fd2ae5b63adadababc26119936c75"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-hi-light-3.png",
+      "bytes": 103340,
+      "sha256": "a741ac1ea3495e6f89b4bcbde4243e2313f626b2a25e53605ed40cf53b36737c"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small/arena-hi-light-6.png",
+      "bytes": 124146,
+      "sha256": "1eacba116f5dcda5db246eda1cc6e0dd179d1bafc79082c2b323b40320b013f4"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-en-dark-1.png",
+      "bytes": 91875,
+      "sha256": "5d1ab9dfbd24b8a8402f3be6c4ba8624218228088423ce75ef6c8af1ab80a120"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-en-dark-3.png",
+      "bytes": 120042,
+      "sha256": "15eeb2f31ce7a544d9963f31e22862daa0d9360cc077a7af2d544d98b40ba6fe"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-en-dark-6.png",
+      "bytes": 129446,
+      "sha256": "6d6dfb29149d25577d06bcf18f93fbdd17a21a20d6d5f9ae31a781b57017682d"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-en-light-1.png",
+      "bytes": 88384,
+      "sha256": "3b969818b6648be7569e46246d1289c1fa6902430898f8932d305da75b34b5f9"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-en-light-3.png",
+      "bytes": 116159,
+      "sha256": "9c4a8e163288c7b3caad81c6c9523b01d2e797294f28d20147b727804d9adbee"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-en-light-6.png",
+      "bytes": 125554,
+      "sha256": "b483e5adf64b375c43b516f102494534665d433108f3ee24d5175f0d55af9f32"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-hi-dark-1.png",
+      "bytes": 93324,
+      "sha256": "0b321b689628957fbabbdb2d679a4bf51dec58c75db86e996cb417fb517d9d6d"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-hi-dark-3.png",
+      "bytes": 119578,
+      "sha256": "7fbdc331ca2e3d153be06ac45a2a8da26a9b4e3948eb3f8e08500a8e6bfe87dc"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-hi-dark-6.png",
+      "bytes": 131120,
+      "sha256": "53116d3cdaa306b2b64ec4da12537e5ec250df16224bd1546eacff5741c074ae"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-hi-light-1.png",
+      "bytes": 91242,
+      "sha256": "686bed70efada62f3f88f0abc33b7f3564db8cb3147c79f5a624b39477f77c21"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-hi-light-3.png",
+      "bytes": 115071,
+      "sha256": "edc7480726da195ae48f0071dcb4f52cfbdd18cc47549913ff945f7df2191b2a"
+    },
+    {
+      "path": "renderer-investigation/alpha14-renderer-skiagl/small-large-text/arena-hi-light-6.png",
+      "bytes": 129080,
+      "sha256": "83c108c36d19e5e363ab94296e7d4e132f76ca18ef2218695090a8624dd5b392"
+    },
+    {
+      "path": "runtime-advisories.json",
+      "bytes": 32723,
+      "sha256": "adf5415400f0c21b621e70334952c4d7092328b4257cc44532fd27db611ad835"
+    },
+    {
+      "path": "runtime-inventory.json",
+      "bytes": 187709,
+      "sha256": "87c1d2471bf83e1a59c199ee3bb1a3bb00bd4ff360bc8bdd28e68eb361b0d827"
+    },
+    {
+      "path": "screenshots/alpha13-comparison-hi-light-6.png",
+      "bytes": 195247,
+      "sha256": "367aaac8278b8d103590fa9c30b4551b19931acad22b91951bd6445338c3243d"
+    },
+    {
+      "path": "screenshots/arena-en-dark-6.png",
+      "bytes": 205711,
+      "sha256": "2f82f3eca8e964fa34586b695b0589a6c67234997d5a9f1d8db35cc3a70dedc6"
+    },
+    {
+      "path": "screenshots/arena-hi-light-6.png",
+      "bytes": 198770,
+      "sha256": "c56fb134a0eea05b2601f5e5c19d1107d2c64379a847ba90d7d59b19cd52b51b"
+    },
+    {
+      "path": "service-runtime-identity.json",
+      "bytes": 5268,
+      "sha256": "edac49b5fd515dfac8fa0787da91e66b807c633bc628f50f6b298023986213cd"
+    },
+    {
+      "path": "upgrade-api30/evidence.json",
+      "bytes": 1090,
+      "sha256": "8aa27f024bcbed4a86370a7b166dfbb60842005f807e2fa91670e073669fcfca"
+    },
+    {
+      "path": "upgrade-api30/locale-process-recovered-hi.png",
+      "bytes": 128878,
+      "sha256": "cc50825b9f40ceb9d1ae682f0f1f96b29148cdf5ce02a1f5468ef4fb65de12d5"
+    },
+    {
+      "path": "upgrade-api30/locale-process-seeded.png",
+      "bytes": 128878,
+      "sha256": "cc50825b9f40ceb9d1ae682f0f1f96b29148cdf5ce02a1f5468ef4fb65de12d5"
+    },
+    {
+      "path": "upgrade-api30/restore-locale.txt",
+      "bytes": 88,
+      "sha256": "212c98f67e99e2483eb072f2e4a3aaed92347bba3d7435ca0b3dcecff0225aca"
+    },
+    {
+      "path": "upgrade-api30/seed-intentionally-killed.txt",
+      "bytes": 127,
+      "sha256": "5f541d89fde6e3d82b771189c1231d2faba8b3c2d0ea0c8cbccd30a2eb31000b"
+    },
+    {
+      "path": "upgrade-api30/verify-hi.txt",
+      "bytes": 89,
+      "sha256": "fcfd5b35eb6cd257251ab8ef35fed2b40e857a9d8fa8ef0dc41e1ead698b9ede"
+    },
+    {
+      "path": "verified-layout-api26/evidence-phone.json",
+      "bytes": 480,
+      "sha256": "f72bddd714543e2708b164ee4974b2eeea5ec54276a67400d955193faef55b97"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-dark-1.png",
+      "bytes": 158386,
+      "sha256": "4112ea468eb4a44ce08d25b43b1ecd02ac758fe595ab33f66aa449fd9f3849fb"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-dark-3.png",
+      "bytes": 216157,
+      "sha256": "ceb6d30445a858045e4f9d2371bf9a16c7a1f8a7fdf8cb0b7f552310901ce1ec"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-dark-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "291c1b7df80de0c10e00a98515ce43c81af99320a44bb4dc55dfb4520af67719"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-dark-6.png",
+      "bytes": 219280,
+      "sha256": "84eb59a25ab10abb83ce5f4a3fd8cf893402bbf1290670308a436d79a07e4e0a"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-light-1.png",
+      "bytes": 136903,
+      "sha256": "f60f4b12c72ff95b6ab798246f25b0c164248a8b1ac55312966f714479074ea8"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-light-3.png",
+      "bytes": 193992,
+      "sha256": "5ce51ab433cbb8c93b4cdbede65a7f91a74ad980971fa9cb1725a44a0d1bc6d0"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-light-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "43cc637832e84cc3e8c64695b34bb1ac503dcfaa4bda9c64398601550c5ece1e"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-en-light-6.png",
+      "bytes": 205844,
+      "sha256": "c3a1f4df821414973d751424eb06017f6b3145cd2b1e84a0c1a7e6670aa9877d"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-dark-1.png",
+      "bytes": 161991,
+      "sha256": "003ab252afc2d475942700dfe3dc700df6265974e90106d6dede43c7b1236f18"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-dark-3.png",
+      "bytes": 225037,
+      "sha256": "21f9f9d83248ae073075ae170917364911b86a002b797ed5d779adbbda6cf5e6"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-dark-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "80f0d0a8544eb944d9d46bdddb16c00d997fa1a42aae84d71a404c82101d44ef"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-dark-6.png",
+      "bytes": 221421,
+      "sha256": "eb4b8a284de40937b7f6d792286db927f75faea23633701acf7d5450a07c9cd4"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-light-1.png",
+      "bytes": 136010,
+      "sha256": "2a377ac76b8c1cc91c10ff2b5b63805e71610148e379a6d54813bc90f6a10405"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-light-3.png",
+      "bytes": 193207,
+      "sha256": "14c45eb349c612ccb9f86a7f3a4896e6bbd3a4ac3ac7daa3c061f408010b61bc"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-light-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "afcd8163c2884815ae6c88d037072ff7f392608d71952614737ab94ecb38fa7e"
+    },
+    {
+      "path": "verified-layout-api26/phone/arena-hi-light-6.png",
+      "bytes": 207572,
+      "sha256": "d06717f2620c4b9d4a8c1c9377e0b29c1bc1acc92ebfcf071a2b273e4c666480"
+    },
+    {
+      "path": "verified-layout-api30/evidence-all.json",
+      "bytes": 875,
+      "sha256": "2374903fc3df739334d520ae322033b9c21664c0f182cce4806efc708e9a3781"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-dark-1.png",
+      "bytes": 56013,
+      "sha256": "ae4694391d3df270e47924e23db15a3920add1c954eca7c0b69d372f852b9edd"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-dark-3.png",
+      "bytes": 57551,
+      "sha256": "332980cd01473e1545c12e9349202df01e3a5c0df8aed29d70b3941185f960fe"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-dark-6-glyphs.txt",
+      "bytes": 8656,
+      "sha256": "ff315d7e959c54a2f22009306a1c6199a282e00332dd6a1231bd9afdf85a965d"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-dark-6.png",
+      "bytes": 77828,
+      "sha256": "4a7341eef69d06fb9c81529d301cea594d0a67c7c42af73b950fd03534a9e4db"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-light-1.png",
+      "bytes": 53812,
+      "sha256": "76e08f97c9031d05d7df24ba4c39a9a3a51c729f11276ae28f0dc492e29f2b33"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-light-3.png",
+      "bytes": 55521,
+      "sha256": "afa1bcad8d367d3884d433f80acca46e81f438fa36ffcaec758038708e7a9e6e"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-light-6-glyphs.txt",
+      "bytes": 8636,
+      "sha256": "12dcf3d01491bc31d790e79bd945ed59fef78b465751e412f3ec1e06226156a0"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-en-light-6.png",
+      "bytes": 75109,
+      "sha256": "c8e021bd59269e5f44ca118af2415f0fb4b5203e342a813b8e81156057fe7696"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-dark-1.png",
+      "bytes": 54316,
+      "sha256": "2606cc649bdf13a163fd40ef44482431b5e97f8854170256211e75098544d165"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-dark-3.png",
+      "bytes": 58611,
+      "sha256": "55d131c29c39f7cd7177806f3dac479b8f48159e2240f36f11fd943d1c7c42f6"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-dark-6-glyphs.txt",
+      "bytes": 8636,
+      "sha256": "64ecabd66e4535ae757c19e5d069b45ecfcf06568ad9dbfba8299896ab538cfa"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-dark-6.png",
+      "bytes": 78291,
+      "sha256": "e3106928c4d064c3e6c9e09842cb8444b135512af1eff417b61df2f23b601a2d"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-light-1.png",
+      "bytes": 55870,
+      "sha256": "73a5807994b8741fbcbdc07aea97aaa5f0013826308c7445c81dacc7d1e11f7f"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-light-3.png",
+      "bytes": 58151,
+      "sha256": "96d31f477c842d01cc554315cdb58e0d803778c5654e22c29fc776c6449917f1"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-light-6-glyphs.txt",
+      "bytes": 8636,
+      "sha256": "d47f3d96090df803ab1d900ac01b8e56547fada444a06a6bf0e42524657bcde6"
+    },
+    {
+      "path": "verified-layout-api30/landscape/arena-hi-light-6.png",
+      "bytes": 77855,
+      "sha256": "6374e924c5f854ef103c1cd5e59dcafe9150bf243658d858739be720861a52c0"
+    },
+    {
+      "path": "verified-layout-api30/landscape-native.txt",
+      "bytes": 87,
+      "sha256": "85bc57f29ebbac55e0b1c23d0952988455b1a34d727dabc11e0a2a89c9d74720"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-dark-1.png",
+      "bytes": 108791,
+      "sha256": "1c444affea194375daf9d19f15a8fae88e8e82ba28ee5187d392540e97d43979"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-dark-3.png",
+      "bytes": 169835,
+      "sha256": "853c4351d67b89ff911ee6ca0cfb6eec78eb42dd08678a4748c57dc754e5c0bf"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-dark-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "286d3ef97d343eb133c5f3c05330724694a88c68164705ac4465aea7426efb74"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-dark-6.png",
+      "bytes": 204107,
+      "sha256": "de7d19a65c06a2d8ede0ebcaf0c0aa99869111fe978c5e72cde26b3aed94aac4"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-light-1.png",
+      "bytes": 105871,
+      "sha256": "367f26cd40317418b27ae7bf3c9eba43598c810312636ff14680ea9bc5e80c2e"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-light-3.png",
+      "bytes": 166892,
+      "sha256": "6230519fb2767b4c297425ad207690a41e8ce5c03a9a747669f544f649674136"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-light-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "8e23f75123428cca3bacc5c061190c3948a55937bbb56fd5b4643fceadfa3fb6"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-en-light-6.png",
+      "bytes": 199218,
+      "sha256": "6d680fae4711f4faa72c76087cdecf8fa7eaf512ab7a0ed2066159f56c527918"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-dark-1.png",
+      "bytes": 113493,
+      "sha256": "4c35960b6fcd694bb87056bc310281dc9ee999b6842da1fc28a6a4cd08eecc43"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-dark-3.png",
+      "bytes": 170100,
+      "sha256": "012a2d9e01cf21480fd46f07ca4f146f9ef658e1a5887258bebbaeede7fc0f60"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-dark-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "0a2960d8b9c9e47fe593f6c0e7eb0dfcca243f6a5426d52b9181559e1c99cb43"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-dark-6.png",
+      "bytes": 202382,
+      "sha256": "d953c2cae3841a798f3cd1d7ac406954aeed7783e0008aaa31bec8c66b43d204"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-light-1.png",
+      "bytes": 107205,
+      "sha256": "50ff2eba7168fe75f9194e4a5bfff396268bbe77df9b6d56deb17c0e4d5e7e1a"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-light-3.png",
+      "bytes": 165619,
+      "sha256": "574f6646dae688aa9b6cafab9a82524e4684fef3ab360efc3343bab9d63b28c8"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-light-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "b30a016f597ba6c5de2f7087b38284b23c705382e74ef28a48859125eff074bf"
+    },
+    {
+      "path": "verified-layout-api30/phone/arena-hi-light-6.png",
+      "bytes": 196579,
+      "sha256": "c5928b29b909bd7f8da27e54545d801f5d7bc6897116ee87682306e33579afc6"
+    },
+    {
+      "path": "verified-layout-api30/phone-native.txt",
+      "bytes": 86,
+      "sha256": "8b8b2ca8133ea1b263a0e5718ea4ab6138111a8428291419d7de046436e94b68"
+    },
+    {
+      "path": "verified-layout-api30/pixel-summary.json",
+      "bytes": 2448,
+      "sha256": "287986b4c7c08b7d3cbebcda222e10f71ff5ef1eb028569ca0dc1349e694cd20"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-dark-1.png",
+      "bytes": 76760,
+      "sha256": "1ecc028ff9315278e2b8dba00cee0a3e373c727f4d1e549877e94c4bcb7c0302"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-dark-3.png",
+      "bytes": 108643,
+      "sha256": "156d2153082f84942590016e58aa49213729a8772c7e3c8bafcfe55049a61a12"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-dark-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "b3457ab0987fafab678080d9befeee4bc1b5526c91a29f46a512cd2b59619418"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-dark-6.png",
+      "bytes": 124084,
+      "sha256": "ea6fd13a8026ef82883d64fbd5f4c9e3e30a3471cf92fdfc23114fbee51d3b55"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-light-1.png",
+      "bytes": 76289,
+      "sha256": "3ea990e282ce013ecd79054376b8a15c4b683c1b3375e5ce3387273add1d25ad"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-light-3.png",
+      "bytes": 100447,
+      "sha256": "0784f1be221d7af180c49d7aedbef8e942175e3ae98b52ca3c7f2bfbcd2a04fb"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-light-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "0fa093c0df481e318ceec63ae070132aad6933fa980d9581a1dd60eb94cd7a5a"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-en-light-6.png",
+      "bytes": 119205,
+      "sha256": "ed4a3ce10daba300347b53f6b29336107f6f9de0f2d45fce8edf04b70873b453"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-dark-1.png",
+      "bytes": 79275,
+      "sha256": "e48b2aaa47303db34a1501a2f335c13f39c0d9eb89e1fc665b0e308b2ad033f0"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-dark-3.png",
+      "bytes": 105313,
+      "sha256": "c9a5ac60fab8ad4af43fd707743086db27c398054a6c888add5e543de8d6fc85"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-dark-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "cd4bdf2973af4907d2170262fd154221edf5361746db0af0c3cf6b5ac504ae93"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-dark-6.png",
+      "bytes": 126054,
+      "sha256": "fe63d169b1c7ae64b503eeddb31d447cef21242636465bbe1d09e1924fd83a83"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-light-1.png",
+      "bytes": 79536,
+      "sha256": "c07721584be87c52634928369aedf378ad8b4aeb2d0cd3c1418657f69daa54a4"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-light-3.png",
+      "bytes": 101607,
+      "sha256": "ea371b396bc01f87a912c662029a0de46dbb0cfc63341c4b9ec59e25e6354c5a"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-light-6-glyphs.txt",
+      "bytes": 8712,
+      "sha256": "e6b080e49cf75ffbb8ed245812ef9e37de444e448675edafd6b1c8e25dbb9860"
+    },
+    {
+      "path": "verified-layout-api30/small/arena-hi-light-6.png",
+      "bytes": 126441,
+      "sha256": "539ba887b53c23b47d0e04afe985a0a76aef79b7bc65f64771c24dd04d983120"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-dark-1.png",
+      "bytes": 91584,
+      "sha256": "b97b67ffcd44ed7a0a7eeded845fc4e5be11fd45056f0426c2237935492cb99a"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-dark-3.png",
+      "bytes": 116362,
+      "sha256": "31947829d342e91e6244849bd150d23fa374c36321b3f1f05f2ee739a9b87f2e"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-dark-6-glyphs.txt",
+      "bytes": 8674,
+      "sha256": "18bb3cf5d408529f0cee04e357ac2bdcf2051f0ce5c5d10c46e57fe3651167f7"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-dark-6.png",
+      "bytes": 130160,
+      "sha256": "436a5db249af7e95e27baeecb394b5f8d1f656898c280e17569c2517a0d62263"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-light-1.png",
+      "bytes": 89211,
+      "sha256": "b7d5b0f95c4896fc98d070fc103150d7245d8213490b71dc4c52ce135cdb9ca1"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-light-3.png",
+      "bytes": 113368,
+      "sha256": "f9487f2acc0da8052e81bcc61ff8d75569226a1ce270a43340cf5e1dd1c72384"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-light-6-glyphs.txt",
+      "bytes": 8674,
+      "sha256": "78b6696fffc1fcb7ac30c3badd9a0fe7d9d9186fae49177ca08af6b09a75be3b"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-en-light-6.png",
+      "bytes": 126469,
+      "sha256": "79357e6126d48ffe5fc449e2a58b79b6a3d43dbb2fcd0f8e2df8fbd18daf7541"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-dark-1.png",
+      "bytes": 96395,
+      "sha256": "e3ffbb02bc7fc41407c88217864ad7d54a0b645e96827f6f4d481ffe2679143d"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-dark-3.png",
+      "bytes": 119061,
+      "sha256": "5859cfc2a4e8b4466df6ae79173b6de06b2e77494ce70466d2cd423fe5b71044"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-dark-6-glyphs.txt",
+      "bytes": 8674,
+      "sha256": "1f88cd724d121406b382743b75c5340107c1dc8309ec2555092d7c820e5f4749"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-dark-6.png",
+      "bytes": 132828,
+      "sha256": "969995cbffa434943d0866708592d06ba62ecf6f84e85a985cbf33034edaa52d"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-light-1.png",
+      "bytes": 90678,
+      "sha256": "7c4984ea9609c4e0b1e2b161027b7b9dd5f6ade7319a733fe30b4194de5771b3"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-light-3.png",
+      "bytes": 114957,
+      "sha256": "85ee2b4b37b0ebe56d0e9ded03f3ab6f16ad5c207731495a176e5a9fc48f51e3"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-light-6-glyphs.txt",
+      "bytes": 8674,
+      "sha256": "5b35fd690c0d398feaeb13ede3b6d5d0d236d9d41987c9d8306f70d16d17feab"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text/arena-hi-light-6.png",
+      "bytes": 124305,
+      "sha256": "99046c254aff95617e108a0c8d2966b940985874624f1f01a8a5268508751dd4"
+    },
+    {
+      "path": "verified-layout-api30/small-large-text-native.txt",
+      "bytes": 87,
+      "sha256": "3e85a3220322e744736415fb175d28fbe0fc035b6c3eaab7fdc422a63ebdaefe"
+    },
+    {
+      "path": "verified-layout-api30/small-native.txt",
+      "bytes": 87,
+      "sha256": "b531facb0363d0607a0aa13aa23085ca534ccc2d6eb131e851add586efdca389"
+    }
+  ],
+  "remaining": [
+    "Complete sustained service workload against this runtime",
+    "Actual Linux/remote CI and exact rebuilt container validation",
+    "Physical ARM64, TalkBack, Hindi editorial, sound and motion acceptance",
+    "Hosted TLS, provider roles/backup/retention, alert delivery and mobile latency/network switching",
+    "Production signing, operator/domain/support/privacy/audience/store decisions and public invitation verification"
+  ]
+}

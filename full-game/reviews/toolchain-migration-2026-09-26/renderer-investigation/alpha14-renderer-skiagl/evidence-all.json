@@ -1,0 +1,38 @@
+{
+  "serial": "emulator-5582",
+  "api": "30",
+  "candidateSha256": "9a0cce35e00f893418f495c15df1d52d1c792ed6597ae8f624fd90b770e4f042",
+  "renderer": "skiagl",
+  "originalRenderer": "opengl",
+  "cases": [
+    {
+      "name": "small",
+      "size": "720x1280",
+      "density": "320",
+      "font": "1.0",
+      "passed": true
+    },
+    {
+      "name": "small-large-text",
+      "size": "720x1280",
+      "density": "320",
+      "font": "2.0",
+      "passed": true
+    },
+    {
+      "name": "phone",
+      "size": "1080x1920",
+      "density": "420",
+      "font": "1.0",
+      "passed": true
+    },
+    {
+      "name": "landscape",
+      "size": "1280x720",
+      "density": "320",
+      "font": "1.0",
+      "passed": true
+    }
+  ],
+  "restored": true
+}

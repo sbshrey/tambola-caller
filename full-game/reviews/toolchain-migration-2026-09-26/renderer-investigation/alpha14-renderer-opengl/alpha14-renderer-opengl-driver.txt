@@ -1,0 +1,10 @@
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 18.423
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
+phone: 12 language/theme/hand combinations passed

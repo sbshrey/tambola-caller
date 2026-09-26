@@ -1,0 +1,10 @@
+{
+  "source": "number-29.png",
+  "mutation": "erase the leading 2 of 29 in a copy only",
+  "beforeLeadingInk": 509,
+  "afterLeadingInk": 0,
+  "beforeTrailingInk": 533,
+  "afterTrailingInk": 533,
+  "threshold": 0.7,
+  "wouldReject": true
+}

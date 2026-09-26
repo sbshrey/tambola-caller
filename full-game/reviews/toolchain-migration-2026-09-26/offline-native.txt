@@ -1,0 +1,26 @@
+
+io.github.sbshrey.tambola.game.AppearanceTest:.
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+io.github.sbshrey.tambola.game.ArenaMotionTest:.
+io.github.sbshrey.tambola.game.AvatarWinTest:.
+io.github.sbshrey.tambola.game.CustomRulesGameTest:....
+io.github.sbshrey.tambola.game.GameAudioTest:.....
+io.github.sbshrey.tambola.game.GameDataTest:..
+io.github.sbshrey.tambola.game.LearnAndBadgesTest:..
+io.github.sbshrey.tambola.game.LocalizationTest:...
+io.github.sbshrey.tambola.game.NumberMotionTest:.
+io.github.sbshrey.tambola.game.OfflineGameTest:....
+io.github.sbshrey.tambola.game.OnlineGameTest:
+io.github.sbshrey.tambola.game.OnlineGameTest:
+io.github.sbshrey.tambola.game.OnlineStoreTest:..
+io.github.sbshrey.tambola.game.PlayExperienceTest:....
+io.github.sbshrey.tambola.game.RoomInviteColdTest:.
+io.github.sbshrey.tambola.game.RoomInviteTest:
+io.github.sbshrey.tambola.game.RoomInviteTest:
+io.github.sbshrey.tambola.game.WinMotionTest:.
+
+Time: 437.802
+
+OK (41 tests)
+
+

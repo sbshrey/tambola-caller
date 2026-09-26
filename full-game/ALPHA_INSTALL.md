@@ -1,60 +1,47 @@
-# Tambola Together 0.12.0-alpha12
+# Tambola Together 0.14.0-alpha14
 
-This is an internal **development alpha**, signed with an Android debug certificate. Solo and family play work offline. Native private rooms require a separately configured room service; this package targets a local test service, not a public hosted service. It is not the production release. Use fictional player names while testing. A future release signed with the production certificate may require uninstalling this alpha, which clears its local history.
+Internal development APK for Android 8.0 or newer. It uses an Android debug certificate. Solo and same-device family play work offline; this build's private rooms require the local development service. It is not a public production release. See [candidate validation](ALPHA14_VALIDATION.md) for exact checks and remaining release requirements.
 
-Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
+## Install or update
 
-For local private rooms, use the updated service build or `releases/service-security-2026-09-26/Tambola-service.zip`, which includes the Netty/Logback fixes described in the [dependency review](DEPENDENCY_REVIEW.md). Extract the service into a fresh directory and follow its permission/recovery setup. The alpha12 APK and protocol remain compatible and unchanged.
+1. Open `releases/0.14.0-alpha14/Tambola-Together-0.14.0-alpha14.apk` on your Android phone.
+2. Allow APK installation from that file manager if Android asks.
+3. Install over the existing full-game alpha to keep saved games. Do not uninstall first. Alpha14 uses the same package and debug signing identity; an actual alpha13-to-alpha14 update retained a marked round, language and caller settings.
 
-1. Copy `Tambola-Together-0.12.0-alpha12.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
-2. If Android asks, allow APK installation for the app you opened the file from.
-3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.
-4. Use **Call next number** or **Auto**. Tap **Mark ticket** for large buttons, or select assisted marking during setup.
-5. Open **Check claims** for automatically verified prizes. **Inspect** shows the required numbers, missing calls and winning tickets. Finish at the chosen house, or continue through all 90 calls when that option is enabled.
-6. **Play another round** keeps your players, ticket allowance and rules in setup; dealing starts a new round with fresh tickets. **Share these results** first shows a message preview. Player names are excluded unless you opt in.
+Tambola Keyboard is a separate app; this game does not require enabling a keyboard. Saves remain format 3. Older saved hands retain their original cards. A future production certificate may require a separate installation or uninstall, so this alpha is not a promise of permanent data migration.
 
-Settings → **App language** chooses Device language, English or हिन्दी for the interface. It preserves the current game and unsaved prize setup; local calling pauses during the change. Player names and custom prize names stay as entered. The caller voice is a separate choice.
+## Start playing
 
-Settings also include System/Light/Dark appearance, English/Hindi/Hinglish calling, separate voice/music/effects volumes, haptics, reduced motion, and calling pace. Music defaults off. Number voice controls automatic speech; Hear again plays on request unless voice volume is zero. After an audio-device disconnect, use Resume sound when ready. Leaving the app pauses offline calling. Reopen and choose **Resume round** to continue. Number recordings are AI-generated and bundled. Internet permission supports private rooms; no OpenAI key is included or needed to play.
+- **Quick play** starts with three tickets, two labelled computer opponents, assisted marking, five-second calls and six familiar prizes: Early Five, Corners, Top/Middle/Bottom Line and Full House. An unfinished round offers **Resume round** instead of silently replacing it.
+- **Custom game** lets you choose one to six tickets and change marking help. Expand **Avatars & prizes** for additional choices before dealing.
+- **Pass & play** creates a family game on one phone. During play, open the three-dot **Game options** menu and choose **Pass the phone**. Calling pauses and the old hand is hidden until the next player opens theirs.
 
-Included now: digital tickets, solo/computer/family play, standard prizes, one/two/three house settings, 90-call play, custom pattern prizes, points and ties, local round history, pause/resume, practice undo, number board, inspected claims, rematches and controlled text result sharing.
+All your tickets stay together on the game screen without scrolling or a carousel. Newly dealt cards never repeat a number within your hand; six cards contain every number 1–90 once. Opponents' ticket grids are hidden.
 
-Choose an illustrated avatar for each seat in setup. A verified live win shows the winning players and points with a short celebration; **See winning tickets** opens the claim details, and **Dismiss celebration** clears the card. Reduced motion keeps the message still. Avatars stay with the dealt round and carry into rematch setup.
+In manual mode, **Dab · N** marks confirmed called numbers across your hand; repeated taps do not erase marks. **Next** and automatic calling controls stay below the cards. Tap the current ball to hear the call again. The three-dot menu contains the number board, prize details and Settings. Wins are verified automatically; same-call ties receive full points. Celebrations do not move the tickets.
 
-## Learn and collect badges
+After the round, view results or **Play another round**. Rematches retain the chosen setup and deal new cards. Sharing opens a preview; player names are excluded unless selected. **Your rounds**, **Your badges** and **How to play** are available from Home. The tutorial uses a separate sample and cannot replace or score your real round.
 
-Choose **Learn with a sample ticket** on the welcome card or **How to play** from Home. The five-part interactive lesson explains the ticket, calls sample number 7, lets you mark it, and demonstrates an automatically verified top-line win. Voice/language controls are available at the start. You can skip or replay it. The sample cannot replace your current game, save a round, or earn points/badges in real play.
+## Language, sound and saved games
 
-Open **Your badges** on Home to see **First round**, **First full house**, and **Five together**. Solo practice, games against computers, the family table and your current online profile have separate milestones. Cancelled rounds never count. A computer's house does not earn your badge; a family's house badge belongs to the shared table. Full house and all ranked houses qualify, including same-call ties. Reopening a result does not count it again.
+Settings includes English/Hindi interface choice, System/Light/Dark appearance, separate English/Hindi/Hinglish caller choice, voice/music/effects volumes, haptics, reduced motion and calling pace. Music defaults off. Changing interface language retains the current game and unsaved prize setup and pauses local calling. Entered player/prize names stay as entered.
 
-Offline badges come from saved completed rounds; deleting those rounds clears their badges. Online badges remain in encrypted local profile data even after old results leave the 50-result cache. Signing out or resetting online data removes the profile's local badges. These are social milestones on this device, not a global leaderboard or a promise of account recovery.
+Leaving the app pauses offline play. Reopen and choose **Resume round**. Voice clips, original music/effects and artwork are bundled; no OpenAI key or runtime AI connection is needed. Number recordings are disclosed as AI-generated. Offline history and its badges remain on this device; deleting completed rounds removes their associated offline badges. There are no purchases or cash prizes.
 
-## Make a custom prize
+For custom rules, open the editor under **Avatars & prizes** before dealing. It supports row/column/range/position conditions, multiple-ticket conditions and grouped alternatives, with an isolated winning example. Rules are fixed once the round is dealt. A regional prize name alone does not define a pattern; configure its exact rule. See [custom prizes](domain/CUSTOM_RULES.md).
 
-In setup, choose **Create custom prize**. Name it, set its points, and select numbers by row, column, range or populated position. Every condition in one group must match (AND); any one complete group can qualify (OR). Specify which owned tickets count and how many must match. Use **Winning example** and **Clear sample calls** to try the rule, or tap the sample numbers yourself. These sample tickets are separate from the real deal.
+## Private rooms in this internal build
 
-Save the prize, then deal the tickets. Rules and points stay fixed for that round. A normal round can end at its final house while a custom prize remains unawarded; choose **Call all 90 numbers** if you want to continue. An empty selected range never wins. Lowering the ticket allowance below a custom prize's requirement keeps the rule and explains what needs correcting.
+The debug endpoint is `http://127.0.0.1:8080`. A normal phone installation does not reach a hosted server automatically. Local testing requires the current service build, database setup and a dedicated emulator or attached development phone with `adb reverse tcp:8080 tcp:8080`. Use fictional profiles. See [service setup](server/README.md) and [native client configuration](client/README.md). No public endpoint was deployed for this package.
 
-## Private rooms in this build
+With the configured service reachable, choose **With friends**, review the game-data disclosure, create a display-name profile and create or join a room. Invitation links and eight-character room codes require explicit joining and preserve an existing room or pending action. Public browser invitations and Android domain verification need the actual domain and production certificate; see [invitation setup](INVITES.md).
 
-**Share invitation** now includes a link and the room code. Open the link, review the code, create a profile if needed, then explicitly choose **Join invitation**. An existing room or pending request is preserved; a new invitation waits until you can leave the current room. A locked, full, started or expired room may reject a previously shared invitation. You can always dismiss an invitation or enter a code manually.
+Players ready after agreeing to the rules; changing rules resets readiness. The host starts, pauses, ends and rematches the round. Calls and awards are server-confirmed. Reconnection catches up without replaying old announcements. **Retry pending action** rechecks the same request rather than creating a duplicate. Each player sees only their own tickets. Protocol remains version 2.
 
-With large text or a short window, room actions scroll with the content so the invitation and tickets stay readable. At ordinary phone sizes, actions remain pinned below the content.
+## Your game data
 
-The local link in this debug APK works only with the configured loopback fixture. Public browser pages, Android domain verification and an installation destination require the actual hosted domain and signing certificate. See [invitation setup and acceptance](INVITES.md).
+Settings and online registration link to the English/Hindi game-data explanation. Online sessions and cached rooms are encrypted on the device. **Delete online profile** requests service-side deletion/redaction and clears local online data after confirmation; a lost reply can be retried after restarting the app. Offline games remain. Signing out or resetting local online data does not delete the server profile.
 
-The default debug endpoint is `http://127.0.0.1:8080`. It is useful with the local service and a dedicated Android emulator using `adb reverse tcp:8080 tcp:8080`; it does not connect a phone to a hosted game by itself. See [the native client guide](client/README.md) for configuration and test commands.
+Shared game records, other players' downloaded copies and backups have separate retention. A minimal recovery record prevents restored backups from restoring deleted access; it currently has no automatic expiry. Original deletion requests can confirm their result for 30 days. There is no account-recovery service in this alpha. See [exact deletion behavior and remaining retention work](server/PROFILE_DELETION.md).
 
-With a reachable configured service, select **Play online**, choose a display name, and create a room or join with its eight-character code. The host can change standard/custom rules before play; everyone must ready again after a change. The host starts once at least two connected players are ready and enough tickets exist for the chosen house prizes. Each player sees only their own cards.
-
-Choose a profile avatar during registration or change it in the lobby before play. A lobby avatar change resets your ready flag; it does not change other players. This build uses the same protocol-2 game messages as alpha08–11; older protocol-1 clients do not understand these snapshots. [Compatibility notes](AVATARS.md) explain save/protocol changes.
-
-Calls and prizes are server-confirmed. Host controls support pause/resume, ending and rematches. The room can continue while you leave the app; returning catches up without replaying old announcements. If an action cannot be confirmed, **Retry pending action** checks its original result rather than creating a second action. Completed results have a private sharing preview and encrypted local online history.
-
-Online profiles and cached rooms are encrypted on the device. **Delete online profile** removes the profile and room memberships, replaces its stored display name/avatar in shared game records, and clears this device's online data after service confirmation. If the reply is lost, **Retry pending action** checks the original request, including after recreating the screen. Deleting a host transfers control to a remaining player; offline games stay intact.
-
-**Read about your game data** is available in Settings and on the online screen before creating a profile. The English/Hindi view explains local and service storage, retention, deletion, sound generation and aggregate service monitoring. Its content scrolls independently of the close button.
-
-Shared records retain opaque player IDs, tickets, calls, scores and custom prize text until normal retention expires. Other players' downloaded copies and existing backups are not instantly erased. The service retains a separate recovery record containing a random profile ID, one-way confirmation code and deletion times, without a display name, avatar or sign-in secret. It currently has no automatic expiry, so older backups cannot restore the deleted profile's access. The original request can confirm deletion for 30 days; recovery protection continues afterward. See [profile deletion and retention](server/PROFILE_DELETION.md) for exact behavior and outstanding backup/restore acceptance. Signing out only revokes the session and clears local online data; a recovery reset only clears local data and can discard a pending deletion confirmation. Request deletion before signing out. There is no account-recovery service in this alpha.
-
-Still in development: hosted online rooms and broader multiplayer recovery acceptance, final listening/art/motion acceptance, Hindi editorial review, full device/accessibility/performance testing, and production signing/deployment. A regional prize name is only a label; its exact pattern must be configured. The documented alpha checks are emulator evidence, not physical-phone acceptance or a production-readiness claim.
+Public hosting, production signing, physical-device/accessibility/audio checks, sustained load and operator/privacy/support/store acceptance remain release gates. Local emulator results do not establish mobile-network latency or market superiority.

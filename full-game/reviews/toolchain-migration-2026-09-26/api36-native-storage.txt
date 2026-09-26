@@ -1,0 +1,10 @@
+
+io.github.sbshrey.tambola.game.PlayExperienceTest:....
+io.github.sbshrey.tambola.game.NativeLibraryTest:.
+io.github.sbshrey.tambola.game.StorageLifecycleTest:.
+
+Time: 118.369
+
+OK (6 tests)
+
+

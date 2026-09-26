@@ -1,0 +1,760 @@
+{
+  "checkedAtUtc": "2026-09-26T12:17:19.843230+00:00",
+  "source": "https://api.osv.dev/v1/querybatch",
+  "inventorySha256": "4b9e6abf75e04c9b79af14e60080ef62f7d390212974eb02baefb4630e2a1958",
+  "inventoryKind": "build",
+  "scopes": [
+    {
+      "project": "(detached)",
+      "configuration": "classpath",
+      "modules": 118,
+      "artifacts": 110
+    },
+    {
+      "project": "(detached)",
+      "configuration": "detachedConfiguration1",
+      "modules": 1,
+      "artifacts": 0
+    },
+    {
+      "project": "(detached)",
+      "configuration": "detachedConfiguration2",
+      "modules": 1,
+      "artifacts": 0
+    },
+    {
+      "project": "(detached)",
+      "configuration": "detachedConfiguration3",
+      "modules": 1,
+      "artifacts": 0
+    },
+    {
+      "project": "(detached)",
+      "configuration": "detachedConfiguration4",
+      "modules": 1,
+      "artifacts": 0
+    },
+    {
+      "project": "(detached)",
+      "configuration": "detachedConfiguration5",
+      "modules": 1,
+      "artifacts": 0
+    }
+  ],
+  "queriedVersions": 118,
+  "coverage": "Exact Maven coordinates in the supplied build inventory only; no proof of exploitability or absence of unknown vulnerabilities",
+  "completed": true,
+  "matches": [
+    {
+      "package": "androidx.databinding:databinding-common",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "androidx.databinding:databinding-compiler-common",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.application:com.android.application.gradle.plugin",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.databinding:baseLibrary",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.legacy-kapt:com.android.legacy-kapt.gradle.plugin",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.analytics-library:crash",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.analytics-library:protos",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.analytics-library:shared",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.analytics-library:tracker",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build.jetifier:jetifier-core",
+      "version": "1.0.0-beta10",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build.jetifier:jetifier-processor",
+      "version": "1.0.0-beta10",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:aapt2-proto",
+      "version": "9.3.3-15703166",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:aaptcompiler",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:apksig",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:apkzlib",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:builder",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:builder-model",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:builder-test-api",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:bundletool",
+      "version": "1.18.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:gradle",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:gradle-api",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:gradle-common-api",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:gradle-kotlin",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:gradle-settings-api",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.build:manifest-merger",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.ddms:ddmlib",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.layoutlib:layoutlib-api",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.lint:lint-model",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.lint:lint-typedef-remover",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools.utp:gradle-work-action-api",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools:annotations",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools:common",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools:dvlib",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools:repository",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools:sdk-common",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android.tools:sdklib",
+      "version": "32.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android:signflinger",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.android:zipflinger",
+      "version": "9.3.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.auto.value:auto-value-annotations",
+      "version": "1.6.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.code.findbugs:jsr305",
+      "version": "3.0.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.code.gson:gson",
+      "version": "2.11.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.crypto.tink:tink",
+      "version": "1.7.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.dagger:dagger",
+      "version": "2.28.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.errorprone:error_prone_annotations",
+      "version": "2.36.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.flatbuffers:flatbuffers-java",
+      "version": "1.12.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.guava:failureaccess",
+      "version": "1.0.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.guava:guava",
+      "version": "33.4.0-jre",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.guava:listenablefuture",
+      "version": "9999.0-empty-to-avoid-conflict-with-guava",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.j2objc:j2objc-annotations",
+      "version": "3.0.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.jimfs:jimfs",
+      "version": "1.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.protobuf:protobuf-java",
+      "version": "3.25.5",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.google.protobuf:protobuf-java-util",
+      "version": "3.25.5",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.googlecode.juniversalchardet:juniversalchardet",
+      "version": "1.0.3",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.squareup:javapoet",
+      "version": "1.13.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.squareup:javawriter",
+      "version": "2.5.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.sun.istack:istack-commons-runtime",
+      "version": "3.0.8",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "com.sun.xml.fastinfoset:FastInfoset",
+      "version": "1.2.16",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "commons-codec:commons-codec",
+      "version": "1.17.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "commons-io:commons-io",
+      "version": "2.16.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "commons-logging:commons-logging",
+      "version": "1.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "jakarta.activation:jakarta.activation-api",
+      "version": "1.2.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "jakarta.xml.bind:jakarta.xml.bind-api",
+      "version": "2.3.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "javax.inject:javax.inject",
+      "version": "1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "net.java.dev.jna:jna",
+      "version": "5.6.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "net.java.dev.jna:jna-platform",
+      "version": "5.6.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "net.sf.jopt-simple:jopt-simple",
+      "version": "4.9",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "net.sf.kxml:kxml2",
+      "version": "2.3.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.apache.commons:commons-compress",
+      "version": "1.27.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.apache.commons:commons-lang3",
+      "version": "3.20.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.apache.httpcomponents:httpclient",
+      "version": "4.5.14",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.apache.httpcomponents:httpcore",
+      "version": "4.4.16",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.apache.httpcomponents:httpmime",
+      "version": "4.5.6",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.bitbucket.b_c:jose4j",
+      "version": "0.9.6",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.bouncycastle:bcpkix-jdk18on",
+      "version": "1.85",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.bouncycastle:bcprov-jdk18on",
+      "version": "1.85",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.bouncycastle:bcutil-jdk18on",
+      "version": "1.85",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.checkerframework:checker-qual",
+      "version": "3.43.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.glassfish.jaxb:jaxb-runtime",
+      "version": "2.3.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.glassfish.jaxb:txw2",
+      "version": "2.3.2",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jdom:jdom2",
+      "version": "2.0.6.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin.plugin.serialization:org.jetbrains.kotlin.plugin.serialization.gradle.plugin",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:compose-compiler-gradle-plugin",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:fus-statistics-gradle-plugin",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-build-statistics",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-build-tools-api",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-compiler-runner",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-daemon-client",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-gradle-plugin",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-gradle-plugin-annotations",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-gradle-plugin-api",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-gradle-plugin-idea",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-gradle-plugins-bom",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-klib-commonizer-api",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-native-utils",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-reflect",
+      "version": "2.4.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-serialization",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-stdlib",
+      "version": "2.4.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
+      "version": "2.2.10",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+      "version": "2.2.10",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-tooling-core",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-util-io",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-util-klib",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlin:kotlin-util-klib-metadata",
+      "version": "2.4.20",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlinx:kotlinx-coroutines-bom",
+      "version": "1.9.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+      "version": "1.9.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+      "version": "1.9.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jetbrains:annotations",
+      "version": "13.0",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.jvnet.staxex:stax-ex",
+      "version": "1.8.1",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.ow2.asm:asm",
+      "version": "9.9",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.ow2.asm:asm-analysis",
+      "version": "9.9",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.ow2.asm:asm-commons",
+      "version": "9.9",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.ow2.asm:asm-tree",
+      "version": "9.9",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.ow2.asm:asm-util",
+      "version": "9.9",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.slf4j:slf4j-api",
+      "version": "1.7.30",
+      "ids": [],
+      "activeIds": []
+    },
+    {
+      "package": "org.tensorflow:tensorflow-lite-metadata",
+      "version": "0.2.0",
+      "ids": [],
+      "activeIds": []
+    }
+  ],
+  "advisories": {},
+  "activeAdvisoryIds": [],
+  "affectedVersions": 0
+}

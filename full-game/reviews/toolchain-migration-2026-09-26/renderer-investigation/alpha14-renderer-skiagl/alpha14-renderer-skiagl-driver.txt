@@ -1,0 +1,40 @@
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 18.183
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
+small: 12 language/theme/hand combinations passed
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 17.84
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
+small-large-text: 12 language/theme/hand combinations passed
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 29.284
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
+phone: 12 language/theme/hand combinations passed
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 45.521
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
+landscape: 12 language/theme/hand combinations passed

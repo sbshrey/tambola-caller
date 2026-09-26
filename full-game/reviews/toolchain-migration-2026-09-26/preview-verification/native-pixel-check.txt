@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 19.784
+
+OK (1 test)
+
+

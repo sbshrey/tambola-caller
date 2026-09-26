@@ -1,0 +1,17 @@
+{
+  "serial": "emulator-5582",
+  "api": "30",
+  "candidateSha256": "9a0cce35e00f893418f495c15df1d52d1c792ed6597ae8f624fd90b770e4f042",
+  "renderer": "opengl",
+  "originalRenderer": "opengl",
+  "cases": [
+    {
+      "name": "phone",
+      "size": "1080x1920",
+      "density": "420",
+      "font": "1.0",
+      "passed": true
+    }
+  ],
+  "restored": true
+}

@@ -12,6 +12,9 @@ const args = process.argv.slice(2);
 const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 const serial = option('--serial', 'emulator-5582');
 const label = option('--label', 'locale-process-recovery');
+const upgradeApkPath = option('--upgrade-apk');
+const upgradeTestPath = option('--upgrade-test-apk');
+assert.equal(Boolean(upgradeApkPath), Boolean(upgradeTestPath), 'An upgrade requires both app and instrumentation APKs');
 assert.match(serial, /^emulator-\d+$/); assert.match(label, /^[a-z0-9-]+$/);
 const sdk = process.env.ANDROID_SDK_ROOT || resolve(process.env.LOCALAPPDATA, 'Android/Sdk');
 const adb = resolve(sdk, 'platform-tools', process.platform === 'win32' ? 'adb.exe' : 'adb');
@@ -19,7 +22,7 @@ const app = 'io.github.sbshrey.tambola.game';
 const output = resolve(root, '.test-workspace', label);
 await mkdir(output, { recursive: true });
 function run(command, optional = false, binary = false) {
-  const result = spawnSync(adb, ['-s', serial, ...command], { encoding: binary ? undefined : 'utf8', windowsHide: true, timeout: 30_000, maxBuffer: 80 * 1024 * 1024 });
+  const result = spawnSync(adb, ['-s', serial, ...command], { encoding: binary ? undefined : 'utf8', windowsHide: true, timeout: command[0] === 'install' ? 120_000 : 30_000, maxBuffer: 80 * 1024 * 1024 });
   if (!optional) assert.equal(result.status, 0, `adb ${command.slice(0, 3).join(' ')} failed`);
   return result.status === 0 ? (binary ? result.stdout : result.stdout.trim()) : null;
 }
@@ -28,17 +31,21 @@ const api = Number(run(['shell', 'getprop', 'ro.build.version.sdk']));
 assert.ok(api >= 26);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const apk = await readFile(resolve(root, option('--apk', 'app/build/outputs/apk/debug/app-debug.apk')));
-function installedHash() {
-  const path = run(['shell', 'pm', 'path', app]).replace(/^package:/, '');
+const upgrade = upgradeApkPath ? {
+  appPath: resolve(root, upgradeApkPath), testPath: resolve(root, upgradeTestPath),
+  appSha256: sha(await readFile(resolve(root, upgradeApkPath))),
+  instrumentationSha256: sha(await readFile(resolve(root, upgradeTestPath))),
+} : null;
+function installedHash(packageName = app) {
+  const path = run(['shell', 'pm', 'path', packageName]).replace(/^package:/, '');
   assert.match(path, /^\/data\/app\/[A-Za-z0-9_+=.~/-]+\/base\.apk$/);
   return sha(run(['exec-out', 'cat', path], false, true));
 }
 assert.equal(installedHash(), sha(apk), 'Install the exact candidate first');
-const testPath = run(['shell', 'pm', 'path', `${app}.test`]).replace(/^package:/, '');
-assert.match(testPath, /^\/data\/app\/[A-Za-z0-9_+=.~/-]+\/base\.apk$/);
 const runId = randomUUID();
 const evidence = { runId, serial, api, fingerprint: run(['shell', 'getprop', 'ro.build.fingerprint']), candidateSha256: sha(apk),
-  instrumentationSha256: sha(run(['exec-out', 'cat', testPath], false, true)), cases: [], completed: false };
+  instrumentationSha256: installedHash(`${app}.test`), cases: [], completed: false };
+if (upgrade) evidence.upgrade = { appSha256: upgrade.appSha256, instrumentationSha256: upgrade.instrumentationSha256, installed: false };
 const scales = ['window_animation_scale', 'transition_animation_scale', 'animator_duration_scale'];
 const previous = new Map(scales.map(key => [key, run(['shell', 'settings', 'get', 'global', key])]));
 for (const value of previous.values()) assert.match(value, /^(null|\d+(?:\.\d+)?)$/);
@@ -102,6 +109,14 @@ try {
     await until(() => !run(['shell', 'pidof', app], true), 10_000, 'Original process is still alive');
     await bounded(seed.closed, 10_000, 'Seed did not stop'); active = null;
     assert.ok(!/OK \(1 test\)/.test(seed.text), 'Seed finished instead of being killed');
+    if (upgrade) {
+      assert.match(run(['install', '-r', '-t', upgrade.appPath]), /Success/);
+      assert.match(run(['install', '-r', '-t', upgrade.testPath]), /Success/);
+      assert.equal(installedHash(), upgrade.appSha256);
+      assert.equal(installedHash(`${app}.test`), upgrade.instrumentationSha256);
+      evidence.upgrade.installed = true;
+      console.log('Installed the new app and instrumentation in place, preserving app data.');
+    }
     for (const locale of api >= 33 ? ['hi', 'en'] : ['hi']) {
       if (locale === 'en') {
         run(['shell', 'am', 'force-stop', app]);
@@ -118,7 +133,8 @@ try {
       console.log(`${locale}: new process retained the language, caller choice and exact marked round.`);
     }
   } finally { await writeFile(resolve(output, 'seed-intentionally-killed.txt'), seed.text); }
-  assert.equal(installedHash(), evidence.candidateSha256);
+  assert.equal(installedHash(), upgrade?.appSha256 ?? evidence.candidateSha256);
+  assert.equal(installedHash(`${app}.test`), upgrade?.instrumentationSha256 ?? evidence.instrumentationSha256);
   evidence.completed = true;
 } catch (error) { console.error(error.message); process.exitCode = 1; }
 finally {

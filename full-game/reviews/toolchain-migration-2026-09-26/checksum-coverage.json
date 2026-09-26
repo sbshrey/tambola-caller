@@ -1,0 +1,19 @@
+{
+  "checkedAtUtc": "2026-09-26T12:29:54.922218+00:00",
+  "completed": true,
+  "baseCommit": "4c7b933f71976e9fc7ebd6f9e4f3332bca54d6bf",
+  "metadataSha256": "2515e1111bcd9814c72d40dcdf7ccd02dcc6b503d7adbaac884985aecee29bf4",
+  "existingEntriesPreserved": 1321,
+  "newEntriesVerified": 314,
+  "evidence": [
+    {
+      "file": "configuration-checksums.json",
+      "sha256": "07f0ad7f69207489f98835f45edb65672cd24f7250f6da2901a65b56765bde0d"
+    },
+    {
+      "file": "compiler-checksums.json",
+      "sha256": "1bbe905142ce828568a7c22fd52a727b4eeba48891ae3086c6fbfdad7836f8a6"
+    }
+  ],
+  "method": "Exact coverage of every newly trusted artifact by the two fresh official HTTPS checksum reports; all prior SHA-256 sets preserved"
+}

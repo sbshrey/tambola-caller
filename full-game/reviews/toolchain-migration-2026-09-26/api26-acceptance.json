@@ -1,0 +1,11 @@
+{
+  "api": "26",
+  "fingerprint": "Android/sdk_phone_x86_64/generic_x86_64:8.0.0/OSR1.180418.004/4931640:userdebug/test-keys",
+  "serial": "emulator-5586",
+  "coreGameplayMethods": 4,
+  "offlineMethods": 4,
+  "layoutCombinations": 12,
+  "pixelCheckedCaptures": 4,
+  "glyphComparisons": 684,
+  "initialStartup": "Emulator booted on reused port 5584 but did not expose its ADB transport; no app check ran. Owned emulator was stopped and successfully relaunched on unused port 5586."
+}

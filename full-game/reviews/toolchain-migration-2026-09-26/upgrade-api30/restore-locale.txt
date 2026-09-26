@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.LocaleProcessTest:.
+
+Time: 2.794
+
+OK (1 test)
+
+

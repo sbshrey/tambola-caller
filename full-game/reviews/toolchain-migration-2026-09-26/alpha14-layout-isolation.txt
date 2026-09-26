@@ -1,0 +1,9 @@
+
+io.github.sbshrey.tambola.game.ArenaLayoutTest:.
+
+Time: 17.835
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.

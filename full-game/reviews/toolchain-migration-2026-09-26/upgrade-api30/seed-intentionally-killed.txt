@@ -1,0 +1,3 @@
+
+io.github.sbshrey.tambola.game.LocaleProcessTest:INSTRUMENTATION_RESULT: shortMsg=Process crashed.
+INSTRUMENTATION_CODE: 0

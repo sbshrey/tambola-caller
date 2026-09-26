@@ -1,0 +1,8 @@
+{
+  "checkedAtUtc": "2026-09-26T12:16:48.4627499Z",
+  "status": "Valid",
+  "message": "Signature verified.",
+  "signer": "CN=Eclipse Foundation, O=Eclipse Foundation, L=Bruxelles, C=BE",
+  "signerThumbprint": "F621CFCD35923BF836B2C2AED71EE689262AFE5D",
+  "fileSha256": "1977f302375adbb920d41dac65c7e22eb9c2ed8e1e8d6258964154ff16f14406"
+}

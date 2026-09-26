@@ -1,0 +1,39 @@
+{
+  "checkedAtUtc": "2026-09-26T12:24:41.696250+00:00",
+  "method": "Fresh official HTTPS artifact bytes used for explicit checksum additions before strict build",
+  "verified": [
+    {
+      "group": "com.android.tools.build",
+      "name": "aapt2",
+      "version": "9.3.3-15703166",
+      "artifact": "aapt2-9.3.3-15703166-windows.jar",
+      "url": "https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2/9.3.3-15703166/aapt2-9.3.3-15703166-windows.jar",
+      "sha256": "b1006ecec7e5936257e95e97f3eba7ef439d3e44178967cc048f86c9119fb231"
+    },
+    {
+      "group": "com.android.tools.build",
+      "name": "aapt2",
+      "version": "9.3.3-15703166",
+      "artifact": "aapt2-9.3.3-15703166.pom",
+      "url": "https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2/9.3.3-15703166/aapt2-9.3.3-15703166.pom",
+      "sha256": "faa87aed1e0efaf311f56dbff57ee4dcd5ae83b34929bbda40bdaaac03182d40"
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-metadata-jvm",
+      "version": "2.4.20",
+      "artifact": "kotlin-metadata-jvm-2.4.20.jar",
+      "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-metadata-jvm/2.4.20/kotlin-metadata-jvm-2.4.20.jar",
+      "sha256": "98d9b1847908adfde7a8b2d4cc35708d7ddccae0698cec56bcb506bcf9392595"
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-metadata-jvm",
+      "version": "2.4.20",
+      "artifact": "kotlin-metadata-jvm-2.4.20.pom",
+      "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-metadata-jvm/2.4.20/kotlin-metadata-jvm-2.4.20.pom",
+      "sha256": "eadbadd1ad2972c11cb9d8bfe1c7927342e56bc19658044be57f1ecf02d10d11"
+    }
+  ],
+  "metadataSha256": "2515e1111bcd9814c72d40dcdf7ccd02dcc6b503d7adbaac884985aecee29bf4"
+}

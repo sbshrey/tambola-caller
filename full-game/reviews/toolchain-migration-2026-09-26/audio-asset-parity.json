@@ -1,0 +1,8 @@
+{
+  "baselineApkSha256": "bb73f3632176bfbcd6bda8b1585b834eb5741655f7b1274def7b9ccccb19447b",
+  "candidateApkSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "sameAudioAssetEntries": 279,
+  "voiceClips": 270,
+  "wavClips": 5,
+  "changed": []
+}

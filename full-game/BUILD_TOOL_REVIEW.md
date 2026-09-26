@@ -1,6 +1,6 @@
 # Build-tool review — 26 September 2026, in progress
 
-This review is separate from the [runtime dependency scan](DEPENDENCY_REVIEW.md) and [container scan](server/CONTAINER_DEPENDENCY_REVIEW.md). It is not yet complete. The bounded wrapper update to **8.14.5** passes full rebuild, JVM tests, lint and focused native acceptance. Broader build-library findings remain open; the **9.7.1 / AGP 9.3.3 / Kotlin 2.4.20** migration has only been evaluated in an isolated dependency probe. CI action updates are recorded below.
+This review is separate from the [runtime dependency scan](DEPENDENCY_REVIEW.md) and [container scan](server/CONTAINER_DEPENDENCY_REVIEW.md). It is not yet complete. The bounded wrapper update to **8.14.5** passes full rebuild, JVM tests, lint and focused native acceptance. The real app now selects **9.7.1 / AGP 9.3.3 / Kotlin 2.4.20** for alpha14; full build, dependency provenance, JVM tests and local native acceptance pass. Physical devices, actual Linux/CI and public-release acceptance remain. The accepted 8.14.5 checkpoint and alpha13 package remain immutable. CI action updates are recorded below.
 
 ## Confirmed wrapper finding
 
@@ -96,7 +96,7 @@ python tools/check-runtime-advisories.py .test-workspace/build-config-inventory.
 
 Use a fresh advisory output filename. For full coverage, replace `help` with the actual build/test tasks and run lint after both variants have compiled, to avoid the previously observed generated-stub lint race. Keep failed probes and dated scans as evidence; never equate configuration-only coverage or zero runtime matches with build-tool acceptance.
 
-## Migration candidate, not yet applied to the app
+## Migration selection and isolated probe
 
 The official Gradle **9.7.1** distribution was independently downloaded, checked against its published SHA-256 (`acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a`) and scanned with the same Grype database. It reports **three Medium matches**: Jackson Databind 2.22.0 (`GHSA-5jmj-h7xm-6q6v`, `GHSA-5gvw-p9qm-jgwh`) and jsoup 1.22.2 (`GHSA-pmhh-3w7g-xqp8`). These remain open package matches; this review has neither suppressed them nor established that their affected deserialization/sanitization features are reachable. Replacing embedded JARs would invalidate the official distribution and is not the selected approach. The [distribution comparison](reviews/build-tools-2026-09-26/distribution-scans.json) records hashes, database identity and all findings.
 
@@ -104,7 +104,7 @@ The official Gradle **9.7.1** distribution was independently downloaded, checked
 
 An isolated JVM dependency-resolution probe, with no Android/Kotlin plugin applied, selected **AGP 9.3.3 / Kotlin and Compose plugin 2.4.20**. Its 112 Maven version pairs (109 binary artifacts) initially had eight advisory IDs across five affected versions. Constraints for Commons Lang **3.20.0**, jose4j **0.9.6**, Bouncy Castle provider/PKIX/util **1.85** and JDOM **2.0.6.1** resolve to 112 version pairs with **zero active OSV matches**. These are bounded fixed-version candidates, not a claim that every selected library is the newest release. Maintainer context: [Commons Lang releases](https://commons.apache.org/proper/commons-lang/changes.html), [jose4j tags](https://bitbucket.org/b_c/jose4j/downloads/?iframe=true&spa=0&tab=tags), [Bouncy Castle releases](https://www.bouncycastle.org/news/) and [JDOM's security fix](https://www.jdom.org/news/).
 
-The [probe build](reviews/build-tools-2026-09-26/candidate-probe.gradle), both exact inventories and dated queries are retained in the same evidence directory. The clean constrained query covers only this plugin-classpath probe, not compilation, processors, lint, Gradle's embedded libraries, JDK/SDK binaries, or the installed game's runtime. No app build file, compiler version or verification-metadata entry has been changed for this candidate yet.
+The [probe build](reviews/build-tools-2026-09-26/candidate-probe.gradle), both exact inventories and dated queries are retained in the same evidence directory. The clean constrained query covers only this plugin-classpath probe, not compilation, processors, lint, Gradle's embedded libraries, JDK/SDK binaries, or the installed game's runtime. The following section records subsequent application to the real build.
 
 Next acceptance sequence:
 
@@ -112,3 +112,44 @@ Next acceptance sequence:
 2. Apply reviewed build-classpath constraints, independently check newly trusted artifacts against fresh official Maven bytes, and preserve existing checksum entries. Verify all actual compiler/processor/lint resolutions, rather than assuming they equal the probe.
 3. Run domain/client/service/app tests, optimized APK/AAB builds, separate lint, native gameplay/storage/online recovery checks, and fresh runtime/build scans. Record the complete service-runtime and APK identities; do not overwrite alpha13.
 4. Complete the remaining embedded-library assessment, patched build JDK review and Linux/CI validation. Only then run the sustained service workload against the selected release candidate. Public hosting, production signing and physical-device acceptance remain separate release gates.
+
+## Alpha14 migration acceptance in progress
+
+The app uses AGP's built-in Kotlin and matching `com.android.legacy-kapt` bridge. Generated voice/effect assets are wired through the variant source API; AGP 9 rejects the previous provider passed directly to a source-set directory. Locale filtering uses `androidResources.localeFilters`. Minimum API 26, target/compile API 36, JVM 17, the database schema and runtime Room 2.8.4 remain unchanged. Version code/name are 14 / `0.14.0-alpha14`.
+
+The generated Gradle 9.7.1 wrapper JAR matches the official SHA-256 `7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d`; the distribution hash is recorded above. The actual plugin configuration resolves 118 Maven version pairs with zero active OSV matches. The first 310 added dependency-checksum entries were independently compared to fresh official HTTPS downloads; all 1,321 existing entries were preserved. This is byte provenance, not publisher-signature verification.
+
+The first full strict build passed domain/client/service tests but failed Android generation: the new Windows AAPT2 artifact lacked approved checksums, and Room's transitive Kotlin metadata reader 2.2.0 supports only through metadata 2.3. A build-only `kapt` constraint now aligns `kotlin-metadata-jvm` with compiler 2.4.20, following [Kotlin's matching-version guidance](https://kotlinlang.org/docs/metadata-jvm.html). Both reader artifacts and both AAPT2 artifacts were freshly downloaded from their official Maven repositories and hashed before updating checksum trust. Runtime Room and stored data are not migrated to work around a compiler error. This failed build is retained separately. The corrected fresh retry completed successfully, as recorded below.
+
+The local build selects a portable **Temurin 17.0.20.1+1** under the ignored test workspace. Its 190,817,615-byte Windows archive matches both the [official release](https://github.com/adoptium/temurin17-binaries/releases/tag/jdk-17.0.20.1%2B1) checksum and GitHub asset digest: `e53a79c3c3d86865bd7e787903884331068e71321714ffd44f145785affc7cb0`. Windows validates the `java.exe` Authenticode signature from Eclipse Foundation. No global Java installation or PATH was replaced. The [Adoptium support table](https://adoptium.net/support/) identifies this patched JDK 17 release; verified provenance and current patch selection are not a complete host/native-library security audit.
+
+The three Gradle-distribution Medium findings have specific preconditions: [case-insensitive per-property exclusions](https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5jmj-h7xm-6q6v), [view-gated unwrapped deserialization](https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5gvw-p9qm-jgwh), and [custom raw-text HTML safelists](https://github.com/jhy/jsoup/security/advisories/GHSA-pmhh-3w7g-xqp8). A constant-pool reference check of 340 other JARs in the verified distribution found none of the corresponding Jackson annotations/features or jsoup Cleaner/Safelist classes. This supports a bounded absence of direct use in those shipped classes, not a proof about reflection, arbitrary plugins or every possible build. Package matches remain visible and unsuppressed; the official distribution is not modified.
+
+
+### Completed migration checks and original-pixel verification
+
+The [raw migration evidence](reviews/toolchain-migration-2026-09-26/) separates failed probes, successful fresh builds, advisory coverage, upgrade witnesses and visual investigation.
+
+| Check | Observed result |
+| --- | --- |
+| Corrected full build | 7m 52s; all 162 actionable tasks executed with build cache disabled; debug/test APK, optimized unsigned release APK/AAB and service distribution produced |
+| Fresh JVM suite | 130 passed: 29 domain, 17 client, 77 service and 7 app; PostgreSQL backup prerequisites supplied |
+| Lint after compilation | Zero errors, 72 warnings per variant: 67 unused resources and one each for unused attribute, KAPT-to-KSP, resource shrinking, newer target API and newer compile API |
+| Full Maven build inventory | Initial 474-version query exposed seven advisory IDs in four lint-only versions; explicit lint constraints remove those selected versions. Final 52 observed resolutions / 469 version pairs report zero active OSV matches |
+| Runtime Maven inventory | 225 version pairs; zero active OSV matches in the dated completed query |
+| Dependency byte provenance | All 1,321 existing checksum entries retained; all 314 new entries covered by fresh official HTTPS downloads |
+| In-place alpha13 update | API30 cold process killed with a marked Hindi round; new app/test installed without clearing data; exact round, language and caller settings recovered in a new process |
+| Broad offline native suite | 33 methods passed; eight online-only cases skipped by explicit assumptions; 437.802s. This is not online acceptance |
+| Clean Android rebuild | 2m 1s; 141 tasks executed, nine up-to-date. Debug APK exactly reproduces the earlier alpha14 SHA-256 `49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891` |
+| Packaged audio | All 279 voice/effect/manifest asset entries match alpha13 byte-for-byte; 270 number clips and five WAV assets |
+
+The final incremental build/lint inventory followed the fresh full run; it is not a second fresh 130-test execution. Only five previously selected version pairs disappear from the 474-pair inventory: old Commons Lang, HttpClient and three Bouncy Castle lint libraries. Their constrained replacements were already present on other build classpaths. Build inventory coverage still excludes Gradle's embedded libraries and native JDK/SDK/host binaries.
+
+Full-screen screenshot previews appeared to lose number strokes, but direct pixel measurements and enlarged lossless crops show complete glyphs in the original saved PNGs. The [closed preview investigation](reviews/toolchain-migration-2026-09-26/renderer-investigation/README.md) records this correction. All speculative rendering changes and diagnostic logging were removed. New screenshot-ink checks strengthen the layout test without changing the app's native ticket rendering. A clean rebuild reproduces the pre-investigation APK exactly.
+
+The clean APK also passes 12 API36/16KB layout combinations, four core gameplay methods, explicit loading of both bundled native libraries, and 40 storage lifecycle cycles. The six native methods take 118.369s with no skips. This is emulator acceptance, not a physical ARM64 device or hosted-network result.
+
+Three unsuppressed Medium matches in the official Gradle distribution, actual Linux/remote CI, physical-device/hosted acceptance remain distinct boundaries. This work does not establish production signing, public hosting, physical-device performance or a completed sustained-service run.
+
+
+Final local acceptance is recorded in [alpha14 validation](ALPHA14_VALIDATION.md): 72 layouts across API26/30/36, 3,420 original-bitmap glyph comparisons, eight API26 gameplay/offline methods, the API36 native/storage checks above, a full two-native-client 90-call game/rematch, and both cold-process draw/deletion recoveries. The clean APK and optimized release outputs are reproducible; no application rendering experiment remains. Final instrumentation is identified separately from the earlier broad-suite/upgrade instrumentation. This completes local migration acceptance, not the remaining public-release gates.

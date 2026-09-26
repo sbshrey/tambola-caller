@@ -1,0 +1,4598 @@
+{
+    "formatVersion": 1,
+    "scope": "Selected runtime configurations; build plugins and test-only dependencies excluded",
+    "scopes": [
+        {
+            "project": ":server",
+            "configuration": "runtimeClasspath",
+            "components": [
+                {
+                    "group": "ch.qos.logback",
+                    "name": "logback-classic",
+                    "version": "1.6.4"
+                },
+                {
+                    "group": "ch.qos.logback",
+                    "name": "logback-core",
+                    "version": "1.6.4"
+                },
+                {
+                    "group": "com.typesafe",
+                    "name": "config",
+                    "version": "1.4.5"
+                },
+                {
+                    "group": "com.zaxxer",
+                    "name": "HikariCP",
+                    "version": "6.3.0"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-kotlinx-json-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-kotlinx-json",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-kotlinx-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-kotlinx",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-content-negotiation-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-content-negotiation",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-core-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-core",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-netty-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-netty",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-status-pages-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-status-pages",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-bom",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-buffer",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-base",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-compression",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-http2",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-http",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-common",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-handler",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-resolver",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-classes-epoll",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-classes-kqueue",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-native-epoll",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-native-kqueue",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-native-unix-common",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport",
+                    "version": "4.2.18.Final"
+                },
+                {
+                    "group": "org.checkerframework",
+                    "name": "checker-qual",
+                    "version": "3.55.1"
+                },
+                {
+                    "group": "org.eclipse.jetty.alpn",
+                    "name": "alpn-api",
+                    "version": "1.1.3.v20160715"
+                },
+                {
+                    "group": "org.fusesource.jansi",
+                    "name": "jansi",
+                    "version": "2.4.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-reflect",
+                    "version": "2.2.21"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-bom",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-bom",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-io-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-io",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0"
+                },
+                {
+                    "group": "org.postgresql",
+                    "name": "postgresql",
+                    "version": "42.7.13"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.19"
+                }
+            ],
+            "artifacts": [
+                {
+                    "group": "ch.qos.logback",
+                    "name": "logback-classic",
+                    "version": "1.6.4",
+                    "file": "logback-classic-1.6.4.jar",
+                    "sha256": "16ccdfd1847eca169d5651c5f799ea990472350e0c38f68fd6bc47d705ef4a0a"
+                },
+                {
+                    "group": "ch.qos.logback",
+                    "name": "logback-core",
+                    "version": "1.6.4",
+                    "file": "logback-core-1.6.4.jar",
+                    "sha256": "1b67779e224455ae7e00bd4ccadaf05c38531927ea4363f66412359373f2e9d7"
+                },
+                {
+                    "group": "com.typesafe",
+                    "name": "config",
+                    "version": "1.4.5",
+                    "file": "config-1.4.5.jar",
+                    "sha256": "4a4b0affb22a9572409d3a6bde99ce3f2045c551cadc1ca7fe09690892c526c3"
+                },
+                {
+                    "group": "com.zaxxer",
+                    "name": "HikariCP",
+                    "version": "6.3.0",
+                    "file": "HikariCP-6.3.0.jar",
+                    "sha256": "07c6344059af30a135144209c7c8bd666b8823124422ec859864d209d4ab7ca1"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-events-jvm-3.3.3.jar",
+                    "sha256": "0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-cio-jvm-3.3.3.jar",
+                    "sha256": "ff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-jvm-3.3.3.jar",
+                    "sha256": "7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-io-jvm-3.3.3.jar",
+                    "sha256": "c1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-network-jvm-3.3.3.jar",
+                    "sha256": "f50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-serialization-jvm-3.3.3.jar",
+                    "sha256": "5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-kotlinx-json-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-serialization-kotlinx-json-jvm-3.3.3.jar",
+                    "sha256": "f29c0b2be7ec7dea560c19ebe5a0442fa2736d90c5078b249d6c7bca80245b94"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-kotlinx-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-serialization-kotlinx-jvm-3.3.3.jar",
+                    "sha256": "6d5366c19b87a681a8feefec7358e91fbc70559055137ec474a9b2a8bb84be17"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-content-negotiation-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-server-content-negotiation-jvm-3.3.3.jar",
+                    "sha256": "bbe6998103727e036936f49d28bad388eb64acef8c1031b721a2b10eb1d426fb"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-core-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-server-core-jvm-3.3.3.jar",
+                    "sha256": "99d298bf02246cd87ff73d5ca7808535f4cc75ab1457279ccd80c7298bbda631"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-netty-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-server-netty-jvm-3.3.3.jar",
+                    "sha256": "c377fe92938a04e0979dbc37a4f49d2b6846c11711dca464a83d1dfaf95692be"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-status-pages-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-server-status-pages-jvm-3.3.3.jar",
+                    "sha256": "6eddbc82077fcf55cb3348d94b35e3453d65a6651ef3a417a1214a5671b239b1"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-server-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-server-websockets-jvm-3.3.3.jar",
+                    "sha256": "ebc5131dda06ffb4d0680e3ca38dc549912bb0fe69f62b3df6c8e27a8ffff3db"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-utils-jvm-3.3.3.jar",
+                    "sha256": "ad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websocket-serialization-jvm-3.3.3.jar",
+                    "sha256": "3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websockets-jvm-3.3.3.jar",
+                    "sha256": "129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-buffer",
+                    "version": "4.2.18.Final",
+                    "file": "netty-buffer-4.2.18.Final.jar",
+                    "sha256": "fdf236d2b76aa9710684401fdad7dff9dec56e43da5d39172c9a55ba5f14b360"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-base",
+                    "version": "4.2.18.Final",
+                    "file": "netty-codec-base-4.2.18.Final.jar",
+                    "sha256": "7e4612bead7ba88ac6f7908fa722f90ad6835ea96505c9e40b2f93686c1f61f3"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-compression",
+                    "version": "4.2.18.Final",
+                    "file": "netty-codec-compression-4.2.18.Final.jar",
+                    "sha256": "9d8a4b9a6a2a166ec5a4bbe51a78b4f6a726457c51d81495743c7e7ccb9f4765"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-http2",
+                    "version": "4.2.18.Final",
+                    "file": "netty-codec-http2-4.2.18.Final.jar",
+                    "sha256": "a45a2b06c377b9c87c21ae2b37f04c8d808192590a73d977e7a60fd59921f283"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-codec-http",
+                    "version": "4.2.18.Final",
+                    "file": "netty-codec-http-4.2.18.Final.jar",
+                    "sha256": "2d50765eb58591ce35146c54ca032a257808d2165d8985a8522c70ea1470e8d7"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-common",
+                    "version": "4.2.18.Final",
+                    "file": "netty-common-4.2.18.Final.jar",
+                    "sha256": "5d97cae5669685872339698efe13f74fe3cdb2dccdb36963b2352bd95acf7070"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-handler",
+                    "version": "4.2.18.Final",
+                    "file": "netty-handler-4.2.18.Final.jar",
+                    "sha256": "6d5a08d9dd6d7d0211202e22dbb1629b23a62550335c7e80892da1d4cb115540"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-resolver",
+                    "version": "4.2.18.Final",
+                    "file": "netty-resolver-4.2.18.Final.jar",
+                    "sha256": "68373ec544cf769ba17bf2ef455166d98f2c260dff536edf35ef57067a9c155f"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-classes-epoll",
+                    "version": "4.2.18.Final",
+                    "file": "netty-transport-classes-epoll-4.2.18.Final.jar",
+                    "sha256": "3677ca998f3db749d3fdb0fb1b1674f9809f4fbe8f819a346f4858dfb16c4d95"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-classes-kqueue",
+                    "version": "4.2.18.Final",
+                    "file": "netty-transport-classes-kqueue-4.2.18.Final.jar",
+                    "sha256": "be48ee5b8a2328a1f4f2160270344175612dd9567787727de0dbaecb694beb51"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-native-epoll",
+                    "version": "4.2.18.Final",
+                    "file": "netty-transport-native-epoll-4.2.18.Final.jar",
+                    "sha256": "15efbb26cde751e9bab669cc52da5e909f41626f9e04378e2c4cd61202d1359e"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-native-kqueue",
+                    "version": "4.2.18.Final",
+                    "file": "netty-transport-native-kqueue-4.2.18.Final.jar",
+                    "sha256": "4ee651cdac49aedac42d0d22e726cb4a578f0c02286fc041153ec58925cac818"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport-native-unix-common",
+                    "version": "4.2.18.Final",
+                    "file": "netty-transport-native-unix-common-4.2.18.Final.jar",
+                    "sha256": "cada7023d09136af128511ca94421d69dc84d0f1f64c9e1f127a1271bb62932a"
+                },
+                {
+                    "group": "io.netty",
+                    "name": "netty-transport",
+                    "version": "4.2.18.Final",
+                    "file": "netty-transport-4.2.18.Final.jar",
+                    "sha256": "eac4f12068db4489e60c6520fad663e5d872f0436a7c641aa9e08db649947863"
+                },
+                {
+                    "group": "org.checkerframework",
+                    "name": "checker-qual",
+                    "version": "3.55.1",
+                    "file": "checker-qual-3.55.1.jar",
+                    "sha256": "857658c8bdcbff794949a8d9922f88d63ee3751c203c7cd7d21ea97f9e745288"
+                },
+                {
+                    "group": "org.eclipse.jetty.alpn",
+                    "name": "alpn-api",
+                    "version": "1.1.3.v20160715",
+                    "file": "alpn-api-1.1.3.v20160715.jar",
+                    "sha256": "07be99758b699e194f70fb9784d94202dc6c98212877829e3d72b020f2660576"
+                },
+                {
+                    "group": "org.fusesource.jansi",
+                    "name": "jansi",
+                    "version": "2.4.2",
+                    "file": "jansi-2.4.2.jar",
+                    "sha256": "0b7b8b003a90ea491579b62f5118828e45112914c65589b00faa49d6ec785839"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-reflect",
+                    "version": "2.2.21",
+                    "file": "kotlin-reflect-2.2.21.jar",
+                    "sha256": "44380abf37d245ce5c0f294f43512d1c39a59642bfa463922c74e96877cf49f8"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20",
+                    "file": "kotlin-stdlib-2.4.20.jar",
+                    "sha256": "2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+                    "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-bytestring-jvm-0.8.0.jar",
+                    "sha256": "3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-core-jvm-0.8.0.jar",
+                    "sha256": "610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-core-jvm-1.9.0.jar",
+                    "sha256": "1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-io-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-json-io-jvm-1.9.0.jar",
+                    "sha256": "98abb132b03e11b80318d45350ec9ebbb5453d26505e81331bf2eea7143b6fbe"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-json-jvm-1.9.0.jar",
+                    "sha256": "d94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0",
+                    "file": "annotations-23.0.0.jar",
+                    "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+                },
+                {
+                    "group": "org.postgresql",
+                    "name": "postgresql",
+                    "version": "42.7.13",
+                    "file": "postgresql-42.7.13.jar",
+                    "sha256": "6e0e4cc2d8cae902084f8a2b18728b073a6fd9d1f87c9d8bff8f298c18185b93"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.19",
+                    "file": "slf4j-api-2.0.19.jar",
+                    "sha256": "e91ff6d720609e7a194ffe758c3ed5c84e798617ae07b0a0f6a4fe229741b4bb"
+                }
+            ]
+        },
+        {
+            "project": ":client",
+            "configuration": "runtimeClasspath",
+            "components": [
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp-jvm",
+                    "version": "5.2.1"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp",
+                    "version": "5.2.1"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio-jvm",
+                    "version": "3.16.2"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio",
+                    "version": "3.16.2"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-bom",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-slf4j",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-bom",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.17"
+                }
+            ],
+            "artifacts": [
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp-jvm",
+                    "version": "5.2.1",
+                    "file": "okhttp-jvm-5.2.1.jar",
+                    "sha256": "9632c08567dbb21c569b13d793107834c8580d44e4eea74b2eae0722f0506179"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio-jvm",
+                    "version": "3.16.2",
+                    "file": "okio-jvm-3.16.2.jar",
+                    "sha256": "a0a9f1abfb90c0a37b9c847cea39fff26d15f39253f5175632cdb948c96318d0"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-core-jvm-3.3.3.jar",
+                    "sha256": "6c403b39cac342892839c251275cc441b27c7f194983b9226cb46bc3a44259f9"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-okhttp-jvm-3.3.3.jar",
+                    "sha256": "43624d509db6493fc2f685791ffbe5451db00616376958cd36d3603f627b682f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-websockets-jvm-3.3.3.jar",
+                    "sha256": "aa073b8a48f5e57af1759a12fd65eb9d277f23f597ca6014b3c2ae75332d7f4e"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-events-jvm-3.3.3.jar",
+                    "sha256": "0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-cio-jvm-3.3.3.jar",
+                    "sha256": "ff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-jvm-3.3.3.jar",
+                    "sha256": "7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-io-jvm-3.3.3.jar",
+                    "sha256": "c1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-network-jvm-3.3.3.jar",
+                    "sha256": "f50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-serialization-jvm-3.3.3.jar",
+                    "sha256": "5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-sse-jvm-3.3.3.jar",
+                    "sha256": "a87a8a0168671af46bdc762d9f345daca1ea8133a9c9d367334cc1e9b2c4ae2c"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-utils-jvm-3.3.3.jar",
+                    "sha256": "ad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websocket-serialization-jvm-3.3.3.jar",
+                    "sha256": "3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websockets-jvm-3.3.3.jar",
+                    "sha256": "129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20",
+                    "file": "kotlin-stdlib-2.4.20.jar",
+                    "sha256": "2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+                    "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-slf4j",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-slf4j-1.10.2.jar",
+                    "sha256": "d65dee3cafa6f7bfaefedb493fc68b5c63abe750734fb8af92fac7a0d3101457"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-bytestring-jvm-0.8.0.jar",
+                    "sha256": "3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-core-jvm-0.8.0.jar",
+                    "sha256": "610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-core-jvm-1.9.0.jar",
+                    "sha256": "1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-json-jvm-1.9.0.jar",
+                    "sha256": "d94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0",
+                    "file": "annotations-23.0.0.jar",
+                    "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.17",
+                    "file": "slf4j-api-2.0.17.jar",
+                    "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+                }
+            ]
+        },
+        {
+            "project": ":app",
+            "configuration": "debugRuntimeClasspath",
+            "components": [
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-compose",
+                    "version": "1.10.1"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-ktx",
+                    "version": "1.10.1"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity",
+                    "version": "1.10.1"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-experimental",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-jvm",
+                    "version": "1.9.1"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation",
+                    "version": "1.9.1"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat-resources",
+                    "version": "1.8.0"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat",
+                    "version": "1.8.0"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-common",
+                    "version": "2.2.0"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-runtime",
+                    "version": "2.2.0"
+                },
+                {
+                    "group": "androidx.autofill",
+                    "name": "autofill",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-jvm",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-ktx",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-core-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-core",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-layout-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-layout",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.material3",
+                    "name": "material3-android",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.compose.material3",
+                    "name": "material3",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-ripple-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-ripple",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-annotation-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-annotation",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-retain-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-retain",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-saveable-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-saveable",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-geometry-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-geometry",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-graphics-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-graphics",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-test-manifest",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-text-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-text",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-data-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-data",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-preview-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-preview",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-unit-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-unit",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-util-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-util",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose",
+                    "name": "compose-bom",
+                    "version": "2025.12.00"
+                },
+                {
+                    "group": "androidx.concurrent",
+                    "name": "concurrent-futures",
+                    "version": "1.1.0"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-ktx",
+                    "version": "1.16.0"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-viewtree",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core",
+                    "version": "1.16.0"
+                },
+                {
+                    "group": "androidx.cursoradapter",
+                    "name": "cursoradapter",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview-poolingcontainer",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-okio-jvm",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-okio",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-core-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-core",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-external-protobuf",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-proto",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.documentfile",
+                    "name": "documentfile",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.drawerlayout",
+                    "name": "drawerlayout",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.dynamicanimation",
+                    "name": "dynamicanimation",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2-views-helper",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.fragment",
+                    "name": "fragment",
+                    "version": "1.5.4"
+                },
+                {
+                    "group": "androidx.graphics",
+                    "name": "graphics-path",
+                    "version": "1.0.1"
+                },
+                {
+                    "group": "androidx.interpolator",
+                    "name": "interpolator",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.legacy",
+                    "name": "legacy-support-core-utils",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-java8",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-jvm",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core-ktx",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-process",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-compose-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-compose",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-ktx-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-ktx",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-compose-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-compose",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-ktx",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-savedstate-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-savedstate",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.loader",
+                    "name": "loader",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.localbroadcastmanager",
+                    "name": "localbroadcastmanager",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.print",
+                    "name": "print",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.profileinstaller",
+                    "name": "profileinstaller",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.resourceinspection",
+                    "name": "resourceinspection-annotation",
+                    "version": "1.0.1"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-common-jvm",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-common",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-runtime-android",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-runtime",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-android",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-compose-android",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-compose",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-ktx",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-android",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-framework-android",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-framework",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.startup",
+                    "name": "startup-runtime",
+                    "version": "1.2.0"
+                },
+                {
+                    "group": "androidx.tracing",
+                    "name": "tracing",
+                    "version": "1.2.0"
+                },
+                {
+                    "group": "androidx.transition",
+                    "name": "transition",
+                    "version": "1.6.0"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable-animated",
+                    "version": "1.1.0"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable",
+                    "version": "1.1.0"
+                },
+                {
+                    "group": "androidx.versionedparcelable",
+                    "name": "versionedparcelable",
+                    "version": "1.1.1"
+                },
+                {
+                    "group": "androidx.viewpager",
+                    "name": "viewpager",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window-core-android",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window-core",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "com.google.guava",
+                    "name": "listenablefuture",
+                    "version": "1.0"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp-android",
+                    "version": "5.2.1"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp",
+                    "version": "5.2.1"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio-jvm",
+                    "version": "3.16.2"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio",
+                    "version": "3.16.2"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-android-extensions-runtime",
+                    "version": "1.9.22"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-parcelize-runtime",
+                    "version": "1.9.22"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-android",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-bom",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-slf4j",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-bom",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0"
+                },
+                {
+                    "group": "org.jspecify",
+                    "name": "jspecify",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.17"
+                }
+            ],
+            "artifacts": [
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-compose",
+                    "version": "1.10.1",
+                    "file": "activity-compose-1.10.1.aar",
+                    "sha256": "f89af1b26ccc834634387c857c2dd4f4654d37650890039c527c2fed07db6a61"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-ktx",
+                    "version": "1.10.1",
+                    "file": "activity-ktx-1.10.1.aar",
+                    "sha256": "f396f58dbd772c065b873696b74a3d4d087554b3766280e63b49b25dbb53ab16"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity",
+                    "version": "1.10.1",
+                    "file": "activity-1.10.1.aar",
+                    "sha256": "b62b528c917de9be497eb6f88830197c20e9d21267c3916c613492e5ee837d4d"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-experimental",
+                    "version": "1.5.0",
+                    "file": "annotation-experimental-1.5.0.aar",
+                    "sha256": "02b0a4256618f85386c92e5cec166dc7f300820888a290227a3c0c65b82cbb36"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-jvm",
+                    "version": "1.9.1",
+                    "file": "annotation-jvm-1.9.1.jar",
+                    "sha256": "1e343917ebf27ba96fe4dc52b1cad7fd32b738fbc6355bb6cd5b3b305d7212d0"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat-resources",
+                    "version": "1.8.0",
+                    "file": "appcompat-resources-1.8.0.aar",
+                    "sha256": "3fe48cc3df409bed03063a4f5f5f9f8c51f1d63ea9e88d41e6489bf58495a5af"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat",
+                    "version": "1.8.0",
+                    "file": "appcompat-1.8.0.aar",
+                    "sha256": "773f79306eb0ca2447af8752e923ce6269e201e7fe6b275cc76e2998ee87e838"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-common",
+                    "version": "2.2.0",
+                    "file": "core-common-2.2.0.jar",
+                    "sha256": "65308a06b1c00ee186cb9e19321383f043b993813f1522c47f4a3e3303bdba41"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-runtime",
+                    "version": "2.2.0",
+                    "file": "core-runtime-2.2.0.aar",
+                    "sha256": "a1be5e0caa2b07623862af6ae21b3ab0718123245184d0e30dea81b53f990a47"
+                },
+                {
+                    "group": "androidx.autofill",
+                    "name": "autofill",
+                    "version": "1.0.0",
+                    "file": "autofill-1.0.0.aar",
+                    "sha256": "c9468f56e05006ea151a426c54957cd0799b8b83a579d2846dd22061f33e5ecd"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-jvm",
+                    "version": "1.5.0",
+                    "file": "collection-jvm-1.5.0.jar",
+                    "sha256": "70b35924e4babcdffa37d0e575ee039c56a2d97123342624c48b603233704341"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-ktx",
+                    "version": "1.5.0",
+                    "file": "collection-ktx-1.5.0.jar",
+                    "sha256": "939b4a8697640e77d83e4e8b4c4a9d18f8130198c5961194af8dd9db9dc7c353"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-android",
+                    "version": "1.10.0",
+                    "file": "animation.aar",
+                    "sha256": "8a559dabdae5a4dcd45b9eba7fbc90df093135e43c7e29de2769911eec76eef9"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-core-android",
+                    "version": "1.10.0",
+                    "file": "animation-core.aar",
+                    "sha256": "55d7bd5ba5796bc07d0552256734789a5be039555cd93991d0d26ce1a7671fef"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-android",
+                    "version": "1.10.0",
+                    "file": "foundation.aar",
+                    "sha256": "c7366032bb88f90f307ab50f58e3c87ad93e278f50cfdbd9bedb6f10bc6217a3"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-layout-android",
+                    "version": "1.10.0",
+                    "file": "foundation-layout.aar",
+                    "sha256": "85513652dc9e458be47683dc0e61473e0bbbe24417d18c4eaf15b0c25a60318c"
+                },
+                {
+                    "group": "androidx.compose.material3",
+                    "name": "material3-android",
+                    "version": "1.4.0",
+                    "file": "material3.aar",
+                    "sha256": "3a37e8b36df3822fe1e6059f0f9fafda8800388860477624ac1b9422c418a36e"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-android",
+                    "version": "1.10.0",
+                    "file": "material.aar",
+                    "sha256": "2f42e9b94ba82da30f9771b44f8e40d6ca53ca5ce8ff17a96b6ff150f135b2a2"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-ripple-android",
+                    "version": "1.10.0",
+                    "file": "material-ripple.aar",
+                    "sha256": "ad7c12b3256ada337533ebb422c03a203e6e0d4226f83315d2abad16616d80be"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-android",
+                    "version": "1.10.0",
+                    "file": "runtime.aar",
+                    "sha256": "612d36c21865a0008e889a2515c088cbd3b2210891f23acfe458abb63030d92a"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-annotation-android",
+                    "version": "1.10.0",
+                    "file": "runtime-annotation.aar",
+                    "sha256": "8b875f9d2e87cc927bef19dec3e6f3ff6db97d67a87f07573abc44c1e707992d"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-retain-android",
+                    "version": "1.10.0",
+                    "file": "runtime-retain.aar",
+                    "sha256": "fd03f002bd47edf80902e62cafb660bc1d93800fc6a7c9bcc16e620e46c4b86f"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-saveable-android",
+                    "version": "1.10.0",
+                    "file": "runtime-saveable.aar",
+                    "sha256": "f4c34f0e72eb6bb590811468bda832832a57edd678a0afa8373f505a619b3a36"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-android",
+                    "version": "1.10.0",
+                    "file": "ui.aar",
+                    "sha256": "d5a7ae5986b9d32bdf6f7174eb2293c4eb894f5b4cdcebff4e1e42cd4aec00c8"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-geometry-android",
+                    "version": "1.10.0",
+                    "file": "ui-geometry.aar",
+                    "sha256": "40749b3f14b055cfd4438a59fef1cf9dffd01ae38df55ac981ffd890b5aab3a0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-graphics-android",
+                    "version": "1.10.0",
+                    "file": "ui-graphics.aar",
+                    "sha256": "b787d8795e4dee10a09d96fc5f8b99b087262b29004aaa40502dbde50971a8ae"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-test-manifest",
+                    "version": "1.10.0",
+                    "file": "ui-test-manifest-1.10.0.aar",
+                    "sha256": "425490d6223e4356077346d7040f1b8c47ae22002d70f1ffef51d5cff59d671c"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-text-android",
+                    "version": "1.10.0",
+                    "file": "ui-text.aar",
+                    "sha256": "626714ee7a6120adbebad6c57d743087aed173fe4769fea2ccee71b4770c1c70"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-android",
+                    "version": "1.10.0",
+                    "file": "ui-tooling.aar",
+                    "sha256": "8af1b4174d8305d04e11f7e24356e26d35b80b0d53dedfacc1ce77fa5e3eb4b0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-data-android",
+                    "version": "1.10.0",
+                    "file": "ui-tooling-data.aar",
+                    "sha256": "437916e0d02c82eeb6a21996f1a41abd035d2791b9fa066fd77105f914d1a0f4"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-preview-android",
+                    "version": "1.10.0",
+                    "file": "ui-tooling-preview.aar",
+                    "sha256": "19d4d9c5226a95999ab214dec6c80851dce514a6fc54a0dee2a308c6c09d49a7"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-unit-android",
+                    "version": "1.10.0",
+                    "file": "ui-unit.aar",
+                    "sha256": "b2a256118b29007709790d6f36e36cb139cd88b5796502c656d071ebebbee762"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-util-android",
+                    "version": "1.10.0",
+                    "file": "ui-util.aar",
+                    "sha256": "75259f110f0dc1272977e02e4eb591e71ebbdee136e0b21d76c9fd326372c909"
+                },
+                {
+                    "group": "androidx.concurrent",
+                    "name": "concurrent-futures",
+                    "version": "1.1.0",
+                    "file": "concurrent-futures-1.1.0.jar",
+                    "sha256": "0ce067c514a0d1049d1bebdf709e344ed3266fe9744275682937cdcb13334e9e"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-ktx",
+                    "version": "1.16.0",
+                    "file": "core-ktx-1.16.0.aar",
+                    "sha256": "1766dbd82f64a12dcd359ecb6f15f3cf35db4d66d22961a7c51b2ffc6468314c"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-viewtree",
+                    "version": "1.0.0",
+                    "file": "core-viewtree-1.0.0.aar",
+                    "sha256": "dc1b678d58ebcf2bfa1587be68ff826694ce3d221251b9ef30d4d4b36297e6de"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core",
+                    "version": "1.16.0",
+                    "file": "core-1.16.0.aar",
+                    "sha256": "6bf03d39dbe3744acce227d3b697374c3625aae1025fbec8ad9fd7bd58bce431"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core",
+                    "version": "1.16.0",
+                    "file": "core-1.16.0.aar",
+                    "sha256": "6bf03d39dbe3744acce227d3b697374c3625aae1025fbec8ad9fd7bd58bce431"
+                },
+                {
+                    "group": "androidx.cursoradapter",
+                    "name": "cursoradapter",
+                    "version": "1.0.0",
+                    "file": "cursoradapter-1.0.0.aar",
+                    "sha256": "a81c8fe78815fa47df5b749deb52727ad11f9397da58b16017f4eb2c11e28564"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview-poolingcontainer",
+                    "version": "1.0.0",
+                    "file": "customview-poolingcontainer-1.0.0.aar",
+                    "sha256": "3584102fc49bf399c56e3b7be4bfe12000c46112320cd8cf85cc0a8f93f3e752"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview",
+                    "version": "1.0.0",
+                    "file": "customview-1.0.0.aar",
+                    "sha256": "20e5b8f6526a34595a604f56718da81167c0b40a7a94a57daa355663f2594df2"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-android",
+                    "version": "1.1.7",
+                    "file": "datastore-release.aar",
+                    "sha256": "26c12c6417e7e4cfd36386aa8cc2b9839fe87a6792f820805827bde4d27f9e6e"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-android",
+                    "version": "1.1.7",
+                    "file": "datastore-core-release.aar",
+                    "sha256": "adca1d7cde73406fcca2a0eeabac63459adc9d1fe201b79ba08711fa2e331984"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-okio-jvm",
+                    "version": "1.1.7",
+                    "file": "datastore-core-okio-jvm-1.1.7.jar",
+                    "sha256": "291506b4fce398249793e327207635bd4df25181d9539808d7181a4abd0875f5"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-android",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-release.aar",
+                    "sha256": "1b3d703abc765b60517334b04c5b520e6e25168a2f2d73d5b0cd975d20054f8d"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-core-android",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-core-release.aar",
+                    "sha256": "31cebf4444b1df57876e695109a0a63c9a93ff05df503d27a3927b86af0cfac0"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-external-protobuf",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-external-protobuf-1.1.7.jar",
+                    "sha256": "fcb3f373cf743426c85ebb0d3cc644aefaf26f39b7fa55bb90238d41b689eca7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-proto",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-proto-1.1.7.jar",
+                    "sha256": "63686a612f39b8ca603bebe3376d55fb6c9ee28a4a5173efa49c89cbcca8a127"
+                },
+                {
+                    "group": "androidx.documentfile",
+                    "name": "documentfile",
+                    "version": "1.0.0",
+                    "file": "documentfile-1.0.0.aar",
+                    "sha256": "865a061ef2fad16522f8433536b8d47208c46ff7c7745197dfa1eeb481869487"
+                },
+                {
+                    "group": "androidx.drawerlayout",
+                    "name": "drawerlayout",
+                    "version": "1.0.0",
+                    "file": "drawerlayout-1.0.0.aar",
+                    "sha256": "9402442cdc5a43cf62fb14f8cf98c63342d4d9d9b805c8033c6cf7e802749ac1"
+                },
+                {
+                    "group": "androidx.dynamicanimation",
+                    "name": "dynamicanimation",
+                    "version": "1.0.0",
+                    "file": "dynamicanimation-1.0.0.aar",
+                    "sha256": "ce005162c229bf308d2d5b12fb6cad0874069cbbeaccee63a8193bd08d40de04"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2-views-helper",
+                    "version": "1.4.0",
+                    "file": "emoji2-views-helper-1.4.0.aar",
+                    "sha256": "ed5d3ed772a5fbf0d570f7526f585cd61a180e60f9372584c328a68e2cff3375"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2",
+                    "version": "1.4.0",
+                    "file": "emoji2-1.4.0.aar",
+                    "sha256": "433febd3434a45667176c76a64f3f205ca6335a6b544c5b5d57f25a38a375242"
+                },
+                {
+                    "group": "androidx.fragment",
+                    "name": "fragment",
+                    "version": "1.5.4",
+                    "file": "fragment-1.5.4.aar",
+                    "sha256": "bc3c2431dda42e94bb9511c587eae890d276e4aafe393a8da7b00169186dafde"
+                },
+                {
+                    "group": "androidx.graphics",
+                    "name": "graphics-path",
+                    "version": "1.0.1",
+                    "file": "graphics-path-1.0.1.aar",
+                    "sha256": "8ca4032b6d79b351f0b59ad4b580eddbb9423e1652f7c958830687f1eee2ec03"
+                },
+                {
+                    "group": "androidx.interpolator",
+                    "name": "interpolator",
+                    "version": "1.0.0",
+                    "file": "interpolator-1.0.0.aar",
+                    "sha256": "33193135a64fe21fa2c35eec6688f1a76e512606c0fc83dc1b689e37add7732a"
+                },
+                {
+                    "group": "androidx.legacy",
+                    "name": "legacy-support-core-utils",
+                    "version": "1.0.0",
+                    "file": "legacy-support-core-utils-1.0.0.aar",
+                    "sha256": "a7edcf01d5b52b3034073027bc4775b78a4764bb6202bb91d61c829add8dd1c7"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-java8",
+                    "version": "2.9.4",
+                    "file": "lifecycle-common-java8-2.9.4.jar",
+                    "sha256": "497dd84de9f2fd46324f25f9a3af032d3a23d087e87af515c4b19435f6d6a651"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-jvm",
+                    "version": "2.9.4",
+                    "file": "lifecycle-common-jvm-2.9.4.jar",
+                    "sha256": "37d89b2101f074ac6c260917dabb185607645ee200aa3018c7c5bde70edcf184"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core-ktx",
+                    "version": "2.9.4",
+                    "file": "lifecycle-livedata-core-ktx-2.9.4.aar",
+                    "sha256": "f55b7a8d433e9b8163154ccaa42fa2be55c70cd1ede5eeea521a4b4b884dd4fe"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core",
+                    "version": "2.9.4",
+                    "file": "lifecycle-livedata-core-2.9.4.aar",
+                    "sha256": "ea866f0c379d1f92837994010ab5ac0a5d5499dbab521efc71b3bc2b497d6ba4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata",
+                    "version": "2.9.4",
+                    "file": "lifecycle-livedata-2.9.4.aar",
+                    "sha256": "f240c2c94a96d4a5eae5d379c2a8589d426a33b989d83ae9f0e01f69502c0181"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-process",
+                    "version": "2.9.4",
+                    "file": "lifecycle-process-2.9.4.aar",
+                    "sha256": "4784b8d083c211e076d9115bfa1737f7e0f62b553e801cf50caa4400e34a95d6"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-runtime-release.aar",
+                    "sha256": "86f16a1330eb23600ba90d0334b3e1db38d3a30c8b1efcd92ca21aa85afa8173"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-compose-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-runtime-compose-release.aar",
+                    "sha256": "b6803f906a89fd85c77df343dd4aeeb349125ca79e12d55d68d4cf42f42231f6"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-ktx-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-runtime-ktx.aar",
+                    "sha256": "970199c9ed1ac13d620aa8de7f8abbc28ce80653c3ce328d0ac2f15272b56e1b"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-release.aar",
+                    "sha256": "4b236b2e504db5ca5d09334fef05aa8cdc31ee35a433c3aa4d0420efa9613332"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-compose-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-compose-release.aar",
+                    "sha256": "f7825a08ca661de84044b6891293084bea8fbcc84aa08d8c13a3c558fc5956c9"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-ktx",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-ktx-2.9.4.aar",
+                    "sha256": "b7d58bb86bb8e2ccc607d1f8570e714810f7cfb3feba37d375ff1646383435a1"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-savedstate-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-savedstate-release.aar",
+                    "sha256": "079441c43fa3ff8ea7a02df3b12eec483c3e57583f832cfaff663750527c1421"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-2.9.4.aar",
+                    "sha256": "cab404b05d5faed209104a2aef14c0cbb316ab9fabe4a8f037b043e5d2f43435"
+                },
+                {
+                    "group": "androidx.loader",
+                    "name": "loader",
+                    "version": "1.0.0",
+                    "file": "loader-1.0.0.aar",
+                    "sha256": "11f735cb3b55c458d470bed9e25254375b518b4b1bad6926783a7026db0f5025"
+                },
+                {
+                    "group": "androidx.localbroadcastmanager",
+                    "name": "localbroadcastmanager",
+                    "version": "1.0.0",
+                    "file": "localbroadcastmanager-1.0.0.aar",
+                    "sha256": "e71c328ceef5c4a7d76f2d86df1b65d65fe2acf868b1a4efd84a3f34336186d8"
+                },
+                {
+                    "group": "androidx.print",
+                    "name": "print",
+                    "version": "1.0.0",
+                    "file": "print-1.0.0.aar",
+                    "sha256": "1d5c7f3135a1bba661fc373fd72e11eb0a4adbb3396787826dd8e4190d5d9edd"
+                },
+                {
+                    "group": "androidx.profileinstaller",
+                    "name": "profileinstaller",
+                    "version": "1.4.0",
+                    "file": "profileinstaller-1.4.0.aar",
+                    "sha256": "d502141fcce902430f62b674c32aecd0f75262e7ee2cd15c74adb617cd13130a"
+                },
+                {
+                    "group": "androidx.resourceinspection",
+                    "name": "resourceinspection-annotation",
+                    "version": "1.0.1",
+                    "file": "resourceinspection-annotation-1.0.1.jar",
+                    "sha256": "8cff870ec6fb31db48a52f4a792335b4bf8de07e03bd37823181526433ccd5cb"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-common-jvm",
+                    "version": "2.8.4",
+                    "file": "room-common-jvm-2.8.4.jar",
+                    "sha256": "dc7b4e1a75a790f29c97afd5516b8bf8002d9b6e83e295bc569b33566f3b1ec0"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-runtime-android",
+                    "version": "2.8.4",
+                    "file": "room-runtime.aar",
+                    "sha256": "3293575082024fa0a92b081c4e2d0609f14b5c109635ec227bc509db141a4e20"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-android",
+                    "version": "1.3.2",
+                    "file": "savedstate-release.aar",
+                    "sha256": "1e26f137705596d09d3f4f52559a29026d9a1a6688be7f1a948316a4f1e39b20"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-compose-android",
+                    "version": "1.3.2",
+                    "file": "savedstate-compose.aar",
+                    "sha256": "93426691f25441cc3179494b25f401a8a468aabbee4c40b90c0327413fd65523"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-ktx",
+                    "version": "1.3.2",
+                    "file": "savedstate-ktx-1.3.2.aar",
+                    "sha256": "1c300732ece8e9d0001fb19cc693b0f77f19e77cdf90ca5c4cd56d5e6951d02b"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-android",
+                    "version": "2.6.2",
+                    "file": "sqlite.aar",
+                    "sha256": "514f8de4f7bdba2fa8d748d2b22fdcdfb623bd3770a667bf0adc0ad259f03ed2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-framework-android",
+                    "version": "2.6.2",
+                    "file": "sqlite-framework.aar",
+                    "sha256": "b19125c7fff34222e0f380361fc179ab214e4d82e1a50b0c068ca26c851a6231"
+                },
+                {
+                    "group": "androidx.startup",
+                    "name": "startup-runtime",
+                    "version": "1.2.0",
+                    "file": "startup-runtime-1.2.0.aar",
+                    "sha256": "f51d361d17b30b09cfb9e2aebf301d113f99437cbf462a066092795fb60eddd2"
+                },
+                {
+                    "group": "androidx.tracing",
+                    "name": "tracing",
+                    "version": "1.2.0",
+                    "file": "tracing-1.2.0.aar",
+                    "sha256": "6faa90390d1fdbf0adb9a99bf99de67b94c6c6f35aea9510593a9d17973736a2"
+                },
+                {
+                    "group": "androidx.transition",
+                    "name": "transition",
+                    "version": "1.6.0",
+                    "file": "transition-1.6.0.aar",
+                    "sha256": "248c45e1254d31181d2047b0b01394f09a2e539a5d9e89b773d53c62c96860f6"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable-animated",
+                    "version": "1.1.0",
+                    "file": "vectordrawable-animated-1.1.0.aar",
+                    "sha256": "76da2c502371d9c38054df5e2b248d00da87809ed058f3363eae87ce5e2403f8"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable",
+                    "version": "1.1.0",
+                    "file": "vectordrawable-1.1.0.aar",
+                    "sha256": "46fd633ac01b49b7fcabc263bf098c5a8b9e9a69774d234edcca04fb02df8e26"
+                },
+                {
+                    "group": "androidx.versionedparcelable",
+                    "name": "versionedparcelable",
+                    "version": "1.1.1",
+                    "file": "versionedparcelable-1.1.1.aar",
+                    "sha256": "57e8d93260d18d5b9007c9eed3c64ad159de90c8609ebfc74a347cbd514535a4"
+                },
+                {
+                    "group": "androidx.viewpager",
+                    "name": "viewpager",
+                    "version": "1.0.0",
+                    "file": "viewpager-1.0.0.aar",
+                    "sha256": "147af4e14a1984010d8f155e5e19d781f03c1d70dfed02a8e0d18428b8fc8682"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window-core-android",
+                    "version": "1.5.0",
+                    "file": "window-core.aar",
+                    "sha256": "d0d50db0756194a6d49a66ad8dafd17b24b4c5fbd8379375056e2eb9bdfeaf22"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window",
+                    "version": "1.5.0",
+                    "file": "window-1.5.0.aar",
+                    "sha256": "5de2d48aa578402f46deb5294a955cee62f0c7d8c1840ef626fc7afb8abe22f9"
+                },
+                {
+                    "group": "com.google.guava",
+                    "name": "listenablefuture",
+                    "version": "1.0",
+                    "file": "listenablefuture-1.0.jar",
+                    "sha256": "e4ad7607e5c0477c6f890ef26a49cb8d1bb4dffb650bab4502afee64644e3069"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp-android",
+                    "version": "5.2.1",
+                    "file": "okhttp-release.aar",
+                    "sha256": "1043f2bb063655041f96efe203323a970e33ca839baed2d94190f61fe6e602d8"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio-jvm",
+                    "version": "3.16.2",
+                    "file": "okio-jvm-3.16.2.jar",
+                    "sha256": "a0a9f1abfb90c0a37b9c847cea39fff26d15f39253f5175632cdb948c96318d0"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-core-jvm-3.3.3.jar",
+                    "sha256": "6c403b39cac342892839c251275cc441b27c7f194983b9226cb46bc3a44259f9"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-okhttp-jvm-3.3.3.jar",
+                    "sha256": "43624d509db6493fc2f685791ffbe5451db00616376958cd36d3603f627b682f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-websockets-jvm-3.3.3.jar",
+                    "sha256": "aa073b8a48f5e57af1759a12fd65eb9d277f23f597ca6014b3c2ae75332d7f4e"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-events-jvm-3.3.3.jar",
+                    "sha256": "0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-cio-jvm-3.3.3.jar",
+                    "sha256": "ff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-jvm-3.3.3.jar",
+                    "sha256": "7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-io-jvm-3.3.3.jar",
+                    "sha256": "c1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-network-jvm-3.3.3.jar",
+                    "sha256": "f50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-serialization-jvm-3.3.3.jar",
+                    "sha256": "5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-sse-jvm-3.3.3.jar",
+                    "sha256": "a87a8a0168671af46bdc762d9f345daca1ea8133a9c9d367334cc1e9b2c4ae2c"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-utils-jvm-3.3.3.jar",
+                    "sha256": "ad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websocket-serialization-jvm-3.3.3.jar",
+                    "sha256": "3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websockets-jvm-3.3.3.jar",
+                    "sha256": "129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-android-extensions-runtime",
+                    "version": "1.9.22",
+                    "file": "kotlin-android-extensions-runtime-1.9.22.jar",
+                    "sha256": "f00537c7023e604933f6a9563b1bb3b83e61fbfd2cc3d0e9900d616bab6862a4"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-parcelize-runtime",
+                    "version": "1.9.22",
+                    "file": "kotlin-parcelize-runtime-1.9.22.jar",
+                    "sha256": "f0077f35ec828e148ac92d0c6aa141a732b5eb7a4a391679aeefa59fa9a1a5cc"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20",
+                    "file": "kotlin-stdlib-2.4.20.jar",
+                    "sha256": "2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-android",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-android-1.10.2.jar",
+                    "sha256": "e713f1f874244115a07571065cffa0f24f5e78300e9720fea16de3af1d75fd41"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+                    "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-slf4j",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-slf4j-1.10.2.jar",
+                    "sha256": "d65dee3cafa6f7bfaefedb493fc68b5c63abe750734fb8af92fac7a0d3101457"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-bytestring-jvm-0.8.0.jar",
+                    "sha256": "3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-core-jvm-0.8.0.jar",
+                    "sha256": "610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-core-jvm-1.9.0.jar",
+                    "sha256": "1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-json-jvm-1.9.0.jar",
+                    "sha256": "d94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0",
+                    "file": "annotations-23.0.0.jar",
+                    "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+                },
+                {
+                    "group": "org.jspecify",
+                    "name": "jspecify",
+                    "version": "1.0.0",
+                    "file": "jspecify-1.0.0.jar",
+                    "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.17",
+                    "file": "slf4j-api-2.0.17.jar",
+                    "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+                }
+            ]
+        },
+        {
+            "project": ":app",
+            "configuration": "releaseRuntimeClasspath",
+            "components": [
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-compose",
+                    "version": "1.10.1"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-ktx",
+                    "version": "1.10.1"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity",
+                    "version": "1.10.1"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-experimental",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-jvm",
+                    "version": "1.9.1"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation",
+                    "version": "1.9.1"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat-resources",
+                    "version": "1.8.0"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat",
+                    "version": "1.8.0"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-common",
+                    "version": "2.2.0"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-runtime",
+                    "version": "2.2.0"
+                },
+                {
+                    "group": "androidx.autofill",
+                    "name": "autofill",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-jvm",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-ktx",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-core-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-core",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-layout-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-layout",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.material3",
+                    "name": "material3-android",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.compose.material3",
+                    "name": "material3",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-ripple-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-ripple",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-annotation-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-annotation",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-retain-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-retain",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-saveable-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-saveable",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-geometry-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-geometry",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-graphics-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-graphics",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-text-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-text",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-preview-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-preview",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-unit-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-unit",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-util-android",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-util",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui",
+                    "version": "1.10.0"
+                },
+                {
+                    "group": "androidx.compose",
+                    "name": "compose-bom",
+                    "version": "2025.12.00"
+                },
+                {
+                    "group": "androidx.concurrent",
+                    "name": "concurrent-futures",
+                    "version": "1.1.0"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-ktx",
+                    "version": "1.16.0"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-viewtree",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core",
+                    "version": "1.16.0"
+                },
+                {
+                    "group": "androidx.cursoradapter",
+                    "name": "cursoradapter",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview-poolingcontainer",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-okio-jvm",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-okio",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-core-android",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-core",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-external-protobuf",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-proto",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore",
+                    "version": "1.1.7"
+                },
+                {
+                    "group": "androidx.documentfile",
+                    "name": "documentfile",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.drawerlayout",
+                    "name": "drawerlayout",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.dynamicanimation",
+                    "name": "dynamicanimation",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2-views-helper",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.fragment",
+                    "name": "fragment",
+                    "version": "1.5.4"
+                },
+                {
+                    "group": "androidx.graphics",
+                    "name": "graphics-path",
+                    "version": "1.0.1"
+                },
+                {
+                    "group": "androidx.interpolator",
+                    "name": "interpolator",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.legacy",
+                    "name": "legacy-support-core-utils",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-java8",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-jvm",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core-ktx",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-process",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-compose-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-compose",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-ktx-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-ktx",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-compose-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-compose",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-ktx",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-savedstate-android",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-savedstate",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel",
+                    "version": "2.9.4"
+                },
+                {
+                    "group": "androidx.loader",
+                    "name": "loader",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.localbroadcastmanager",
+                    "name": "localbroadcastmanager",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.print",
+                    "name": "print",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.profileinstaller",
+                    "name": "profileinstaller",
+                    "version": "1.4.0"
+                },
+                {
+                    "group": "androidx.resourceinspection",
+                    "name": "resourceinspection-annotation",
+                    "version": "1.0.1"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-common-jvm",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-common",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-runtime-android",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-runtime",
+                    "version": "2.8.4"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-android",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-compose-android",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-compose",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-ktx",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate",
+                    "version": "1.3.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-android",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-framework-android",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-framework",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite",
+                    "version": "2.6.2"
+                },
+                {
+                    "group": "androidx.startup",
+                    "name": "startup-runtime",
+                    "version": "1.2.0"
+                },
+                {
+                    "group": "androidx.tracing",
+                    "name": "tracing",
+                    "version": "1.2.0"
+                },
+                {
+                    "group": "androidx.transition",
+                    "name": "transition",
+                    "version": "1.6.0"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable-animated",
+                    "version": "1.1.0"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable",
+                    "version": "1.1.0"
+                },
+                {
+                    "group": "androidx.versionedparcelable",
+                    "name": "versionedparcelable",
+                    "version": "1.1.1"
+                },
+                {
+                    "group": "androidx.viewpager",
+                    "name": "viewpager",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window-core-android",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window-core",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window",
+                    "version": "1.5.0"
+                },
+                {
+                    "group": "com.google.guava",
+                    "name": "listenablefuture",
+                    "version": "1.0"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp-android",
+                    "version": "5.2.1"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp",
+                    "version": "5.2.1"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio-jvm",
+                    "version": "3.16.2"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio",
+                    "version": "3.16.2"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets",
+                    "version": "3.3.3"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-android-extensions-runtime",
+                    "version": "1.9.22"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-parcelize-runtime",
+                    "version": "1.9.22"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-android",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-bom",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-slf4j",
+                    "version": "1.10.2"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core",
+                    "version": "0.8.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-bom",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json",
+                    "version": "1.9.0"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0"
+                },
+                {
+                    "group": "org.jspecify",
+                    "name": "jspecify",
+                    "version": "1.0.0"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.17"
+                }
+            ],
+            "artifacts": [
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-compose",
+                    "version": "1.10.1",
+                    "file": "activity-compose-1.10.1.aar",
+                    "sha256": "f89af1b26ccc834634387c857c2dd4f4654d37650890039c527c2fed07db6a61"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity-ktx",
+                    "version": "1.10.1",
+                    "file": "activity-ktx-1.10.1.aar",
+                    "sha256": "f396f58dbd772c065b873696b74a3d4d087554b3766280e63b49b25dbb53ab16"
+                },
+                {
+                    "group": "androidx.activity",
+                    "name": "activity",
+                    "version": "1.10.1",
+                    "file": "activity-1.10.1.aar",
+                    "sha256": "b62b528c917de9be497eb6f88830197c20e9d21267c3916c613492e5ee837d4d"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-experimental",
+                    "version": "1.5.0",
+                    "file": "annotation-experimental-1.5.0.aar",
+                    "sha256": "02b0a4256618f85386c92e5cec166dc7f300820888a290227a3c0c65b82cbb36"
+                },
+                {
+                    "group": "androidx.annotation",
+                    "name": "annotation-jvm",
+                    "version": "1.9.1",
+                    "file": "annotation-jvm-1.9.1.jar",
+                    "sha256": "1e343917ebf27ba96fe4dc52b1cad7fd32b738fbc6355bb6cd5b3b305d7212d0"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat-resources",
+                    "version": "1.8.0",
+                    "file": "appcompat-resources-1.8.0.aar",
+                    "sha256": "3fe48cc3df409bed03063a4f5f5f9f8c51f1d63ea9e88d41e6489bf58495a5af"
+                },
+                {
+                    "group": "androidx.appcompat",
+                    "name": "appcompat",
+                    "version": "1.8.0",
+                    "file": "appcompat-1.8.0.aar",
+                    "sha256": "773f79306eb0ca2447af8752e923ce6269e201e7fe6b275cc76e2998ee87e838"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-common",
+                    "version": "2.2.0",
+                    "file": "core-common-2.2.0.jar",
+                    "sha256": "65308a06b1c00ee186cb9e19321383f043b993813f1522c47f4a3e3303bdba41"
+                },
+                {
+                    "group": "androidx.arch.core",
+                    "name": "core-runtime",
+                    "version": "2.2.0",
+                    "file": "core-runtime-2.2.0.aar",
+                    "sha256": "a1be5e0caa2b07623862af6ae21b3ab0718123245184d0e30dea81b53f990a47"
+                },
+                {
+                    "group": "androidx.autofill",
+                    "name": "autofill",
+                    "version": "1.0.0",
+                    "file": "autofill-1.0.0.aar",
+                    "sha256": "c9468f56e05006ea151a426c54957cd0799b8b83a579d2846dd22061f33e5ecd"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-jvm",
+                    "version": "1.5.0",
+                    "file": "collection-jvm-1.5.0.jar",
+                    "sha256": "70b35924e4babcdffa37d0e575ee039c56a2d97123342624c48b603233704341"
+                },
+                {
+                    "group": "androidx.collection",
+                    "name": "collection-ktx",
+                    "version": "1.5.0",
+                    "file": "collection-ktx-1.5.0.jar",
+                    "sha256": "939b4a8697640e77d83e4e8b4c4a9d18f8130198c5961194af8dd9db9dc7c353"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-android",
+                    "version": "1.10.0",
+                    "file": "animation.aar",
+                    "sha256": "8a559dabdae5a4dcd45b9eba7fbc90df093135e43c7e29de2769911eec76eef9"
+                },
+                {
+                    "group": "androidx.compose.animation",
+                    "name": "animation-core-android",
+                    "version": "1.10.0",
+                    "file": "animation-core.aar",
+                    "sha256": "55d7bd5ba5796bc07d0552256734789a5be039555cd93991d0d26ce1a7671fef"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-android",
+                    "version": "1.10.0",
+                    "file": "foundation.aar",
+                    "sha256": "c7366032bb88f90f307ab50f58e3c87ad93e278f50cfdbd9bedb6f10bc6217a3"
+                },
+                {
+                    "group": "androidx.compose.foundation",
+                    "name": "foundation-layout-android",
+                    "version": "1.10.0",
+                    "file": "foundation-layout.aar",
+                    "sha256": "85513652dc9e458be47683dc0e61473e0bbbe24417d18c4eaf15b0c25a60318c"
+                },
+                {
+                    "group": "androidx.compose.material3",
+                    "name": "material3-android",
+                    "version": "1.4.0",
+                    "file": "material3.aar",
+                    "sha256": "3a37e8b36df3822fe1e6059f0f9fafda8800388860477624ac1b9422c418a36e"
+                },
+                {
+                    "group": "androidx.compose.material",
+                    "name": "material-ripple-android",
+                    "version": "1.10.0",
+                    "file": "material-ripple.aar",
+                    "sha256": "ad7c12b3256ada337533ebb422c03a203e6e0d4226f83315d2abad16616d80be"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-android",
+                    "version": "1.10.0",
+                    "file": "runtime.aar",
+                    "sha256": "612d36c21865a0008e889a2515c088cbd3b2210891f23acfe458abb63030d92a"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-annotation-android",
+                    "version": "1.10.0",
+                    "file": "runtime-annotation.aar",
+                    "sha256": "8b875f9d2e87cc927bef19dec3e6f3ff6db97d67a87f07573abc44c1e707992d"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-retain-android",
+                    "version": "1.10.0",
+                    "file": "runtime-retain.aar",
+                    "sha256": "fd03f002bd47edf80902e62cafb660bc1d93800fc6a7c9bcc16e620e46c4b86f"
+                },
+                {
+                    "group": "androidx.compose.runtime",
+                    "name": "runtime-saveable-android",
+                    "version": "1.10.0",
+                    "file": "runtime-saveable.aar",
+                    "sha256": "f4c34f0e72eb6bb590811468bda832832a57edd678a0afa8373f505a619b3a36"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-android",
+                    "version": "1.10.0",
+                    "file": "ui.aar",
+                    "sha256": "d5a7ae5986b9d32bdf6f7174eb2293c4eb894f5b4cdcebff4e1e42cd4aec00c8"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-geometry-android",
+                    "version": "1.10.0",
+                    "file": "ui-geometry.aar",
+                    "sha256": "40749b3f14b055cfd4438a59fef1cf9dffd01ae38df55ac981ffd890b5aab3a0"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-graphics-android",
+                    "version": "1.10.0",
+                    "file": "ui-graphics.aar",
+                    "sha256": "b787d8795e4dee10a09d96fc5f8b99b087262b29004aaa40502dbde50971a8ae"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-text-android",
+                    "version": "1.10.0",
+                    "file": "ui-text.aar",
+                    "sha256": "626714ee7a6120adbebad6c57d743087aed173fe4769fea2ccee71b4770c1c70"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-tooling-preview-android",
+                    "version": "1.10.0",
+                    "file": "ui-tooling-preview.aar",
+                    "sha256": "19d4d9c5226a95999ab214dec6c80851dce514a6fc54a0dee2a308c6c09d49a7"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-unit-android",
+                    "version": "1.10.0",
+                    "file": "ui-unit.aar",
+                    "sha256": "b2a256118b29007709790d6f36e36cb139cd88b5796502c656d071ebebbee762"
+                },
+                {
+                    "group": "androidx.compose.ui",
+                    "name": "ui-util-android",
+                    "version": "1.10.0",
+                    "file": "ui-util.aar",
+                    "sha256": "75259f110f0dc1272977e02e4eb591e71ebbdee136e0b21d76c9fd326372c909"
+                },
+                {
+                    "group": "androidx.concurrent",
+                    "name": "concurrent-futures",
+                    "version": "1.1.0",
+                    "file": "concurrent-futures-1.1.0.jar",
+                    "sha256": "0ce067c514a0d1049d1bebdf709e344ed3266fe9744275682937cdcb13334e9e"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-ktx",
+                    "version": "1.16.0",
+                    "file": "core-ktx-1.16.0.aar",
+                    "sha256": "1766dbd82f64a12dcd359ecb6f15f3cf35db4d66d22961a7c51b2ffc6468314c"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core-viewtree",
+                    "version": "1.0.0",
+                    "file": "core-viewtree-1.0.0.aar",
+                    "sha256": "dc1b678d58ebcf2bfa1587be68ff826694ce3d221251b9ef30d4d4b36297e6de"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core",
+                    "version": "1.16.0",
+                    "file": "core-1.16.0.aar",
+                    "sha256": "6bf03d39dbe3744acce227d3b697374c3625aae1025fbec8ad9fd7bd58bce431"
+                },
+                {
+                    "group": "androidx.core",
+                    "name": "core",
+                    "version": "1.16.0",
+                    "file": "core-1.16.0.aar",
+                    "sha256": "6bf03d39dbe3744acce227d3b697374c3625aae1025fbec8ad9fd7bd58bce431"
+                },
+                {
+                    "group": "androidx.cursoradapter",
+                    "name": "cursoradapter",
+                    "version": "1.0.0",
+                    "file": "cursoradapter-1.0.0.aar",
+                    "sha256": "a81c8fe78815fa47df5b749deb52727ad11f9397da58b16017f4eb2c11e28564"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview-poolingcontainer",
+                    "version": "1.0.0",
+                    "file": "customview-poolingcontainer-1.0.0.aar",
+                    "sha256": "3584102fc49bf399c56e3b7be4bfe12000c46112320cd8cf85cc0a8f93f3e752"
+                },
+                {
+                    "group": "androidx.customview",
+                    "name": "customview",
+                    "version": "1.0.0",
+                    "file": "customview-1.0.0.aar",
+                    "sha256": "20e5b8f6526a34595a604f56718da81167c0b40a7a94a57daa355663f2594df2"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-android",
+                    "version": "1.1.7",
+                    "file": "datastore-release.aar",
+                    "sha256": "26c12c6417e7e4cfd36386aa8cc2b9839fe87a6792f820805827bde4d27f9e6e"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-android",
+                    "version": "1.1.7",
+                    "file": "datastore-core-release.aar",
+                    "sha256": "adca1d7cde73406fcca2a0eeabac63459adc9d1fe201b79ba08711fa2e331984"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-core-okio-jvm",
+                    "version": "1.1.7",
+                    "file": "datastore-core-okio-jvm-1.1.7.jar",
+                    "sha256": "291506b4fce398249793e327207635bd4df25181d9539808d7181a4abd0875f5"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-android",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-release.aar",
+                    "sha256": "1b3d703abc765b60517334b04c5b520e6e25168a2f2d73d5b0cd975d20054f8d"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-core-android",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-core-release.aar",
+                    "sha256": "31cebf4444b1df57876e695109a0a63c9a93ff05df503d27a3927b86af0cfac0"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-external-protobuf",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-external-protobuf-1.1.7.jar",
+                    "sha256": "fcb3f373cf743426c85ebb0d3cc644aefaf26f39b7fa55bb90238d41b689eca7"
+                },
+                {
+                    "group": "androidx.datastore",
+                    "name": "datastore-preferences-proto",
+                    "version": "1.1.7",
+                    "file": "datastore-preferences-proto-1.1.7.jar",
+                    "sha256": "63686a612f39b8ca603bebe3376d55fb6c9ee28a4a5173efa49c89cbcca8a127"
+                },
+                {
+                    "group": "androidx.documentfile",
+                    "name": "documentfile",
+                    "version": "1.0.0",
+                    "file": "documentfile-1.0.0.aar",
+                    "sha256": "865a061ef2fad16522f8433536b8d47208c46ff7c7745197dfa1eeb481869487"
+                },
+                {
+                    "group": "androidx.drawerlayout",
+                    "name": "drawerlayout",
+                    "version": "1.0.0",
+                    "file": "drawerlayout-1.0.0.aar",
+                    "sha256": "9402442cdc5a43cf62fb14f8cf98c63342d4d9d9b805c8033c6cf7e802749ac1"
+                },
+                {
+                    "group": "androidx.dynamicanimation",
+                    "name": "dynamicanimation",
+                    "version": "1.0.0",
+                    "file": "dynamicanimation-1.0.0.aar",
+                    "sha256": "ce005162c229bf308d2d5b12fb6cad0874069cbbeaccee63a8193bd08d40de04"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2-views-helper",
+                    "version": "1.4.0",
+                    "file": "emoji2-views-helper-1.4.0.aar",
+                    "sha256": "ed5d3ed772a5fbf0d570f7526f585cd61a180e60f9372584c328a68e2cff3375"
+                },
+                {
+                    "group": "androidx.emoji2",
+                    "name": "emoji2",
+                    "version": "1.4.0",
+                    "file": "emoji2-1.4.0.aar",
+                    "sha256": "433febd3434a45667176c76a64f3f205ca6335a6b544c5b5d57f25a38a375242"
+                },
+                {
+                    "group": "androidx.fragment",
+                    "name": "fragment",
+                    "version": "1.5.4",
+                    "file": "fragment-1.5.4.aar",
+                    "sha256": "bc3c2431dda42e94bb9511c587eae890d276e4aafe393a8da7b00169186dafde"
+                },
+                {
+                    "group": "androidx.graphics",
+                    "name": "graphics-path",
+                    "version": "1.0.1",
+                    "file": "graphics-path-1.0.1.aar",
+                    "sha256": "8ca4032b6d79b351f0b59ad4b580eddbb9423e1652f7c958830687f1eee2ec03"
+                },
+                {
+                    "group": "androidx.interpolator",
+                    "name": "interpolator",
+                    "version": "1.0.0",
+                    "file": "interpolator-1.0.0.aar",
+                    "sha256": "33193135a64fe21fa2c35eec6688f1a76e512606c0fc83dc1b689e37add7732a"
+                },
+                {
+                    "group": "androidx.legacy",
+                    "name": "legacy-support-core-utils",
+                    "version": "1.0.0",
+                    "file": "legacy-support-core-utils-1.0.0.aar",
+                    "sha256": "a7edcf01d5b52b3034073027bc4775b78a4764bb6202bb91d61c829add8dd1c7"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-java8",
+                    "version": "2.9.4",
+                    "file": "lifecycle-common-java8-2.9.4.jar",
+                    "sha256": "497dd84de9f2fd46324f25f9a3af032d3a23d087e87af515c4b19435f6d6a651"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-common-jvm",
+                    "version": "2.9.4",
+                    "file": "lifecycle-common-jvm-2.9.4.jar",
+                    "sha256": "37d89b2101f074ac6c260917dabb185607645ee200aa3018c7c5bde70edcf184"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core-ktx",
+                    "version": "2.9.4",
+                    "file": "lifecycle-livedata-core-ktx-2.9.4.aar",
+                    "sha256": "f55b7a8d433e9b8163154ccaa42fa2be55c70cd1ede5eeea521a4b4b884dd4fe"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata-core",
+                    "version": "2.9.4",
+                    "file": "lifecycle-livedata-core-2.9.4.aar",
+                    "sha256": "ea866f0c379d1f92837994010ab5ac0a5d5499dbab521efc71b3bc2b497d6ba4"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-livedata",
+                    "version": "2.9.4",
+                    "file": "lifecycle-livedata-2.9.4.aar",
+                    "sha256": "f240c2c94a96d4a5eae5d379c2a8589d426a33b989d83ae9f0e01f69502c0181"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-process",
+                    "version": "2.9.4",
+                    "file": "lifecycle-process-2.9.4.aar",
+                    "sha256": "4784b8d083c211e076d9115bfa1737f7e0f62b553e801cf50caa4400e34a95d6"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-runtime-release.aar",
+                    "sha256": "86f16a1330eb23600ba90d0334b3e1db38d3a30c8b1efcd92ca21aa85afa8173"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-compose-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-runtime-compose-release.aar",
+                    "sha256": "b6803f906a89fd85c77df343dd4aeeb349125ca79e12d55d68d4cf42f42231f6"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-runtime-ktx-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-runtime-ktx.aar",
+                    "sha256": "970199c9ed1ac13d620aa8de7f8abbc28ce80653c3ce328d0ac2f15272b56e1b"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-release.aar",
+                    "sha256": "4b236b2e504db5ca5d09334fef05aa8cdc31ee35a433c3aa4d0420efa9613332"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-compose-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-compose-release.aar",
+                    "sha256": "f7825a08ca661de84044b6891293084bea8fbcc84aa08d8c13a3c558fc5956c9"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-ktx",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-ktx-2.9.4.aar",
+                    "sha256": "b7d58bb86bb8e2ccc607d1f8570e714810f7cfb3feba37d375ff1646383435a1"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel-savedstate-android",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-savedstate-release.aar",
+                    "sha256": "079441c43fa3ff8ea7a02df3b12eec483c3e57583f832cfaff663750527c1421"
+                },
+                {
+                    "group": "androidx.lifecycle",
+                    "name": "lifecycle-viewmodel",
+                    "version": "2.9.4",
+                    "file": "lifecycle-viewmodel-2.9.4.aar",
+                    "sha256": "cab404b05d5faed209104a2aef14c0cbb316ab9fabe4a8f037b043e5d2f43435"
+                },
+                {
+                    "group": "androidx.loader",
+                    "name": "loader",
+                    "version": "1.0.0",
+                    "file": "loader-1.0.0.aar",
+                    "sha256": "11f735cb3b55c458d470bed9e25254375b518b4b1bad6926783a7026db0f5025"
+                },
+                {
+                    "group": "androidx.localbroadcastmanager",
+                    "name": "localbroadcastmanager",
+                    "version": "1.0.0",
+                    "file": "localbroadcastmanager-1.0.0.aar",
+                    "sha256": "e71c328ceef5c4a7d76f2d86df1b65d65fe2acf868b1a4efd84a3f34336186d8"
+                },
+                {
+                    "group": "androidx.print",
+                    "name": "print",
+                    "version": "1.0.0",
+                    "file": "print-1.0.0.aar",
+                    "sha256": "1d5c7f3135a1bba661fc373fd72e11eb0a4adbb3396787826dd8e4190d5d9edd"
+                },
+                {
+                    "group": "androidx.profileinstaller",
+                    "name": "profileinstaller",
+                    "version": "1.4.0",
+                    "file": "profileinstaller-1.4.0.aar",
+                    "sha256": "d502141fcce902430f62b674c32aecd0f75262e7ee2cd15c74adb617cd13130a"
+                },
+                {
+                    "group": "androidx.resourceinspection",
+                    "name": "resourceinspection-annotation",
+                    "version": "1.0.1",
+                    "file": "resourceinspection-annotation-1.0.1.jar",
+                    "sha256": "8cff870ec6fb31db48a52f4a792335b4bf8de07e03bd37823181526433ccd5cb"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-common-jvm",
+                    "version": "2.8.4",
+                    "file": "room-common-jvm-2.8.4.jar",
+                    "sha256": "dc7b4e1a75a790f29c97afd5516b8bf8002d9b6e83e295bc569b33566f3b1ec0"
+                },
+                {
+                    "group": "androidx.room",
+                    "name": "room-runtime-android",
+                    "version": "2.8.4",
+                    "file": "room-runtime.aar",
+                    "sha256": "3293575082024fa0a92b081c4e2d0609f14b5c109635ec227bc509db141a4e20"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-android",
+                    "version": "1.3.2",
+                    "file": "savedstate-release.aar",
+                    "sha256": "1e26f137705596d09d3f4f52559a29026d9a1a6688be7f1a948316a4f1e39b20"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-compose-android",
+                    "version": "1.3.2",
+                    "file": "savedstate-compose.aar",
+                    "sha256": "93426691f25441cc3179494b25f401a8a468aabbee4c40b90c0327413fd65523"
+                },
+                {
+                    "group": "androidx.savedstate",
+                    "name": "savedstate-ktx",
+                    "version": "1.3.2",
+                    "file": "savedstate-ktx-1.3.2.aar",
+                    "sha256": "1c300732ece8e9d0001fb19cc693b0f77f19e77cdf90ca5c4cd56d5e6951d02b"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-android",
+                    "version": "2.6.2",
+                    "file": "sqlite.aar",
+                    "sha256": "514f8de4f7bdba2fa8d748d2b22fdcdfb623bd3770a667bf0adc0ad259f03ed2"
+                },
+                {
+                    "group": "androidx.sqlite",
+                    "name": "sqlite-framework-android",
+                    "version": "2.6.2",
+                    "file": "sqlite-framework.aar",
+                    "sha256": "b19125c7fff34222e0f380361fc179ab214e4d82e1a50b0c068ca26c851a6231"
+                },
+                {
+                    "group": "androidx.startup",
+                    "name": "startup-runtime",
+                    "version": "1.2.0",
+                    "file": "startup-runtime-1.2.0.aar",
+                    "sha256": "f51d361d17b30b09cfb9e2aebf301d113f99437cbf462a066092795fb60eddd2"
+                },
+                {
+                    "group": "androidx.tracing",
+                    "name": "tracing",
+                    "version": "1.2.0",
+                    "file": "tracing-1.2.0.aar",
+                    "sha256": "6faa90390d1fdbf0adb9a99bf99de67b94c6c6f35aea9510593a9d17973736a2"
+                },
+                {
+                    "group": "androidx.transition",
+                    "name": "transition",
+                    "version": "1.6.0",
+                    "file": "transition-1.6.0.aar",
+                    "sha256": "248c45e1254d31181d2047b0b01394f09a2e539a5d9e89b773d53c62c96860f6"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable-animated",
+                    "version": "1.1.0",
+                    "file": "vectordrawable-animated-1.1.0.aar",
+                    "sha256": "76da2c502371d9c38054df5e2b248d00da87809ed058f3363eae87ce5e2403f8"
+                },
+                {
+                    "group": "androidx.vectordrawable",
+                    "name": "vectordrawable",
+                    "version": "1.1.0",
+                    "file": "vectordrawable-1.1.0.aar",
+                    "sha256": "46fd633ac01b49b7fcabc263bf098c5a8b9e9a69774d234edcca04fb02df8e26"
+                },
+                {
+                    "group": "androidx.versionedparcelable",
+                    "name": "versionedparcelable",
+                    "version": "1.1.1",
+                    "file": "versionedparcelable-1.1.1.aar",
+                    "sha256": "57e8d93260d18d5b9007c9eed3c64ad159de90c8609ebfc74a347cbd514535a4"
+                },
+                {
+                    "group": "androidx.viewpager",
+                    "name": "viewpager",
+                    "version": "1.0.0",
+                    "file": "viewpager-1.0.0.aar",
+                    "sha256": "147af4e14a1984010d8f155e5e19d781f03c1d70dfed02a8e0d18428b8fc8682"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window-core-android",
+                    "version": "1.5.0",
+                    "file": "window-core.aar",
+                    "sha256": "d0d50db0756194a6d49a66ad8dafd17b24b4c5fbd8379375056e2eb9bdfeaf22"
+                },
+                {
+                    "group": "androidx.window",
+                    "name": "window",
+                    "version": "1.5.0",
+                    "file": "window-1.5.0.aar",
+                    "sha256": "5de2d48aa578402f46deb5294a955cee62f0c7d8c1840ef626fc7afb8abe22f9"
+                },
+                {
+                    "group": "com.google.guava",
+                    "name": "listenablefuture",
+                    "version": "1.0",
+                    "file": "listenablefuture-1.0.jar",
+                    "sha256": "e4ad7607e5c0477c6f890ef26a49cb8d1bb4dffb650bab4502afee64644e3069"
+                },
+                {
+                    "group": "com.squareup.okhttp3",
+                    "name": "okhttp-android",
+                    "version": "5.2.1",
+                    "file": "okhttp-release.aar",
+                    "sha256": "1043f2bb063655041f96efe203323a970e33ca839baed2d94190f61fe6e602d8"
+                },
+                {
+                    "group": "com.squareup.okio",
+                    "name": "okio-jvm",
+                    "version": "3.16.2",
+                    "file": "okio-jvm-3.16.2.jar",
+                    "sha256": "a0a9f1abfb90c0a37b9c847cea39fff26d15f39253f5175632cdb948c96318d0"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-core-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-core-jvm-3.3.3.jar",
+                    "sha256": "6c403b39cac342892839c251275cc441b27c7f194983b9226cb46bc3a44259f9"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-okhttp-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-okhttp-jvm-3.3.3.jar",
+                    "sha256": "43624d509db6493fc2f685791ffbe5451db00616376958cd36d3603f627b682f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-client-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-client-websockets-jvm-3.3.3.jar",
+                    "sha256": "aa073b8a48f5e57af1759a12fd65eb9d277f23f597ca6014b3c2ae75332d7f4e"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-events-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-events-jvm-3.3.3.jar",
+                    "sha256": "0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-cio-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-cio-jvm-3.3.3.jar",
+                    "sha256": "ff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-http-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-http-jvm-3.3.3.jar",
+                    "sha256": "7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-io-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-io-jvm-3.3.3.jar",
+                    "sha256": "c1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-network-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-network-jvm-3.3.3.jar",
+                    "sha256": "f50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-serialization-jvm-3.3.3.jar",
+                    "sha256": "5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-sse-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-sse-jvm-3.3.3.jar",
+                    "sha256": "a87a8a0168671af46bdc762d9f345daca1ea8133a9c9d367334cc1e9b2c4ae2c"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-utils-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-utils-jvm-3.3.3.jar",
+                    "sha256": "ad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websocket-serialization-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websocket-serialization-jvm-3.3.3.jar",
+                    "sha256": "3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82"
+                },
+                {
+                    "group": "io.ktor",
+                    "name": "ktor-websockets-jvm",
+                    "version": "3.3.3",
+                    "file": "ktor-websockets-jvm-3.3.3.jar",
+                    "sha256": "129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-android-extensions-runtime",
+                    "version": "1.9.22",
+                    "file": "kotlin-android-extensions-runtime-1.9.22.jar",
+                    "sha256": "f00537c7023e604933f6a9563b1bb3b83e61fbfd2cc3d0e9900d616bab6862a4"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-parcelize-runtime",
+                    "version": "1.9.22",
+                    "file": "kotlin-parcelize-runtime-1.9.22.jar",
+                    "sha256": "f0077f35ec828e148ac92d0c6aa141a732b5eb7a4a391679aeefa59fa9a1a5cc"
+                },
+                {
+                    "group": "org.jetbrains.kotlin",
+                    "name": "kotlin-stdlib",
+                    "version": "2.4.20",
+                    "file": "kotlin-stdlib-2.4.20.jar",
+                    "sha256": "2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-android",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-android-1.10.2.jar",
+                    "sha256": "e713f1f874244115a07571065cffa0f24f5e78300e9720fea16de3af1d75fd41"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-core-jvm",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+                    "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-coroutines-slf4j",
+                    "version": "1.10.2",
+                    "file": "kotlinx-coroutines-slf4j-1.10.2.jar",
+                    "sha256": "d65dee3cafa6f7bfaefedb493fc68b5c63abe750734fb8af92fac7a0d3101457"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-bytestring-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-bytestring-jvm-0.8.0.jar",
+                    "sha256": "3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-io-core-jvm",
+                    "version": "0.8.0",
+                    "file": "kotlinx-io-core-jvm-0.8.0.jar",
+                    "sha256": "610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-core-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-core-jvm-1.9.0.jar",
+                    "sha256": "1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c"
+                },
+                {
+                    "group": "org.jetbrains.kotlinx",
+                    "name": "kotlinx-serialization-json-jvm",
+                    "version": "1.9.0",
+                    "file": "kotlinx-serialization-json-jvm-1.9.0.jar",
+                    "sha256": "d94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8"
+                },
+                {
+                    "group": "org.jetbrains",
+                    "name": "annotations",
+                    "version": "23.0.0",
+                    "file": "annotations-23.0.0.jar",
+                    "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+                },
+                {
+                    "group": "org.jspecify",
+                    "name": "jspecify",
+                    "version": "1.0.0",
+                    "file": "jspecify-1.0.0.jar",
+                    "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+                },
+                {
+                    "group": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.17",
+                    "file": "slf4j-api-2.0.17.jar",
+                    "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+                }
+            ]
+        }
+    ]
+}

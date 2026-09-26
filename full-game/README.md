@@ -2,7 +2,9 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-Alpha12 adds private-room **invitation links**, with English/Hindi review, explicit registration/join, preservation of current rooms and pending commands, and optional browser landing/install pages. Public App Links require the actual domain and installed signing certificate. See [alpha12 validation](ALPHA12_VALIDATION.md), [invite setup](INVITES.md) and the [installation guide](ALPHA_INSTALL.md). Hosting, production signing and physical-device acceptance remain open.
+Alpha13 redesigns play around a compact game table: one-tap quick games, all 1–6 owned tickets together without a ticket carousel or scrolling, non-repeating numbers across each player's hand, and a covered handoff for shared-device family play. See the [design research](../docs/GAMEPLAY_REDESIGN.md), [alpha13 validation](ALPHA13_VALIDATION.md) and [installation guide](ALPHA_INSTALL.md). Alpha14 packages the verified build-tool migration with Android 8/11/16, upgrade, multiplayer and recovery acceptance; see [alpha14 validation](ALPHA14_VALIDATION.md). It remains an internal development build.
+
+Private-room **invitation links** retain English/Hindi review, explicit registration/join and preservation of current rooms and pending commands. Public App Links require the actual domain and installed signing certificate; see [invite setup](INVITES.md). Hosting, production signing and physical-device acceptance remain open.
 
 **Your game data**, introduced in alpha11, remains available from Settings and before online registration. It explains storage, retention, deletion, the separate recovery record and aggregate monitoring; deletion confirmation states that recovery records currently have no automatic expiry. Provider retention policy and public privacy/support work remain release gates.
 
@@ -30,13 +32,14 @@ The alpha07 audio update adds an original offline music loop and cues, independe
 
 The alpha06 appearance update adds saved System/Light/Dark themes, native home artwork and a number reveal that respects reduced motion and system animation settings. See [presentation direction](PRESENTATION.md) and [alpha06 validation](ALPHA06_VALIDATION.md) for the exact candidate evidence and remaining work.
 
-JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 8.14.5 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update. The [build-tool review](BUILD_TOOL_REVIEW.md) records remaining findings and the separately evaluated migration candidate.
+A patched JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 9.7.1 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update. The [build-tool review](BUILD_TOOL_REVIEW.md) records the alpha14 migration's acceptance status and remaining findings.
 
 The [runtime dependency review](DEPENDENCY_REVIEW.md) records resolved library inventories, advisory checks and the Netty/Logback security update. Use the current service build or `releases/service-security-2026-09-26/Tambola-service.zip` for private-room testing with the unchanged alpha12 APK. CI checks exact runtime Maven versions; process reports identify every bundled service library, including changes that leave the main JAR unchanged.
 
 ```powershell
 python tools/check-localization.py
-.\gradlew.bat :domain:test :app:assembleDebug :app:lintDebug
+.\gradlew.bat :domain:test :app:assembleDebug
+.\gradlew.bat :app:lintDebug
 .\gradlew.bat :app:connectedDebugAndroidTest
 ```
 
@@ -53,7 +56,7 @@ The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing 
 - Prize inspection keeps the locked definition visible and shows actual selected numbers, missing calls, winning tickets and the award call. All eligibility is independent of manual marking.
 - Every winning ticket appears in an award. Players receive points once per prize even with multiple winning tickets; tied players each get full points.
 - Leaving the foreground pauses offline play and audio. Restoring a round does not automatically speak or draw.
-- Calling controls remain at the bottom of the game screen while the tickets scroll. The large-number marking sheet supports smaller screens; at large system text sizes the ticket overview switches to wrapping row layouts.
+- The game table keeps all owned tickets and the main play action on screen. Manual play uses one large action to dab confirmed called numbers; adaptive layouts support landscape and large system text. Other players' ticket grids are private.
 - Room stores rounds atomically. Preferences use DataStore. Offline history is local; deleting offline rounds requires confirmation. Online snapshots and sessions use a separate encrypted store.
 - Setup/editor drafts use the ViewModel and saved instance state to survive recreation. Rematches retain players/settings/custom prizes and produce a fresh round when dealt. Sharing starts with a preview and leaves player names out unless selected.
 

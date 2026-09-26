@@ -1,0 +1,26 @@
+{
+  "recordedAtUtc": "2026-09-26T13:11:57.680460+00:00",
+  "productionReady": false,
+  "artifacts": {
+    "debugApk": {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "bytes": 42497990,
+      "sha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891"
+    },
+    "instrumentationApk": {
+      "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "bytes": 1293203,
+      "sha256": "dcd8b9dbc7cb87c7add974ab6d6f80625008eaed6000d251c43389cc97381edc"
+    },
+    "unsignedReleaseApk": {
+      "path": "app/build/outputs/apk/release/app-release-unsigned.apk",
+      "bytes": 28858734,
+      "sha256": "c433330e970d386b113ee659eedcea75d252dbaf2abcfa11d3894b24f46fc097"
+    },
+    "releaseBundle": {
+      "path": "app/build/outputs/bundle/release/app-release.aab",
+      "bytes": 29968954,
+      "sha256": "184555d7a45834b79fccc05fa3c9e9eb9581fba3885d77c61c89130a73822a73"
+    }
+  }
+}
