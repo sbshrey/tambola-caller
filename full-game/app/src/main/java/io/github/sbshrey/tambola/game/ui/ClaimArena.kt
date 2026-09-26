@@ -152,6 +152,8 @@ internal fun ClaimArena(
                     .semantics { contentDescription = words(R.string.ui_back_to_game) }) { Text("×", fontSize = 28.sp) }
               }
             val choices = table.settings.prizes.map { prize -> prize.name to (table.coins?.prizes?.firstOrNull { it.prize == prize }?.let { words(R.string.coin_prize_amount, words.prizeTitle(prize), it.coins) } ?: words.prizeTitle(prize)) } + table.settings.customPrizes.map { it.id to it.title }
+            val closedHouses = table.awards.filter { it.prize.isRankedHouse && it.drawIndex < table.called.size }
+            val nextHouse = table.settings.prizes.filter { it.isRankedHouse && closedHouses.none { award -> award.prize == it } }.minByOrNull { it.ordinal }
             Column(Modifier.heightIn(max = 200.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
              choices.chunked(columns).forEach { row ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -160,11 +162,13 @@ internal fun ClaimArena(
                         val custom = table.customAwards.firstOrNull { it.prizeId == id }
                         val draw = award?.drawIndex ?: custom?.drawIndex
                         val wonByTicket = ticket.id in (award?.ticketIds ?: custom?.ticketIds).orEmpty()
-                        val open = (draw == null || draw == table.called.size) && !wonByTicket
+                        val rankedHouse = table.settings.prizes.firstOrNull { it.name == id && it.isRankedHouse }
+                        val houseLocked = rankedHouse != null && (rankedHouse != nextHouse || closedHouses.any { ticket.id in it.ticketIds })
+                        val open = (draw == null || draw == table.called.size) && !wonByTicket && !houseLocked
                         OutlinedButton(onClick = { claimTicketId = null; claim(ClaimSelection(ticket.id, id)) },
                             enabled = claimEnabled && open && !table.finished, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("claim-prize-$id"),
                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)) {
-                            Text(if (open) label else "✓ $label", fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(if (wonByTicket || (draw != null && draw < table.called.size)) "✓ $label" else label, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
                     }
                     repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }

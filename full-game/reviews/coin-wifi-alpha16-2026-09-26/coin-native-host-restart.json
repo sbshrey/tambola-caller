@@ -1,0 +1,11 @@
+{
+  "originalCalls": 20,
+  "nativeCompletion": "See matching LanCoinGameTest report",
+  "sourceCommit": "0b4c8de948d4925975d4e772e4b8ac1b458d65ec",
+  "expectedQaGameOnly": true,
+  "backendReady": true,
+  "observedAt": "2026-09-26T18:16:27.6275198+00:00",
+  "role": "server",
+  "freshServerProcess": true,
+  "recoveryMs": 5678
+}

@@ -1,0 +1,12 @@
+{
+  "versionCode": 16,
+  "versionName": "0.16.0-alpha16-wifi",
+  "variant": "lan",
+  "origin": "https://192.168.1.4:8443",
+  "serverSourceCommit": "0b4c8de948d4925975d4e772e4b8ac1b458d65ec",
+  "apkBytes": 41884279,
+  "apkSha256": "8d571728abb30021c31c0034db79a95467e68fbfbbd9044017b34d2b9bf8d86a",
+  "device": "dedicated Android 11 API30 emulator; no adb reverse",
+  "appSource": "0b4c8de948d4925975d4e772e4b8ac1b458d65ec plus the claim-picker diff committed with this evidence",
+  "installedWifiHostUpdated": true
+}

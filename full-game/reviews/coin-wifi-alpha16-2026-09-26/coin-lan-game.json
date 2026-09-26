@@ -1,0 +1,24 @@
+{
+  "completed": true,
+  "origin": "https:\/\/192.168.1.4:8443",
+  "scope": "Android emulator UI over verified LAN HTTPS\/WSS; three HTTP QA peers; no physical phone or mobile-network claim",
+  "stage": "passed",
+  "elapsedMs": 466770,
+  "calls": 0,
+  "claims": 0,
+  "frames": {
+    "observedNonFirstDrawFrames": 5388,
+    "firstDrawFramesExcluded": 7,
+    "droppedReports": 0,
+    "unavailableDurations": 0,
+    "over16666667Nanoseconds": 3629,
+    "maximumMs": 236.842479,
+    "p95BucketUpperMs": 51,
+    "p95Beyond2000Ms": false,
+    "reportsComplete": true
+  },
+  "finishedCalls": 86,
+  "settledWinnings": 2400,
+  "finalBalance": 3300,
+  "newRoundPurchasedAndRefunded": true
+}

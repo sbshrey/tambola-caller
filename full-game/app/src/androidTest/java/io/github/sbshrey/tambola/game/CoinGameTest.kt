@@ -117,8 +117,9 @@ class CoinGameTest {
             captureTestScreen("coin-live-table")
             compose.onNodeWithTag("claim-ticket-$ordinal").performClick()
             compose.onNodeWithTag("claim-prize-HOUSE_TWO").assertIsDisplayed()
+            compose.onNodeWithTag("claim-prize-HOUSE_TWO").assertIsNotEnabled()
             captureTestScreen("coin-prize-picker")
-            compose.onNodeWithTag("claim-prize-HOUSE_TWO").performClick()
+            compose.onNodeWithTag("claim-prize-TOP_LINE").performClick()
             until { model.state.value.claimMessage != null && !model.state.value.busy }
             assertEquals(R.string.play_claim_none, model.state.value.claimMessage!!.resource)
             val credentials = saved().credentials

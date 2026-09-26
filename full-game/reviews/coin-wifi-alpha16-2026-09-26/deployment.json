@@ -1,0 +1,10 @@
+{
+  "backupPair": "20260926-180653.json",
+  "origin": "https://192.168.1.4:8443",
+  "completedAt": "2026-09-26T18:07:03.7466823Z",
+  "backendReady": true,
+  "tlsClientAndCoinWriteRead": "pending external verification",
+  "restrictedStartup": true,
+  "sourceCommit": "0b4c8de948d4925975d4e772e4b8ac1b458d65ec",
+  "freshServerProcess": true
+}

@@ -196,7 +196,7 @@ class LongSessionTest {
 }
 
 /** Fixed-size counters avoid retaining one object per rendered frame during the soak. */
-private class SessionFrames : Window.OnFrameMetricsAvailableListener {
+internal class SessionFrames : Window.OnFrameMetricsAvailableListener {
     val active = AtomicBoolean(false)
     val count = AtomicLong()
     private val dropped = AtomicLong()

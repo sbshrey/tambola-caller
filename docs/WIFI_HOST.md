@@ -2,6 +2,8 @@
 
 Installed 26 September 2026 at `C:\Users\sbshr\AppData\Local\TambolaTogetherHost`.
 
+Upgraded to the online coin service (schema 005/protocol 4) from commit `0b4c8de948d4925975d4e772e4b8ac1b458d65ec`. The protected `upgrades` directory retains the previous configuration, service hashes and a fresh verified primary/journal backup pair. Actual coin purchases and refunds passed over verified TLS after restricted-role startup.
+
 - Game endpoint: `https://192.168.1.4:8443` (PC Ethernet address, same LAN as Wi-Fi).
 - Backend binds only `127.0.0.1:18080`; PostgreSQL binds only `127.0.0.1:55433`.
 - PostgreSQL 16.15 uses separate `tambola_local` and `tambola_local_journal` databases, migration-owner and restricted runtime roles. Existing test database on 55432 is untouched.
@@ -54,6 +56,12 @@ Before migration starts, a failed upgrade resumes the old service. Once migratio
 
 `tools/verify-wifi-host.mjs` used two temporary authenticated profiles over verified HTTPS, completed 90 manual calls, claimed one chosen ticket/prize, checked own-ticket privacy and replayed the exact claim receipt after Java, Caddy, worker and database recovery. It deleted its QA profiles afterwards. It deliberately interrupts only the installed host; run it when no players are active.
 
-`LanTransportTest` exercised the actual Android trust manager and app HTTP client over HTTPS/WSS to the LAN address, with cleartext rejected. It ran on the dedicated emulator without adb reverse. Physical phone Wi-Fi, Internet reachability, reboot behavior, wallet/purchase integration and release signing are not established by these checks.
+`LanTransportTest` exercised the actual Android trust manager and app HTTP client over HTTPS/WSS to the LAN address, with cleartext rejected. It passed again on the matching alpha16 LAN APK, on the dedicated emulator without adb reverse.
+
+`tools/verify-coin-host.mjs` used two temporary profiles to purchase six and two tickets into one lobby, verify a 1,400-coin/seven-prize pool, retry exact purchase/refund receipts and restore each 1,500-coin balance. Profiles were deleted afterwards. `tools/verify-native-host-restart.ps1` only permits a Java fault probe during the expected four-player `LanCoinGameTest` QA round; it refuses other live rooms and checks process identity. Native round completion must be assessed together with its report, not inferred from backend readiness.
+
+Physical phone Wi-Fi, Internet reachability, reboot behavior, installed-backup restoration and release signing remain separate acceptance checks. PC request timings are not a mobile-network latency guarantee.
+
+The alpha16 LAN APK also passed a complete native coin round on the dedicated emulator: 86 calls, all eight selected prizes, 2,400 coins paid, conserved aggregate wallets, results, Play Again and cancellation/refund. The Java server recovered in 5,678 ms during that round and the app continued over WSS. See [the archived results and frame-time limits](../full-game/reviews/coin-wifi-alpha16-2026-09-26/README.md).
 
 Dependency sources: [Caddy v2.11.4](https://github.com/caddyserver/caddy/releases/tag/v2.11.4), [EDB PostgreSQL binaries](https://www.enterprisedb.com/download-postgresql-binaries). Caddy matched its published checksum. PostgreSQL came from the official HTTPS download; its observed SHA-256 is recorded with the installation evidence, not represented as a publisher signature verification.
