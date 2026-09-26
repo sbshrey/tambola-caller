@@ -4,6 +4,10 @@ import io.github.sbshrey.tambola.client.*
 import io.github.sbshrey.tambola.protocol.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.junit.Assert.*
@@ -11,6 +15,23 @@ import org.junit.Test
 import java.util.UUID
 
 class NativeClientTest : PostgresTest() {
+    @Test fun `native room stream retains numeric close code without remote reason text`() = runBlocking<Unit> {
+        for (code in listOf(CloseReason.Codes.NORMAL, CloseReason.Codes.TRY_AGAIN_LATER)) {
+            val server = embeddedServer(Netty, host = "127.0.0.1", port = 0) {
+                install(WebSockets)
+                routing { webSocket("/v1/rooms/{code}/events") { close(CloseReason(code, "untrusted remote reason")) } }
+            }.start(wait = false)
+            val port = server.engine.resolvedConnectors().single().port
+            val api = HttpRoomApi("http://127.0.0.1:$port", true)
+            try {
+                val failure = runCatching { withTimeout(5_000) { api.events("fictional-session", "ABCDEFGH", null).collect() } }.exceptionOrNull()
+                assertTrue(failure is RoomStreamClosed)
+                assertEquals(code.code, (failure as RoomStreamClosed).closeCode)
+                assertFalse(failure.message.orEmpty().contains("untrusted remote reason"))
+            } finally { api.close(); server.stop(0, 2_000) }
+        }
+    }
+
     @Test fun `production client exchanges live snapshots with real Netty websocket`() = runBlocking<Unit> {
         val server = embeddedServer(Netty, host = "127.0.0.1", port = 0) { roomsModule(database, service, runWorker = false) }.start(wait = false)
         val port = server.engine.resolvedConnectors().single().port

@@ -59,6 +59,7 @@ object AutomaticSoakLoad {
         val directory = root.resolve(".test-workspace/soak-$runId")
         Files.createDirectories(directory)
         val runtimeIdentity = serviceRuntimeIdentity(root)
+        val clientHash = hash(Files.readAllBytes(root.resolve("client/build/libs/client.jar")))
         val names = listOf("tambola_load_main_$runId", "tambola_load_journal_$runId")
         val owned = mutableSetOf<String>()
         val props = Properties().apply { setProperty("user", user); setProperty("password", password); setProperty("connectTimeout", "5"); setProperty("socketTimeout", "30") }
@@ -112,7 +113,7 @@ object AutomaticSoakLoad {
                 catch (e: RoomApiFailure) { if (e.code != "stale_revision") throw e }
             }; error("repeated_stale_revision")
         }
-        fun sampleMetrics() {
+        fun sampleMetrics(validate: Boolean = true) {
             val response = http.send(HttpRequest.newBuilder(URI("$base/internal/metrics")).timeout(Duration.ofSeconds(5))
                 .header("Authorization", "Bearer $metricsToken").GET().build(), HttpResponse.BodyHandlers.ofString())
             check(response.statusCode() == 200)
@@ -122,13 +123,15 @@ object AutomaticSoakLoad {
                         "tambola_websocket_opened_total", "tambola_websocket_failures_total", "tambola_worker_ready", "tambola_process_cpu_seconds_total"))
                     pieces[0] to pieces[1].toDouble() else null
             }.toMap()
-            check(selected.size == 7 && selected["tambola_worker_ready"] == 1.0)
-            check(selected["tambola_websocket_active"] == (roomCount * playerCount).toDouble())
-            check(selected["tambola_websocket_opened_total"] == (roomCount * playerCount).toDouble())
-            check(selected["tambola_websocket_failures_total"] == 0.0)
             observations += buildJsonObject {
                 put("elapsedSeconds", (System.nanoTime() - monoStart) / 1e9)
                 selected.forEach { (name, value) -> put(name, value) }
+            }
+            if (validate) {
+                check(selected.size == 7 && selected["tambola_worker_ready"] == 1.0)
+                check(selected["tambola_websocket_active"] == (roomCount * playerCount).toDouble())
+                check(selected["tambola_websocket_opened_total"] == (roomCount * playerCount).toDouble())
+                check(selected["tambola_websocket_failures_total"] == 0.0)
             }
         }
         fun collectHeap(round: Int) {
@@ -161,6 +164,7 @@ object AutomaticSoakLoad {
                 } }
                 record("fixtureClassesSha256", fixtureHash.digest().joinToString("") { "%02x".format(it) })
                 runtimeIdentity.forEach { (key, value) -> record(key, value) }
+                record("clientJarSha256", clientHash)
                 names.forEach { check(it.matches(Regex("tambola_load_(main|journal)_[a-f0-9]{16}"))); control("CREATE DATABASE $it TEMPLATE template0"); owned += it }
                 checkpoint("start-journal-enabled-service")
                 val builder = ProcessBuilder(bin.resolve("java$suffix").toString(), "-Xms128m", "-Xmx512m", "-XX:ActiveProcessorCount=4",
@@ -223,7 +227,11 @@ object AutomaticSoakLoad {
                             }
                             if (currentCoroutineContext().isActive) failure.compareAndSet(null, "unexpected_close")
                         } catch (e: CancellationException) { throw e }
-                        catch (e: Exception) { failure.compareAndSet(null, e.javaClass.simpleName + (if (e is RoomApiFailure) "_${e.status}_${e.code}" else "") + ":" + e.stackTrace.firstOrNull { it.className.startsWith("io.github.sbshrey.tambola") }?.lineNumber) }
+                        catch (e: Exception) { failure.compareAndSet(null, "table_${index + 1}_member_${member + 1}_" + e.javaClass.simpleName + when (e) {
+                            is RoomApiFailure -> "_${e.status}_${e.code}"
+                            is RoomStreamClosed -> "_close_${e.closeCode}"
+                            else -> ""
+                        } + ":" + e.stackTrace.firstOrNull { it.className.startsWith("io.github.sbshrey.tambola") }?.lineNumber) }
                     } }
                     table
                 } }.awaitAll() }
@@ -294,12 +302,16 @@ object AutomaticSoakLoad {
                 tables.forEach { table -> check(primary { c -> c.query("SELECT COUNT(*) FROM finished_rounds WHERE room_id = ?", table.initial.roomId) { it.getInt(1) }.single() } == roundCount) }
                 record("durableArchivesPerRoom", roundCount)
                 check(serviceRuntimeIdentity(root) == runtimeIdentity)
+                check(hash(Files.readAllBytes(root.resolve("client/build/libs/client.jar"))) == clientHash)
                 healthy(); success = true
             }
         } catch (e: Exception) {
+            if (playStarted > 0) record("playElapsedUntilFailureSeconds", (System.nanoTime() - playStarted) / 1e9)
             record("failedStage", stage); record("failureType", e.javaClass.simpleName)
             record("failureLocation", e.stackTrace.firstOrNull { it.className.startsWith("io.github.sbshrey.tambola") }?.let { "${it.fileName}:${it.lineNumber}" })
             record("nativeFailure", failure.get())
+            if (child?.isAlive == true) runCatching { sampleMetrics(validate = false) }
+                .onFailure { record("failureMetricsUnavailable", it.javaClass.simpleName) }
         } finally {
             withContext(NonCancellable) {
                 scope.cancel(); apis.forEach { runCatching { it.close() } }

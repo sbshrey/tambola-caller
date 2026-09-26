@@ -23,6 +23,8 @@ const val MAX_RESPONSE_BYTES = 524_288
 
 class RoomApiFailure(val status: Int, val code: String, val userMessage: String) : Exception(code)
 class InvalidRoomResponse : Exception("Invalid room response")
+/** A room stream should remain open until cancelled; retain only the numeric transport close code. */
+class RoomStreamClosed(val closeCode: Short?) : java.io.IOException("Room event stream closed")
 
 /** Endpoints are build configuration, never user-supplied links or token-bearing URLs. */
 fun checkedEndpoint(value: String, allowLocalHttp: Boolean = false): String {
@@ -98,6 +100,7 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
                 val code = reason.message
                 throw RoomApiFailure(if (code == "unauthorized") 401 else 403, code, "Your room session needs to reconnect.")
             }
+            throw RoomStreamClosed(reason?.code)
         }
     }.buffer(Channel.CONFLATED)
     override fun close() { client.close() }

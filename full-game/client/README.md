@@ -42,3 +42,7 @@ Separate [recovery and independent-client drivers](../RECOVERY_AND_MULTIPLAYER_V
 To configure a future HTTPS service at build time, pass `-PtambolaApiUrl=https://<approved-room-origin>`. Release builds without an origin display an unavailable state for online play. This setting does not deploy or validate a service.
 
 Primary implementation references: [Ktor client WebSockets](https://ktor.io/docs/client-websockets.html), [Ktor timeouts](https://ktor.io/docs/client-timeout.html), [Android Keystore](https://developer.android.com/privacy-and-security/keystore), and [Android network security configuration](https://developer.android.com/privacy-and-security/security-config). Runtime behavior is pinned and verified against the versions in the repository.
+
+## Stream closure diagnostics
+
+Room event streams are expected to stay open until cancellation. A non-policy remote close raises `RoomStreamClosed`, an `IOException` carrying only its numeric close code; arbitrary remote reason text is not included. Policy closes retain the existing structured session error handling. The Android reconnect loop already retries transport failures. This distinction supports connection diagnosis without recording URLs, bearer tokens or room payloads.
