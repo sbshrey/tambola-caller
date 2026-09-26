@@ -1,5 +1,7 @@
 # Container dependency review — 26 September 2026
 
+**Candidate boundary:** the accepted image below contains the earlier alpha12 service runtime `a717f30a…`. The current alpha14 runtime is `04440bb170091d3392a1e34e5be4c1da4f0f498acd34f661d539a2cd2aa3df0a` and still needs its own image build, dated scan and constrained-runtime acceptance. Do not use this earlier image's acceptance as evidence for the current JARs.
+
 The Linux AMD64 service image now includes reviewed Ubuntu fixes for `libc6`, `libc-bin` and `perl-base`. Its completed Grype scan has **no High/Critical matches and no Medium matches with available fixes**. Lower-severity package advisories remain below; this is not a claim of zero vulnerabilities or hosted production acceptance.
 
 ## Identity and fixes

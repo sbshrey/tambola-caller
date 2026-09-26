@@ -3,3 +3,4 @@
 *.mp3 binary
 # Keep hashed raw diagnostic transcripts byte-identical across checkouts.
 full-game/reviews/android-performance-alpha14-2026-09-26/** -text
+full-game/reviews/linux-build-alpha14-2026-09-26/** -text

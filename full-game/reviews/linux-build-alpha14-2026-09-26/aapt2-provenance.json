@@ -1,0 +1,17 @@
+{
+  "verifiedAtUtc": "2026-09-26T14:54:36.4305129Z",
+  "artifact": "aapt2-9.3.3-15703166-linux.jar",
+  "officialUrl": "https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2/9.3.3-15703166/aapt2-9.3.3-15703166-linux.jar",
+  "bytes": 2369543,
+  "sha256": "e772a3dae8354764f1b0793903218427f483982445207f2e4ffc8c2026755bd4",
+  "publishedSha1": "5287feac13566b9165cdf02c77565e68aec3aad0",
+  "publishedSha1Matches": true,
+  "scope": "Fresh official Google Maven HTTPS bytes and matching published digest; not publisher-signature or executed Linux build acceptance",
+  "containedBinary": "aapt2",
+  "elfClass": "64-bit",
+  "elfMachine": "AMD64",
+  "binarySha256": "baf6784be1b4284da49c78ea2f6961b0c525d56ecf57f1f1d879ca264dc96197",
+  "previousSha256TrustEntriesPreserved": 1635,
+  "addedSha256TrustEntries": 1,
+  "linuxBinaryExecuted": false
+}

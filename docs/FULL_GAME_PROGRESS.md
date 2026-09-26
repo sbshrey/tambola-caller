@@ -393,3 +393,8 @@ Update this ledger after each milestone with exact commands, app/service revisio
 
 - Run `b646f794-6c02-4dd5-9244-856371ae4a71` started at **20:21 IST** on the dedicated API30 emulator: nine full games, 90 calls each, six tickets, two computer players, real five-second timers and enabled sound/motion. Fixture source is committed at `7b391ff4e070752b50261d2fe5bc507d3d090107`; application/test APK identities are unchanged from the successful probe.
 - The detached launcher, Node driver and Android process were independently confirmed live, and the first game started. This is **not yet a full-session pass**. The second emulator is stopped, and builds/container work remain deferred during measurement. Status and report locations are in [performance acceptance](../full-game/PERFORMANCE.md); complete duration, all nine results, retained-memory observations and cleanup must be inspected together at termination.
+
+## 26 September 2026: Linux checksum prerequisite prepared
+
+- While the Android session runs, source review identified a missing Linux classifier entry for the already selected AAPT2 **9.3.3-15703166**. Verified the 2,369,543-byte JAR from official Google Maven HTTPS against its published digest, inspected its AMD64 ELF header without execution, and added only its SHA-256 **e772a3da…**. All **1,635** existing SHA-256 trust entries are preserved. [Provenance](../full-game/reviews/linux-build-alpha14-2026-09-26/aapt2-provenance.json) records exact bytes/source/checks.
+- No dependency version or application binary changed, and no Linux build was claimed. Clarified that the earlier accepted container still contains the alpha12 runtime; alpha14's exact-runtime image/scan/behavior acceptance remains pending after the isolated Android measurement.

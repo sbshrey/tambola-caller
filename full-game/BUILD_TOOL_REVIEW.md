@@ -113,7 +113,7 @@ Next acceptance sequence:
 3. Run domain/client/service/app tests, optimized APK/AAB builds, separate lint, native gameplay/storage/online recovery checks, and fresh runtime/build scans. Record the complete service-runtime and APK identities; do not overwrite alpha13.
 4. Complete the remaining embedded-library assessment, patched build JDK review and Linux/CI validation. Only then run the sustained service workload against the selected release candidate. Public hosting, production signing and physical-device acceptance remain separate release gates.
 
-## Alpha14 migration acceptance in progress
+## Alpha14 migration acceptance
 
 The app uses AGP's built-in Kotlin and matching `com.android.legacy-kapt` bridge. Generated voice/effect assets are wired through the variant source API; AGP 9 rejects the previous provider passed directly to a source-set directory. Locale filtering uses `androidResources.localeFilters`. Minimum API 26, target/compile API 36, JVM 17, the database schema and runtime Room 2.8.4 remain unchanged. Version code/name are 14 / `0.14.0-alpha14`.
 
@@ -149,7 +149,11 @@ Full-screen screenshot previews appeared to lose number strokes, but direct pixe
 
 The clean APK also passes 12 API36/16KB layout combinations, four core gameplay methods, explicit loading of both bundled native libraries, and 40 storage lifecycle cycles. The six native methods take 118.369s with no skips. This is emulator acceptance, not a physical ARM64 device or hosted-network result.
 
-Three unsuppressed Medium matches in the official Gradle distribution, actual Linux/remote CI, physical-device/hosted acceptance remain distinct boundaries. This work does not establish production signing, public hosting, physical-device performance or a completed sustained-service run.
+Three unsuppressed Medium matches in the official Gradle distribution, actual Linux/remote CI, physical-device/hosted acceptance remain distinct boundaries. The selected runtime subsequently passed the [complete local service endurance run](PERFORMANCE.md); that does not establish production signing, public hosting, physical-device performance or Linux build compatibility.
 
 
 Final local acceptance is recorded in [alpha14 validation](ALPHA14_VALIDATION.md): 72 layouts across API26/30/36, 3,420 original-bitmap glyph comparisons, eight API26 gameplay/offline methods, the API36 native/storage checks above, a full two-native-client 90-call game/rematch, and both cold-process draw/deletion recoveries. The clean APK and optimized release outputs are reproducible; no application rendering experiment remains. Final instrumentation is identified separately from the earlier broad-suite/upgrade instrumentation. This completes local migration acceptance, not the remaining public-release gates.
+
+### Linux preparation — execution pending
+
+Source review found that strict dependency verification trusted the selected AAPT2 Windows classifier but had no entry for its Linux classifier. Downloaded **`aapt2-9.3.3-15703166-linux.jar`** directly from official Google Maven over HTTPS and checked the accompanying published digest. Its 2,369,543 bytes hash to **`e772a3dae8354764f1b0793903218427f483982445207f2e4ffc8c2026755bd4`**; one classifier-specific SHA-256 entry was added without removing or changing existing trust entries. [The provenance record](reviews/linux-build-alpha14-2026-09-26/aapt2-provenance.json) records source, time and digest evidence. This prepares the existing pinned toolchain for Linux; it does not change a dependency version or prove an executed Linux build. Heavy build/container work remains deferred until the active Android endurance measurement finishes.
