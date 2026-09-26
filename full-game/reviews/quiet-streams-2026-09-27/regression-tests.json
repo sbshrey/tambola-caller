@@ -1,0 +1,72 @@
+{
+  "sourceCommit": "36df8366420c9f41db884f0f1e67036a38cb25ed",
+  "tests": 42.0,
+  "failures": 0.0,
+  "errors": 0.0,
+  "skipped": 0.0,
+  "suites": [
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:09:34.693Z",
+      "xmlSha256": "e8371c75f4f54a81079fdfa95771f2764743ed73f449542026adae81cf8921e0"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:10:04.120Z",
+      "xmlSha256": "eecee84db4e2989cbdc2c02541324e8de2cc28e294f25119bb929615f3048ce0"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:10:13.842Z",
+      "xmlSha256": "d1d3462e67e16b2af0aa9b4383ece2b9511f6be271777a98202ea3cddc8b76ae"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventStreamsTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:10:26.095Z",
+      "xmlSha256": "3f97f827b6d37c0fa92d1f8a98274808230f616f4bb4e4c20f74c7237ae3c3f8"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HttpTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:10:26.110Z",
+      "xmlSha256": "98410b336cf9c3768841d676b9a45810cacc799e77159bf565506e37e552ec7b"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:10:45.053Z",
+      "xmlSha256": "85c2ee92942a31c1105d82e024cfdc603807b8fbfb1a582378b352db7795482c"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-09-26T23:10:57.187Z",
+      "xmlSha256": "940ed44f933e628aa77707d5aafb4d9025564e4cf23bc0821aba5781b2a2020d"
+    }
+  ]
+}

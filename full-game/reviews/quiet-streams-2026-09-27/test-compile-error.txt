@@ -1,0 +1,54 @@
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:processResources UP-TO-DATE
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:compileKotlin
+> Task :server:compileJava NO-SOURCE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar
+> Task :server:startScripts
+
+> Task :server:compileTestKotlin
+e: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/EventChangesTest.kt:41:49 Unresolved reference 'resync' on receiver of type 'RoomUpdate'.
+e: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/EventChangesTest.kt:42:62 Unresolved reference 'resync' on receiver of type 'RoomUpdate'.
+
+> Task :server:installDist
+> Task :server:compileTestKotlin FAILED
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:compileTestKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Kotlin compiler: UNRESOLVED_REFERENCE
+       Kotlin compiler error
+         Unresolved reference 'resync' on receiver of type 'RoomUpdate'.
+         Location: D:/Github/App Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/EventChangesTest.kt line 41
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 6s
+12 actionable tasks: 5 executed, 7 up-to-date
