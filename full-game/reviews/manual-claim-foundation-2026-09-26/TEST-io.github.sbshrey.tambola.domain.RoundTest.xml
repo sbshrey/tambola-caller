@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.RoundTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:11:56.832Z" hostname="DESKTOP-SBSHREY" time="1.802">
+  <properties/>
+  <testcase name="every standard rule rejects a missing required number" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.001"/>
+  <testcase name="claims use called numbers regardless of manual marks" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.002"/>
+  <testcase name="same draw ties retain all tickets and deduplicate player points" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.025"/>
+  <testcase name="pause resume and ready cannot accidentally draw" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.001"/>
+  <testcase name="maximum room receives unique tickets with equal allocations" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.01"/>
+  <testcase name="practice undo invalidates same draw awards and marks" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.003"/>
+  <testcase name="ranked houses never award a completed ticket twice" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.003"/>
+  <testcase name="all ninety numbers occur once and terminal draw is idempotent" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.004"/>
+  <testcase name="corrupt saved awards and future calls are rejected" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.002"/>
+  <testcase name="one hundred thousand tickets obey structural invariants" classname="io.github.sbshrey.tambola.domain.RoundTest" time="1.75"/>
+  <testcase name="uncalled marks rejected and mark toggles never change calls" classname="io.github.sbshrey.tambola.domain.RoundTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

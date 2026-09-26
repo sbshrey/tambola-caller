@@ -40,6 +40,8 @@ data class RoundSettings(
     val prizes: List<Prize> = Prize.defaults,
     val playAllNumbers: Boolean = false,
     val customPrizes: List<CustomPrize> = emptyList(),
+    // False preserves the rules of previously saved rounds. New play flows opt in explicitly.
+    val manualClaims: Boolean = false,
 ) {
     init {
         require(ticketsPerPlayer in 1..6)
@@ -69,6 +71,7 @@ data class Round(
     val awards: List<Award> = emptyList(),
     val status: RoundStatus = RoundStatus.READY,
     val customAwards: List<CustomAward> = emptyList(),
+    val claims: List<ManualClaim> = emptyList(),
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
@@ -82,6 +85,7 @@ data class Round(
     fun cancel(): Round = if (finished) this else copy(status = RoundStatus.CANCELLED)
 
     fun draw(): Round {
+        if (settings.manualClaims) return drawManual()
         if (status != RoundStatus.PLAYING || called.size == 90) return this
         val next = called + drawOrder[called.size]
         val nextAwards = awardsFor(next)
@@ -109,10 +113,11 @@ data class Round(
         val next = called.dropLast(1)
         return copy(called = next, awards = awards.filter { it.drawIndex <= next.size },
             customAwards = customAwards.filter { it.drawIndex <= next.size },
+            claims = claims.filter { it.drawIndex <= next.size },
             marks = marks.mapValues { (_, values) -> values.intersect(next.toSet()) }, status = RoundStatus.PAUSED)
     }
 
-    private fun terminalAward(results: List<Award>, customResults: List<CustomAward>): Boolean {
+    internal fun terminalAward(results: List<Award>, customResults: List<CustomAward>): Boolean {
         val finalPrize = settings.prizes.filter { it.isRankedHouse }.maxByOrNull { it.ordinal }
             ?: settings.prizes.firstOrNull { it == Prize.FULL_HOUSE }
         return if (finalPrize != null) results.any { it.prize == finalPrize }
@@ -141,7 +146,9 @@ data class Round(
 
     /** Validate untrusted persistence at the boundary, including awards by replay. */
     fun validated(): Round {
-        require(version in 1..3 && id.isNotBlank() && createdAt >= 0)
+        require(version in 1..4 && id.isNotBlank() && createdAt >= 0)
+        require(version >= 4 || (!settings.manualClaims && claims.isEmpty()))
+        require(settings.manualClaims || claims.isEmpty())
         require(version >= 3 || players.all { it.avatar == 0 }) { "This saved format cannot contain player avatars" }
         require(version != 1 || (settings.customPrizes.isEmpty() && customAwards.isEmpty()))
         require(players.size in 1..32 && players.map { it.id }.distinct().size == players.size)
@@ -155,6 +162,10 @@ data class Round(
         require(called.size <= 90 && called == drawOrder.take(called.size))
         require(marks.all { (id, values) -> tickets.any { it.id == id && it.numbers.containsAll(values) } && called.containsAll(values) })
         require(status != RoundStatus.READY || called.isEmpty())
+        if (settings.manualClaims) {
+            validateManualClaims()
+            return this
+        }
         var replay = copy(called = emptyList(), awards = emptyList(), customAwards = emptyList(), marks = emptyMap(), status = RoundStatus.PLAYING)
         repeat(called.size) {
             require(!replay.finished) { "Saved round contains draws after completion" }
@@ -169,7 +180,7 @@ data class Round(
 
     companion object {
         fun create(players: List<Player>, settings: RoundSettings = RoundSettings(), random: Random = SecureRandom(), now: Long = System.currentTimeMillis()): Round =
-            Round(id = UUID.randomUUID().toString(), createdAt = now, settings = settings, players = players.toList(),
+            Round(version = if (settings.manualClaims) 4 else 3, id = UUID.randomUUID().toString(), createdAt = now, settings = settings, players = players.toList(),
                 tickets = TicketGenerator(random).deal(players, settings.ticketsPerPlayer), drawOrder = (1..90).toList().shuffledWith(random)).validated()
     }
 }
@@ -178,7 +189,8 @@ object RoundCodec {
     private val json = Json { encodeDefaults = true }
     fun encode(round: Round): String = json.encodeToString(round)
     fun decode(value: String): Round {
-        require(value.length <= 1_000_000) { "Saved round is too large" }
-        return json.decodeFromString<Round>(value).validated().copy(version = 3)
+        // Manual proof history is bounded to successful ticket/prize claims.
+        require(value.length <= 4_000_000) { "Saved round is too large" }
+        return json.decodeFromString<Round>(value).validated().let { it.copy(version = maxOf(3, it.version)) }
     }
 }

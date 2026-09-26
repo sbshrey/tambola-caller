@@ -1,0 +1,61 @@
+{
+  "checkedAtUtc": "2026-09-26T16:13:10.493246+00:00",
+  "tests": 42,
+  "newManualClaimTests": 13,
+  "failures": 0,
+  "skipped": 0,
+  "nativeAndOnlineIntegrationComplete": false,
+  "earlierAttempts": "Retained test-authoring failures: one syntax error and a random-ticket-overlap fixture assumption; both corrected.",
+  "files": [
+    {
+      "path": "manual-claims-domain-test.txt",
+      "bytes": 932,
+      "sha256": "c79f4150bf32da06300aaf78b1d44fd8b79c3d996320d15d287c2fc152870458"
+    },
+    {
+      "path": "manual-claims-domain-test-first-failure.txt",
+      "bytes": 1925,
+      "sha256": "cc9372d235b9d1e8cb76a54e1d6208ba4c8e3aa2edbe24d83cef3b8743eb285d"
+    },
+    {
+      "path": "manual-claims-domain-test-fixture-failure.txt",
+      "bytes": 1356,
+      "sha256": "beb3fa099e87a16f6f96b650619ea48d82729056e6c5c5801309f101904e4597"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.AvatarRoundTest.xml",
+      "bytes": 683,
+      "sha256": "d238032c1857b63113913ebc87bb67b5b908c907200856347d03ae7b6203b10e"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.BadgeTest.xml",
+      "bytes": 809,
+      "sha256": "b4125d09aa21c0beb2cef59e2b773525941edf1a62ad048c4ba343b3cb80cac6"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.CustomPrizeTest.xml",
+      "bytes": 1295,
+      "sha256": "dc98ca118aded2c6b19b636858f37c511c10b0b6b21721fa206318198508c9ea"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.ManualClaimTest.xml",
+      "bytes": 2424,
+      "sha256": "8196218d6f249701092ddba1c1e4848f40e24b555f3460a01271178f934b17a9"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.RoundTest.xml",
+      "bytes": 1940,
+      "sha256": "24a90941f46de9686e2c54e6e535e0a042b5b15c8fa23b5693165467f986a817"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.RuleInspectionTest.xml",
+      "bytes": 883,
+      "sha256": "8c4bc26abd8de039782912aac4bf98be9649bc772b0e9c584dc7f65e3148c2ac"
+    },
+    {
+      "path": "TEST-io.github.sbshrey.tambola.domain.TicketStripTest.xml",
+      "bytes": 976,
+      "sha256": "a12c0c013a738cc27c25b81dc376458f311e27bec4321789dd73754872de9622"
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 26 September 2026 · branch `shrey/full-tambola-game` · supersedes the alpha12 screen layout.
 
+**Latest direction:** the user's gameplay recording and manual-marking/single-Claim request supersede the interaction choices below for the next version. See [REFERENCE_GAMEPLAY_REVIEW.md](REFERENCE_GAMEPLAY_REVIEW.md) for observed reference behavior, the revised landscape layout, real claim semantics and implementation order. This document describes the research and alpha13/14 baseline; those APKs have not acquired the new behavior yet.
+
 ## Product brief
 
 Fast, free social Tambola: offline solo with labelled computer opponents, family play on one device, and private online rooms. One prominent Quick play action, common prizes, five-second calling by default, assisted marking, and no compulsory account for solo. Only the current player's tickets appear during play. One to six tickets must fit together without scrolling or a ticket carousel. A six-ticket strip contains every number 1–90 exactly once; smaller hands take a subset of a shuffled strip. Different players can share numbers, as in physical Tambola. Existing saved rounds retain their original tickets.

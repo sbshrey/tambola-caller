@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.RuleInspectionTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:11:58.636Z" hostname="DESKTOP-SBSHREY" time="0.055">
+  <properties/>
+  <testcase name="rule inspection shows exact corners and outstanding count without using marks" classname="io.github.sbshrey.tambola.domain.RuleInspectionTest" time="0.001"/>
+  <testcase name="example refuses impossible sample and progress identifies empty or undersized selection" classname="io.github.sbshrey.tambola.domain.RuleInspectionTest" time="0.0"/>
+  <testcase name="positive examples satisfy compound and multi ticket rules on varied deals" classname="io.github.sbshrey.tambola.domain.RuleInspectionTest" time="0.054"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

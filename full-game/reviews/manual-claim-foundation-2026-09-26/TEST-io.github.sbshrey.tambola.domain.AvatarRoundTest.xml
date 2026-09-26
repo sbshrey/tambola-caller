@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.AvatarRoundTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:11:56.781Z" hostname="DESKTOP-SBSHREY" time="0.01">
+  <properties/>
+  <testcase name="avatars survive saves without changing the game and invalid IDs fail closed" classname="io.github.sbshrey.tambola.domain.AvatarRoundTest" time="0.005"/>
+  <testcase name="version two save without avatar fields retains tickets calls and marks" classname="io.github.sbshrey.tambola.domain.AvatarRoundTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

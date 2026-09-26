@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.TicketStripTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:11:58.693Z" hostname="DESKTOP-SBSHREY" time="2.513">
+  <properties/>
+  <testcase name="every supported hand size has disjoint numbers for every player" classname="io.github.sbshrey.tambola.domain.TicketStripTest" time="0.866"/>
+  <testcase name="legacy rounds still round trip without redealing tickets" classname="io.github.sbshrey.tambola.domain.TicketStripTest" time="0.001"/>
+  <testcase name="ten thousand physical strips cover ninety numbers exactly once" classname="io.github.sbshrey.tambola.domain.TicketStripTest" time="1.645"/>
+  <testcase name="seeded dealing is repeatable but fresh seeds give fresh strips" classname="io.github.sbshrey.tambola.domain.TicketStripTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

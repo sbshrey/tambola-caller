@@ -1,0 +1,35 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:processResources NO-SOURCE
+> Task :domain:processTestResources UP-TO-DATE
+> Task :domain:compileKotlin
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar
+
+> Task :domain:compileTestKotlin
+e: file:///D:/Github/App%20Ideas/tambola-caller/full-game/domain/src/test/kotlin/io/github/sbshrey/tambola/domain/ManualClaimTest.kt:152:150 Syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+
+> Task :domain:compileTestKotlin FAILED
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':domain:compileTestKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Kotlin compiler: SYNTAX
+       Kotlin compiler error
+         Syntax error: Unexpected tokens (use ';' to separate expressions on the same line).
+         Location: D:/Github/App Ideas/tambola-caller/full-game/domain/src/test/kotlin/io/github/sbshrey/tambola/domain/ManualClaimTest.kt line 152
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+4 actionable tasks: 3 executed, 1 up-to-date
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 59s

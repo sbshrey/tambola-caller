@@ -107,15 +107,14 @@ The existing 41 names include regional variants and multi-ticket concepts. Do no
 
 ### Marking, claims, and ties
 
-- Manual marking uses a large Dab action for the current player's called numbers. Compact cells are display-only; uncalled numbers cannot be marked. Dabs never alter the official called set or determine eligibility.
+- The 26 September gameplay reference changes the next version to direct manual number taps, with a large optional action for the current called number when six-ticket targets are small. Uncalled numbers cannot be marked. See [the reference review](REFERENCE_GAMEPLAY_REVIEW.md).
 - Assisted marking is a clearly labelled room setting, fixed before play; it must not silently vary between online players.
-- Verification uses the immutable ticket and authoritative called numbers, never a client's marked cells or claimed winner flag.
-- Default social mode determines eligibility automatically on every draw. Fixed-size win feedback announces newly verified results, with details available through prize inspection; network speed and screen-reader use do not determine the winner. Explain this before custom/online play.
-- All tickets that first satisfy a rule on the same draw tie. Record every winning ticket and deduplicate players in the player summary; do not inherit the old two-winner limit.
-- A stricter timed-claim variant is an optional extension with a visible server deadline and explicit late-claim behavior. Do not add it until latency and accessibility tests support it.
-- Awards are immutable events with rule version, ticket IDs, player IDs, draw index, and verification explanation. Duplicate requests return the same outcome.
+- One Claim action evaluates all owned tickets and enabled schemes. Verification checks submitted marks against immutable owned tickets and the authoritative called prefix; a client's claimed winner flag is never accepted. Human awards require this action in the new mode. Alpha14 and older saved rounds retain their automatic-award rules.
+- Claims received during the same called-number window share a prize, independent of arrival order. Once the next number is called, that award is closed. Record all winning tickets and deduplicate player points; do not inherit the old two-winner limit. This still has a network deadline, so disclose late/reconnecting behavior and validate it on real networks before release.
+- Anchor online claims to the round ID and called-number index. An unrelated presence/revision update must not reject a claim for the current call. Unknown responses retain their idempotency key; late claims receive an explicit outcome rather than silently targeting a newer call.
+- Keep replayable successful claim evidence. Award winners may grow within the current tie window and become final when it closes. Duplicate requests return the same outcome.
 - Default round ends after the selected final house award resolves. Also support an explicit 90-call round. Host cancellation is shown as cancelled with partial results, not a completed game.
-- Stop the timer at 90, settle final awards once, and make rematch create a new round ID.
+- Number 90 and a terminal-house claim retain their final claim window. The next timer boundary settles it without drawing a 91st number. Rematch creates a new round ID.
 
 ### Points, badges, and history
 
@@ -140,7 +139,7 @@ Current visual direction: a deep green game table, warm paper tickets, mint dabs
 
 Use Compose animation/Canvas for motion and vector geometry. Standard transitions should last roughly 150–250 ms, number reveals 350–600 ms, and celebration overlays no more than about two seconds. Respect system animation settings and expose reduced motion. Measure on an agreed midrange reference phone instead of judging emulator smoothness.
 
-Accessibility requirements include TalkBack labels for number/row/mark state, a logical traversal order, non-color status cues, contrast checks, and independent sound/haptics toggles. Compact nine-column tickets use display-only cells with semantic row summaries and a separate manual Dab action of at least 48dp. All owned cards remain visible at 360dp and 200% text size; test number legibility and actual TalkBack use separately from screen-bound assertions. Extreme window sizes require explicit limits rather than a universal readability claim.
+Accessibility requirements include TalkBack labels for number/row/mark state, a logical traversal order, non-color status cues, contrast checks, and independent sound/haptics toggles. The next manual table needs direct number taps plus accessible actions for missed called numbers and a large current-number action. Six complete ticket grids cannot provide 48dp cells on every phone; keep the main Claim/navigation actions at least 48dp and explicitly evaluate compact number targets. All owned cards remain visible; test number legibility and actual TalkBack use separately from screen-bound assertions. Extreme window sizes require explicit limits rather than a universal readability claim.
 
 Reuse the existing voice clips. Keep speech, music, and effects on separate volume controls; duck music under calls; handle audio focus, Bluetooth changes, phone calls, and silent settings. Playback failures never stop game progression. Optional background playback uses the correct Android service/notification behavior; otherwise pause offline autoplay when backgrounded. Online rounds continue on the server and resync on return.
 

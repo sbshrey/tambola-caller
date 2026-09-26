@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.CustomPrizeTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:11:56.819Z" hostname="DESKTOP-SBSHREY" time="0.01">
+  <properties/>
+  <testcase name="multi ticket rules restrict the selected owned ordinals" classname="io.github.sbshrey.tambola.domain.CustomPrizeTest" time="0.001"/>
+  <testcase name="custom awards score once per player survive saves and undo on their call" classname="io.github.sbshrey.tambola.domain.CustomPrizeTest" time="0.004"/>
+  <testcase name="version one save without new fields migrates without changing calls or marks" classname="io.github.sbshrey.tambola.domain.CustomPrizeTest" time="0.001"/>
+  <testcase name="AND and OR groups have explicit nonvacuous behavior" classname="io.github.sbshrey.tambola.domain.CustomPrizeTest" time="0.001"/>
+  <testcase name="empty ranges never win and selected rows columns positions are exact" classname="io.github.sbshrey.tambola.domain.CustomPrizeTest" time="0.002"/>
+  <testcase name="malformed or unbounded custom rules fail closed" classname="io.github.sbshrey.tambola.domain.CustomPrizeTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

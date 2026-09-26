@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.domain.ManualClaimTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-09-26T16:11:56.530Z" hostname="DESKTOP-SBSHREY" time="0.248">
+  <properties/>
+  <testcase name="custom patterns and multiple ticket requirements use submitted marks" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.159"/>
+  <testcase name="corrupted proof award and premature completion are rejected" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.013"/>
+  <testcase name="computers submit under the same call window without revealing future numbers" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.01"/>
+  <testcase name="a closed prize cannot be claimed on a later number" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.005"/>
+  <testcase name="separate submissions never combine unmarked numbers into a new prize" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.004"/>
+  <testcase name="human prizes require a real valid claim and retry is idempotent" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.007"/>
+  <testcase name="only owned called marks can be submitted" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.009"/>
+  <testcase name="terminal house keeps its call window open and stops before another number" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.004"/>
+  <testcase name="undo removes claims for the removed call and preserves restored state" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.005"/>
+  <testcase name="successive ranked houses use fresh tickets on later calls" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.006"/>
+  <testcase name="same call ties are independent of arrival order and points are not per ticket" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.004"/>
+  <testcase name="computer and human share a terminal house on the same number" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.012"/>
+  <testcase name="ranked houses cannot skip rank or reuse a completed ticket" classname="io.github.sbshrey.tambola.domain.ManualClaimTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

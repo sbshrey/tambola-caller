@@ -1,0 +1,127 @@
+<div id="tambola-reference-preview" class="viz-dotted-background">
+  <div class="tt-game" aria-label="Tambola landscape table preview">
+    <header class="tt-top">
+      <button class="tt-icon cursor-interaction" data-action="pause" aria-label="Pause automatic calls"><i data-lucide="pause" aria-hidden="true"></i></button>
+      <div class="tt-balls" aria-label="Recent numbers"></div>
+      <div class="tt-summary"><span data-stat="calls"></span><span data-stat="tickets"></span><span data-stat="prizes"></span></div>
+    </header>
+    <div class="tt-table">
+      <aside class="tt-rail">
+        <div class="tt-section-title">PRIZES</div>
+        <div class="tt-prizes"></div>
+        <div class="tt-section-title tt-players-title">3 PLAYERS</div>
+        <div class="tt-player"><span class="tt-avatar">Y</span><span>You</span><b data-stat="score">0</b></div>
+        <div class="tt-player"><span class="tt-avatar tt-bot">M</span><span>Mango<small>Computer</small></span><b>0</b></div>
+        <div class="tt-player"><span class="tt-avatar tt-bot">C</span><span>Chai<small>Computer</small></span><b>0</b></div>
+      </aside>
+      <main class="tt-main">
+        <div class="tt-hand" aria-label="All your tickets"></div>
+        <div class="tt-feedback" role="status" aria-live="polite">Tap numbers. Make your claim.</div>
+        <footer class="tt-actions">
+          <button class="tt-next cursor-interaction" data-action="next"><i data-lucide="skip-forward" aria-hidden="true"></i><span>Next call</span></button>
+          <button class="tt-claim cursor-interaction" data-action="claim"><i data-lucide="trophy" aria-hidden="true"></i><span>Claim</span><b class="tt-claim-count" hidden></b></button>
+        </footer>
+      </main>
+    </div>
+  </div>
+</div>
+<style>
+#tambola-reference-preview{padding:12px 0;color-scheme:light dark}
+#tambola-reference-preview .tt-game{--tt-ground:light-dark(#edf2ec,#082d29);--tt-panel:light-dark(#dde7df,#124039);--tt-ink:light-dark(#183e34,#f6eedc);--tt-muted:light-dark(#476357,#bad2c3);--tt-line:light-dark(#c2d3c7,#2d5d50);--tt-paper:light-dark(#fffaf0,#fff3db);--tt-cell:#fffefa;--tt-dab:#237456;--tt-gold:#f4c879;--tt-dark:#173a30;--tt-empty:#e6e3d5;background:var(--tt-ground);color:var(--tt-ink);border-radius:24px;padding:14px;font:14px/1.3 system-ui,sans-serif;box-shadow:0 12px 28px #001e201a;overflow:hidden;isolation:isolate}
+#tambola-reference-preview .tt-top{display:flex;align-items:center;gap:10px;min-height:62px;padding-bottom:12px}
+#tambola-reference-preview button{font:inherit;touch-action:manipulation}
+#tambola-reference-preview button:focus-visible{outline:3px solid var(--tt-gold);outline-offset:3px}
+#tambola-reference-preview .tt-icon{border:0;background:var(--tt-panel);color:var(--tt-ink);width:44px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none}
+#tambola-reference-preview .tt-balls{display:flex;gap:7px;align-items:center;min-width:0;flex:1}
+#tambola-reference-preview .tt-ball{border:0;border-radius:50%;background:var(--tt-panel);color:var(--tt-ink);width:36px;height:36px;display:grid;place-items:center;font-weight:750;font-variant-numeric:tabular-nums;flex:none;padding:0}
+#tambola-reference-preview .tt-ball:first-child{width:56px;height:56px;background:var(--tt-gold);color:var(--tt-dark);font-size:27px;box-shadow:inset 0 0 0 4px #fff4}
+#tambola-reference-preview .tt-ball.tt-enter{animation:tt-reveal .46s cubic-bezier(.2,.8,.3,1)}
+#tambola-reference-preview .tt-ball.tt-shift{animation:tt-shift .35s ease-out}
+#tambola-reference-preview .tt-summary{display:flex;flex-direction:column;gap:2px;white-space:nowrap;font-size:11px;color:var(--tt-muted);text-align:right;font-variant-numeric:tabular-nums}
+#tambola-reference-preview .tt-table{display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px}
+#tambola-reference-preview .tt-rail{border-right:1px solid var(--tt-line);padding-right:12px;min-width:0}
+#tambola-reference-preview .tt-section-title{color:var(--tt-muted);font-size:10px;font-weight:750;letter-spacing:1.5px;margin-bottom:9px}
+#tambola-reference-preview .tt-prizes{display:grid;gap:5px}
+#tambola-reference-preview .tt-prize{display:flex;gap:7px;align-items:center;min-height:27px;font-size:11px}
+#tambola-reference-preview .tt-prize-pattern{display:grid;grid-template-columns:repeat(5,3px);gap:2px;flex:none;padding:4px;background:var(--tt-panel);border-radius:5px}
+#tambola-reference-preview .tt-prize-pattern i{width:3px;height:3px;border-radius:1px;background:var(--tt-ink);opacity:.16}
+#tambola-reference-preview .tt-prize-pattern i.on{opacity:1}
+#tambola-reference-preview .tt-prize.won{color:var(--tt-muted)}
+#tambola-reference-preview .tt-prize.won .tt-prize-pattern{background:var(--tt-dab);color:#fff}
+#tambola-reference-preview .tt-players-title{margin-top:19px}
+#tambola-reference-preview .tt-player{display:flex;align-items:center;gap:6px;margin-bottom:9px;font-size:11px}
+#tambola-reference-preview .tt-player b{margin-left:auto;font-size:11px;font-variant-numeric:tabular-nums}
+#tambola-reference-preview .tt-player small{display:block;font-size:9px;color:var(--tt-muted)}
+#tambola-reference-preview .tt-avatar{width:26px;height:26px;border-radius:50%;background:var(--tt-gold);color:var(--tt-dark);display:grid;place-items:center;font-weight:750;flex:none}
+#tambola-reference-preview .tt-bot{background:var(--tt-panel);color:var(--tt-ink);border:1px solid var(--tt-line)}
+#tambola-reference-preview .tt-main{min-width:0;display:flex;flex-direction:column}
+#tambola-reference-preview .tt-hand{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;height:316px;align-content:stretch}
+#tambola-reference-preview .tt-hand.dense{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#tambola-reference-preview .tt-ticket{display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--tt-paper);border-radius:12px;padding:5px;box-shadow:0 3px 0 #0002;position:relative}
+#tambola-reference-preview .tt-ticket-label{height:18px;display:flex;align-items:center;justify-content:space-between;padding:0 4px 4px;color:#44634e;font-size:10px;font-weight:650;flex:none}
+#tambola-reference-preview .tt-grid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:2px;flex:1;min-height:0}
+#tambola-reference-preview .tt-cell{display:grid;place-items:center;min-width:0;min-height:0;border:0;border-radius:4px;background:var(--tt-cell);color:#1b4034;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;padding:0;position:relative}
+#tambola-reference-preview .dense .tt-cell{font-size:16px}
+#tambola-reference-preview .tt-cell.empty{background:var(--tt-empty)}
+#tambola-reference-preview .tt-cell.marked{background:var(--tt-dab);color:#fff}
+#tambola-reference-preview .tt-cell.marked:after{content:'✓';position:absolute;right:2px;bottom:0;font-size:8px;color:#d2eedc}
+#tambola-reference-preview .tt-cell.latest:not(.marked){box-shadow:inset 0 0 0 2px #b57a18}
+#tambola-reference-preview .tt-cell.tt-stamp{animation:tt-stamp .3s ease-out}
+#tambola-reference-preview .tt-feedback{height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--tt-muted);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tambola-reference-preview .tt-actions{display:flex;gap:10px;align-items:center}
+#tambola-reference-preview .tt-actions button{border:0;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:9px;font-weight:700}
+#tambola-reference-preview .tt-next{background:var(--tt-panel);color:var(--tt-ink);padding:0 16px}
+#tambola-reference-preview .tt-claim{flex:1;background:var(--tt-gold);color:var(--tt-dark);box-shadow:0 3px 0 #9e7029}
+#tambola-reference-preview .tt-claim-count{border-radius:50%;background:#244c3d;color:#fff;min-width:23px;line-height:23px;font-size:11px}
+#tambola-reference-preview .tt-win{animation:tt-win .7s ease-out}
+@keyframes tt-reveal{0%{transform:translateY(-22px) scale(.6);opacity:.3}65%{transform:translateY(3px) scale(1.12)}100%{transform:none;opacity:1}}
+@keyframes tt-shift{from{transform:translateX(-18px)}to{transform:none}}
+@keyframes tt-stamp{0%{transform:scale(1.28) rotate(-9deg)}65%{transform:scale(.94) rotate(2deg)}100%{transform:none}}
+@keyframes tt-win{0%,100%{box-shadow:0 0 0 0 #f4c87900}40%{box-shadow:0 0 0 4px #f4c879}}
+@media(max-width:560px){#tambola-reference-preview .tt-game{padding:9px;border-radius:18px}#tambola-reference-preview .tt-table{grid-template-columns:80px minmax(0,1fr);gap:8px}#tambola-reference-preview .tt-rail{padding-right:6px}#tambola-reference-preview .tt-top{gap:6px}#tambola-reference-preview .tt-ball:nth-child(n+4){display:none}#tambola-reference-preview .tt-balls{gap:4px}#tambola-reference-preview .tt-ball{width:29px;height:29px}#tambola-reference-preview .tt-hand.dense{grid-template-columns:minmax(0,1fr);height:600px}#tambola-reference-preview .tt-cell{font-size:16px}#tambola-reference-preview .tt-player{gap:4px}#tambola-reference-preview .tt-player b{display:none}#tambola-reference-preview .tt-next{padding:0 10px}#tambola-reference-preview .tt-next span{display:none}#tambola-reference-preview .tt-feedback{font-size:10px}}
+@media(max-width:370px){#tambola-reference-preview .tt-ball:nth-child(n+3){display:none}#tambola-reference-preview .tt-summary{font-size:10px}#tambola-reference-preview .tt-section-title{letter-spacing:.7px}}
+@media(prefers-reduced-motion:reduce){#tambola-reference-preview *{animation:none!important}}
+#tambola-reference-preview[data-reduced="true"] *{animation:none!important}
+</style>
+<script>
+(() => {
+  const root=document.getElementById('tambola-reference-preview');
+  const cards=[[0,12,22,0,42,0,61,0,85,0,14,0,30,46,0,62,0,90,9,0,24,0,0,54,68,76,0],[5,0,23,31,0,50,0,79,0,0,18,0,37,43,0,66,0,81,6,0,0,38,44,0,69,0,87],[2,0,0,35,0,56,64,0,84,8,0,21,0,40,0,65,77,0,0,16,29,0,47,59,0,0,86],[0,13,27,36,0,52,0,70,0,4,15,0,0,0,58,60,0,83,0,17,0,39,45,0,0,78,89],[0,10,20,0,48,0,0,72,80,0,19,0,32,0,51,63,74,0,3,0,26,0,49,57,0,75,0],[1,0,0,33,0,53,67,71,0,7,0,25,34,0,55,0,0,82,0,11,28,0,41,0,0,73,88]];
+  const rules=[{name:'Early five',points:10,kind:'five'},{name:'Corners',points:15,kind:'corners'},{name:'Top line',points:15,kind:'top'},{name:'Middle line',points:15,kind:'middle'},{name:'Bottom line',points:15,kind:'bottom'},{name:'Full house',points:100,kind:'house'}];
+  const seedCalls=[12,42,61,85,5,31,50,79,14,30,22];
+  const order=[...seedCalls,...Array.from({length:90},(_,i)=>i+1).filter(n=>!seedCalls.includes(n)).sort((a,b)=>(a*37%91)-(b*37%91))];
+  let state={count:2,marks:[12,42,61,85,5,31,50],called:11,won:[],reduced:false};
+  let paused=true,timer=null;
+  const feedback=root.querySelector('.tt-feedback');
+  function restore(saved){const s=saved?.privateContent;if(!s||s.schema!==1)return;state.count=Math.max(1,Math.min(6,Number(s.count)||2));state.called=Math.max(1,Math.min(90,Number(s.called)||11));state.marks=Array.isArray(s.marks)?s.marks.filter(n=>Number.isInteger(n)&&order.slice(0,state.called).includes(n)):[];state.won=Array.isArray(s.won)?s.won.filter(n=>Number.isInteger(n)&&n>=0&&n<6):[];state.reduced=!!s.reduced;}
+  function save(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{preview:'landscape manual play',tickets:state.count},privateContent:{schema:1,...state}}).catch(()=>{});}
+  function matches(card,kind){const n=card.filter(Boolean),rows=[0,1,2].map(r=>card.slice(r*9,r*9+9).filter(Boolean));const has=n=>state.marks.includes(n)&&order.slice(0,state.called).includes(n);if(kind==='five')return n.filter(has).length>=5;const selection=kind==='corners'?[rows[0][0],rows[0][4],rows[2][0],rows[2][4]]:kind==='top'?rows[0]:kind==='middle'?rows[1]:kind==='bottom'?rows[2]:n;return selection.every(has);}
+  function available(){return rules.map((r,i)=>i).filter(i=>!state.won.includes(i)&&cards.slice(0,state.count).some(c=>matches(c,rules[i].kind)));}
+  function pattern(kind){return Array.from({length:15},(_,i)=>`<i class="${(kind==='five'||kind==='top'?i<5:kind==='middle'?i>=5&&i<10:kind==='bottom'?i>=10:kind==='corners'?[0,4,10,14].includes(i):true)?'on':''}"></i>`).join('');}
+  function render(enter=false,stamp=null){
+    const focused=document.activeElement,focusNumber=focused?.dataset?.number,focusDab=focused?.dataset?.dab;
+    root.dataset.reduced=String(state.reduced);
+    const called=order.slice(0,state.called),latest=called.at(-1),hand=root.querySelector('.tt-hand');
+    root.querySelector('.tt-balls').innerHTML=called.slice(-6).reverse().map((n,i)=>`<button class="tt-ball cursor-interaction ${enter?(i?'tt-shift':'tt-enter'):''}" data-dab="${n}" aria-label="Manually dab called number ${n}">${n}</button>`).join('');
+    root.querySelector('[data-stat=calls]').textContent=`${state.called} / 90 calls`;
+    root.querySelector('[data-stat=tickets]').textContent=`${state.count} tickets · yours`;
+    root.querySelector('[data-stat=prizes]').textContent=`${6-state.won.length} prizes left`;
+    root.querySelector('[data-stat=score]').textContent=state.won.reduce((n,i)=>n+rules[i].points,0);
+    root.querySelector('.tt-prizes').innerHTML=rules.map((r,i)=>`<div class="tt-prize ${state.won.includes(i)?'won':''}"><span class="tt-prize-pattern" aria-hidden="true">${pattern(r.kind)}</span><span>${r.name}${state.won.includes(i)?' ✓':''}</span></div>`).join('');
+    hand.classList.toggle('dense',state.count>=4);
+    hand.innerHTML=cards.slice(0,state.count).map((card,i)=>`<section class="tt-ticket" aria-label="Your ticket ${i+1}"><div class="tt-ticket-label"><span>TICKET ${String(i+1).padStart(2,'0')}</span><span>${card.filter(n=>n&&state.marks.includes(n)).length}/15</span></div><div class="tt-grid">${card.map(n=>n?`<button class="tt-cell cursor-interaction ${state.marks.includes(n)?'marked':''} ${n===latest?'latest':''} ${n===stamp?'tt-stamp':''}" data-number="${n}" aria-label="${n}, ${state.marks.includes(n)?'marked':called.includes(n)?'called, tap to mark':'not called'}" aria-pressed="${state.marks.includes(n)}">${n}</button>`:'<span class="tt-cell empty" aria-hidden="true"></span>').join('')}</div></section>`).join('');
+    const badge=root.querySelector('.tt-claim-count'),count=available().length;badge.hidden=count===0;badge.textContent=count;
+    const pause=root.querySelector('[data-action=pause]');pause.innerHTML=`<i data-lucide="${paused?'play':'pause'}" aria-hidden="true"></i>`;pause.setAttribute('aria-label',paused?'Start automatic calls':'Pause automatic calls');
+    if(globalThis.lucide)lucide.createIcons({attrs:{width:18,height:18}});
+    if(focusNumber)root.querySelector(`[data-number="${focusNumber}"]`)?.focus({preventScroll:true});
+    else if(focusDab)root.querySelector(`[data-dab="${focusDab}"]`)?.focus({preventScroll:true});
+  }
+  function next(){if(state.called===90){clearInterval(timer);timer=null;paused=true;feedback.textContent='Last number — check your claims.';render();return;}state.called++;render(true);feedback.textContent=`${order[state.called-1]} called`;save();}
+  function dab(n,toggle){const owned=cards.slice(0,state.count).some(c=>c.includes(n));if(!owned){feedback.textContent='This number is not on your tickets.';return;}if(!order.slice(0,state.called).includes(n)){feedback.textContent='That number has not been called.';return;}state.marks=state.marks.includes(n)?(toggle?state.marks.filter(x=>x!==n):state.marks):[...state.marks,n];render(false,n);feedback.textContent='Tap numbers. Make your claim.';save();}
+  root.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;if(button.dataset.number){dab(Number(button.dataset.number),true);return;}if(button.dataset.dab){dab(Number(button.dataset.dab),false);return;}if(button.dataset.action==='next')next();if(button.dataset.action==='pause'){paused=!paused;clearInterval(timer);timer=paused?null:setInterval(next,5000);render();}if(button.dataset.action==='claim'){const valid=available();if(!valid.length){feedback.textContent='No prize yet — check your marked numbers.';return;}state.won.push(...valid);render();feedback.textContent=`${valid.map(i=>rules[i].name).join(' + ')} · +${valid.reduce((n,i)=>n+rules[i].points,0)} points`;root.querySelectorAll('.tt-ticket').forEach(e=>e.classList.add('tt-win'));save();}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInterval(timer);timer=null;paused=true;render();}});
+  window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState){restore(e.detail.globals.widgetState);render();}});
+  restore(window.openai?.widgetState);render();
+  if(globalThis.Tweak){const options={tickets:String(state.count),reducedMotion:state.reduced};const tweak=new Tweak({container:root.querySelector('.tt-game'),onChange:()=>{state.count=Number(options.tickets);state.reduced=options.reducedMotion;render();save();}});tweak.addSelect(options,'tickets',{label:'Owned tickets',options:['1','2','3','4','5','6']});tweak.addToggle(options,'reducedMotion',{label:'Reduced motion'});}
+})();
+</script>
