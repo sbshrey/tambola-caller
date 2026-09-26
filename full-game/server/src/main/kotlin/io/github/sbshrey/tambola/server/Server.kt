@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.Duration.Companion.seconds
 
 private const val MAX_BODY_BYTES = 32_768
+// Leave room for authentication, SQL and transport within the one-second delivery budget.
+private const val STREAM_POLL_MILLIS = 500L
 
 fun main() {
     fun required(name: String) = System.getenv(name)?.takeIf { it.isNotBlank() } ?: error("$name is required")
@@ -133,7 +135,7 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                                 withTimeout(10_000) { send(Frame.Text(WireJson.encodeToString(update))) }
                                 cursor = lastSent.get()
                             }
-                            delay(1_000)
+                            delay(STREAM_POLL_MILLIS)
                         }
                     } finally { receiver.cancel() }
                 } catch (error: ApiFailure) {

@@ -1,6 +1,6 @@
 # Room-service candidate validation
 
-This report records the initial service milestone; its remaining-work statements are historical. See [alpha03 validation](../ALPHA03_VALIDATION.md) for the later 19-test suite/native client, and [recovery validation](RECOVERY_VALIDATION.md) for the current 41-case service suite and real-process backup/deletion recovery drill.
+This report records the initial service milestone; its remaining-work statements are historical. See [alpha03 validation](../ALPHA03_VALIDATION.md) for the later 19-test suite/native client, [recovery validation](RECOVERY_VALIDATION.md) for the independent deletion journal, and [capacity validation](CAPACITY_VALIDATION.md) for the later 41-case regression suite and full ten-room workload.
 
 Date: 25 September 2026. This report covers local source validation, not a hosted service or a production APK.
 

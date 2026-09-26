@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
+import java.util.HexFormat
 
 internal const val PRESENCE_TIMEOUT = 45_000L
 internal const val TOUCH_INTERVAL = 15_000L
@@ -14,7 +15,7 @@ internal const val SESSION_LIFETIME = 7 * ROOM_LIFETIME
 internal const val EVENT_LIMIT = 1_000L
 private val secureRandom = SecureRandom()
 internal fun secret(): String = ByteArray(32).also(secureRandom::nextBytes).let { Base64.getUrlEncoder().withoutPadding().encodeToString(it) }
-internal fun digest(value: String): String = MessageDigest.getInstance("SHA-256").digest(value.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
+internal fun digest(value: String): String = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.toByteArray(Charsets.UTF_8)))
 internal fun roomCode(): String = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".let { alphabet -> (1..8).map { alphabet[secureRandom.nextInt(alphabet.length)] }.joinToString("") }
 
 /** Canonical commitment is SHA256 of UTF-8 `tambola-draw-v1\n<roundId>\n<nonce>\n<comma-separated order>`. */

@@ -32,6 +32,7 @@ function ownedName(name) { assert.ok(Object.values(names).includes(name) && /^ta
 function createDatabase(name) { ownedName(name); sql('tambola_test', `CREATE DATABASE ${name} TEMPLATE template0`); owned.add(name); }
 function dropDatabase(name) { ownedName(name); assert.ok(owned.has(name)); sql('tambola_test', `DROP DATABASE ${name} WITH (FORCE)`); owned.delete(name); }
 const directory = resolve(root, '.test-workspace', `deletion-process-${runId}`);
+await mkdir(resolve(root, '.test-workspace'), { recursive: true });
 await mkdir(directory, { recursive: false });
 const dump = resolve(directory, 'primary.dump');
 const probe = createServer().listen(0, '127.0.0.1'); await once(probe, 'listening');

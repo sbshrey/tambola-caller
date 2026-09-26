@@ -2,6 +2,8 @@
 
 Date: 26 September 2026. Branch: `shrey/full-tambola-game`. This is local application recovery evidence, not a production deployment. The alpha10 APK is unchanged.
 
+This report preserves the recovery milestone's exact candidate. The later [capacity update](CAPACITY_VALIDATION.md) reruns the service suite and real-process recovery drills against its separately identified JAR.
+
 ## Tested candidate
 
 - Service JAR SHA-256: `882192663c97ffaf3f7876051bdc5d0362328fa3a8e3674856932d1b24005f51`.

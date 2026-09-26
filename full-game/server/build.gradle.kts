@@ -18,3 +18,12 @@ tasks.test {
     environment("TAMBOLA_DATABASE_USER", System.getenv("TAMBOLA_TEST_DATABASE_USER") ?: "")
     environment("TAMBOLA_DATABASE_PASSWORD", System.getenv("TAMBOLA_TEST_DATABASE_PASSWORD") ?: "")
 }
+
+// Opt-in real-process capacity fixture. Never part of the ordinary unit-test task.
+tasks.register<JavaExec>("loadTest") {
+    dependsOn(tasks.testClasses, tasks.installDist)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("io.github.sbshrey.tambola.server.ServiceLoad")
+    workingDir = rootProject.projectDir
+    maxHeapSize = "768m"
+}
