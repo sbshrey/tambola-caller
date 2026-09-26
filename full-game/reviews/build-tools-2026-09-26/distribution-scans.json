@@ -1,0 +1,677 @@
+{
+  "recordedAtUtc": "2026-09-26T12:00:04.737761+00:00",
+  "scanner": "Grype 0.119.0",
+  "method": "Directory scans of official checksum-verified distributions; no finding suppressed; package matches do not establish reachability",
+  "scannerZipSha256": "1db5c23b8ba0038a04acebed9c17945e1ade68d9f83e2fe1c101e4fb1feb9a48",
+  "scans": [
+    {
+      "version": "8.14.5",
+      "fullLocalReport": ".test-workspace/gradle-8.14.5-grype.json",
+      "reportSha256": "0e686854778006ebcbf451324eb70fe3946e6e38383b1b5dd12e6c9d745f62c6",
+      "officialChecksumEvidence": {
+        "version": "8.14.5",
+        "distributionSha256": "6f74b601422d6d6fc4e1f9a1ab6522f642c2fdcbc15ae33ebd30ba3d7198e854",
+        "wrapperJarSha256": "7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172"
+      },
+      "findings": [
+        {
+          "package": "commons-lang",
+          "version": "2.6",
+          "id": "GHSA-j288-q9x7-2f5v",
+          "severity": "Medium",
+          "fixVersions": [],
+          "description": "Apache Commons Lang is vulnerable to Uncontrolled Recursion when processing long inputs",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2025-48924",
+            "https://lists.apache.org/thread/bgv0lpswokgol11tloxnjfzdl7yrc1g1",
+            "https://github.com/apache/commons-lang/commit/b424803abdb2bec818e4fbcb251ce031c22aca53",
+            "https://lists.debian.org/debian-lts-announce/2025/08/msg00000.html",
+            "https://lists.debian.org/debian-lts-announce/2025/08/msg00026.html",
+            "https://lists.debian.org/debian-lts-announce/2025/09/msg00032.html",
+            "https://lists.debian.org/debian-lts-announce/2025/09/msg00036.html",
+            "http://www.openwall.com/lists/oss-security/2025/07/11/1"
+          ],
+          "locations": [
+            "/lib/commons-lang-2.6.jar"
+          ]
+        },
+        {
+          "package": "commons-lang3",
+          "version": "3.14.0",
+          "id": "GHSA-j288-q9x7-2f5v",
+          "severity": "Medium",
+          "fixVersions": [
+            "3.18.0"
+          ],
+          "description": "Apache Commons Lang is vulnerable to Uncontrolled Recursion when processing long inputs",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2025-48924",
+            "https://lists.apache.org/thread/bgv0lpswokgol11tloxnjfzdl7yrc1g1",
+            "https://github.com/apache/commons-lang/commit/b424803abdb2bec818e4fbcb251ce031c22aca53",
+            "https://lists.debian.org/debian-lts-announce/2025/08/msg00000.html",
+            "https://lists.debian.org/debian-lts-announce/2025/08/msg00026.html",
+            "https://lists.debian.org/debian-lts-announce/2025/09/msg00032.html",
+            "https://lists.debian.org/debian-lts-announce/2025/09/msg00036.html",
+            "http://www.openwall.com/lists/oss-security/2025/07/11/1"
+          ],
+          "locations": [
+            "/lib/commons-lang3-3.14.0.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-rmj7-2vxq-3g9f",
+          "severity": "High",
+          "fixVersions": [
+            "2.18.8"
+          ],
+          "description": "jackson-databind has an array subtype allowlist bypass in BasicPolymorphicTypeValidator (allowIfSubTypeIsArray)",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-rmj7-2vxq-3g9f",
+            "https://github.com/FasterXML/jackson-databind/issues/5981",
+            "https://github.com/FasterXML/jackson-databind/issues/5983",
+            "https://github.com/FasterXML/jackson-databind/pull/5984",
+            "https://github.com/FasterXML/jackson-databind/commit/01d1692c8d0ed03e51a0e3c4f8a9e6908e4931e5",
+            "https://github.com/FasterXML/jackson-databind/commit/24529da29fdf46ff94ca38de9ebf31cd188f5e8e",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54513",
+            "https://access.redhat.com/errata/RHSA-2026:36839",
+            "https://access.redhat.com/errata/RHSA-2026:40895",
+            "https://access.redhat.com/security/cve/CVE-2026-54513",
+            "https://bugzilla.redhat.com/show_bug.cgi?id=2492010",
+            "https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-54513.json",
+            "https://access.redhat.com/errata/RHSA-2026:41951",
+            "https://access.redhat.com/errata/RHSA-2026:43218",
+            "https://access.redhat.com/errata/RHSA-2026:44271",
+            "https://access.redhat.com/errata/RHSA-2026:44066",
+            "https://access.redhat.com/errata/RHSA-2026:44065",
+            "https://access.redhat.com/errata/RHSA-2026:44064",
+            "https://access.redhat.com/errata/RHSA-2026:44063",
+            "https://access.redhat.com/errata/RHSA-2026:44062",
+            "https://access.redhat.com/errata/RHSA-2026:44061",
+            "https://access.redhat.com/errata/RHSA-2026:43400",
+            "https://access.redhat.com/errata/RHSA-2026:48151",
+            "https://access.redhat.com/errata/RHSA-2026:48095",
+            "https://access.redhat.com/errata/RHSA-2026:50849",
+            "https://access.redhat.com/errata/RHSA-2026:50848",
+            "https://access.redhat.com/errata/RHSA-2026:50847",
+            "https://access.redhat.com/errata/RHSA-2026:50846",
+            "https://access.redhat.com/errata/RHSA-2026:54435",
+            "https://access.redhat.com/errata/RHSA-2026:54622",
+            "https://access.redhat.com/errata/RHSA-2026:62260",
+            "https://access.redhat.com/errata/RHSA-2026:66488",
+            "https://access.redhat.com/errata/RHSA-2026:66545"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-j3rv-43j4-c7qm",
+          "severity": "High",
+          "fixVersions": [
+            "2.18.8"
+          ],
+          "description": "jackson-databind has a PolymorphicTypeValidator bypass via generic type parameters that allows arbitrary class instantiation",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-j3rv-43j4-c7qm",
+            "https://github.com/FasterXML/jackson-databind/issues/5988",
+            "https://github.com/FasterXML/jackson-databind/commit/434d6c511de7fdd9872f29157aafb6162d12d8d5",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54512"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "plexus-utils",
+          "version": "3.5.1",
+          "id": "GHSA-6fmv-xxpf-w3cw",
+          "severity": "High",
+          "fixVersions": [
+            "3.6.1"
+          ],
+          "description": "Plexus-Utils has a Directory Traversal vulnerability in its extractFile method",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2025-67030",
+            "https://github.com/codehaus-plexus/plexus-utils/issues/294",
+            "https://github.com/codehaus-plexus/plexus-utils/pull/295",
+            "https://github.com/codehaus-plexus/plexus-utils/pull/296",
+            "https://github.com/codehaus-plexus/plexus-utils/commit/6d780b3378829318ba5c2d29547e0012d5b29642",
+            "https://gist.github.com/weaver4VD/3216dac645220f8c9b488362f61241ec",
+            "https://github.com/codehaus-plexus/plexus-utils/releases/tag/plexus-utils-4.0.3"
+          ],
+          "locations": [
+            "/lib/plugins/plexus-utils-3.5.1.jar"
+          ]
+        },
+        {
+          "package": "org.eclipse.jgit",
+          "version": "5.13.3.202401111512-r",
+          "id": "GHSA-vrpq-qp53-qv56",
+          "severity": "Medium",
+          "fixVersions": [
+            "5.13.4.202507202350-r"
+          ],
+          "description": "Eclipse JGit XML External Entity (XXE) Vulnerability",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2025-4949",
+            "https://gitlab.eclipse.org/security/cve-assignement/-/issues/64",
+            "https://gitlab.eclipse.org/security/vulnerability-reports/-/issues/281",
+            "https://projects.eclipse.org/projects/technology.jgit/releases/7.2.1",
+            "https://projects.eclipse.org/projects/technology.jgit/releases/6.10.1",
+            "https://projects.eclipse.org/projects/technology.jgit/releases/7.0.1",
+            "https://projects.eclipse.org/projects/technology.jgit/releases/7.1.1",
+            "https://projects.eclipse.org/projects/technology.jgit/releases/5.13.4",
+            "https://projects.eclipse.org/projects/technology.jgit/releases/5.13.5"
+          ],
+          "locations": [
+            "/lib/plugins/org.eclipse.jgit-5.13.3.202401111512-r.jar"
+          ]
+        },
+        {
+          "package": "bcprov-jdk18on",
+          "version": "1.84",
+          "id": "GHSA-9pwp-9qqc-pr26",
+          "severity": "Critical",
+          "fixVersions": [
+            "1.85"
+          ],
+          "description": "Bouncy Castle: Name Constraints bypass via trailing dot in rfc822Name and URI",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-8763",
+            "https://github.com/bcgit/bc-java/commit/2c28b253a44681fbbc562561eab6ad383d2ae558",
+            "https://github.com/bcgit/bc-java/wiki/CVE-2026-8763",
+            "https://github.com/bcgit/bc-java/wiki/CVE%E2%80%902026%E2%80%908763",
+            "https://github.com/bcgit/bc-java/releases/tag/r1rv85v2"
+          ],
+          "locations": [
+            "/lib/plugins/bcprov-jdk18on-1.84.jar"
+          ]
+        },
+        {
+          "package": "bcprov-jdk18on",
+          "version": "1.84",
+          "id": "GHSA-qp49-qgx5-5m26",
+          "severity": "High",
+          "fixVersions": [
+            "1.85"
+          ],
+          "description": "Bouncy Castle: Lazy ASN.1 sequence forcing resets nesting-depth guard",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-13506",
+            "https://github.com/bcgit/bc-java/commit/77454da9b3dcaaa2991412d1c3c1a6e1a338ff84",
+            "https://github.com/bcgit/bc-java/wiki/CVE-2026-13506"
+          ],
+          "locations": [
+            "/lib/plugins/bcprov-jdk18on-1.84.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-3pjw-73gf-8qr5",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.18.8"
+          ],
+          "description": "jackson-databind: @JsonIgnore on a Record property is bypassed with a PropertyNamingStrategy",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-3pjw-73gf-8qr5",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-59888",
+            "https://github.com/FasterXML/jackson-databind/pull/5974",
+            "https://github.com/FasterXML/jackson-databind/commit/baa2cdf5ca2b2717fbb88d91955d69d8651df3e4",
+            "https://github.com/FasterXML/jackson-databind/commit/c7c678360624da5bc7eed2152789fa522880db9d"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-5jmj-h7xm-6q6v",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.18.9"
+          ],
+          "description": "jackson-databind has case-insensitive deserialization bypasses per-property @JsonIgnoreProperties",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5jmj-h7xm-6q6v",
+            "https://github.com/FasterXML/jackson-databind/issues/5962",
+            "https://github.com/FasterXML/jackson-databind/issues/5964",
+            "https://github.com/FasterXML/jackson-databind/commit/0e1b0b211f7a53baa62ba2f4c9bd006c7bf4d5fa",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54515"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-5gvw-p9qm-jgwh",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.18.9"
+          ],
+          "description": "jackson-databind: @JsonView bypassed for @JsonUnwrapped container properties on deserialization",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5gvw-p9qm-jgwh",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-59889",
+            "https://github.com/FasterXML/jackson-databind/issues/6060",
+            "https://github.com/FasterXML/jackson-databind/pull/6056",
+            "https://github.com/FasterXML/jackson-databind/commit/d627a8a86fcb062429282f79f3f256f181ed2c7b"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-hgj6-7826-r7m5",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.18.8"
+          ],
+          "description": "jackson-databind: InetSocketAddress deserialization triggers eager DNS resolution (SSRF)",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-hgj6-7826-r7m5",
+            "https://github.com/FasterXML/jackson-databind/pull/5951",
+            "https://github.com/FasterXML/jackson-databind/commit/1f5a1037b1e9e05920e755cb35f198bcd46667e4",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54514"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "jsoup",
+          "version": "1.15.3",
+          "id": "GHSA-pmhh-3w7g-xqp8",
+          "severity": "Medium",
+          "fixVersions": [
+            "1.23.1"
+          ],
+          "description": "jsoup: Cleaner may expose markup with custom raw-text elements",
+          "references": [
+            "https://github.com/jhy/jsoup/security/advisories/GHSA-pmhh-3w7g-xqp8",
+            "https://github.com/jhy/jsoup/issues/2538",
+            "https://github.com/jhy/jsoup/commit/92f1aca552548b484bc7d4b94c51e48b8e6eca70",
+            "https://github.com/jhy/jsoup/releases/tag/jsoup-1.23.1"
+          ],
+          "locations": [
+            "/lib/jsoup-1.15.3.jar"
+          ]
+        },
+        {
+          "package": "eddsa",
+          "version": "0.3.0",
+          "id": "GHSA-p53j-g8pw-4w5f",
+          "severity": "Medium",
+          "fixVersions": [],
+          "description": "Ed25519 Signature Malleability in ed25519-java Due to Missing Scalar Range Check",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2020-36843",
+            "https://github.com/str4d/ed25519-java/issues/82#issue-727629226",
+            "https://eprint.iacr.org/2020/1244",
+            "https://github.com/i2p/i2p.i2p/commit/d7d1dcb5399c61cf2916ccc45aa25b0209c88712#diff-658f7b1aa34b58d27796fccdb8b756c72702d64ae44703374960f1cb89a5a5c3"
+          ],
+          "locations": [
+            "/lib/plugins/eddsa-0.3.0.jar"
+          ]
+        },
+        {
+          "package": "jackson-core",
+          "version": "2.18.6",
+          "id": "GHSA-r7wm-3cxj-wff9",
+          "severity": "High",
+          "fixVersions": [
+            "2.18.8"
+          ],
+          "description": "jackson-core: Async parser maxNumberLength bypass via chunked digit accumulation (incomplete fix for GHSA-72hv-8253-57qq)",
+          "references": [
+            "https://github.com/FasterXML/jackson-core/security/advisories/GHSA-r7wm-3cxj-wff9",
+            "https://github.com/FasterXML/jackson-core/pull/1611",
+            "https://github.com/FasterXML/jackson-core/commit/050b429804dce2a7e08f0be1b0b4c3d040fdb9cd",
+            "https://github.com/FasterXML/jackson-core/commit/4cdd529749da396cc7edf6d4a2aad41d47902641",
+            "https://github.com/FasterXML/jackson-core/commit/c5941e5aae7fd5aeac55d66933cfb82b9aabeef8"
+          ],
+          "locations": [
+            "/lib/jackson-core-2.18.6.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.18.6",
+          "id": "GHSA-mhm7-754m-9p8w",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.18.9"
+          ],
+          "description": "jackson-databind: `@JsonView` bypass for creator properties with `@JsonTypeInfo(include=As.EXTERNAL_PROPERTY)`",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-mhm7-754m-9p8w",
+            "https://github.com/FasterXML/jackson-databind/commit/c628b357ed143d8492756d5c1458cfb9fbeb29ed",
+            "https://github.com/FasterXML/jackson-databind/commit/dea7eb466e98cc226c4ac65587581fb49926820c"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.18.6.jar"
+          ]
+        }
+      ],
+      "counts": {
+        "Medium": 10,
+        "High": 5,
+        "Critical": 1
+      },
+      "database": {
+        "status": {
+          "schemaVersion": "v6.1.9",
+          "from": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.9_2026-09-25T00:33:36Z_1790317909.tar.zst?checksum=sha256%3A04c01bc3418d0d53f64d041c2f28070a5ce1f814ee891b3f5d90102f09232dfe",
+          "built": "2026-09-25T06:31:49Z",
+          "path": ".test-workspace\\grype-db\\6\\vulnerability.db",
+          "valid": true
+        },
+        "providers": {
+          "alma": {
+            "captured": "2026-09-25T00:33:45Z",
+            "input": "xxh64:ca8f4050f1e4a992"
+          },
+          "alpine": {
+            "captured": "2026-09-25T00:33:50Z",
+            "input": "xxh64:76aaa2bfd1db7142"
+          },
+          "amazon": {
+            "captured": "2026-09-25T00:33:48Z",
+            "input": "xxh64:869a4a456a2f5493"
+          },
+          "arch": {
+            "captured": "2026-09-25T00:33:44Z",
+            "input": "xxh64:f729b393ea406f99"
+          },
+          "bitnami": {
+            "captured": "2026-09-25T00:33:59Z",
+            "input": "xxh64:88d4094ad775399a"
+          },
+          "chainguard": {
+            "captured": "2026-09-25T00:34:06Z",
+            "input": "xxh64:5f650c3e12e52016"
+          },
+          "chainguard-libraries": {
+            "captured": "2026-09-25T00:33:36Z",
+            "input": "xxh64:89c23f9d6c03f6d5"
+          },
+          "debian": {
+            "captured": "2026-09-25T00:34:46Z",
+            "input": "xxh64:b65722aa21cacda1"
+          },
+          "echo": {
+            "captured": "2026-09-25T00:34:05Z",
+            "input": "xxh64:cfa2b358a9be521b"
+          },
+          "eol": {
+            "captured": "2026-09-25T00:33:42Z",
+            "input": "xxh64:5b7cf1c4a7deca02"
+          },
+          "epss": {
+            "captured": "2026-09-25T00:33:44Z",
+            "input": "xxh64:750e3313abd46a15"
+          },
+          "fedora": {
+            "captured": "2026-09-25T00:34:08Z",
+            "input": "xxh64:5bf80ac817194610"
+          },
+          "github": {
+            "captured": "2026-09-25T00:33:57Z",
+            "input": "xxh64:1b3ba0fdbd662305"
+          },
+          "govulndb": {
+            "captured": "2026-09-25T00:34:03Z",
+            "input": "xxh64:a97cf95987c1dbe9"
+          },
+          "hummingbird": {
+            "captured": "2026-09-25T00:36:13Z",
+            "input": "xxh64:517dc5219f6fdbca"
+          },
+          "kev": {
+            "captured": "2026-09-25T00:34:08Z",
+            "input": "xxh64:089c58a3a0248873"
+          },
+          "mariner": {
+            "captured": "2026-09-25T00:33:38Z",
+            "input": "xxh64:388e46462717c70e"
+          },
+          "minimos": {
+            "captured": "2026-09-25T00:33:46Z",
+            "input": "xxh64:20c8849c8e074017"
+          },
+          "nvd": {
+            "captured": "2026-09-25T00:34:39Z",
+            "input": "xxh64:e75ea2055126a23b"
+          },
+          "oracle": {
+            "captured": "2026-09-25T00:33:53Z",
+            "input": "xxh64:96f7740e0b3624c7"
+          },
+          "photon": {
+            "captured": "2026-09-25T00:33:48Z",
+            "input": "xxh64:bc06954017da385f"
+          },
+          "rhel": {
+            "captured": "2026-09-25T00:35:03Z",
+            "input": "xxh64:36b089f85dd6e6af"
+          },
+          "secureos": {
+            "captured": "2026-09-25T00:33:46Z",
+            "input": "xxh64:e46f26f2e8c0c840"
+          },
+          "sles": {
+            "captured": "2026-09-25T01:40:32Z",
+            "input": "xxh64:d5cd49cd5633edc3"
+          },
+          "ubuntu": {
+            "captured": "2026-09-25T00:36:06Z",
+            "input": "xxh64:5bb29b484a9de2e5"
+          },
+          "wolfi": {
+            "captured": "2026-09-25T00:33:46Z",
+            "input": "xxh64:5c8bf289ea075fba"
+          }
+        }
+      }
+    },
+    {
+      "version": "9.7.1",
+      "fullLocalReport": ".test-workspace/gradle-9.7.1-grype.json",
+      "reportSha256": "ec688a2ae74c67869da8c4b570ff34519c07a7dd02396a6c96032ce4ee9878bf",
+      "officialChecksumEvidence": {
+        "version": "9.7.1",
+        "wrapperJarSha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d",
+        "distributionSha256": "acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a"
+      },
+      "findings": [
+        {
+          "package": "jackson-databind",
+          "version": "2.22.0",
+          "id": "GHSA-5jmj-h7xm-6q6v",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.22.1"
+          ],
+          "description": "jackson-databind has case-insensitive deserialization bypasses per-property @JsonIgnoreProperties",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5jmj-h7xm-6q6v",
+            "https://github.com/FasterXML/jackson-databind/issues/5962",
+            "https://github.com/FasterXML/jackson-databind/issues/5964",
+            "https://github.com/FasterXML/jackson-databind/commit/0e1b0b211f7a53baa62ba2f4c9bd006c7bf4d5fa",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-54515"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.22.0.jar"
+          ]
+        },
+        {
+          "package": "jackson-databind",
+          "version": "2.22.0",
+          "id": "GHSA-5gvw-p9qm-jgwh",
+          "severity": "Medium",
+          "fixVersions": [
+            "2.22.1"
+          ],
+          "description": "jackson-databind: @JsonView bypassed for @JsonUnwrapped container properties on deserialization",
+          "references": [
+            "https://github.com/FasterXML/jackson-databind/security/advisories/GHSA-5gvw-p9qm-jgwh",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-59889",
+            "https://github.com/FasterXML/jackson-databind/issues/6060",
+            "https://github.com/FasterXML/jackson-databind/pull/6056",
+            "https://github.com/FasterXML/jackson-databind/commit/d627a8a86fcb062429282f79f3f256f181ed2c7b"
+          ],
+          "locations": [
+            "/lib/jackson-databind-2.22.0.jar"
+          ]
+        },
+        {
+          "package": "jsoup",
+          "version": "1.22.2",
+          "id": "GHSA-pmhh-3w7g-xqp8",
+          "severity": "Medium",
+          "fixVersions": [
+            "1.23.1"
+          ],
+          "description": "jsoup: Cleaner may expose markup with custom raw-text elements",
+          "references": [
+            "https://github.com/jhy/jsoup/security/advisories/GHSA-pmhh-3w7g-xqp8",
+            "https://github.com/jhy/jsoup/issues/2538",
+            "https://github.com/jhy/jsoup/commit/92f1aca552548b484bc7d4b94c51e48b8e6eca70",
+            "https://github.com/jhy/jsoup/releases/tag/jsoup-1.23.1"
+          ],
+          "locations": [
+            "/lib/jsoup-1.22.2.jar"
+          ]
+        }
+      ],
+      "counts": {
+        "Medium": 3
+      },
+      "database": {
+        "status": {
+          "schemaVersion": "v6.1.9",
+          "from": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.9_2026-09-25T00:33:36Z_1790317909.tar.zst?checksum=sha256%3A04c01bc3418d0d53f64d041c2f28070a5ce1f814ee891b3f5d90102f09232dfe",
+          "built": "2026-09-25T06:31:49Z",
+          "path": ".test-workspace\\grype-db\\6\\vulnerability.db",
+          "valid": true
+        },
+        "providers": {
+          "alma": {
+            "captured": "2026-09-25T00:33:45Z",
+            "input": "xxh64:ca8f4050f1e4a992"
+          },
+          "alpine": {
+            "captured": "2026-09-25T00:33:50Z",
+            "input": "xxh64:76aaa2bfd1db7142"
+          },
+          "amazon": {
+            "captured": "2026-09-25T00:33:48Z",
+            "input": "xxh64:869a4a456a2f5493"
+          },
+          "arch": {
+            "captured": "2026-09-25T00:33:44Z",
+            "input": "xxh64:f729b393ea406f99"
+          },
+          "bitnami": {
+            "captured": "2026-09-25T00:33:59Z",
+            "input": "xxh64:88d4094ad775399a"
+          },
+          "chainguard": {
+            "captured": "2026-09-25T00:34:06Z",
+            "input": "xxh64:5f650c3e12e52016"
+          },
+          "chainguard-libraries": {
+            "captured": "2026-09-25T00:33:36Z",
+            "input": "xxh64:89c23f9d6c03f6d5"
+          },
+          "debian": {
+            "captured": "2026-09-25T00:34:46Z",
+            "input": "xxh64:b65722aa21cacda1"
+          },
+          "echo": {
+            "captured": "2026-09-25T00:34:05Z",
+            "input": "xxh64:cfa2b358a9be521b"
+          },
+          "eol": {
+            "captured": "2026-09-25T00:33:42Z",
+            "input": "xxh64:5b7cf1c4a7deca02"
+          },
+          "epss": {
+            "captured": "2026-09-25T00:33:44Z",
+            "input": "xxh64:750e3313abd46a15"
+          },
+          "fedora": {
+            "captured": "2026-09-25T00:34:08Z",
+            "input": "xxh64:5bf80ac817194610"
+          },
+          "github": {
+            "captured": "2026-09-25T00:33:57Z",
+            "input": "xxh64:1b3ba0fdbd662305"
+          },
+          "govulndb": {
+            "captured": "2026-09-25T00:34:03Z",
+            "input": "xxh64:a97cf95987c1dbe9"
+          },
+          "hummingbird": {
+            "captured": "2026-09-25T00:36:13Z",
+            "input": "xxh64:517dc5219f6fdbca"
+          },
+          "kev": {
+            "captured": "2026-09-25T00:34:08Z",
+            "input": "xxh64:089c58a3a0248873"
+          },
+          "mariner": {
+            "captured": "2026-09-25T00:33:38Z",
+            "input": "xxh64:388e46462717c70e"
+          },
+          "minimos": {
+            "captured": "2026-09-25T00:33:46Z",
+            "input": "xxh64:20c8849c8e074017"
+          },
+          "nvd": {
+            "captured": "2026-09-25T00:34:39Z",
+            "input": "xxh64:e75ea2055126a23b"
+          },
+          "oracle": {
+            "captured": "2026-09-25T00:33:53Z",
+            "input": "xxh64:96f7740e0b3624c7"
+          },
+          "photon": {
+            "captured": "2026-09-25T00:33:48Z",
+            "input": "xxh64:bc06954017da385f"
+          },
+          "rhel": {
+            "captured": "2026-09-25T00:35:03Z",
+            "input": "xxh64:36b089f85dd6e6af"
+          },
+          "secureos": {
+            "captured": "2026-09-25T00:33:46Z",
+            "input": "xxh64:e46f26f2e8c0c840"
+          },
+          "sles": {
+            "captured": "2026-09-25T01:40:32Z",
+            "input": "xxh64:d5cd49cd5633edc3"
+          },
+          "ubuntu": {
+            "captured": "2026-09-25T00:36:06Z",
+            "input": "xxh64:5bb29b484a9de2e5"
+          },
+          "wolfi": {
+            "captured": "2026-09-25T00:33:46Z",
+            "input": "xxh64:5c8bf289ea075fba"
+          }
+        }
+      }
+    }
+  ]
+}

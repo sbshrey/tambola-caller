@@ -1,0 +1,72 @@
+// Exact Maven resolutions observed while executing the requested build tasks.
+// Invoke with the complete build/test task list followed by buildDependencyInventory,
+// --no-configuration-cache --no-build-cache --rerun-tasks.
+import groovy.json.JsonOutput
+import org.gradle.api.artifacts.DependencyResolutionListener
+import org.gradle.api.artifacts.ResolvableDependencies
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.result.UnresolvedDependencyResult
+import java.security.MessageDigest
+import java.time.Instant
+
+def observed = Collections.synchronizedMap(new IdentityHashMap<ResolvableDependencies, Boolean>())
+def outcomes = Collections.synchronizedList([])
+gradle.addListener(new DependencyResolutionListener() {
+    void beforeResolve(ResolvableDependencies dependencies) { }
+    void afterResolve(ResolvableDependencies dependencies) { observed.put(dependencies, true) }
+})
+gradle.taskGraph.afterTask { task, state ->
+    if (task.name != 'buildDependencyInventory') outcomes.add([
+        task: task.path, didWork: state.didWork, skipped: state.skipped,
+        upToDate: state.upToDate, failureType: state.failure?.class?.simpleName])
+}
+
+gradle.projectsEvaluated {
+    rootProject.tasks.register('buildDependencyInventory') {
+        group = 'verification'
+        description = 'Record exact Maven components/artifacts observed by this build invocation.'
+        // Command-line task order alone does not order independent projects under parallel execution.
+        mustRunAfter(rootProject.allprojects.collect { project ->
+            project.tasks.matching { it.name != 'buildDependencyInventory' }
+        })
+        doLast {
+            def pending
+            synchronized (observed) { pending = observed.keySet().toList() }
+            def scopes = pending.collect { dependencies ->
+                def result = dependencies.resolutionResult
+                if (result.allDependencies.any { it instanceof UnresolvedDependencyResult })
+                    throw new GradleException('An observed dependency graph is incomplete')
+                def components = result.allComponents.collect { it.id }
+                    .findAll { it instanceof ModuleComponentIdentifier }
+                    .collect { [group: it.group, name: it.module, version: it.version] }
+                    .unique().sort { a, b -> "${a.group}:${a.name}:${a.version}" <=> "${b.group}:${b.name}:${b.version}" }
+                // Filter before artifact selection: Android's own project exposes many variants
+                // without a default artifact type. Those outputs are outside this Maven inventory.
+                def artifacts = dependencies.artifactView {
+                    componentFilter { it instanceof ModuleComponentIdentifier }
+                }.artifacts.artifacts
+                    .collect { item ->
+                        if (!item.file.isFile()) throw new GradleException('A selected Maven artifact is not a file')
+                        def module = item.id.componentIdentifier
+                        [group: module.group, name: module.module, version: module.version, file: item.file.name,
+                            sha256: MessageDigest.getInstance('SHA-256').digest(item.file.bytes).encodeHex().toString()]
+                    }.unique().sort { a, b -> "${a.group}:${a.name}:${a.file}" <=> "${b.group}:${b.name}:${b.file}" }
+                def separator = dependencies.path.lastIndexOf(':')
+                [project: separator < 0 ? '(detached)' : (dependencies.path.substring(0, separator) ?: ':'), resolved: true,
+                    configuration: dependencies.name, resolutionPath: dependencies.path,
+                    components: components, artifacts: artifacts]
+            }.findAll { !it.components.isEmpty() }
+                .sort { a, b -> a.resolutionPath <=> b.resolutionPath }
+            if (scopes.isEmpty()) throw new GradleException('No external Maven dependency resolutions were observed')
+            def report = [formatVersion: 1, inventoryKind: 'build', generatedAtUtc: Instant.now().toString(),
+                gradleVersion: gradle.gradleVersion,
+                completed: !outcomes.any { it.failureType != null },
+                scope: 'Maven resolutions observed in this invocation, including plugins, compiler, processor, lint, test and runtime when exercised. Gradle-distribution libraries, JDK, Android SDK, native tools and CI JavaScript packages are separate inputs.',
+                requestedTasks: gradle.startParameter.taskNames, taskOutcomes: outcomes.toList(), scopes: scopes]
+            def output = rootProject.file(rootProject.findProperty('buildInventoryOutput') ?: '.test-workspace/build-dependencies.json')
+            output.parentFile.mkdirs()
+            output.text = JsonOutput.prettyPrint(JsonOutput.toJson(report)) + '\n'
+            println "Build inventory: ${scopes.size()} observed external resolutions; ${output.name}"
+        }
+    }
+}

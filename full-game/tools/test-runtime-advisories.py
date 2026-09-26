@@ -8,6 +8,30 @@ spec.loader.exec_module(module)
 
 
 class AdvisoryPaginationTest(unittest.TestCase):
+    def test_empty_runtime_artifacts_are_not_accepted_as_build_metadata(self):
+        scope = {'project': ':', 'configuration': 'marker', 'resolved': True,
+            'components': [{'group': 'example', 'name': 'plugin', 'version': '1'}], 'artifacts': []}
+        runtime = {'formatVersion': 1, 'scopes': [scope]}
+        with self.assertRaisesRegex(ValueError, 'Unresolved'):
+            module.inventory_packages(runtime)
+        build = dict(runtime, inventoryKind='build', completed=True, taskOutcomes=[{'task': ':assemble', 'failureType': None}])
+        self.assertEqual(module.inventory_packages(build)[1], [('example:plugin', '1')])
+        scope['resolved'] = False
+        with self.assertRaisesRegex(ValueError, 'Unresolved'):
+            module.inventory_packages(build)
+
+    def test_failed_or_unknown_build_cannot_be_scanned_as_completed(self):
+        build = {'formatVersion': 1, 'inventoryKind': 'build', 'scopes': [{}],
+            'completed': False, 'taskOutcomes': [{'failureType': 'CompilationFailed'}]}
+        with self.assertRaisesRegex(ValueError, 'completed'):
+            module.inventory_packages(build)
+        build['completed'] = True
+        with self.assertRaisesRegex(ValueError, 'completed'):
+            module.inventory_packages(build)
+        build['taskOutcomes'] = []
+        with self.assertRaisesRegex(ValueError, 'completed'):
+            module.inventory_packages(build)
+
     def test_individual_pages_remain_attached_to_the_right_package(self):
         packages = [('example:one', '1'), ('example:two', '2')]
         calls = []

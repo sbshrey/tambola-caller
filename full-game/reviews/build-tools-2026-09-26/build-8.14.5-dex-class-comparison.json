@@ -1,0 +1,7 @@
+{
+  "scope": "DEX class-name table only; not bytecode equivalence",
+  "baselineClassCount": 677,
+  "candidateClassCount": 677,
+  "removed": [],
+  "added": []
+}

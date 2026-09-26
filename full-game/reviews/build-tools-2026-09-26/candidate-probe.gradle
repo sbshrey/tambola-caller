@@ -1,0 +1,40 @@
+import org.gradle.api.attributes.plugin.GradlePluginApiVersion
+import org.gradle.api.attributes.java.TargetJvmEnvironment
+import org.gradle.api.attributes.java.TargetJvmVersion
+
+plugins { id 'java-base' }
+
+repositories { google(); mavenCentral(); gradlePluginPortal() }
+configurations {
+    candidate {
+        canBeConsumed = false
+        canBeResolved = true
+        attributes {
+            attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+            attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+            attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+            attribute(TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+                objects.named(TargetJvmEnvironment, TargetJvmEnvironment.STANDARD_JVM))
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+            attribute(GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
+                objects.named(GradlePluginApiVersion, '9.7.1'))
+        }
+    }
+}
+dependencies {
+    candidate('com.android.tools.build:gradle:9.3.3')
+    candidate('org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20')
+    candidate('org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.4.20')
+    candidate('org.jetbrains.kotlin:kotlin-serialization:2.4.20')
+    constraints {
+        candidate('org.apache.commons:commons-lang3:3.20.0')
+        candidate('org.bitbucket.b_c:jose4j:0.9.6')
+        candidate('org.bouncycastle:bcprov-jdk18on:1.85')
+        candidate('org.bouncycastle:bcpkix-jdk18on:1.85')
+        candidate('org.bouncycastle:bcutil-jdk18on:1.85')
+        candidate('org.jdom:jdom2:2.0.6.1')
+    }
+}
+tasks.register('resolveCandidate') {
+    doLast { println "Resolved ${configurations.candidate.files.size()} candidate artifacts (plugins not applied)" }
+}

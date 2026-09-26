@@ -1,0 +1,4 @@
+# Preserve raw scan and command output bytes for the recorded SHA-256 identities.
+# These are captured evidence files, including upstream pretty-printer whitespace.
+*.json -text -whitespace
+*.txt -text -whitespace

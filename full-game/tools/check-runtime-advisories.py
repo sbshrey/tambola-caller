@@ -1,7 +1,7 @@
-"""Query OSV for exact Gradle runtime coordinates; incomplete checks never pass.
+"""Query OSV for exact Maven coordinates in a runtime or observed-build inventory.
 
-Only public Maven coordinates are sent. Build/test dependencies, native code inside AARs,
-the JRE and operating-system packages need separate review. No exploit probes are sent.
+Only public Maven coordinates are sent. The input defines the reviewed scope. Native
+code inside AARs, the JRE and operating system need separate review. No exploit probes.
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor
@@ -50,6 +50,32 @@ def query_packages(packages, fetch=request):
     return matches
 
 
+def inventory_packages(inventory):
+    kind = inventory.get('inventoryKind', 'runtime')
+    if kind not in ('runtime', 'build') or inventory.get('formatVersion') != 1 or not inventory.get('scopes'):
+        raise ValueError('Missing or unsupported Maven inventory')
+    if kind == 'build' and (inventory.get('completed') is not True or
+            not inventory.get('taskOutcomes') or any(row.get('failureType') for row in inventory['taskOutcomes'])):
+        raise ValueError('Build inventory does not establish a completed invocation')
+    packages = set()
+    scopes = []
+    for scope in inventory['scopes']:
+        if not scope['components'] or not isinstance(scope.get('artifacts'), list):
+            raise ValueError('Empty or incomplete Maven scope')
+        # Plugin marker / platform-only resolutions legitimately have no binary artifacts.
+        # The observed-build collector must affirm successful resolution; runtime stays strict.
+        if (kind == 'runtime' and not scope['artifacts']) or (kind == 'build' and scope.get('resolved') is not True):
+            raise ValueError('Unresolved Maven scope')
+        scopes.append({'project': scope['project'], 'configuration': scope['configuration'],
+            'modules': len(scope['components']), 'artifacts': len(scope['artifacts'])})
+        for item in scope['components']:
+            for key in ('group', 'name', 'version'):
+                if not re.fullmatch(r'[A-Za-z0-9._+\-]+', item[key]):
+                    raise ValueError('Invalid Maven coordinate')
+            packages.add((item['group'] + ':' + item['name'], item['version']))
+    return kind, sorted(packages), scopes
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('inventory', type=Path)
@@ -59,23 +85,10 @@ def main():
     if args.output.exists(): raise ValueError('Evidence output already exists')
     raw = args.inventory.read_bytes()
     inventory = json.loads(raw)
-    if inventory.get('formatVersion') != 1 or not inventory.get('scopes'):
-        raise ValueError('Missing or unsupported runtime inventory')
-    packages = set()
-    scopes = []
-    for scope in inventory['scopes']:
-        if not scope['components'] or not scope['artifacts']:
-            raise ValueError('Empty runtime scope')
-        scopes.append({'project': scope['project'], 'configuration': scope['configuration'], 'modules': len(scope['components'])})
-        for item in scope['components']:
-            for key in ('group', 'name', 'version'):
-                if not re.fullmatch(r'[A-Za-z0-9._+\-]+', item[key]):
-                    raise ValueError('Invalid Maven coordinate')
-            packages.add((item['group'] + ':' + item['name'], item['version']))
-    packages = sorted(packages)
+    kind, packages, scopes = inventory_packages(inventory)
     report = {'checkedAtUtc': datetime.now(timezone.utc).isoformat(), 'source': 'https://api.osv.dev/v1/querybatch',
-        'inventorySha256': hashlib.sha256(raw).hexdigest(), 'scopes': scopes, 'queriedVersions': len(packages),
-        'coverage': 'Exact Maven runtime coordinates only; no proof of exploitability or absence of unknown vulnerabilities',
+        'inventorySha256': hashlib.sha256(raw).hexdigest(), 'inventoryKind': kind, 'scopes': scopes, 'queriedVersions': len(packages),
+        'coverage': f'Exact Maven coordinates in the supplied {kind} inventory only; no proof of exploitability or absence of unknown vulnerabilities',
         'completed': False}
     exit_code = 2
     try:

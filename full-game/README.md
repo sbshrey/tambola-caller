@@ -30,7 +30,7 @@ The alpha07 audio update adds an original offline music loop and cues, independe
 
 The alpha06 appearance update adds saved System/Light/Dark themes, native home artwork and a number reveal that respects reduced motion and system animation settings. See [presentation direction](PRESENTATION.md) and [alpha06 validation](ALPHA06_VALIDATION.md) for the exact candidate evidence and remaining work.
 
-JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 8.13 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update.
+JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 8.14.5 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update. The [build-tool review](BUILD_TOOL_REVIEW.md) records remaining findings and the separately evaluated migration candidate.
 
 The [runtime dependency review](DEPENDENCY_REVIEW.md) records resolved library inventories, advisory checks and the Netty/Logback security update. Use the current service build or `releases/service-security-2026-09-26/Tambola-service.zip` for private-room testing with the unchanged alpha12 APK. CI checks exact runtime Maven versions; process reports identify every bundled service library, including changes that leave the main JAR unchanged.
 

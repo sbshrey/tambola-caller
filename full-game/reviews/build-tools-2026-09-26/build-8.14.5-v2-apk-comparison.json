@@ -1,0 +1,13 @@
+{
+  "baselineSha256": "bb73f3632176bfbcd6bda8b1585b834eb5741655f7b1274def7b9ccccb19447b",
+  "candidateSha256": "be573facbbcd0a83eeafadadaadd31b3bd79e26cef129152a4f101b415dd1c18",
+  "added": [],
+  "removed": [],
+  "changedEntries": [
+    {
+      "entry": "classes8.dex",
+      "beforeBytes": 1156352,
+      "afterBytes": 1153536
+    }
+  ]
+}
