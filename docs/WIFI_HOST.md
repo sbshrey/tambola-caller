@@ -42,6 +42,14 @@ To build the dedicated debug-signed Wi-Fi candidate from `full-game`:
 
 This variant is for Wi-Fi validation. It is not the release-signed public Store artifact.
 
+## Service upgrades
+
+`full-game/tools/upgrade-windows-host.ps1 -SourceCommit <full-commit>` performs a read-only preflight of a clean committed checkout, matching `server:installDist` output and the expected private host. It refuses unfinished lobbies/rounds. Add `-Apply` to deploy the reviewed candidate.
+
+The tool retains the previous libraries/configuration, stops serving, checks that no game arrived during preflight, makes and verifies a fresh primary/journal backup pair, then runs the candidate's migrations with separate owner credentials and reapplies restricted runtime grants. It points the host at versioned, checksum-verified libraries and requires a fresh healthy server process. Protected upgrade records and a retained copy of the backup pair stay under the host's `upgrades` directory; they are not exported to Git or the APK.
+
+Before migration starts, a failed upgrade resumes the old service. Once migration has been attempted, it does **not** automatically restore a database or downgrade binaries: the old service may reject the new migration registry. Preserve the live deletion journal and investigate the protected logs before any recovery. Fresh backend readiness must still be followed by verified TLS transactions and native APK testing.
+
 ## Evidence boundary
 
 `tools/verify-wifi-host.mjs` used two temporary authenticated profiles over verified HTTPS, completed 90 manual calls, claimed one chosen ticket/prize, checked own-ticket privacy and replayed the exact claim receipt after Java, Caddy, worker and database recovery. It deleted its QA profiles afterwards. It deliberately interrupts only the installed host; run it when no players are active.
