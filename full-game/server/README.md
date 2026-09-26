@@ -46,7 +46,7 @@ All bodies and responses use strict JSON. Credentials use the `Authorization` he
 | `POST /v1/guests` | Name (1–40 characters), avatar (0–7); returns guest ID and bearer token |
 | `POST /v1/guests/me/device` | Enroll a separate random device credential using a valid access token; repeatable only with the same proof |
 | `POST /v1/guests/me/session` | Device bearer proof plus persisted replacement token/expected revision; rotate or replay the exact session receipt |
-| `POST /v1/guests/me/logout` | Revoke the current token; this is not data deletion |
+| `POST /v1/guests/me/logout` | Durably revoke access and device renewal, including after a primary restore; this is not data deletion |
 | `POST /v1/guests/me/delete` | Delete the authenticated profile and redact its stored profile fields; retry the original UUID to confirm |
 | `POST /v1/rooms` | Create a private lobby with UUID `id` and frozen-at-start `options` |
 | `POST /v1/rooms/{code}/join` | Join an unlocked lobby; existing members can reconnect |

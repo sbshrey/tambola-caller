@@ -52,7 +52,7 @@ fun main(args: Array<String>) {
             journal?.verifyRestoreBoundary(database)
             if (migrateOnly) return
             val service = RoomService(database, journal = journal)
-            // No listener exists while restored identities and historical receipts are being redacted.
+            // No listener exists while restored identities are revoked and deleted profiles/history are redacted.
             while (service.replayDeletions() > 0) { /* bounded transactions, restartable cursor */ }
             val operations = ServiceOperations(workerEnabled = true, metricsToken = System.getenv("TAMBOLA_METRICS_TOKEN"))
             embeddedServer(Netty, host = host, port = port) {

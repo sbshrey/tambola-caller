@@ -1,0 +1,51 @@
+{
+  "scope": "Focused session revocation, session renewal, deletion journal, contention and restricted roles",
+  "classes": [
+    {
+      "name": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "9.946"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "23.901"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "17.2"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "150.018"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "15.053"
+    }
+  ],
+  "totals": {
+    "tests": 38,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

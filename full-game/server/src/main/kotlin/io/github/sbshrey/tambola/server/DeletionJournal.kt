@@ -5,14 +5,16 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.UUID
 
-data class DeletionIntent(val sequence: Long, val playerId: String, val proof: String, val deletedAt: Long, val confirmUntil: Long)
+sealed interface RecoveryIntent { val sequence: Long; val playerId: String }
+data class DeletionIntent(override val sequence: Long, override val playerId: String, val proof: String, val deletedAt: Long, val confirmUntil: Long) : RecoveryIntent
+data class RevocationIntent(override val sequence: Long, override val playerId: String, val revokedAt: Long) : RecoveryIntent
 data class JournalPosition(val id: String, val head: Long)
 
 /** A separate PostgreSQL database, never restored together with the room database. No raw tokens or names. */
 class DeletionJournal(private val database: Database) {
     @Volatile private var expectedId: String? = null
     private val migrations = Migrations("journal_migrations", 749023802,
-        listOf("001_deletions.sql", "002_head_guard.sql").map { "/db/journal/$it" })
+        listOf("001_deletions.sql", "002_head_guard.sql", "003_session_revocations.sql").map { "/db/journal/$it" })
 
     fun migrate() {
         database.transaction { connection ->
@@ -66,15 +68,43 @@ class DeletionJournal(private val database: Database) {
         connection.query("SELECT * FROM profile_deletions WHERE confirmation_hash = ?", proof, map = ::intent).singleOrNull()
     }
 
+    /** Logout permanently revokes this profile's credentials without deleting its shared history. */
+    fun revoke(playerId: String, revokedAt: Long): RevocationIntent = database.transaction { connection ->
+        require(UUID.fromString(playerId).toString() == playerId)
+        val head = position(connection, lock = true).head
+        connection.query("SELECT sequence, player_id, revoked_at FROM session_revocations WHERE player_id = ?", playerId) {
+            RevocationIntent(it.getLong(1), it.getString(2), it.getLong(3))
+        }.singleOrNull()?.let { return@transaction it }
+        val result = RevocationIntent(Math.addExact(head, 1), playerId, revokedAt)
+        connection.execute("INSERT INTO session_revocations VALUES (?, ?, ?)", result.sequence, playerId, revokedAt)
+        connection.execute("UPDATE deletion_journal_identity SET head = ? WHERE singleton", result.sequence)
+        result
+    }
+
+    fun blocksAccess(playerId: String): Boolean = database.transaction { connection ->
+        position(connection)
+        connection.query("""SELECT EXISTS (SELECT 1 FROM profile_deletions WHERE player_id = ?)
+            OR EXISTS (SELECT 1 FROM session_revocations WHERE player_id = ?)""", playerId, playerId) { it.getBoolean(1) }.single()
+    }
+
     fun suppresses(playerId: String): Boolean = database.transaction { connection ->
         position(connection)
         connection.query("SELECT 1 FROM profile_deletions WHERE player_id = ?", playerId) { true }.isNotEmpty()
     }
 
-    fun next(after: Long, through: Long): DeletionIntent? = database.transaction { connection ->
+    fun next(after: Long, through: Long): RecoveryIntent? = database.transaction { connection ->
         val current = position(connection)
         recoveryCheck(after <= current.head && through <= current.head, "Deletion recovery cursor exceeds journal head")
-        val next = connection.query("SELECT * FROM profile_deletions WHERE sequence > ? AND sequence <= ? ORDER BY sequence LIMIT 1", after, through, map = ::intent).singleOrNull()
+        val entries = connection.query("""SELECT sequence, player_id, confirmation_hash, deleted_at AS occurred_at, confirm_until
+            FROM profile_deletions WHERE sequence > ? AND sequence <= ?
+            UNION ALL SELECT sequence, player_id, NULL, revoked_at, NULL
+            FROM session_revocations WHERE sequence > ? AND sequence <= ? ORDER BY sequence LIMIT 2""", after, through, after, through) {
+            val proof = it.getString("confirmation_hash")
+            if (proof == null) RevocationIntent(it.getLong("sequence"), it.getString("player_id"), it.getLong("occurred_at"))
+            else DeletionIntent(it.getLong("sequence"), it.getString("player_id"), proof, it.getLong("occurred_at"), it.getLong("confirm_until"))
+        }
+        recoveryCheck(entries.map { it.sequence }.distinct().size == entries.size, "Recovery journal has a duplicate sequence")
+        val next = entries.firstOrNull()
         recoveryCheck((next == null && after == through) || next?.sequence == after + 1, "Deletion journal has a sequence gap")
         next
     }

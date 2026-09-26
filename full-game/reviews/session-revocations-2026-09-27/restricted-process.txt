@@ -1,0 +1,25 @@
+{
+  "evidence": "D:\\Github\\App Ideas\\tambola-caller\\full-game\\.test-workspace\\permissions-d101fc8c0de54b52\\evidence.json",
+  "runId": "d101fc8c0de54b52",
+  "completed": true,
+  "cleanupComplete": true,
+  "stages": [
+    "unmigrated-runtime-rejected-before-listening",
+    "explicit-migration-job-with-owner-credentials",
+    "owner-credentials-rejected-for-serving",
+    "excessive-column-grant-rejected",
+    "restricted-runtime-gameplay",
+    "restricted-runtime-restart-and-deletion",
+    "restricted-runtime-durable-logout",
+    "denied-destructive-database-operations",
+    "protected-metrics-and-worker-failure-recovery"
+  ],
+  "scope": "Real Java processes with separate non-superuser migration owners and restricted runtime login roles on isolated PostgreSQL; no hosted credential/backup acceptance.",
+  "serviceJarSha256": "4df54270b7e6785ff984ab4aa7bda254d253f6879da3991cbe155b2295a0392d",
+  "serviceRuntimeSha256": "b80fe5ae8fb9435d22c5313f9d8b39e53f9b9cc87499f1be6c81af8e7ff92abb",
+  "firstPid": 18160,
+  "restartedPid": 15028,
+  "logoutJournaled": true,
+  "metricsProtected": true,
+  "workerFailureRecovered": true
+}

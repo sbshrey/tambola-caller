@@ -7,7 +7,7 @@ import java.sql.Connection
 import java.sql.SQLException
 import java.util.UUID
 
-/** Room changes commit atomically; profile deletion first records intent in the independent journal. */
+/** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
 class RoomService(
     private val database: Database,
     private val clock: () -> Long = System::currentTimeMillis,
@@ -67,7 +67,7 @@ class RoomService(
             val entry = connection.query("SELECT id, token_hash, expires_at, session_revision FROM guests WHERE device_key_hash = ? AND revoked_at IS NULL FOR UPDATE", digest(deviceKey)) {
                 SessionEntry(it.getString(1), it.getString(2), it.getLong(3), it.getLong(4))
             }.singleOrNull() ?: fail(401, "unauthorized", "This device credential is unavailable or was revoked.")
-            demand(journal?.suppresses(entry.id) != true, 401, "unauthorized", "This profile has been scheduled for deletion.")
+            demand(journal?.blocksAccess(entry.id) != true, 401, "unauthorized", "This profile's credentials were revoked.")
             val hash = digest(request.token)
             if (entry.revision == request.expectedRevision + 1 && entry.hash == hash)
                 return@deviceTransaction RenewedSession(GuestCredentials(entry.id, request.token, entry.expiresAt), entry.revision)
@@ -144,8 +144,8 @@ class RoomService(
 
     fun revoke(token: String) = database.transaction { connection ->
         val guest = authenticate(connection, token, lock = true)
-        connection.execute("UPDATE guests SET expires_at = ?, revoked_at = ?, device_key_hash = NULL WHERE id = ?", clock(), clock(), guest.id)
-        Unit
+        val intent = journal?.revoke(guest.id, clock()) ?: RevocationIntent(0, guest.id, clock())
+        applyRevocation(connection, intent)
     }
 
     /** Durable suppression precedes the atomic primary-database mutation and its confirmation. */
@@ -168,6 +168,7 @@ class RoomService(
                 // Expired but unrevoked credentials may initiate deletion, never read/play again.
                 val playerId = connection.query("SELECT id FROM guests WHERE token_hash = ? AND revoked_at IS NULL FOR UPDATE", digest(token)) { it.getString(1) }
                     .singleOrNull() ?: return@transaction (receipt() ?: fail(401, "unauthorized", "Deletion could not be confirmed with this session. Local reset does not delete server data."))
+                demand(journal?.blocksAccess(playerId) != true, 401, "unauthorized", "This profile's credentials were revoked.")
                 val now = clock()
                 journal?.append(playerId, proof, now, now + 30 * ROOM_LIFETIME)
                     ?: DeletionIntent(0, playerId, proof, now, now + 30 * ROOM_LIFETIME)
@@ -177,7 +178,7 @@ class RoomService(
         }
     }
 
-    /** One identity per transaction preserves guest-before-room lock ordering across workers. */
+    /** Replays deletion and logout intents. One identity per transaction preserves guest-before-room ordering. */
     fun replayDeletions(limit: Int = 100, skipBusy: Boolean = false): Int {
         try {
             val result = replayDeletionBatch(limit, skipBusy)
@@ -215,7 +216,11 @@ class RoomService(
                     if (!locked && connection.query("SELECT 1 FROM guests WHERE id = ?", next.playerId) { true }.isNotEmpty())
                         return@transaction ReplayStep.BUSY
                 }
-                if (next != null) applyDeletion(connection, next)
+                when (next) {
+                    is DeletionIntent -> applyDeletion(connection, next)
+                    is RevocationIntent -> applyRevocation(connection, next)
+                    null -> Unit
+                }
                 connection.execute("UPDATE deletion_recovery SET journal_id = ?, applied_sequence = ? WHERE singleton", head.id, next?.sequence ?: saved.second)
                 if (next != null) ReplayStep.APPLIED else ReplayStep.CAUGHT_UP
             }
@@ -326,6 +331,11 @@ class RoomService(
         member(room, guest.id)
         update(connection, touch(connection, room, guest.id, clock()), guest.id, after)
         }
+    }
+
+    private fun applyRevocation(connection: Connection, intent: RevocationIntent) {
+        connection.execute("UPDATE guests SET expires_at = ?, revoked_at = ?, device_key_hash = NULL WHERE id = ?",
+            intent.revokedAt, intent.revokedAt, intent.playerId)
     }
 
     internal fun admitEvents(token: String) = authenticatedRate(token, "events", 20)
@@ -539,7 +549,7 @@ class RoomService(
         val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else if (protect) " FOR SHARE" else ""}", digest(token), clock()) {
             Guest(it.getString(1), it.getString(2), it.getInt(3))
         }.singleOrNull() ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
-        demand(journal?.suppresses(guest.id) != true, 401, "unauthorized", "This profile has been scheduled for deletion.")
+        demand(journal?.blocksAccess(guest.id) != true, 401, "unauthorized", "This profile's credentials were revoked.")
         return guest
     }
 

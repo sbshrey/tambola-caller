@@ -141,11 +141,24 @@ class RuntimePrivilegesTest {
         listOf("DELETE FROM profile_deletions", "TRUNCATE profile_deletions", "UPDATE profile_deletions SET confirmation_hash = repeat('a',64)",
             "UPDATE deletion_journal_identity SET journal_id = 'changed'", "DELETE FROM deletion_journal_identity",
             "UPDATE journal_migrations SET checksum = 'changed'", "ALTER TABLE profile_deletions ADD COLUMN bypass text",
-            "ALTER TABLE deletion_journal_identity DISABLE TRIGGER deletion_journal_head_guard", "DROP TABLE profile_deletions").forEach { denied(journalRuntime, it) }
+            "ALTER TABLE deletion_journal_identity DISABLE TRIGGER deletion_journal_head_guard", "DROP TABLE profile_deletions",
+            "DELETE FROM session_revocations", "TRUNCATE session_revocations", "UPDATE session_revocations SET revoked_at = 0",
+            "ALTER TABLE session_revocations ADD COLUMN bypass text", "DROP TABLE session_revocations").forEach { denied(journalRuntime, it) }
         denied(journalRuntime, "UPDATE deletion_journal_identity SET head = 0", "23514")
         denied(journalRuntime, "UPDATE deletion_journal_identity SET head = 3", "23514")
         denied(journalRuntime, "UPDATE deletion_journal_identity SET head = 2", "23514")
         assertEquals(1L, journal.position().head)
+    }
+
+    @Test fun `restricted roles journal logout and replay its original revocation without erasing wallet`() {
+        val actor = service.register(GuestRequest("Restricted logout"), "logout")
+        val key = secret(); service.enrollDevice(actor.token, EnrollDeviceRequest(key))
+        service.revoke(actor.token)
+        assertTrue(journal.blocksAccess(actor.playerId)); assertFalse(journal.suppresses(actor.playerId))
+        assertEquals(1, service.replayDeletions()); assertEquals(0, service.replayDeletions())
+        assertEquals(401, assertThrows(ApiFailure::class.java) { service.renewSession(key, RenewSessionRequest(0, secret()), "revoked") }.status)
+        assertEquals(1500L, mainRuntime.transaction { CoinLedger.open(it, actor.playerId, now.get()) }.balance)
+        assertEquals(RevocationIntent(1, actor.playerId, now.get()), journal.next(0, 1))
     }
 
     @Test fun `runtime has no schema temp registry or permission delegation authority`() {
@@ -195,10 +208,12 @@ class RuntimePrivilegesTest {
         journalOwner.transaction {
             it.execute("DROP TRIGGER deletion_journal_head_guard ON deletion_journal_identity")
             it.execute("DROP FUNCTION guard_deletion_journal_head()")
-            it.execute("DELETE FROM journal_migrations WHERE version=2")
+            it.execute("DROP TABLE session_revocations")
+            it.execute("DELETE FROM journal_migrations WHERE version >= 2")
         }
         assertThrows(IllegalStateException::class.java) { journal.verifyMigrations() }
         DeletionJournal(journalOwner).apply { migrate(); migrate() }
+        journalOwner.transaction { it.execute("GRANT SELECT, INSERT ON session_revocations TO ${identifier(journalRole)}") }
         journal.verifyMigrations()
         assertEquals(identity, journal.position()); assertEquals(before, journal.find(before.proof))
         assertEquals(2L, journal.append(UUID.randomUUID().toString(), digest("next"), now.get(), now.get() + ROOM_LIFETIME).sequence)

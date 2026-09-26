@@ -12,7 +12,7 @@ If the deleted player hosted a room, control moves to a remaining player, prefer
 
 Shared game records retain opaque participant IDs, ticket numbers, calls, scores, rule/prize text and timestamps until normal room retention expires. Redaction targets the deleted identity's profile fields; it does not replace another person's matching name or search/alter arbitrary shared prize text. Copies already downloaded or shared by others are outside this request, and an existing backup is not instantly rewritten. This is profile deletion with stated shared-record retention, not a claim that every copy of all game content is erased.
 
-Signing out only revokes access and clears this device's online data. **Reset online data** only clears local data. Neither substitutes for confirmed service deletion. Request deletion before signing out if that is the desired outcome. A new profile cannot reclaim an old profile's cards/history/badges.
+Signing out only revokes access and clears this device's online data. Its independent journal record contains an opaque profile ID, revocation time and sequence, so restoring an older primary backup cannot restore that access or its device credential. It does not redact shared history or immediately delete the wallet. **Reset online data** only clears local data. Neither substitutes for confirmed service deletion. Request deletion before signing out if that is the desired outcome. A new profile cannot reclaim an old profile's cards/history/badges.
 
 ## Protocol and uncertain outcomes
 
@@ -30,7 +30,7 @@ Newly expired but **unrevoked** credentials may request deletion only; they cann
 
 ## Stored records, locking and migration
 
-Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Migration 003 adds a binding to the independent journal and a transactional replay cursor; journal migrations 001–002 create its records and guard head advancement. Earlier migrations stay unchanged. A separate owner `--migrate` job applies ordered migrations under advisory locks; ordinary startup verifies immutable checksums and [restricted runtime grants](DATABASE_PERMISSIONS.md), then replays deletion before opening HTTP. See the [restore runbook](BACKUP_RECOVERY.md) for required startup configuration and handling of pre-journal restore points.
+Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Primary migration 003 adds a binding to the independent journal and a transactional replay cursor; journal migrations 001–003 create deletion/logout records and guard their shared head advancement. Earlier migrations stay unchanged. A separate owner `--migrate` job applies ordered migrations under advisory locks; ordinary startup verifies immutable checksums and [restricted runtime grants](DATABASE_PERMISSIONS.md), then replays both intent kinds before opening HTTP. See the [restore runbook](BACKUP_RECOVERY.md) for required startup configuration and handling of pre-journal restore points.
 
 The participant index covers current members/round players, past audits and command/create receipt actors. Backfill includes former members who no longer appear in the current lobby. Every later save records known guest participants. Deleted profiles are excluded from future index inserts even when their opaque player ID remains in an ongoing round.
 

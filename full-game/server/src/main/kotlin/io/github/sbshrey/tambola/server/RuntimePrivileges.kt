@@ -14,6 +14,7 @@ internal object RuntimePrivileges {
         "match_receipts" to Access(setOf("INSERT"), setOf("response")),
     )
     private val recovery = mapOf("journal_migrations" to Access(), "profile_deletions" to Access(setOf("INSERT")),
+        "session_revocations" to Access(setOf("INSERT")),
         "deletion_journal_identity" to Access(updateColumns = setOf("head")))
 
     fun verify(database: Database, journal: Boolean) = database.transaction { connection ->

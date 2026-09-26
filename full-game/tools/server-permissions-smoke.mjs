@@ -114,7 +114,7 @@ async function start(kind, rejected) {
 async function api(path, token, body, method = 'POST', status = 200) {
   const response = await fetch(base + path, { method, signal: AbortSignal.timeout(15_000),
     headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined });
-  assert.equal(response.status, status, 'Unexpected HTTP status in ' + stage); return response.json();
+  assert.equal(response.status, status, 'Unexpected HTTP status in ' + stage); return status === 204 ? undefined : response.json();
 }
 try {
   Object.assign(evidence, await serviceRuntime(root));
@@ -170,8 +170,19 @@ try {
   assert.equal(after.round.players.find(player => player.id === host.playerId).name, 'Deleted player');
   assert.equal((await command(peer, { type: 'draw' })).snapshot.round.called.length, 2);
   await command(peer, { type: 'end' });
+  mark('restricted-runtime-durable-logout');
+  const signedOut = await api('/v1/guests', null, { displayName: 'Logout QA' }, 'POST', 201);
+  const deviceKey = randomBytes(32).toString('base64url');
+  await api('/v1/guests/me/device', signedOut.token, { deviceKey });
+  await api('/v1/guests/me/logout', signedOut.token, null, 'POST', 204);
+  await api('/v1/wallet', signedOut.token, null, 'GET', 401);
+  await api('/v1/guests/me/session', deviceKey, { expectedRevision: 0, token: randomBytes(32).toString('base64url') }, 'POST', 401);
+  assert.equal(sql(names.journal, 'SELECT count(*) FROM session_revocations'), '1');
+  evidence.logoutJournaled = true;
   mark('denied-destructive-database-operations');
   for (const query of ['DELETE FROM profile_deletions', 'UPDATE profile_deletions SET player_id=player_id', 'TRUNCATE profile_deletions', 'ALTER TABLE profile_deletions ADD COLUMN forbidden text'])
+    sql(names.journal, query, identities.journal_app, '42501');
+  for (const query of ['DELETE FROM session_revocations', 'UPDATE session_revocations SET revoked_at=0', 'TRUNCATE session_revocations', 'ALTER TABLE session_revocations ADD COLUMN forbidden text'])
     sql(names.journal, query, identities.journal_app, '42501');
   sql(names.journal, 'UPDATE deletion_journal_identity SET head=0', identities.journal_app, '23514');
   for (const query of ['CREATE TEMP TABLE guests(id text)', 'UPDATE schema_migrations SET checksum=checksum', 'TRUNCATE rooms'])
@@ -187,7 +198,7 @@ try {
   async function snapshot() {
     const { response, body } = await scrape(); assert.equal(response.status, 200);
     assert.ok(response.headers.get('content-type').includes('version=0.0.4'));
-    for (const value of [metricsToken, host.token, peer.token, host.playerId, peer.playerId, room.snapshot.code, 'Permissions host', 'Permissions peer'])
+    for (const value of [metricsToken, host.token, peer.token, host.playerId, peer.playerId, signedOut.token, signedOut.playerId, deviceKey, room.snapshot.code, 'Permissions host', 'Permissions peer'])
       assert.ok(!body.includes(value), 'Metrics exposed fixture identity; content omitted');
     return body;
   }

@@ -1,0 +1,12 @@
+{
+  "checkedAtUtc": "2026-09-26T19:00:48.767Z",
+  "origin": "https://192.168.1.4:8443",
+  "status": 200,
+  "tlsVerification": "Node TLS authorization with pinned private CA and default hostname verification",
+  "health": {
+    "status": "ready",
+    "protocolVersion": 4
+  },
+  "hostChanged": false,
+  "probeNote": "Windows Schannel curl could not establish revocation status for the private CA; this Node HTTPS probe uses ordinary strict chain and hostname verification."
+}

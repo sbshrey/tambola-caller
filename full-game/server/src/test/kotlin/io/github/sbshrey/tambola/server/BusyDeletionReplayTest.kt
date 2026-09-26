@@ -65,6 +65,26 @@ class BusyDeletionReplayTest : PostgresTest() {
         assertTrue(service.recoveryHealthy())
     }
 
+    @Test fun `busy logout defers both intent kinds in sequence without blocking other players`() {
+        val journal = journal()
+        val actor = service.register(GuestRequest("Signing out"), id())
+        val deleted = service.register(GuestRequest("Deleting"), id())
+        val peer = service.register(GuestRequest("Still playing"), id())
+        journal.revoke(actor.playerId, now.get())
+        journal.append(deleted.playerId, digest(id()), now.get(), now.get() + ROOM_LIFETIME)
+        locked("SELECT id FROM guests WHERE id = ? FOR UPDATE", actor.playerId) {
+            deferQuickly()
+            assertTrue(service.recoveryHealthy())
+            assertEquals(1500L, service.wallet(peer.token).balance)
+            assertEquals(0L, database.transaction { it.query("SELECT applied_sequence FROM deletion_recovery") { row -> row.getLong(1) }.single() })
+        }
+        assertEquals(2, service.replayDeletions(skipBusy = true))
+        assertEquals(0, service.replayDeletions())
+        assertEquals(401, assertThrows(ApiFailure::class.java) { service.wallet(actor.token) }.status)
+        assertEquals(401, assertThrows(ApiFailure::class.java) { service.wallet(deleted.token) }.status)
+        assertEquals(1500L, service.wallet(peer.token).balance)
+    }
+
     @Test fun `a missing recovery cursor fails both strict startup replay and background replay`() {
         journal()
         database.transaction { it.execute("DELETE FROM deletion_recovery") }
