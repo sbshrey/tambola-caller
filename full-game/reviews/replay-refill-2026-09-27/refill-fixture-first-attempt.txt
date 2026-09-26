@@ -1,0 +1,110 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:compileTestKotlin
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:coinRefillAndroid
+2026-09-27 02:29:36,721 INFO  io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+2026-09-27 02:29:36,928 INFO  io.ktor.server.Application - Application started in 0.513 seconds.
+2026-09-27 02:29:37,214 INFO  io.ktor.server.Application - Responding at http://127.0.0.1:8081
+
+io.github.sbshrey.tambola.game.CoinRefillTest:
+Error in lostRefillResponseRetriesOnceAndAffordableReplaySurvivesRecreation(io.github.sbshrey.tambola.game.CoinRefillTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 25000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:809)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:378)
+	at io.github.sbshrey.tambola.game.CoinRefillTest.until(CoinRefillTest.kt:24)
+	at io.github.sbshrey.tambola.game.CoinRefillTest.access$until(CoinRefillTest.kt:20)
+	at io.github.sbshrey.tambola.game.CoinRefillTest$lostRefillResponseRetriesOnceAndAffordableReplaySurvivesRecreation$1.invokeSuspend(CoinRefillTest.kt:62)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.CoinRefillTest.lostRefillResponseRetriesOnceAndAffordableReplaySurvivesRecreation(CoinRefillTest.kt:33)
+
+
+Time: 30.248
+There was 1 failure:
+1) lostRefillResponseRetriesOnceAndAffordableReplaySurvivesRecreation(io.github.sbshrey.tambola.game.CoinRefillTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 25000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:809)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:378)
+	at io.github.sbshrey.tambola.game.CoinRefillTest.until(CoinRefillTest.kt:24)
+	at io.github.sbshrey.tambola.game.CoinRefillTest.access$until(CoinRefillTest.kt:20)
+	at io.github.sbshrey.tambola.game.CoinRefillTest$lostRefillResponseRetriesOnceAndAffordableReplaySurvivesRecreation$1.invokeSuspend(CoinRefillTest.kt:62)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.CoinRefillTest.lostRefillResponseRetriesOnceAndAffordableReplaySurvivesRecreation(CoinRefillTest.kt:33)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: JUnit did not report success; see .test-workspace/coin-refill-native.txt
+    at file:///D:/Github/App%20Ideas/tambola-caller/full-game/tools/android-smoke.mjs:113:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
+Exception in thread "main" java.lang.IllegalStateException: Native refill test failed
+	at io.github.sbshrey.tambola.server.CoinRefillAndroid.main(CoinRefillAndroid.kt:74)
+
+> Task :server:coinRefillAndroid FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:coinRefillAndroid' (registered in build file 'server\build.gradle.kts').
+> Process 'command 'D:\Github\App Ideas\tambola-caller\full-game\.test-workspace\temurin17\jdk-17.0.20.1+1\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 42s
+11 actionable tasks: 2 executed, 9 up-to-date

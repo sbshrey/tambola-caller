@@ -1,0 +1,252 @@
+{
+  "checkedAt": "2026-09-26T21:23:15.089040+00:00",
+  "sourceCommit": "fe59cdb401386f5cd57dd87ada2f1eaaad6f5833",
+  "benchmarkSourceCommit": "72885ae49d128cc5ad01ee404ea000fd0d2df6be",
+  "app": {
+    "path": "releases/0.20.0-alpha20-wifi-optimized/Tambola-Together-0.20.0-alpha20-wifi-optimized.apk",
+    "sha256": "97601ca8d68c32260bf39b4e5909c7348dc9070b89de4241ffad06bb2fd1357f",
+    "bytes": 29126773,
+    "versionCode": 20,
+    "debuggable": false,
+    "profileableByShell": true,
+    "installedBytesMatch": true,
+    "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c"
+  },
+  "debugNativeApk": {
+    "sha256": "17ac4a6f043083ea5ac814c26d48e07ba4c256ec4a2f3a3681a8bcff18838e4f",
+    "bytes": 42736882
+  },
+  "debugNativeTestApk": {
+    "sha256": "4c716b15d999dfe68c0dff083b2e9ee715f0a5356930b2bfcb4582fd3fb07d0c",
+    "bytes": 1695044
+  },
+  "benchmarkApk": {
+    "sha256": "d23aab9f5ed31c9af8ae52716f9015b671b85d0a41e1f6e9de151197c70bd88b",
+    "bytes": 55990170
+  },
+  "checks": {
+    "client": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0
+    },
+    "app": {
+      "tests": 15,
+      "failures": 0,
+      "errors": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 87
+    }
+  },
+  "nativeLobbyTests": 6,
+  "nativeRefillTests": 1,
+  "journey": {
+    "completed": true,
+    "scope": "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; three passive HTTP QA peers",
+    "stage": "passed",
+    "elapsedMs": 510982,
+    "ownedTickets": 6,
+    "distinctOwnNumbers": 90,
+    "calls": 86,
+    "claims": 8,
+    "coldProcessRestoredMarks": 20,
+    "finishedCalls": 86,
+    "settledWinnings": 2400,
+    "finalBalance": 3300,
+    "rememberedSixTickets": true,
+    "newRoundPurchasedAndRefunded": true,
+    "nativeProfileDeleted": true,
+    "deletedQaPeers": 3
+  },
+  "frameDurationCpuMs": {
+    "P50": 16.14935,
+    "P90": 43.799499999999995,
+    "P95": 55.76338499999999,
+    "P99": 109.07644700000029
+  },
+  "frameCount": {
+    "minimum": 2640.0,
+    "maximum": 2640.0,
+    "median": 2640.0,
+    "coefficientOfVariation": 0.0,
+    "runs": [
+      2640.0
+    ]
+  },
+  "host": {
+    "checkedAt": "2026-09-26T21:23:09.5920833Z",
+    "status": "ready",
+    "backendReady": true,
+    "tlsReady": true,
+    "backup": "archived",
+    "stateAgeSeconds": 2.252752,
+    "privateFirewallRulePresent": false,
+    "publicTls": {
+      "status": 200,
+      "certificateAuthorized": true,
+      "date": "Sat, 26 Sep 2026 21:23:11 GMT"
+    }
+  },
+  "localTraces": [
+    {
+      "path": ".test-workspace/alpha20-gameplay-final-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinRound_iter000_2026-09-26-21-22-21.perfetto-trace",
+      "sha256": "a0210fc2c170a30178e083b345cdb2fb9f62dafe31031934150e4ac8649f79d7",
+      "bytes": 53449772
+    },
+    {
+      "path": ".test-workspace/alpha20-gameplay-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinRound_iter000_2026-09-26-21-13-11.perfetto-trace",
+      "sha256": "f4a92e4ff4c8819f963fc02d6d8c7f9bbf26af4fa21a742f49d3d08ae61176b4",
+      "bytes": 52930826
+    }
+  ],
+  "limits": [
+    "Software API30 emulator; no physical phone or smoothness acceptance",
+    "Native refill uses disposable test-schema spending; no installed-host wallet or clock adjustment",
+    "Different random rounds and retained compilation prevent controlled frame-speed comparisons",
+    "Private firewall rule absent; phone connectivity, reboot, installed restore, signing and Store remain open"
+  ],
+  "files": {
+    "alpha20-debug-build.txt": {
+      "sha256": "0afc9ca8362150b7c3cc3211d3722d3e7c7ecc0afbeb4a47c478cca787b1d7e0",
+      "bytes": 5682
+    },
+    "alpha20-gameplay-final.txt": {
+      "sha256": "34ec8b89606783069db4e5f81349cbcbb9a1f4f137827f7ef090f0455b1a380f",
+      "bytes": 5374
+    },
+    "alpha20-lobby-native.txt": {
+      "sha256": "5fac76a96ec2d344f1e7f31285ea3bc561597c4281d56662183fba1b03212b57",
+      "bytes": 91
+    },
+    "alpha20-optimized-build.txt": {
+      "sha256": "56f05d0a10a35052d5fdd7b6599ce8c0278447a542041ba06035de6cf3d6b937",
+      "bytes": 9204
+    },
+    "alpha20-refill-native.txt": {
+      "sha256": "e8b5d010b2d262f709af616fd488aae213a4b93c66792563c197802295f8f80a",
+      "bytes": 1998
+    },
+    "apk-badging.txt": {
+      "sha256": "8b320b7aee07ba6de81b8fe928f1a306a26f1982c9b532706875646512cf59a0",
+      "bytes": 1409
+    },
+    "apk-manifest.txt": {
+      "sha256": "94b70f623d8104c55cb69ca57ff72608ae35086cd37c0e6659a1dc1f74dc5e50",
+      "bytes": 7935
+    },
+    "apk-signature.txt": {
+      "sha256": "fbcb6408599540add12be8160a4550cdf6763b72a42fb70cf9c1427f02b471ca",
+      "bytes": 311
+    },
+    "app-tests/TEST-io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest.xml": {
+      "sha256": "58645452afe2d0fe34c9813579a545775c375ed59a3f8b4474f0a576f096a6a5",
+      "bytes": 552
+    },
+    "app-tests/TEST-io.github.sbshrey.tambola.game.presentation.CoinResultsTest.xml": {
+      "sha256": "829245f75f8d74d319f1deed5f674cd76651fc5b95dac02414f07e7dcfb39c10",
+      "bytes": 1258
+    },
+    "app-tests/TEST-io.github.sbshrey.tambola.game.presentation.WinMomentTest.xml": {
+      "sha256": "74e52ae5f4f5aa505f328e124a3c3e4ccc9b220298c83d076e750dfec4b260f9",
+      "bytes": 1098
+    },
+    "app-tests/TEST-io.github.sbshrey.tambola.game.setup.SetupDraftTest.xml": {
+      "sha256": "6f058a0cd5acc235a1ac75b44f29e8270ec0b3e333c898a31ef72032621a5a3a",
+      "bytes": 1058
+    },
+    "app-tests/TEST-io.github.sbshrey.tambola.game.ui.ThemeContrastTest.xml": {
+      "sha256": "170cb6217aa012bec3b184275551708c12375d1f30a267a184d9bde7e50fc23b",
+      "bytes": 499
+    },
+    "benchmark.json": {
+      "sha256": "4df2260024e5ff01acd2f6b4185245a80cd1819406ff6b7a84ee3c7fdce04f02",
+      "bytes": 99550
+    },
+    "checks.json": {
+      "sha256": "a2b5c88fa37de3156d5ba90a3044ea2cecaa70c43636477f67f9044e5c61b085",
+      "bytes": 195
+    },
+    "client-tests/TEST-io.github.sbshrey.tambola.client.DeviceSessionsTest.xml": {
+      "sha256": "dc1502f943c79c154cfd028efee4d516f9e20df4dd5f9609827fe2e2aa5b1b2e",
+      "bytes": 2014
+    },
+    "client-tests/TEST-io.github.sbshrey.tambola.client.OnlineStateTest.xml": {
+      "sha256": "06f838f7c021c3112bb2360fb9f11e5251b89efb9965b56bc9eb63b7ec2162f5",
+      "bytes": 2926
+    },
+    "client-tests/TEST-io.github.sbshrey.tambola.client.ReadyAgreementTest.xml": {
+      "sha256": "a7cc6fb68c5aed8356dbf571a983fbc8487cea50631d94212cd9d0dd562802a3",
+      "bytes": 867
+    },
+    "client-tests/TEST-io.github.sbshrey.tambola.client.RoomApiTest.xml": {
+      "sha256": "9f123af32fab96ff1fb0125a5d0bc8b6fb2341899f6c3555017721c85cc4035e",
+      "bytes": 1196
+    },
+    "client-tests/TEST-io.github.sbshrey.tambola.client.RoomInvitesTest.xml": {
+      "sha256": "f5392ffe85041e3ec157111516f30d5ed115d2e0ea1053424a55871fb16588d1",
+      "bytes": 822
+    },
+    "coin-affordable-replay.png": {
+      "sha256": "b43f09fdfe7ea1c3445b3915cf0fdfda39a83fc664c83ad4010d3638e64f7a58",
+      "bytes": 97411
+    },
+    "coin-free-refill.png": {
+      "sha256": "90788e4a71ededd27292c05f83e0b51eec6d651033dc78d4a5654c188dc66741",
+      "bytes": 96554
+    },
+    "coin-refill-cooldown.png": {
+      "sha256": "c199e5b487cebf4555e60ea6b10890b2e76b0762d51c91e3bfdcea1388aac204",
+      "bytes": 131969
+    },
+    "coin-refilled-replay.png": {
+      "sha256": "ea8954049efbf2a4763c2528f4aa432006f94f43c945ecbbe59bb544b3dadc00",
+      "bytes": 134387
+    },
+    "coin-release-journey.json": {
+      "sha256": "438bcba084f08a1e95b5f160b2f2bcdc89c55d3c479b3a2cf944e85bb8a51e12",
+      "bytes": 498
+    },
+    "coin-release-results.png": {
+      "sha256": "83faa17c8ac4e3ddb1552557d6b71c74fc618da4a73a05c66c12f0f0e0ddb410",
+      "bytes": 114554
+    },
+    "driver-final-build.txt": {
+      "sha256": "6ff85bdec299843a8ffb5d9611a52a28e48d04cb14767fd72f310cfb043b7018",
+      "bytes": 3382
+    },
+    "first-round-journey.json": {
+      "sha256": "be865c57d87e5cd10d4d3ecf7611db9e00663582a166fd21c854e399077f6f0f",
+      "bytes": 462
+    },
+    "first-round-results.png": {
+      "sha256": "7ab778969bd85ea0790fc9e529fcc3190d4b963d4192800bfb9f6691f7783eef",
+      "bytes": 115014
+    },
+    "first-round-selector-failure.txt": {
+      "sha256": "3a46240a95b7c9d4411376a611a0b67633e7d2885f5bfa2ca0b5118d7ff5b0b9",
+      "bytes": 5338
+    },
+    "first-round-selector.xml": {
+      "sha256": "a2ecc03826e74810d18989e8e6941ce42e56ac1598392afd9ce25685efd87b67",
+      "bytes": 50102
+    },
+    "host-health.json": {
+      "sha256": "01e638fc37f66ddcdb106fa3626a4ff70a9826700439503c6bff86c89ae07d5f",
+      "bytes": 343
+    },
+    "lint.txt": {
+      "sha256": "c3be1a09f03ca254c7b8c7bc5c0e42289cdc57e97c760b515488d35758218619",
+      "bytes": 32364
+    },
+    "README.md": {
+      "sha256": "4b46c5ab9678c1e15fd2b96d4b9de1a819f01371d5bceb550610c627b6b05506",
+      "bytes": 6960
+    },
+    "refill-fixture-first-attempt.txt": {
+      "sha256": "4c43a2b88c12d161c25107b1d06aed9ae286670c45d849ac757f9ba7d9507453",
+      "bytes": 6032
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.client.OnlineStateTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-09-26T20:57:00.348Z" hostname="DESKTOP-SBSHREY" time="0.295">
+  <properties/>
+  <testcase name="older receipt never rolls back calls marks or scores" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.126"/>
+  <testcase name="online badges survive replay serialization and history eviction without counting opponents" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.083"/>
+  <testcase name="only a new single live call announces and reconnect is silent" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.006"/>
+  <testcase name="snapshot privacy score and draw commitment are checked before rendering" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.01"/>
+  <testcase name="claim freezes selected ticket prize marks and call through pending persistence" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.009"/>
+  <testcase name="confirmed ticket choice survives completion cancellation wallet changes and reload" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.004"/>
+  <testcase name="wallet revision is independent of room revision and rejects conflicting balances" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.003"/>
+  <testcase name="between-call claims animate only for live updates never receipts or resync" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.008"/>
+  <testcase name="legacy profiles infer only owned coin tickets or exact pending purchase" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.006"/>
+  <testcase name="legacy snapshots default round avatars and accepted profile changes cannot be rolled back by receipts" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.005"/>
+  <testcase name="old encrypted snapshots without badge field recover milestones from completed history" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.016"/>
+  <testcase name="stale claim retries only the same ticket prize marks round and call" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.005"/>
+  <testcase name="only called numbers on owned tickets can be marked and marks survive catchup" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.004"/>
+  <testcase name="credential destination accepts HTTPS and only explicit debug loopback HTTP" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.002"/>
+  <testcase name="purchase and refill IDs survive saving before the first response" classname="io.github.sbshrey.tambola.client.OnlineStateTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

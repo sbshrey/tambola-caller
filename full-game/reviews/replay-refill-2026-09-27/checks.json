@@ -1,0 +1,16 @@
+{
+  "client": {
+    "tests": 34,
+    "failures": 0,
+    "errors": 0
+  },
+  "app": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 87
+  }
+}

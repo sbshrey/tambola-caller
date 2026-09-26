@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.game.presentation.WinMomentTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-26T21:02:12.906Z" hostname="DESKTOP-SBSHREY" time="0.109">
+  <properties/>
+  <testcase name="legacy overlapping hands preserve all four tied tickets without awarding points again" classname="io.github.sbshrey.tambola.game.presentation.WinMomentTest" time="0.083"/>
+  <testcase name="new strips preserve simultaneous winners across players and prize types" classname="io.github.sbshrey.tambola.game.presentation.WinMomentTest" time="0.021"/>
+  <testcase name="a selected claim celebrates once between calls and a later tie celebrates only the new player" classname="io.github.sbshrey.tambola.game.presentation.WinMomentTest" time="0.004"/>
+  <testcase name="another ticket from the same owner creates a separate claim celebration" classname="io.github.sbshrey.tambola.game.presentation.WinMomentTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

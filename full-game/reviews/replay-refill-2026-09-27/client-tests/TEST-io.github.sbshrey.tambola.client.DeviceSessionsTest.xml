@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.client.DeviceSessionsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-09-26T20:56:59.803Z" hostname="DESKTOP-SBSHREY" time="0.537">
+  <properties/>
+  <testcase name="deletion settles a lost renewal first then freezes its token across retries" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.442"/>
+  <testcase name="legacy enrollment keeps wallet and pending purchase then concurrent 401s rotate once" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.013"/>
+  <testcase name="storage failure prevents enrollment or rotation and wrong-profile response is never saved" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.005"/>
+  <testcase name="failed response save leaves durable intent for exact recovery" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.034"/>
+  <testcase name="lost enrollment followed by session expiry recovers with the already enrolled proof" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.022"/>
+  <testcase name="lost enrollment response retries the persisted device credential after process reconstruction" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.005"/>
+  <testcase name="lost renewal response replays exact token after process reconstruction and retains concurrent state" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.007"/>
+  <testcase name="failed unknown device renewal still permits explicit legacy deletion without resetting wallet" classname="io.github.sbshrey.tambola.client.DeviceSessionsTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+</testsuite>
