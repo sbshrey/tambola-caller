@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.data.*
+import io.github.sbshrey.tambola.game.setup.SetupDraft
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
@@ -35,6 +36,10 @@ class LongSessionTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val preferences = PreferenceStore(context)
         val originalPreferences = preferences.values.first()
+        val sessionPreferences = Preferences(voice = true, music = true, effects = true, haptics = false,
+            reducedMotion = false, interval = 5, tutorialCompleted = true, appearance = Appearance.DARK)
+        val sessionDraft = SetupDraft.fresh(GameMode.PRACTICE).copy(names = "Session fixture", tickets = 6,
+            bots = 2, assisted = true, playAllNumbers = true)
         val report = JSONObject().put("runId", runId).put("pid", android.os.Process.myPid())
             .put("configuredRounds", rounds).put("configuredDraws", draws).put("ticketsPerPlayer", 6)
             .put("computerPlayers", 2).put("intervalSeconds", 5).put("apiLevel", Build.VERSION.SDK_INT)
@@ -60,8 +65,7 @@ class LongSessionTest {
         }
         try {
             withTimeout(85 * 60_000L) {
-                preferences.update(Preferences(voice = true, music = true, effects = true, haptics = false,
-                    reducedMotion = false, interval = 5, tutorialCompleted = true, appearance = Appearance.DARK))
+                preferences.update(sessionPreferences)
                 val activity = ActivityScenario.launch(MainActivity::class.java).also { scenario = it }
                 lateinit var model: GameViewModel
                 activity.onActivity {
@@ -80,13 +84,12 @@ class LongSessionTest {
                     }
                     check(model.state.value.error == null) { "app_error" }
                 }
-                await { !model.state.value.loading && model.state.value.preferences.music }
+                await { !model.state.value.loading && model.state.value.preferences == sessionPreferences }
                 activity.onActivity { model.deleteHistory() }
                 await { model.state.value.round == null && model.state.value.history.isEmpty() }
                 activity.onActivity {
                     model.setup(GameMode.PRACTICE)
-                    model.updateSetup(model.state.value.setupDraft.copy(names = "Session fixture", tickets = 6,
-                        bots = 2, assisted = true, playAllNumbers = true))
+                    model.updateSetup(sessionDraft)
                     model.create(automatic = true)
                 }
                 var previousId: String? = null
@@ -96,6 +99,7 @@ class LongSessionTest {
                     stage = "round-$ordinal-start"; persist()
                     await { model.state.value.round?.id != previousId && model.state.value.auto && !model.state.value.saving }
                     val initial = model.state.value.round!!
+                    check(initial.settings == sessionDraft.settings())
                     val cards = initial.tickets.filter { it.playerId == "p0" }.map { it.cells }
                     check(cards.size == 6 && cards.flatten().filter { it != 0 }.sorted() == (1..90).toList())
                     check(previousCards == null || cards != previousCards)
