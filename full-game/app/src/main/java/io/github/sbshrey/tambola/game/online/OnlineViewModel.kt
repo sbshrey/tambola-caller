@@ -61,6 +61,13 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private var walletJob: Job? = null
     private var preferences = Preferences()
     private val audio = CallAudio(application) { mutable.update { it.copy(error = UiMessage(R.string.error_online_recording)) } }
+    private val sessions = api?.let { transport -> DeviceSessions(transport, { saved }) { player, transform ->
+        mutex.withLock {
+            val current = requireNotNull(saved)
+            check(current.credentials.playerId == player) { "Online identity changed" }
+            transform(current).also { persist(it) }
+        }
+    } }
 
     init {
         viewModelScope.launch { PreferenceStore(application).values.catch { }.collect { preferences = it } }
@@ -70,6 +77,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 check(restored == null || restored.endpoint == BuildConfig.ROOM_API_URL)
                 restored?.room?.validateFor(restored.credentials.playerId)
                 restored?.wallet?.validate()
+                restored?.deviceIdentity?.validate()
                 saved = restored?.acceptWallet(restored.room?.wallet)
                 publish()
             } catch (_: Exception) {
@@ -97,6 +105,17 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         saved = value
         publish()
     }
+    /** Reuse the exact game operation after a server-confirmed session rejection. */
+    private suspend fun <T> authorized(action: suspend (String) -> T): T {
+        val manager = requireNotNull(sessions)
+        val credentials = manager.credentials()
+        return try { action(credentials.token) }
+        catch (error: RoomApiFailure) {
+            if (error.status != 401) throw error
+            val renewed = manager.credentials(rejectedToken = credentials.token)
+            action(renewed.token)
+        }
+    }
     fun setActive(value: Boolean) {
         if (active == value) return
         active = value
@@ -119,7 +138,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 val credentials = api.guest(GuestRequest(trimmed, avatar))
                 mutex.withLock { persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, trimmed, avatar)) }
-                val wallet = api.wallet(credentials.token)
+                val wallet = authorized { api.wallet(it) }
                 mutex.withLock { saved?.let { persist(it.acceptWallet(wallet)) } }
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
@@ -129,10 +148,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun refreshWallet() {
         val current = saved ?: return
         val api = api ?: return
-        if (!active || mutable.value.storageFailure || mutable.value.sessionExpired || walletJob?.isActive == true) return
+        if (!active || mutable.value.storageFailure || mutable.value.sessionExpired || mutable.value.deletingProfile ||
+            saved?.pending == PendingOperation.Logout || walletJob?.isActive == true) return
         walletJob = viewModelScope.launch {
             try {
-                val wallet = api.wallet(current.credentials.token)
+                val wallet = authorized { api.wallet(it) }
                 mutex.withLock { saved?.takeIf { it.credentials.playerId == current.credentials.playerId }?.let { persist(it.acceptWallet(wallet)) } }
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
@@ -182,14 +202,20 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             if (saved?.room != null) { mutable.update { it.copy(error = UiMessage(R.string.error_leave_first)) }; return }
         }
         if (pending is PendingOperation.Match && saved?.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) { connect(); return }
-        if (pending is PendingOperation.DeleteProfile || pending is PendingOperation.Match) { stream?.cancel(); stream = null; audio.stop() }
+        if (pending is PendingOperation.DeleteProfile || pending is PendingOperation.Match || pending == PendingOperation.Logout) { stream?.cancel(); stream = null; audio.stop() }
+        if (pending is PendingOperation.DeleteProfile || pending == PendingOperation.Logout) walletJob?.cancel()
         mutable.update { it.copy(busy = true, error = null, notice = null,
+            deletingProfile = pending is PendingOperation.DeleteProfile,
             connection = if (pending is PendingOperation.DeleteProfile) Connection.SUSPENDED else it.connection) }
         operation = viewModelScope.launch {
-            try { mutex.withLock { persist(saved!!.copy(pending = pending)) }; performPending() }
+            try {
+                if (pending is PendingOperation.DeleteProfile || pending == PendingOperation.Logout) walletJob?.join()
+                if (pending is PendingOperation.DeleteProfile) sessions?.settleBeforeDeletion()
+                mutex.withLock { persist(saved!!.copy(pending = pending)) }; performPending()
+            }
             catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
-            finally { mutable.update { it.copy(busy = false) }; connect() }
+            finally { mutable.update { it.copy(busy = false, deletingProfile = saved?.pending is PendingOperation.DeleteProfile) }; connect() }
         }
     }
     fun retry() {
@@ -211,12 +237,12 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         var walletResult: WalletView? = null
         try {
             val result = when (pending) {
-                is PendingOperation.Match -> api.match(current.credentials.token, pending.request)
-                is PendingOperation.Refill -> { walletResult = api.refill(current.credentials.token, pending.request); null }
-                is PendingOperation.Create -> api.create(current.credentials.token, pending.request)
-                is PendingOperation.Join -> api.join(current.credentials.token, pending.code)
-                is PendingOperation.Command -> api.command(current.credentials.token, pending.code, pending.request)
-                PendingOperation.Logout -> { api.logout(current.credentials.token); null }
+                is PendingOperation.Match -> authorized { api.match(it, pending.request) }
+                is PendingOperation.Refill -> { walletResult = authorized { api.refill(it, pending.request) }; null }
+                is PendingOperation.Create -> authorized { api.create(it, pending.request) }
+                is PendingOperation.Join -> authorized { api.join(it, pending.code) }
+                is PendingOperation.Command -> authorized { api.command(it, pending.code, pending.request) }
+                PendingOperation.Logout -> { authorized { api.logout(it) }; null }
                 is PendingOperation.DeleteProfile -> { api.deleteProfile(current.credentials.token, pending.request); deletionConfirmed = true; null }
             }
             mutex.withLock {
@@ -248,7 +274,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             if (pending is PendingOperation.Refill && error.code == "refill_wait") mutex.withLock { saved?.let { persist(it.copy(pending = null)) } }
             if (error.code in setOf("coins_low", "refill_not_needed", "refill_wait")) refreshWallet()
             if (error.status == 409 && current.room != null && pending is PendingOperation.Command) {
-                val update = api.read(current.credentials.token, current.room!!.code)
+                val update = authorized { api.read(it, current.room!!.code) }
                 val retryReady = mutex.withLock {
                     val latest = saved ?: return@withLock false
                     val refreshed = latest.accept(update, live = false).saved
@@ -268,19 +294,25 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     private fun connect() {
         if (!active || mutable.value.loading || mutable.value.storageFailure || mutable.value.sessionExpired ||
-            saved?.pending is PendingOperation.DeleteProfile || saved?.pending is PendingOperation.Match ||
+            mutable.value.deletingProfile || saved?.pending is PendingOperation.DeleteProfile ||
+            saved?.pending == PendingOperation.Logout || saved?.pending is PendingOperation.Match ||
             saved?.room == null || api == null || stream?.isActive == true) return
         stream = viewModelScope.launch {
             var attempts = 0
+            var rejectedToken: String? = null
+            var authRetried = false
             while (isActive && active && saved?.room != null) {
                 val session = saved ?: break
                 val room = session.room ?: break
                 mutable.update { it.copy(connection = if (attempts == 0) Connection.CONNECTING else Connection.RECONNECTING) }
                 var received = false
+                var usedToken: String? = null
                 try {
-                    api.events(session.credentials.token, room.code, room.revision).catch { error ->
+                    val token = requireNotNull(sessions).credentials(rejectedToken).token
+                    usedToken = token; rejectedToken = null
+                    api.events(token, room.code, room.revision).catch { error ->
                         // Resolve a closed socket via REST: an expired countdown may have refunded.
-                        if (error is RoomStreamClosed) emit(api.read(session.credentials.token, room.code))
+                        if (error is RoomStreamClosed) emit(authorized { api.read(it, room.code) })
                         throw error
                     }.collect { update ->
                         mutex.withLock {
@@ -291,12 +323,19 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                             mutable.update { it.copy(connection = Connection.LIVE) }
                             // Silent on first snapshot and catch-up. Explicit "Hear again" remains available.
                             announceAccepted(latest, accepted)
-                            received = true; attempts = 0
+                            received = true; attempts = 0; authRetried = false
                         }
                     }
                 } catch (error: CancellationException) { throw error }
                 catch (error: RoomApiFailure) {
-                    if (error.status == 401) { showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break }
+                    if (error.status == 401) {
+                        if (usedToken != null && !authRetried) {
+                            rejectedToken = usedToken; authRetried = true
+                            mutable.update { it.copy(connection = Connection.RECONNECTING) }
+                            continue
+                        }
+                        showFailure(error); mutable.update { it.copy(connection = Connection.SUSPENDED) }; break
+                    }
                     if (error.code in setOf("not_member", "room_missing", "room_closed")) {
                         mutex.withLock { saved?.let { persist(it.copy(room = null, marks = emptyMap(),
                             pending = it.pending.takeUnless { pending -> pending is PendingOperation.Command && pending.code == room.code })) } }
@@ -360,7 +399,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     /** Explicit recovery action in the UI; never called automatically on a read/decryption failure. */
     fun resetLocalData() {
         if (mutable.value.busy) return
-        stream?.cancel(); stream = null; audio.stop()
+        stream?.cancel(); stream = null; walletJob?.cancel(); audio.stop()
         viewModelScope.launch {
             try {
                 mutex.withLock { persist(null) }

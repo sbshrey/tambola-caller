@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "wallet": 900,
+  "tickets": 6,
+  "singleSessionRevision": 1,
+  "sameIdentityAndMarks": true,
+  "lostRenewalResponseAndActivityRecreation": true,
+  "deletionRetryAfterRotation": true,
+  "scope": "Dedicated emulator, isolated real service; injected initial wallet 401; actual committed renewal response dropped. Activity recreation, not process death."
+}

@@ -1,0 +1,22 @@
+{
+  "sourceParent": "d4f0399e6667ce682342e2beacf4c684d6b80dbb",
+  "source": "Committed with this archive",
+  "versionCode": 16,
+  "versionName": "0.16.0-alpha16",
+  "variant": "debug",
+  "endpoint": "http://127.0.0.1:8080",
+  "candidateSchema": 6,
+  "roomProtocol": 4,
+  "installedWifiHostUpdated": false,
+  "phoneInstaller": false,
+  "artifacts": {
+    "engineering-app-debug.apk": {
+      "bytes": 43595847,
+      "sha256": "239e1fad16251da8f597872432f24a109e50c9a5522d110d8490c42dc0220307"
+    },
+    "engineering-instrumentation.apk": {
+      "bytes": 1568924,
+      "sha256": "f26d75cd4660e6a85a687c6e3d2a89fc3f59a0905a13cb767a4af1f299f8fbfe"
+    }
+  }
+}

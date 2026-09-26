@@ -1,0 +1,23 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

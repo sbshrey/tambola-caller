@@ -28,6 +28,7 @@ import java.security.MessageDigest
     val history: List<RoomView> = emptyList(),
     val badges: BadgeProgress = BadgeProgress(),
     val wallet: WalletView? = null,
+    val deviceIdentity: DeviceIdentity? = null,
 ) {
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }

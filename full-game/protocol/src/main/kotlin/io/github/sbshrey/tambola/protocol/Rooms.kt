@@ -9,7 +9,9 @@ const val PROTOCOL_VERSION = 4
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
-@Serializable data class GuestCredentials(val playerId: String, val token: String, val expiresAt: Long)
+@Serializable data class GuestCredentials(val playerId: String, val token: String, val expiresAt: Long) {
+    override fun toString() = "GuestCredentials(playerId=$playerId, token=redacted, expiresAt=$expiresAt)"
+}
 @Serializable data class DeleteProfileRequest(val id: String)
 @Serializable data class DeleteProfileReceipt(val id: String, val deletedAt: Long, val confirmUntil: Long)
 @Serializable data class ApiError(val code: String, val message: String)

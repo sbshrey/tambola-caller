@@ -4,6 +4,7 @@ import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.protocol.*
 import kotlinx.serialization.encodeToString
 import java.sql.Connection
+import java.sql.SQLException
 import java.util.UUID
 
 /** Room changes commit atomically; profile deletion first records intent in the independent journal. */
@@ -34,6 +35,56 @@ class RoomService(
             val guest = authenticate(connection, token)
             CoinLedger.open(connection, guest.id, clock())
         }
+    }
+
+    /** Enrollment is repeatable only with the same proof; a game session cannot replace it. */
+    fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment {
+        validToken(request.deviceKey)
+        demand(request.deviceKey != token, 400, "invalid_device_key", "Use a separate device credential.")
+        authenticatedRate(token, "enroll", 10)
+        return deviceTransaction { connection ->
+            val guest = authenticate(connection, token, lock = true)
+            val existing = connection.query("SELECT device_key_hash, session_revision FROM guests WHERE id = ?", guest.id) {
+                it.getString(1) to it.getLong(2)
+            }.single()
+            val hash = digest(request.deviceKey)
+            demand(existing.first == null || existing.first == hash, 409, "device_enrolled", "This profile already has a device credential.")
+            if (existing.first == null) connection.execute("UPDATE guests SET device_key_hash = ? WHERE id = ?", hash, guest.id)
+            DeviceEnrollment(guest.id, existing.second)
+        }
+    }
+
+    /** Rotating access credentials never touch wallet entries, purchases or operation receipts. */
+    fun renewSession(deviceKey: String, request: RenewSessionRequest, source: String): RenewedSession {
+        validToken(deviceKey); validToken(request.token)
+        demand(request.expectedRevision in 0 until Long.MAX_VALUE && deviceKey != request.token,
+            400, "invalid_session", "Use a new session token and a valid revision.")
+        recoveryHealthy()
+        rate("renew-source:${digest(source)}", 300)
+        rate("renew-device:${digest(deviceKey)}", 10)
+        return deviceTransaction { connection ->
+            verifyJournal(connection)
+            val entry = connection.query("SELECT id, token_hash, expires_at, session_revision FROM guests WHERE device_key_hash = ? AND revoked_at IS NULL FOR UPDATE", digest(deviceKey)) {
+                SessionEntry(it.getString(1), it.getString(2), it.getLong(3), it.getLong(4))
+            }.singleOrNull() ?: fail(401, "unauthorized", "This device credential is unavailable or was revoked.")
+            demand(journal?.suppresses(entry.id) != true, 401, "unauthorized", "This profile has been scheduled for deletion.")
+            val hash = digest(request.token)
+            if (entry.revision == request.expectedRevision + 1 && entry.hash == hash)
+                return@deviceTransaction RenewedSession(GuestCredentials(entry.id, request.token, entry.expiresAt), entry.revision)
+            demand(entry.revision == request.expectedRevision, 409, "session_changed", "A newer session has already been issued.")
+            demand(entry.hash != hash, 400, "invalid_session", "Use a new session token.")
+            val expiry = clock() + SESSION_LIFETIME
+            connection.execute("UPDATE guests SET token_hash = ?, expires_at = ?, session_revision = session_revision + 1 WHERE id = ?", hash, expiry, entry.id)
+            RenewedSession(GuestCredentials(entry.id, request.token, expiry), entry.revision + 1)
+        }
+    }
+
+    private data class SessionEntry(val id: String, val hash: String, val expiresAt: Long, val revision: Long)
+
+    private fun <T> deviceTransaction(block: (Connection) -> T): T = try { database.transaction(block = block) }
+    catch (error: SQLException) {
+        if (error.sqlState == "23505") fail(409, "credential_conflict", "Use a different random credential.")
+        throw error
     }
 
     fun refill(token: String, request: RefillRequest): WalletView {
@@ -93,7 +144,7 @@ class RoomService(
 
     fun revoke(token: String) = database.transaction { connection ->
         val guest = authenticate(connection, token, lock = true)
-        connection.execute("UPDATE guests SET expires_at = ?, revoked_at = ? WHERE id = ?", clock(), clock(), guest.id)
+        connection.execute("UPDATE guests SET expires_at = ?, revoked_at = ?, device_key_hash = NULL WHERE id = ?", clock(), clock(), guest.id)
         Unit
     }
 
@@ -377,7 +428,7 @@ class RoomService(
 
     fun cleanup() = database.transaction { connection ->
         val now = clock()
-        connection.execute("DELETE FROM guests WHERE expires_at < ?", now - 30 * ROOM_LIFETIME)
+        connection.execute("DELETE FROM guests WHERE expires_at < ? AND (device_key_hash IS NULL OR revoked_at IS NOT NULL)", now - 30 * ROOM_LIFETIME)
         connection.execute("DELETE FROM rooms WHERE id IN (SELECT id FROM rooms WHERE expires_at < ? ORDER BY id FOR UPDATE)", now - 30 * ROOM_LIFETIME)
         connection.execute("DELETE FROM deletion_receipts WHERE expires_at <= ?", now)
         connection.execute("DELETE FROM rate_limits WHERE window_start < ?", now / 60_000 - 2)

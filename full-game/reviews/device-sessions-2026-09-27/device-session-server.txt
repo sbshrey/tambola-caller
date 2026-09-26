@@ -1,0 +1,47 @@
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:processResources
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :client:processResources NO-SOURCE
+> Task :protocol:processResources NO-SOURCE
+> Task :server:processTestResources NO-SOURCE
+> Task :protocol:compileKotlin
+> Task :protocol:compileJava NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar
+> Task :client:compileKotlin
+> Task :client:compileJava NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar
+> Task :server:compileKotlin
+> Task :server:compileJava NO-SOURCE
+> Task :server:classes
+> Task :server:jar
+
+> Task :server:compileTestKotlin
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt:203:48 Unnecessary non-null assertion (!!) on a non-null receiver of type 'AutomaticRecoveryLoad.LostResponse'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt:216:78 Unnecessary non-null assertion (!!) on a non-null receiver of type 'AutomaticRecoveryLoad.LostResponse'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt:216:119 Unnecessary non-null assertion (!!) on a non-null receiver of type 'AutomaticRecoveryLoad.LostResponse'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticSoakLoad.kt:184:36 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Process'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinMatchTest.kt:40:71 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Round'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/ManualOnlinePlayTest.kt:171:33 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Round'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/ManualOnlinePlayTest.kt:172:21 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Round'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/RoomServiceTest.kt:122:82 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Round'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/RoomServiceTest.kt:212:33 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Round'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/RoomServiceTest.kt:212:76 Unnecessary non-null assertion (!!) on a non-null receiver of type 'Round'.
+
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+> Task :server:test
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 2m 47s
+11 actionable tasks: 9 executed, 2 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

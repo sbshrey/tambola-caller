@@ -35,7 +35,7 @@ The separate deletion-recovery process drill creates three fresh owned databases
 
 Alpha08–alpha12 clients use protocol 2, including immutable round-player avatars; earlier clients do not understand these fields. Stored older rounds/receipts remain readable by the new service/client. Current schemas are primary migration 003 and journal migration 002. See [save/protocol compatibility](../AVATARS.md), [permission upgrades](DATABASE_PERMISSIONS.md) and [recovery constraints](BACKUP_RECOVERY.md) before an upgrade or rollback.
 
-All bodies and responses use strict JSON. Session credentials are opaque bearer tokens in the `Authorization` header; never put them in a URL. A guest has one active token, valid for seven days, stored as SHA-256 only. Logging out revokes it. There is no account/password recovery yet.
+All bodies and responses use strict JSON. Credentials use the `Authorization` header, never a URL. A guest has one active access token, valid for seven days and stored as SHA-256 only. An enrolled device credential can renew it while retaining the same wallet. Device proof and replacement-token intent are encrypted on Android before transport; the server stores only hashes. Logging out revokes both. This provides continuity on the same installation; lost-device/account recovery is not yet available. See [the session design and acceptance boundaries](../../docs/DEVICE_SESSION_PLAN.md).
 
 | Endpoint | Purpose |
 | --- | --- |
@@ -44,6 +44,8 @@ All bodies and responses use strict JSON. Session credentials are opaque bearer 
 | `GET /invite/{code}` | Optional bilingual invitation/install page; no room lookup or registration |
 | `GET /.well-known/assetlinks.json` | Optional public Android package/signing association |
 | `POST /v1/guests` | Name (1–40 characters), avatar (0–7); returns guest ID and bearer token |
+| `POST /v1/guests/me/device` | Enroll a separate random device credential using a valid access token; repeatable only with the same proof |
+| `POST /v1/guests/me/session` | Device bearer proof plus persisted replacement token/expected revision; rotate or replay the exact session receipt |
 | `POST /v1/guests/me/logout` | Revoke the current token; this is not data deletion |
 | `POST /v1/guests/me/delete` | Delete the authenticated profile and redact its stored profile fields; retry the original UUID to confirm |
 | `POST /v1/rooms` | Create a private lobby with UUID `id` and frozen-at-start `options` |
@@ -66,7 +68,7 @@ Ordinary membership changes are limited to the lobby/finished room; explicit pro
 - Public snapshots contain only the viewer's tickets, calls, awards and scores. The private domain `Round` is never a response DTO. Future draw order and nonce remain private until completion/cancellation.
 - The pre-round commitment is SHA-256 of UTF-8 `tambola-draw-v1\n<roundId>\n<nonce>\n<comma-separated draw order>`. At the end, order and nonce allow a client to check that the order did not change. This establishes consistency with the published commitment; it does not independently prove an unbiased server.
 - Activity updates presence at most every 15 seconds. After 45 seconds without activity, host controls move to the earliest joined connected member (ID breaks timestamp ties). A former host does not automatically reclaim controls. Automatic calling continues even if all players disconnect.
-- Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Expired guest credentials/profiles are deleted after 30 days. Rate buckets are short lived. Explicit [profile deletion](PROFILE_DELETION.md) removes access and redacts stored profile fields while preserving shared game records; its confirmation expires after 30 days. Independently retained suppression intents have no automatic pruning in this version. Startup replays them after primary restoration; provider backup independence, retention and restore acceptance remain deployment work. Logout does not claim to erase history.
+- Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Unenrolled or revoked guest profiles are deleted 30 days after session expiry; enabled device profiles and coin wallets have no automatic expiry. Rate buckets are short lived. Explicit [profile deletion](PROFILE_DELETION.md) removes access and redacts stored profile fields while preserving shared game records; its confirmation expires after 30 days. Independently retained suppression intents have no automatic pruning in this version. Startup replays them after primary restoration; provider backup independence, retention and restore acceptance remain deployment work. Logout does not claim to erase history or independently journal revocation across primary restore.
 
 ## Resource limits and remaining release work
 

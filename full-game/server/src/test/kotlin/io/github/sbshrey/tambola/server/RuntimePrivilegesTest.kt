@@ -123,6 +123,19 @@ class RuntimePrivilegesTest {
         assertTrue(journal.suppresses(host.playerId))
     }
 
+    @Test fun `restricted roles enroll renew retain and delete the same wallet`() {
+        val actor = service.register(GuestRequest("Restricted device"), "device")
+        val key = secret()
+        service.enrollDevice(actor.token, EnrollDeviceRequest(key))
+        now.addAndGet(90 * ROOM_LIFETIME); service.cleanup()
+        val request = RenewSessionRequest(0, secret())
+        val session = service.renewSession(key, request, "renew")
+        assertEquals(session, service.renewSession(key, request, "retry"))
+        assertEquals(1500L, service.wallet(session.credentials.token).balance)
+        service.deleteProfile(session.credentials.token, DeleteProfileRequest(UUID.randomUUID().toString()), "delete")
+        assertEquals(401, assertThrows(ApiFailure::class.java) { service.renewSession(key, request, "deleted") }.status)
+    }
+
     @Test fun `runtime cannot erase or rewrite suppression migration or journal identity`() {
         journal.append(UUID.randomUUID().toString(), digest("role-fixture"), now.get(), now.get() + ROOM_LIFETIME)
         listOf("DELETE FROM profile_deletions", "TRUNCATE profile_deletions", "UPDATE profile_deletions SET confirmation_hash = repeat('a',64)",

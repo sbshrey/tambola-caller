@@ -9,15 +9,25 @@ let commandArmed = false;
 let commandsDropped = 0;
 let matchArmed = false;
 let matchesDropped = 0;
+let sessionArmed = false;
+let sessionsDropped = 0;
+let rejectWallet = false;
 const proxy = http.createServer((request, response) => {
+  if (rejectWallet && request.method === 'GET' && request.url === '/v1/wallet') {
+    rejectWallet = false; request.resume();
+    response.writeHead(401, { 'content-type': 'application/json', 'cache-control': 'no-store' });
+    response.end(JSON.stringify({ code: 'unauthorized', message: 'QA simulated session rejection.' }));
+    return;
+  }
   const upstream = http.request({ hostname: '127.0.0.1', port: upstreamPort, method: request.method, path: request.url, headers: request.headers }, result => {
     const deletion = armed && request.method === 'POST' && request.url === '/v1/guests/me/delete';
     const command = commandArmed && request.method === 'POST' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/commands$/.test(request.url);
     const match = matchArmed && request.method === 'POST' && request.url === '/v1/matches';
-    if ((deletion || command || match) && result.statusCode === 200) {
+    const session = sessionArmed && request.method === 'POST' && request.url === '/v1/guests/me/session';
+    if ((deletion || command || match || session) && result.statusCode === 200) {
       // The upstream transaction has committed; discard its entire response before disconnecting.
       result.resume();
-      result.once('end', () => { if (deletion) dropped++; else if (command) commandsDropped++; else matchesDropped++; response.destroy(); });
+      result.once('end', () => { if (deletion) dropped++; else if (command) commandsDropped++; else if (match) matchesDropped++; else sessionsDropped++; response.destroy(); });
     } else {
       response.writeHead(result.statusCode, result.headers);
       result.pipe(response);
@@ -54,11 +64,18 @@ const control = http.createServer((request, response) => {
     matchArmed = true;
   } else if (request.method === 'POST' && request.url === '/allow-matches') {
     matchArmed = false;
+  } else if (request.method === 'POST' && request.url === '/arm-session-drop') {
+    if (sessionArmed) { response.writeHead(409); response.end(); return; }
+    sessionArmed = true;
+  } else if (request.method === 'POST' && request.url === '/allow-sessions') {
+    sessionArmed = false;
+  } else if (request.method === 'POST' && request.url === '/reject-next-wallet') {
+    rejectWallet = true;
   } else if (request.method !== 'GET' || request.url !== '/status') {
     response.writeHead(404); response.end(); return;
   }
   response.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
-  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, matchArmed, matchesDropped }));
+  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, matchArmed, matchesDropped, sessionArmed, sessionsDropped, rejectWallet }));
 });
 for (const server of [proxy, control]) server.on('error', error => { console.error(`Fixture listener failed: ${error.code}`); process.exit(1); });
 proxy.listen(8080, '127.0.0.1', () => console.log('Test proxy listening on loopback 8080; upstream 8081.'));

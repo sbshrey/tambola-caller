@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.DeviceSessionGameTest:.
+
+Time: 23.796
+
+OK (1 test)
+
+

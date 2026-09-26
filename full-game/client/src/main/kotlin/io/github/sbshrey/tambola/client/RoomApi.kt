@@ -37,6 +37,8 @@ fun checkedEndpoint(value: String, allowLocalHttp: Boolean = false): String {
 
 interface RoomApi : AutoCloseable {
     suspend fun guest(request: GuestRequest): GuestCredentials
+    suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment
+    suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession
     suspend fun wallet(token: String): WalletView
     suspend fun refill(token: String, request: RefillRequest): WalletView
     suspend fun match(token: String, request: MatchRequest): RoomUpdate
@@ -75,6 +77,10 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
             payload
         }
     override suspend fun guest(request: GuestRequest): GuestCredentials = WireJson.decodeFromString(text("/v1/guests", body = WireJson.encodeToString(request), post = true))
+    override suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment =
+        WireJson.decodeFromString(text("/v1/guests/me/device", token, WireJson.encodeToString(request), true))
+    override suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession =
+        WireJson.decodeFromString(text("/v1/guests/me/session", deviceKey, WireJson.encodeToString(request), true))
     override suspend fun wallet(token: String): WalletView = WireJson.decodeFromString(text("/v1/wallet", token))
     override suspend fun refill(token: String, request: RefillRequest): WalletView = WireJson.decodeFromString(text("/v1/wallet/refill", token, WireJson.encodeToString(request), true))
     override suspend fun match(token: String, request: MatchRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/matches", token, WireJson.encodeToString(request), true))

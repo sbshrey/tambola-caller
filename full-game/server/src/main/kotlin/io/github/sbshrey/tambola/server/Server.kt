@@ -145,6 +145,14 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                 call.respond(HttpStatusCode.Created, result)
             }
             post("/guests/me/logout") { withContext(Dispatchers.IO) { service.revoke(call.bearer()) }; call.respond(HttpStatusCode.NoContent) }
+            post("/guests/me/device") {
+                val body = call.body<EnrollDeviceRequest>()
+                call.respond(withContext(Dispatchers.IO) { service.enrollDevice(call.bearer(), body) })
+            }
+            post("/guests/me/session") {
+                val body = call.body<RenewSessionRequest>()
+                call.respond(withContext(Dispatchers.IO) { service.renewSession(call.bearer(), body, call.request.local.remoteHost) })
+            }
             post("/guests/me/delete") {
                 val body = call.body<DeleteProfileRequest>()
                 call.respond(withContext(Dispatchers.IO) { service.deleteProfile(call.bearer(), body, call.request.local.remoteHost) })
