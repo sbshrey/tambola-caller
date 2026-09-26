@@ -89,7 +89,7 @@ jobs:
             full-game/.test-workspace/load-*/gc.log
   room-service:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:16
@@ -140,6 +140,11 @@ jobs:
           for metrics in .test-workspace/permissions-*/metrics.prom; do
             docker run --rm -i --network=none --read-only --cap-drop=ALL --entrypoint /bin/promtool "$TAMBOLA_PROMTOOL_IMAGE" check metrics < "$metrics"
           done
+      - name: Review the exact container image and available security fixes
+        working-directory: full-game
+        run: |
+          python3 tools/test-container-advisories.py
+          bash tools/check-container-image.sh "$(cat .test-workspace/service-image-id.txt)" .test-workspace/container-review
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -152,6 +157,8 @@ jobs:
             full-game/.test-workspace/permissions-*/evidence.json
             full-game/.test-workspace/permissions-*/metrics.prom
             full-game/.test-workspace/history-delete-*/evidence.json
+            full-game/.test-workspace/container-review/grype.json
+            full-game/.test-workspace/container-review/gate.json
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
