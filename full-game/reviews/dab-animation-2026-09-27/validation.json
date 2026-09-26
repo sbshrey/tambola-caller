@@ -1,0 +1,184 @@
+{
+  "checkedAt": "2026-09-26T20:49:16.409009+00:00",
+  "sourceCommit": "2d9684a48f83d905336f9411342a129df527a401",
+  "app": {
+    "path": "releases\\0.19.0-alpha19-wifi-optimized\\Tambola-Together-0.19.0-alpha19-wifi-optimized.apk",
+    "sha256": "38c399ec12125482f17f9514e9947f4fe210bd353923786cf1268392c857c20f",
+    "bytes": 29126773,
+    "versionCode": 19,
+    "debuggable": false,
+    "profileableByShell": true,
+    "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c"
+  },
+  "compositionSamples": {
+    "beforeTotal": 140,
+    "afterTotal": 36,
+    "changes": 12,
+    "observedCompositions": 3,
+    "clock": "real activity"
+  },
+  "journey": {
+    "completed": true,
+    "scope": "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; three passive HTTP QA peers",
+    "stage": "passed",
+    "elapsedMs": 504998,
+    "ownedTickets": 6,
+    "distinctOwnNumbers": 90,
+    "calls": 86,
+    "claims": 8,
+    "coldProcessRestoredMarks": 20,
+    "finishedCalls": 86,
+    "settledWinnings": 2400,
+    "finalBalance": 3300,
+    "newRoundPurchasedAndRefunded": true,
+    "nativeProfileDeleted": true,
+    "deletedQaPeers": 3
+  },
+  "localTraces": [
+    {
+      "path": ".test-workspace\\alpha19-gameplay-benchmark\\io.github.sbshrey.tambola.benchmark\\CoinReleaseBenchmark_realCoinRound_iter000_2026-09-26-20-46-59.perfetto-trace",
+      "sha256": "f9f887a8a6f2eaf219bd49b4d175687e6fa99a7c0c97c58fd05f1e7b3c625849",
+      "bytes": 51786286
+    }
+  ],
+  "limits": [
+    "API30 software emulator; no physical performance or battery claim",
+    "Different random full rounds and inherited compilation state prevent controlled frame-speedup claims",
+    "Baseline native trace slices include nested overlapping spans",
+    "All fixture profiles deleted; app preferences not reset"
+  ],
+  "files": {
+    "alpha19-apks.json": {
+      "sha256": "39acf63f07e6aee985cb5b575c23610d9d770bdd308c5f991d2d11a4723f1c95",
+      "bytes": 718
+    },
+    "alpha19-build.txt": {
+      "sha256": "3c090e125dbc85d99d063a47cd1fcdfe3b1c3d7dfa33076f22f446651c156df7",
+      "bytes": 11865
+    },
+    "alpha19-checks.json": {
+      "sha256": "a17296427a4d2c599e2eeb5e6c0ec074d95803ee15010f2d44fd61664ef24fe1",
+      "bytes": 90
+    },
+    "alpha19-gameplay.txt": {
+      "sha256": "9c3d9acf2206757da51b90b46de54d9869bf091405fa566ff628fee250b69492",
+      "bytes": 5354
+    },
+    "alpha19-host-health.json": {
+      "sha256": "16ae13359f69bf006be1b9a14a58a21aa51864984ce7bb582772c4e2fa6e3e94",
+      "bytes": 290
+    },
+    "alpha19-identity.json": {
+      "sha256": "7c359dc4d5eb0d1ffb9a7ccc7f9f942b837a0fb7cb206f2c86fdff3ff85a44d0",
+      "bytes": 335
+    },
+    "alpha19-mark-compositions.json": {
+      "sha256": "176ef85236c12c3d402773e393b21ee8ccc7a186461af4bad8bd928794f0bec0",
+      "bytes": 1171
+    },
+    "alpha19-mark-guard.txt": {
+      "sha256": "862440ea8ed24aff4e4145c51d4ecc61b0ab549a349333f7ea5fed7f51ee97e2",
+      "bytes": 83
+    },
+    "alpha19-mark-motion.txt": {
+      "sha256": "8efeb496db6a60c3e33d59af572621321c892eca0d6fd73c208b11975705fe79",
+      "bytes": 89
+    },
+    "alpha19-midround.png": {
+      "sha256": "754e561e3b9e4635bd912e03fac5380b8dac5e87da74f650710c813aaedc2d0c",
+      "bytes": 228328
+    },
+    "alpha19-signature.txt": {
+      "sha256": "ac175ec1777974def2dc0c4f34f186c039266f56d60059370e18c7076fca8f95",
+      "bytes": 972
+    },
+    "coin-release-journey.json": {
+      "sha256": "e8bf836f2100ab23a30a306503bc7446e5cc4b50d0776300fdbfad76a95dc2a9",
+      "bytes": 466
+    },
+    "coin-release-results.png": {
+      "sha256": "89e13c680960e1415d99f1ae8f63cf28a252f7eb78ea9623cacbfdb409da68ab",
+      "bytes": 115126
+    },
+    "collection.txt": {
+      "sha256": "0964ac736c84906e1c114b4f8880fa7a9062360cb17aa9443b296c2a2d5214dd",
+      "bytes": 125
+    },
+    "gameplay-benchmark.json": {
+      "sha256": "39dab0b254c49b1f372d8a3184ed63e58d83ec1819ca4eca8912bb26c3c7d1d1",
+      "bytes": 96260
+    },
+    "lint.xml": {
+      "sha256": "800fce027350806aa2ec5eac801b97f1730c37fc4a06a9d136547a87f1c24505",
+      "bytes": 108860
+    },
+    "mark-baseline-apks.json": {
+      "sha256": "28a229d64738912302bc557c627c627388155835026456fd8f6a68d24122a1ee",
+      "bytes": 272
+    },
+    "mark-baseline-build-2.txt": {
+      "sha256": "dadd96141567d99a11c5a7ea4938c039c5c6115f3e8fd929b9fc77fb65e198e1",
+      "bytes": 5339
+    },
+    "mark-baseline-build.txt": {
+      "sha256": "e657cc917104927e7eeb5eee24943dbdee2713ecb72270eaf0295d53c688cc1a",
+      "bytes": 5990
+    },
+    "mark-baseline.json": {
+      "sha256": "f357cd197a0235ad7918eb6af6a61a08c9372b8d398c42ca41deea46db7c2dbe",
+      "bytes": 1182
+    },
+    "mark-baseline.txt": {
+      "sha256": "efeadacf79f8847573aca87926eb438974c4379a5a28bf2ed9348ae07971431a",
+      "bytes": 986
+    },
+    "mark-fixed-apks.json": {
+      "sha256": "f49ce20e795828c93429da0f485faaee7f9cb3da6201e751509c80fb7d286dfe",
+      "bytes": 272
+    },
+    "mark-fixed.json": {
+      "sha256": "60ab3229271007271e08b00dfc914184ee9045ac2dca6927887b614528433c26",
+      "bytes": 1171
+    },
+    "mark-fixed.txt": {
+      "sha256": "131b946a81377f9daa22d63d448197aa8cbde2ac75d379e4c8b8d4fe9ebcc154",
+      "bytes": 83
+    },
+    "mark-manual-table.txt": {
+      "sha256": "2159bbedd07652be7bf3d4ff9355671583ec95d220bbd93092985c952fd90f59",
+      "bytes": 86
+    },
+    "mark-motion-off.txt": {
+      "sha256": "6e67aa6c326e4c7d27618385d171d5b47e0cba39c5c0922f8986d468864799dd",
+      "bytes": 89
+    },
+    "mark-motion.txt": {
+      "sha256": "b4586f01ff0b1e1bb70acce9eb2852a8ac1bfba6a6f045d79fe117b2b7b930f4",
+      "bytes": 89
+    },
+    "optimized-trace-overview.sql": {
+      "sha256": "a7e9f4cf46af4aab6d048a289af35c22697875545f8c16768c7d298e9c0e1a5e",
+      "bytes": 423
+    },
+    "optimized-trace-overview.txt": {
+      "sha256": "d1fbe50b37e7ea1bc9388d5ebb5ecd70eeaafd0766b1755b5f7258d3eff9a57a",
+      "bytes": 3645
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.presentation.CoinResultsTest.xml": {
+      "sha256": "35cbb8a01acfbf3e02a07df3d062f1ec03e0b2e08c820e76792ab85cca9daf12",
+      "bytes": 1261
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.presentation.WinMomentTest.xml": {
+      "sha256": "267927e8258fa157538524c599110ecd50b24d6d546d33d91ccad464a4e85301",
+      "bytes": 1098
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.setup.SetupDraftTest.xml": {
+      "sha256": "b225f6c80902b8ece7c2bf901952581321fb0ded165f125a9d89065c3c899406",
+      "bytes": 1056
+    },
+    "unit\\TEST-io.github.sbshrey.tambola.game.ui.ThemeContrastTest.xml": {
+      "sha256": "87ba481c60b532b6f317b53a46131e0f3365a485a0eab0efdc7de4a4b469efa0",
+      "bytes": 499
+    }
+  }
+}

@@ -1,0 +1,61 @@
+
+Loading trace: 0.00 MB
+
+Loading trace: 53.41 MB
+[736.464]     common_flags.cc:464 Trace loaded: 53.41 MB in 12.49s (4.3 MB/s)
+
+
+Trace health issues:
+
+  Import errors
+    power_rail_empty_packet: 1
+
+column 0 = pid
+column 1 = thread
+column 2 = name
+column 3 = samples
+column 4 = total_ms
+column 5 = mean_ms
+column 6 = max_ms
+[737.133]            query.cc:159 Query execution time: 666 ms
+"pid","thread","name","samples","total_ms","mean_ms","max_ms"
+32630,"RenderThread","DrawFrame",2008,36829.000000,18.340000,492.920000
+32630,"RenderThread","dispatchFrameCallbacks",1249,24487.900000,19.610000,99.130000
+32630,"RenderThread","eglSwapBuffersWithDamageKHR",2897,24379.600000,8.420000,97.550000
+32630,"RenderThread","prepareAndDraw",908,24346.400000,26.810000,93.080000
+32630,"ey.tambola.game","Choreographer#doFrame",4867,20785.100000,4.270000,730.240000
+32630,"ey.tambola.game","traversal",2001,16302.000000,8.150000,730.040000
+32630,"RenderThread","binder transaction",11810,15857.100000,1.340000,43.980000
+32630,"ey.tambola.game","draw",2015,13001.800000,6.450000,363.530000
+32043,"RenderThread","DrawFrame",595,9805.400000,16.480000,74.380000
+32630,"RenderThread","queueBuffer",2897,8806.100000,3.040000,34.600000
+32630,"Jit thread pool","Compiling",2472,8794.700000,3.560000,114.100000
+32043,"RenderThread","eglSwapBuffersWithDamageKHR",868,7990.800000,9.210000,41.850000
+32630,"ey.tambola.game","binder transaction",3320,7560.900000,2.280000,208.270000
+32043,"RenderThread","dispatchFrameCallbacks",364,7061.300000,19.400000,73.890000
+32043,"RenderThread","prepareAndDraw",276,7041.500000,25.510000,73.800000
+32630,"RenderThread","dequeueBuffer",2909,5605.900000,1.930000,44.070000
+32043,"ey.tambola.game","Choreographer#doFrame",1439,5099.300000,3.540000,307.930000
+32043,"RenderThread","binder transaction",3492,4683.800000,1.340000,29.760000
+32630,"RenderThread","flush commands",2897,4281.600000,1.480000,341.720000
+32043,"ey.tambola.game","traversal",593,3813.800000,6.430000,243.120000
+32630,"RenderThread","query",5892,3583.600000,0.610000,19.370000
+32043,"ey.tambola.game","draw",596,3527.700000,5.920000,101.610000
+32630,"HeapTaskDaemon","CopyingPhase",172,3444.400000,20.030000,82.490000
+32630,"ey.tambola.game","animation",3321,3383.200000,1.020000,104.600000
+32043,"Jit thread pool","Compiling",870,3235.600000,3.720000,72.190000
+32630,"HeapTaskDaemon","Background young concurrent copying GC",118,3211.800000,27.220000,94.150000
+32630,"Jit thread pool","ScopedCodeCacheWrite",5001,2749.200000,0.550000,37.040000
+32043,"RenderThread","queueBuffer",868,2579.800000,2.970000,33.150000
+32630,"HeapTaskDaemon","Background concurrent copying GC",54,2574.000000,47.670000,200.600000
+32630,"ey.tambola.game","Record View#draw()",2008,2495.700000,1.240000,79.110000
+32630,"ey.tambola.game","Recomposer:recompose",1967,2412.800000,1.230000,104.510000
+32630,"ey.tambola.game","getAllUncoveredSemanticsNodesToIntObjectMap",1651,2363.100000,1.430000,48.910000
+32630,"HeapTaskDaemon","ProcessMarkStack",172,2043.600000,11.880000,75.540000
+32043,"RenderThread","dequeueBuffer",869,1789.200000,2.060000,28.410000
+32043,"ey.tambola.game","binder transaction",888,1744.100000,1.960000,57.470000
+32630,"ey.tambola.game","AndroidOwner:measureAndLayout",579,1601.100000,2.770000,77.570000
+32630,"ey.tambola.game","Compose:recompose",2969,1229.800000,0.410000,32.600000
+32630,"Jit thread pool","mprotect all",5001,1215.800000,0.240000,34.950000
+32630,"GPU completion","waitForever",676,1195.900000,1.770000,36.550000
+32630,"Jit thread pool","TrimMaps",2472,1174.100000,0.470000,30.430000

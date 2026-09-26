@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.CoinMarkMotionTest:.
+
+Time: 2.786
+
+OK (1 test)
+
+

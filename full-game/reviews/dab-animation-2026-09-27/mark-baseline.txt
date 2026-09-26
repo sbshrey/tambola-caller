@@ -1,0 +1,21 @@
+
+io.github.sbshrey.tambola.game.CoinMarkTest:
+Error in dabsAnimateWithoutRepeatedTicketComposition(io.github.sbshrey.tambola.game.CoinMarkTest):
+java.lang.AssertionError: Dab animation repeatedly recomposed the ticket: {"index":0,"compositionPasses":8,"sampleMs":653}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.CoinMarkTest.dabsAnimateWithoutRepeatedTicketComposition(CoinMarkTest.kt:94)
+
+
+Time: 10.538
+There was 1 failure:
+1) dabsAnimateWithoutRepeatedTicketComposition(io.github.sbshrey.tambola.game.CoinMarkTest)
+java.lang.AssertionError: Dab animation repeatedly recomposed the ticket: {"index":0,"compositionPasses":8,"sampleMs":653}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.CoinMarkTest.dabsAnimateWithoutRepeatedTicketComposition(CoinMarkTest.kt:94)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

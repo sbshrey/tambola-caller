@@ -1,0 +1,66 @@
+{
+  "scope": "Two real CompactTicket grids; 12 state-driven mark\/unmark changes; real activity clock; animations enabled",
+  "observedCompositions": 3,
+  "samples": [
+    {
+      "index": 0,
+      "compositionPasses": 8,
+      "sampleMs": 653
+    },
+    {
+      "index": 1,
+      "compositionPasses": 11,
+      "sampleMs": 653
+    },
+    {
+      "index": 2,
+      "compositionPasses": 11,
+      "sampleMs": 653
+    },
+    {
+      "index": 3,
+      "compositionPasses": 12,
+      "sampleMs": 652
+    },
+    {
+      "index": 4,
+      "compositionPasses": 12,
+      "sampleMs": 651
+    },
+    {
+      "index": 5,
+      "compositionPasses": 13,
+      "sampleMs": 653
+    },
+    {
+      "index": 6,
+      "compositionPasses": 12,
+      "sampleMs": 654
+    },
+    {
+      "index": 7,
+      "compositionPasses": 12,
+      "sampleMs": 651
+    },
+    {
+      "index": 8,
+      "compositionPasses": 13,
+      "sampleMs": 651
+    },
+    {
+      "index": 9,
+      "compositionPasses": 12,
+      "sampleMs": 653
+    },
+    {
+      "index": 10,
+      "compositionPasses": 12,
+      "sampleMs": 654
+    },
+    {
+      "index": 11,
+      "compositionPasses": 12,
+      "sampleMs": 652
+    }
+  ]
+}

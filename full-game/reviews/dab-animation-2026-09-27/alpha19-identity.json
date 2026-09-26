@@ -1,0 +1,9 @@
+{
+  "sha256": "38c399ec12125482f17f9514e9947f4fe210bd353923786cf1268392c857c20f",
+  "bytes": 29126773,
+  "installedMatchesBuild": true,
+  "versionCode": 19,
+  "versionName": "0.19.0-alpha19-wifi-optimized",
+  "publicCaSha256": "98ef33aa08d19a2a0ad67c097d90864c352a1e2011e725d8f0cdf8ca7c0cc24f",
+  "caResource": "res/F7.pem"
+}

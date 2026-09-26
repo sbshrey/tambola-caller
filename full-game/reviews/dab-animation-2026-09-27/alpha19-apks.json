@@ -1,0 +1,18 @@
+{
+  "app/build/outputs/apk/debug/app-debug.apk": {
+    "sha256": "b7abd577d3e32f0396f8f6abf6183b70234d000da05a5ad889fc3d393dcc6992",
+    "bytes": 42720506
+  },
+  "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk": {
+    "sha256": "fb63e3f1e19fa05000b05bb4a1d9efdff4bede4dd36f246d9822c378a5d71b84",
+    "bytes": 1679801
+  },
+  "app/build/outputs/apk/lanRelease/app-lanRelease.apk": {
+    "sha256": "38c399ec12125482f17f9514e9947f4fe210bd353923786cf1268392c857c20f",
+    "bytes": 29126773
+  },
+  "macrobenchmark/build/outputs/apk/lanRelease/macrobenchmark-lanRelease.apk": {
+    "sha256": "2a3a34e33b979479493999ff2173108317b36ffb4660edabce4b63edbc6136f7",
+    "bytes": 55882142
+  }
+}
