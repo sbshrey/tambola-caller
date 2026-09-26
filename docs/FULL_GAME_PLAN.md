@@ -43,27 +43,29 @@ Local tools observed: Node 24.21.0, JDK 17, and Android platforms 30/34/35. API 
 
 | Mode | Complete flow | Acceptance example |
 | --- | --- | --- |
-| Practice | Choose language and pace; receive 1–6 tickets; play alone or against clearly labelled computer players; see results and rematch | A fresh installation completes a round in airplane mode |
-| Family on one device | Add 2–8 local players; assign tickets; show an overview or enlarged individual ticket; pause calling while passing the device | Every player can mark and claim without paper or a second phone |
+| Practice | Tap Quick play for three tickets, two labelled computer players, assisted marking, common prizes and five-second calls; optional setup offers 1–6 tickets | A fresh installation starts in one action and completes a round in airplane mode |
+| Family on one device | Add 2–8 local players; show only the current player's complete hand; pause and hide the hand before passing the device | Every player can mark and inspect wins without paper or a second phone |
 | Private online room | Create/join using room code or invite link; agree rules; ready up; receive tickets; play; reconnect; view shared results | Two physical phones on different networks finish the same round |
 
 Computer players use the same tickets and called-number information as humans. They never inspect future draws. Their visible response timing is configurable and deterministic in tests; no paid AI inference is needed for bots.
 
 Core screens:
 
-1. Welcome and a short interactive tutorial; sound and language controls immediately available.
-2. Home with Play solo, Play together, Join room, Resume, and recent results.
-3. Setup with players, ticket count, call pace, marking assistance, and rule previews.
+1. Optional interactive tutorial; core play never requires it.
+2. Home with prominent Quick play or Resume, plus family/custom play and private rooms.
+3. Optional setup with players, ticket count, call pace, marking assistance, and rule previews.
 4. Lobby with room code, share action, readiness, connection state, and host controls.
 5. Ticket deal preview with clear ownership and a locked-rules summary.
-6. Game table with a large current number, recent calls, ticket carousel/overview, and persistent claim action.
+6. Stable game table with a large current number, recent calls, compact prize rail, all 1–6 owned tickets and large play/dab actions. No scrolling or ticket switching during play.
 7. Full 1–90 board and chronological call history.
-8. Claim sheet with the rule, matching cells, pending/accepted/rejected result, and a readable explanation.
+8. Prize inspection with the locked rule, matching/missing numbers, verified result and a readable explanation.
 9. Winners and results with tied winners, badges, round history, and rematch.
 10. Settings/help with language, voice/music/effects volumes, haptics, reduced motion, accessibility, data deletion, and credits.
 
 ```mermaid
 flowchart LR
+    Home --> Quick[Quick play with familiar defaults]
+    Quick --> Game
     Home --> Setup[Practice or family setup]
     Home --> Lobby[Create or join private room]
     Setup --> Deal[Tickets and locked rules]
@@ -85,7 +87,7 @@ flowchart LR
 - Column ranges are 1–9, 10–19, ..., 70–79, 80–90; populated cells ascend from top to bottom in each column.
 - Generate constrained row/column layouts with bounded backtracking, then assign numbers. Never use an unbounded retry loop.
 - Reject duplicate complete tickets within one round. Keep a canonical ticket fingerprint.
-- Offer individual tickets first. An optional six-ticket strip must contain every number 1–90 exactly once across its six tickets; selecting six unrelated tickets must not be labelled a strip.
+- Deal each new 1–6 ticket hand from one randomized six-ticket strip. No number repeats within a hand; six tickets cover 1–90 exactly once. Different players can share numbers. Preserve existing saved hands without silently redealing them.
 - Shuffle once using secure randomness and unbiased bounded selection. Keep future draws private. Inject a deterministic random source only into tests and explicitly marked practice replay.
 - Online ticket allocation and draw order are server-owned. Ticket ownership and rules lock before the first draw; no mid-round rerolls or competitive late joins.
 - Draws are unique, numbered events. Pause/resume never redraws or skips a number. Only practice permits undo; any undo recomputes dependent claims and invalidates derived results.
@@ -105,10 +107,10 @@ The existing 41 names include regional variants and multi-ticket concepts. Do no
 
 ### Marking, claims, and ties
 
-- Manual marking gives an immediate visual/haptic response; blank or uncalled cells cannot produce a valid mark. Undoing a local mark does not alter the official called set.
+- Manual marking uses a large Dab action for the current player's called numbers. Compact cells are display-only; uncalled numbers cannot be marked. Dabs never alter the official called set or determine eligibility.
 - Assisted marking is a clearly labelled room setting, fixed before play; it must not silently vary between online players.
 - Verification uses the immutable ticket and authoritative called numbers, never a client's marked cells or claimed winner flag.
-- Default social mode determines eligibility automatically on every draw. The Claim button reveals and celebrates that result; network speed and screen-reader use do not determine the winner. Explain this in setup.
+- Default social mode determines eligibility automatically on every draw. Fixed-size win feedback announces newly verified results, with details available through prize inspection; network speed and screen-reader use do not determine the winner. Explain this before custom/online play.
 - All tickets that first satisfy a rule on the same draw tie. Record every winning ticket and deduplicate players in the player summary; do not inherit the old two-winner limit.
 - A stricter timed-claim variant is an optional extension with a visible server deadline and explicit late-claim behavior. Do not add it until latency and accessibility tests support it.
 - Awards are immutable events with rule version, ticket IDs, player IDs, draw index, and verification explanation. Duplicate requests return the same outcome.
@@ -125,7 +127,7 @@ The existing 41 names include regional variants and multi-ticket concepts. Do no
 
 ## 5. UI, motion, and sound direction
 
-Working visual direction: a modern Indian game-night table with deep ink/navy surfaces, warm ivory tickets, saffron/coral accents, jade success states, rounded cards, and large tabular numerals. Build a reusable light/dark theme, spacing scale, typography, button states, sheets, and ticket components before building individual screens. Generated art is decorative; numbers, tickets, navigation, and critical information remain native UI.
+Current visual direction: a deep green game table, warm paper tickets, mint dabs and amber accents for the latest call and verified wins. Reuse the light/dark theme, spacing, typography, sheets and ticket components. Keep prose out of the live table and put detailed rules/settings in secondary views. Decorative art never replaces native numbers, tickets, navigation or other critical information.
 
 | Moment | Treatment | Behavior constraint |
 | --- | --- | --- |
@@ -138,7 +140,7 @@ Working visual direction: a modern Indian game-night table with deep ink/navy su
 
 Use Compose animation/Canvas for motion and vector geometry. Standard transitions should last roughly 150–250 ms, number reveals 350–600 ms, and celebration overlays no more than about two seconds. Respect system animation settings and expose reduced motion. Measure on an agreed midrange reference phone instead of judging emulator smoothness.
 
-Accessibility requirements include TalkBack labels for number/row/mark state, a logical traversal order, non-color status cues, scalable text, contrast checks, and independent sound/haptics toggles. A nine-column ticket cannot fit nine 48dp tap targets across a narrow phone: provide a readable overview plus an enlarged row/ticket mode with appropriate scrolling and focus. Test this intentionally at 360dp and 200% text size.
+Accessibility requirements include TalkBack labels for number/row/mark state, a logical traversal order, non-color status cues, contrast checks, and independent sound/haptics toggles. Compact nine-column tickets use display-only cells with semantic row summaries and a separate manual Dab action of at least 48dp. All owned cards remain visible at 360dp and 200% text size; test number legibility and actual TalkBack use separately from screen-bound assertions. Extreme window sizes require explicit limits rather than a universal readability claim.
 
 Reuse the existing voice clips. Keep speech, music, and effects on separate volume controls; duck music under calls; handle audio focus, Bluetooth changes, phone calls, and silent settings. Playback failures never stop game progression. Optional background playback uses the correct Android service/notification behavior; otherwise pause offline autoplay when backgrounded. Online rounds continue on the server and resync on return.
 
@@ -258,7 +260,7 @@ CI on every relevant change: domain/server unit tests, PostgreSQL integration te
 
 ## 11. Production release definition
 
-The [store, privacy and support draft](../full-game/RELEASE_CONTENT_DRAFT.md) now captures the implemented data flows and proposed listing copy. Operator/contact details, hosted configuration, external deletion-request verification and bounded recovery-record retention remain open; the draft is not published or a completed release gate. The [build-tool review](../full-game/BUILD_TOOL_REVIEW.md) records the Gradle wrapper finding and pending upgrade/validation separately from the passing runtime scans.
+The [store, privacy and support draft](../full-game/RELEASE_CONTENT_DRAFT.md) captures the alpha14 gameplay, implemented data flows and proposed listing copy. Operator/contact details, hosted configuration, external deletion-request verification and bounded recovery-record retention remain open; the draft is not published or a completed release gate. The [build-tool review](../full-game/BUILD_TOOL_REVIEW.md) records the completed alpha14 toolchain migration and its remaining Medium distribution findings separately from the runtime scans; actual Linux/remote CI acceptance remains open.
 
 The goal is complete only when all applicable conditions below have evidence:
 
@@ -283,7 +285,7 @@ If the user selects offline-only scope, mark hosted-room milestones as removed b
 | --- | --- |
 | “Full-fledged” grows indefinitely | Lock the agreed modes and acceptance gates; defer public matchmaking, open chat, tournaments, payments, and iOS |
 | Regional prize ambiguity | Rule previews and examples; no name-based guesses; build bounded custom predicates |
-| Attractive ticket becomes unusable on small phones | Prototype enlargement and TalkBack before final art; test real touch targets |
+| Attractive ticket becomes unusable on small phones | Verify every owned card remains visible; inspect number legibility, large Dab targets and actual TalkBack traversal |
 | Client/server disagreements or fast-network advantage | Shared Kotlin engine, server-owned events, automatic same-draw eligibility, idempotency and replay tests |
 | Music/model assumptions or unnecessary API spend | Reuse clips, original/licensed music, small capped batches, provenance and human QA |
 | Android background/audio/OEM differences | Explicit lifecycle policy, real-phone interruption tests, persistent resume |

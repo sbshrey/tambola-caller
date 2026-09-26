@@ -16,9 +16,11 @@ This candidate retains the [alpha13 gameplay redesign](ALPHA13_VALIDATION.md): i
 | Final instrumentation APK | `dcd8b9dbc7cb87c7add974ab6d6f80625008eaed6000d251c43389cc97381edc` |
 | Optimized unsigned release APK | `c433330e970d386b113ee659eedcea75d252dbaf2abcfa11d3894b24f46fc097` |
 | Unsigned release AAB | `184555d7a45834b79fccc05fa3c9e9eb9581fba3885d77c61c89130a73822a73` |
-| Complete 51-JAR service runtime | `ff5978407960993fee3fc2d17d76016caac346757fd1ccaa3576b9c94ed8a72b` |
+| Complete 51-JAR service runtime, ordinal filename order | `04440bb170091d3392a1e34e5be4c1da4f0f498acd34f661d539a2cd2aa3df0a` |
 
 Version code/name: **14 / 0.14.0-alpha14**. The debug APK uses the existing Android Debug certificate, SHA-256 `55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c`. Its configured online endpoint is loopback `127.0.0.1:8080`; ordinary phone installs support offline/family play without a hosted room service. No OpenAI credential is included or needed. All 270 voice clips, five WAV assets and four manifests match alpha13 byte-for-byte.
+
+Manifest-order correction: the immutable alpha14 package and original migration record use `ff5978407960993fee3fc2d17d76016caac346757fd1ccaa3576b9c94ed8a72b`, produced with PowerShell's case-insensitive filename sorting. The Kotlin/Node runtime verifier uses ordinal order, placing `HikariCP` first, and produces the value in the table. All 51 filenames and individual JAR hashes match exactly; no runtime bytes changed. The [equivalence record](reviews/soak-alpha14-2026-09-26/runtime-identity.json) preserves both identities. Earlier package files remain unchanged.
 
 ## Executed acceptance
 

@@ -34,7 +34,7 @@ The alpha06 appearance update adds saved System/Light/Dark themes, native home a
 
 A patched JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 9.7.1 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update. The [build-tool review](BUILD_TOOL_REVIEW.md) records the alpha14 migration's acceptance status and remaining findings.
 
-The [runtime dependency review](DEPENDENCY_REVIEW.md) records resolved library inventories, advisory checks and the Netty/Logback security update. Use the current service build or `releases/service-security-2026-09-26/Tambola-service.zip` for private-room testing with the unchanged alpha12 APK. CI checks exact runtime Maven versions; process reports identify every bundled service library, including changes that leave the main JAR unchanged.
+The [runtime dependency review](DEPENDENCY_REVIEW.md) records resolved library inventories, advisory checks and the Netty/Logback security update. Use the current service build or `releases/0.14.0-alpha14/engineering/Tambola-service.zip` for private-room testing with alpha14. CI checks exact runtime Maven versions; process reports identify every bundled service library, including changes that leave the main JAR unchanged. The earlier service-security package remains a historical alpha12 artifact.
 
 ```powershell
 python tools/check-localization.py
@@ -63,6 +63,8 @@ The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing 
 Assets in this build: native vector/Compose graphics, the repository's previously generated AI voice recordings, and original synthesized music/effects. No runtime AI calls, analytics, ads, payments, microphone permission, or OpenAI key are included. Internet permission supports private rooms; solo and family play remain offline.
 
 ## Test scope
+
+[Performance acceptance](PERFORMANCE.md) tracks the fresh sustained service workload, native-client traffic measurement and remaining physical-device budgets separately from correctness checks.
 
 The domain suite includes 100,000 generated-ticket property cases, maximum-size unique deals, draw exhaustion, ties, marks, undo, ranked houses, corrupt saves, and standard-rule missing-number checks. Android instrumented tests exercise complete offline play, recreation/resume, family tickets, rule inspection, and cancellation. Actual results and limitations belong in the execution ledger; having tests in source is not proof they passed.
 

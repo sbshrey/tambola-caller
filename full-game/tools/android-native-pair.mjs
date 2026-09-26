@@ -8,10 +8,13 @@ import { once } from 'node:events';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
+import { createByteMeter } from './tcp-byte-meter.mjs';
+import { serviceRuntime } from './service-runtime.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const args = process.argv.slice(2);
 const option = (key, fallback) => args.includes(key) ? args[args.indexOf(key) + 1] : fallback;
 const label = option('--label', 'android-native-pair'); assert.match(label, /^[a-z0-9-]+$/);
+const measureNetwork = args.includes('--measure-network');
 const devices = [{ role: 'host', serial: option('--host', 'emulator-5582') }, { role: 'guest', serial: option('--guest', 'emulator-5584') }];
 assert.notEqual(devices[0].serial, devices[1].serial);
 const sdk = process.env.ANDROID_SDK_ROOT || resolve(process.env.LOCALAPPDATA, 'Android/Sdk');
@@ -20,11 +23,15 @@ const app = 'io.github.sbshrey.tambola.game';
 const db = process.env.TAMBOLA_TEST_DATABASE_URL || '';
 assert.match(db, /^jdbc:postgresql:\/\/127\.0\.0\.1:\d+\/tambola_test$/);
 assert.ok(process.env.TAMBOLA_TEST_DATABASE_USER && process.env.TAMBOLA_TEST_DATABASE_PASSWORD);
-const output = resolve(root, '.test-workspace', label); await mkdir(output, { recursive: true });
+const output = resolve(root, '.test-workspace', label); await mkdir(output, { recursive: false });
 const runId = randomUUID(); const scales = ['window_animation_scale', 'transition_animation_scale', 'animator_duration_scale'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const candidateSha256 = hash(await readFile(resolve(root, 'app/build/outputs/apk/debug/app-debug.apk')));
-const evidence = { runId, candidateSha256, devices: [], completed: false };
+const candidateSha256 = hash(await readFile(resolve(root, option('--apk', 'app/build/outputs/apk/debug/app-debug.apk'))));
+const instrumentationSha256 = hash(await readFile(resolve(root, option('--test-apk', 'app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk'))));
+const evidence = { runId, candidateSha256, instrumentationSha256, devices: [], completed: false };
+Object.assign(evidence, await serviceRuntime(root));
+evidence.fixtureSha256 = hash(await readFile(fileURLToPath(import.meta.url)));
+if (measureNetwork) evidence.byteMeterSha256 = hash(await readFile(fileURLToPath(new URL('./tcp-byte-meter.mjs', import.meta.url))));
 let service;
 function run(device, command, optional = false, binary = false) {
   const result = spawnSync(adb, ['-s', device.serial, ...command], { encoding: binary ? undefined : 'utf8', windowsHide: true, timeout: 30_000, maxBuffer: 80 * 1024 * 1024 });
@@ -32,9 +39,11 @@ function run(device, command, optional = false, binary = false) {
   return result.status === 0 ? (binary ? result.stdout : result.stdout.trim()) : null;
 }
 function verifyInstalled(device) {
-  const path = run(device, ['shell', 'pm', 'path', app]).replace(/^package:/, '');
-  assert.match(path, /^\/data\/app\/[A-Za-z0-9_+=.~/-]+\/base\.apk$/);
-  assert.equal(hash(run(device, ['exec-out', 'cat', path], false, true)), candidateSha256, `Install matching APK on ${device.role}`);
+  for (const [packageId, expected] of [[app, candidateSha256], [`${app}.test`, instrumentationSha256]]) {
+    const path = run(device, ['shell', 'pm', 'path', packageId]).replace(/^package:/, '');
+    assert.match(path, /^\/data\/app\/[A-Za-z0-9_+=.~/-]+\/base\.apk$/);
+    assert.equal(hash(run(device, ['exec-out', 'cat', path], false, true)), expected, `Install matching ${packageId} APK on ${device.role}`);
+  }
 }
 function child(command, commandArgs, env, capture = false) {
   const handle = spawn(command, commandArgs, { cwd: root, env, windowsHide: true, stdio: capture ? ['ignore', 'pipe', 'pipe'] : 'ignore' });
@@ -79,9 +88,12 @@ async function bothPhase(phase, timeout) {
   return states;
 }
 function gate(name) { for (const device of devices) run(device, ['shell', 'run-as', app, 'touch', `files/native-pair-${runId}-${name}`]); }
+function networkSnapshot() {
+  return Object.fromEntries(devices.map(device => [device.role, device.meter.snapshot()]));
+}
 for (const device of devices) {
   assert.match(device.serial, /^emulator-\d+$/);
-  device.avd = run(device, ['emu', 'avd', 'name']).split(/\r?\n/)[0]; assert.match(device.avd, /^tambola_full_game_/);
+  device.avd = run(device, ['emu', 'avd', 'name']).split(/\r?\n/)[0].trim(); assert.match(device.avd, /^tambola_full_game_/);
   assert.ok(!/tcp:8080/.test(run(device, ['reverse', '--list'])), 'Preserve the existing reverse-port owner');
   verifyInstalled(device);
   device.scales = new Map(scales.map(key => [key, run(device, ['shell', 'settings', 'get', 'global', key])]));
@@ -101,8 +113,12 @@ try {
     assert.ok(!service.error && !service.done, 'Owned service did not stay running');
     return fetch('http://127.0.0.1:8080/health/ready', { signal: AbortSignal.timeout(1_000) }).then(r => r.ok).catch(() => false);
   }, 30_000, 'Room service readiness timed out');
+  if (measureNetwork) {
+    evidence.network = { scope: 'Per-device loopback TCP payload bytes, including HTTP headers and WebSocket framing/acks/pings. No TLS/IP/radio overhead; no payload contents retained. Not a physical-network measurement.' };
+    for (const device of devices) device.meter = await createByteMeter(8080);
+  }
   for (const device of devices) {
-    run(device, ['reverse', 'tcp:8080', 'tcp:8080']); device.mapped = true;
+    run(device, ['reverse', 'tcp:8080', `tcp:${device.meter?.port || 8080}`]); device.mapped = true;
     for (const key of scales) run(device, ['shell', 'settings', 'put', 'global', key, '0']);
   }
   startTest(devices[0]); let lobby;
@@ -114,6 +130,7 @@ try {
   assert.equal(finished[0].room.round.called.length, 90); assert.equal(new Set(finished[0].room.round.called).size, 90);
   assert.ok(finished.every(state => state.room.round.status === 'COMPLETED' && state.historySize === 1));
   evidence.firstRound = { id: finished[0].room.round.id, calls: 90, matchingCallsScoresAwardsAndAudit: true, privateTicketsPerDevice: 2 };
+  if (measureNetwork) evidence.network.setupAndFirstRound = networkSnapshot();
   console.log('Both native UIs finished 90 calls with matching scores, awards and draw audit.');
   gate('rematch');
   const rematched = await bothPhase('rematched', 90_000);
@@ -137,6 +154,15 @@ try {
     evidence.devices.push({ role: device.role, serial: device.serial, avd: device.avd, pid: complete.find(state => state.role === device.role).pid, passed: true });
   }
   evidence.rematch = { id: complete[0].room.round.id, newNumberGrids: true, retainedRules: true, nativeCancellation: true, historyPerDevice: 2 };
+  if (measureNetwork) {
+    evidence.network.throughRematchAndNativeCancellation = networkSnapshot();
+    for (const counts of Object.values(evidence.network.throughRematchAndNativeCancellation)) {
+      assert.ok(counts.clientToServiceBytes > 0 && counts.serviceToClientBytes > 0);
+      assert.equal(counts.rejectedConnections, 0, 'Byte meter rejected a connection');
+      assert.equal(counts.transportErrors, 0, 'Byte meter encountered a transport error');
+    }
+  }
+  assert.equal((await serviceRuntime(root)).serviceRuntimeSha256, evidence.serviceRuntimeSha256, 'Service runtime changed during native acceptance');
   evidence.completed = true;
 } catch (error) { console.error(error.message); process.exitCode = 1; }
 finally {
@@ -153,6 +179,11 @@ finally {
       assert.equal(run(device, ['shell', 'settings', 'get', 'global', key]), value);
     });
     if (device.mapped) await clean(`unmap_${device.role}`, () => run(device, ['reverse', '--remove', 'tcp:8080']));
+    if (device.meter) {
+      if (!evidence.network.finalObserved) evidence.network.finalObserved = {};
+      evidence.network.finalObserved[device.role] = device.meter.snapshot();
+      await clean(`close_meter_${device.role}`, () => device.meter.close());
+    }
   }
   if (service) await clean('stop_service', async () => {
     if (!service.done) service.handle.kill('SIGKILL'); await until(() => service.done, 10_000, 'Owned service did not stop');

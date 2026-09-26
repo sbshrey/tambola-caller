@@ -174,6 +174,7 @@ jobs:
       - name: Verify PostgreSQL service, restart, deletion recovery and restricted roles
         working-directory: full-game
         run: |
+          node --test tools/test-tcp-byte-meter.mjs
           bash gradlew -PserverOnly=true :domain:test :client:test :server:test :server:installDist :server:historyDeletionLoad --no-daemon --console=plain
           node tools/server-smoke.mjs
           node tools/server-deletion-recovery.mjs
@@ -250,7 +251,9 @@ jobs:
             full-game/.test-workspace/runtime-advisories.json
       - name: Verify domain and Android build
         working-directory: full-game
-        run: bash gradlew :domain:test :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --console=plain
+        run: |
+          bash gradlew :domain:test :app:testDebugUnitTest :app:assembleDebug --no-daemon --console=plain
+          bash gradlew :app:lintDebug --no-daemon --console=plain
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:

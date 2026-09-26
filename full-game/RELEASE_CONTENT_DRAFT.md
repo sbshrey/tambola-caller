@@ -1,20 +1,22 @@
 # Release content — internal draft
 
-Prepared against alpha12 and the current room-service source on 26 September 2026. These pages have not been published, submitted to a store or approved as a production privacy policy. Private online play still needs hosted acceptance. Replace the clearly marked operator fields and resolve the listed service decisions before publishing.
+Prepared against alpha14 and the current room-service source on 26 September 2026. These pages have not been published, submitted to a store or approved as a production privacy policy. Private online play still needs hosted acceptance. Replace the clearly marked operator fields and resolve the listed service decisions before publishing.
 
 ## Store listing copy
 
 **App name:** Tambola Together
 
-**Short description:** Play Tambola solo, with family, or in private rooms. Points, prizes and fun.
+**Short description:** Quick Tambola games, all your tickets together. Play solo or with friends.
 
 **Full description draft:**
 
-Bring a Tambola game night to your phone. Tambola Together includes digital tickets, number calling, marking, verified wins, results and rematches in one app.
+Tap Quick play and get straight to Tambola: three tickets, two clearly labelled computer opponents, familiar prizes and a new number every five seconds. Assisted marking helps you follow the action. No registration or internet is needed for solo play.
 
-Practise offline against computer players, share a device for family play, or invite friends to a private online room. Choose your tickets and prize rules before the game begins, then follow every call on the number board. Online rooms support up to 32 players with up to six tickets each.
+Keep your whole hand in view. One to six tickets fit together on the game table without a ticket carousel or scrolling. Newly dealt tickets in your hand have no repeated numbers; a full six-ticket strip covers 1–90 once, like a physical strip. Other players' tickets stay private.
 
-Play at your pace with manual or automatic calling, pause and resume, and optional assisted marking. Follow standard prizes or create supported custom patterns with a preview of the rule. The game checks winning patterns and records points and badges. There are no purchases, cash stakes or payouts.
+Practise offline, pass a shared device around for family play, or invite friends to a private online room. A paused handoff hides the previous family player's tickets. Online rooms support up to 32 players. Digital tickets, number calling, verified wins, results and rematches all stay inside the app.
+
+Quick play includes Early Five, Corners, the three lines and Full House. For a custom game, choose your tickets, pace and rules before dealing. Try manual dabbing or assisted marking, and preview supported custom patterns. The game checks wins and records points and badges. There are no purchases, cash stakes or payouts.
 
 Make the table your own with player avatars, light and dark themes, celebrations and reduced-motion controls. Choose an English or Hindi interface and English, Hindi or Hinglish number voices. Optional music and effects have separate volume controls. The number voices are AI-generated recordings packaged with the app; game data is not sent to OpenAI during play.
 
