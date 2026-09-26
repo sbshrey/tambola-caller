@@ -6,12 +6,18 @@ import kotlinx.serialization.encodeToString
 import java.sql.Connection
 import java.util.UUID
 
-/** All accepted state transitions, receipts and public events commit in one PostgreSQL transaction. */
-class RoomService(private val database: Database, private val clock: () -> Long = System::currentTimeMillis) {
+/** Room changes commit atomically; profile deletion first records intent in the independent journal. */
+class RoomService(
+    private val database: Database,
+    private val clock: () -> Long = System::currentTimeMillis,
+    private val journal: DeletionJournal? = null,
+) {
+    @Volatile private var replayFailure = false
     fun register(request: GuestRequest, source: String): GuestCredentials {
         val name = request.displayName.trim()
         demand(name.length in 1..40 && name.none(Char::isISOControl) && request.avatar in 0 until AVATAR_COUNT,
             400, "invalid_guest", "Use a name of 1–40 characters and a supported avatar.")
+        recoveryHealthy()
         rate("guest:${digest(source)}", 60)
         val token = secret()
         val credentials = GuestCredentials(UUID.randomUUID().toString(), token, clock() + SESSION_LIFETIME)
@@ -25,50 +31,106 @@ class RoomService(private val database: Database, private val clock: () -> Long 
         Unit
     }
 
-    /** Profile removal and shared-record redaction are atomic with a retryable confirmation. */
+    /** Durable suppression precedes the atomic primary-database mutation and its confirmation. */
     fun deleteProfile(token: String, request: DeleteProfileRequest, source: String): DeleteProfileReceipt {
         validId(request.id)
         validToken(token)
         rate("delete:${digest(source)}", 30)
         val proof = digest("tambola-delete-v1\n$token\n${request.id}")
         return database.transaction { connection ->
+            verifyJournal(connection)
             fun receipt() = connection.query("SELECT deleted_at, expires_at FROM deletion_receipts WHERE confirmation_hash = ? AND expires_at > ?", proof, clock()) {
                 DeleteProfileReceipt(request.id, it.getLong(1), it.getLong(2))
             }.singleOrNull()
             receipt()?.let { return@transaction it }
-            // An expired but unrevoked token may delete its own profile, never read/play again.
-            val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND revoked_at IS NULL FOR UPDATE", digest(token)) {
-                Guest(it.getString(1), it.getString(2), it.getInt(3))
-            }.singleOrNull() ?: return@transaction (receipt() ?: fail(401, "unauthorized", "Deletion could not be confirmed with this session. Local reset does not delete server data."))
-            val now = clock()
-            val rooms = connection.query("SELECT payload FROM rooms WHERE id IN (SELECT room_id FROM room_participants WHERE player_id = ?) ORDER BY id FOR UPDATE", guest.id) { decode(it.getString(1)) }
-            rooms.forEach { original ->
-                val redacted = original.redact(guest.id)
-                val remaining = redacted.members.filterNot { it.id == guest.id }
-                val successor = remaining.minWithOrNull(compareBy<Member> { now - it.lastSeen >= PRESENCE_TIMEOUT }.thenBy { it.joinedAt }.thenBy { it.id })
-                val next = redacted.copy(members = remaining,
-                    hostId = if (original.hostId == guest.id) successor?.id.orEmpty() else original.hostId,
-                    phase = if (remaining.isEmpty()) RoomPhase.CLOSED else original.phase,
-                    round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
-                    nextDrawAt = if (remaining.isEmpty()) null else redacted.nextDrawAt)
-                changed(connection, next, "profile_deleted", now)
-                connection.query("SELECT round_id, payload FROM finished_rounds WHERE room_id = ? FOR UPDATE", original.id) { it.getString(1) to decode(it.getString(2)) }.forEach { (id, archive) ->
-                    connection.execute("UPDATE finished_rounds SET payload = ? WHERE room_id = ? AND round_id = ?", WireJson.encodeToString(archive.redact(guest.id)), original.id, id)
-                }
-                connection.query("SELECT actor, command_id, response FROM command_receipts WHERE room_id = ? AND actor <> ? FOR UPDATE", original.id, guest.id) {
-                    Triple(it.getString(1), it.getString(2), WireJson.decodeFromString<RoomUpdate>(it.getString(3)))
-                }.forEach { (actor, id, response) ->
-                    connection.execute("UPDATE command_receipts SET response = ? WHERE room_id = ? AND actor = ? AND command_id = ?", WireJson.encodeToString(response.redact(guest.id)), original.id, actor, id)
-                }
+            val recorded = journal?.find(proof)
+            val intent = if (recorded != null) {
+                demand(recorded.confirmUntil > clock(), 401, "unauthorized", "This deletion confirmation has expired.")
+                recorded
+            } else {
+                // Expired but unrevoked credentials may initiate deletion, never read/play again.
+                val playerId = connection.query("SELECT id FROM guests WHERE token_hash = ? AND revoked_at IS NULL FOR UPDATE", digest(token)) { it.getString(1) }
+                    .singleOrNull() ?: return@transaction (receipt() ?: fail(401, "unauthorized", "Deletion could not be confirmed with this session. Local reset does not delete server data."))
+                val now = clock()
+                journal?.append(playerId, proof, now, now + 30 * ROOM_LIFETIME)
+                    ?: DeletionIntent(0, playerId, proof, now, now + 30 * ROOM_LIFETIME)
             }
-            connection.execute("DELETE FROM command_receipts WHERE actor = ?", guest.id)
-            connection.execute("DELETE FROM room_participants WHERE player_id = ?", guest.id)
-            listOf("create", "join", "read", "command").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:${guest.id}") }
-            connection.execute("DELETE FROM guests WHERE id = ?", guest.id)
-            val result = DeleteProfileReceipt(request.id, now, now + 30 * ROOM_LIFETIME)
-            connection.execute("INSERT INTO deletion_receipts VALUES (?, ?, ?)", proof, result.deletedAt, result.confirmUntil)
-            result
+            applyDeletion(connection, intent)
+            DeleteProfileReceipt(request.id, intent.deletedAt, intent.confirmUntil)
         }
+    }
+
+    /** One identity per transaction preserves guest-before-room lock ordering across workers. */
+    fun replayDeletions(limit: Int = 100): Int {
+        try {
+            val applied = replayDeletionBatch(limit)
+            if (applied < limit) replayFailure = false
+            return applied
+        } catch (error: Exception) { replayFailure = true; throw error }
+    }
+
+    private fun replayDeletionBatch(limit: Int): Int {
+        val journal = journal ?: return 0
+        require(limit in 1..1000)
+        var applied = 0
+        repeat(limit) {
+            val advanced = database.transaction { connection ->
+                val saved = connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton FOR UPDATE") {
+                    it.getString(1) to it.getLong(2)
+                }.single()
+                val head = journal.position()
+                recoveryCheck(saved.first == null || saved.first == head.id, "Primary database belongs to another deletion journal")
+                recoveryCheck(saved.second <= head.head, "Deletion journal is older than the primary recovery cursor")
+                val next = journal.next(saved.second, head.head)
+                if (next != null) applyDeletion(connection, next)
+                connection.execute("UPDATE deletion_recovery SET journal_id = ?, applied_sequence = ? WHERE singleton", head.id, next?.sequence ?: saved.second)
+                next != null
+            }
+            if (!advanced) return applied
+            applied++
+        }
+        return applied
+    }
+
+    fun recoveryHealthy(): Boolean = database.transaction { verifyJournal(it); true }
+
+    private fun verifyJournal(connection: Connection) {
+        val journal = journal ?: return
+        recoveryCheck(!replayFailure, "Deletion recovery requires a successful retry")
+        val saved = connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton") { it.getString(1) to it.getLong(2) }.single()
+        val head = journal.position()
+        recoveryCheck(saved.first == head.id && saved.second <= head.head, "Deletion recovery is not initialized or its journal is inconsistent")
+    }
+
+    private fun applyDeletion(connection: Connection, intent: DeletionIntent) {
+        val playerId = intent.playerId
+        val now = clock()
+        connection.query("SELECT id FROM guests WHERE id = ? FOR UPDATE", playerId) { it.getString(1) }
+        val rooms = connection.query("SELECT payload FROM rooms WHERE id IN (SELECT room_id FROM room_participants WHERE player_id = ?) ORDER BY id FOR UPDATE", playerId) { decode(it.getString(1)) }
+        rooms.forEach { original ->
+            val redacted = original.redact(playerId)
+            val remaining = redacted.members.filterNot { it.id == playerId }
+            val successor = remaining.minWithOrNull(compareBy<Member> { now - it.lastSeen >= PRESENCE_TIMEOUT }.thenBy { it.joinedAt }.thenBy { it.id })
+            val next = redacted.copy(members = remaining,
+                hostId = if (original.hostId == playerId) successor?.id.orEmpty() else original.hostId,
+                phase = if (remaining.isEmpty()) RoomPhase.CLOSED else original.phase,
+                round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
+                nextDrawAt = if (remaining.isEmpty()) null else redacted.nextDrawAt)
+            changed(connection, next, "profile_deleted", now)
+            connection.query("SELECT round_id, payload FROM finished_rounds WHERE room_id = ? FOR UPDATE", original.id) { it.getString(1) to decode(it.getString(2)) }.forEach { (id, archive) ->
+                connection.execute("UPDATE finished_rounds SET payload = ? WHERE room_id = ? AND round_id = ?", WireJson.encodeToString(archive.redact(playerId)), original.id, id)
+            }
+            connection.query("SELECT actor, command_id, response FROM command_receipts WHERE room_id = ? AND actor <> ? FOR UPDATE", original.id, playerId) {
+                Triple(it.getString(1), it.getString(2), WireJson.decodeFromString<RoomUpdate>(it.getString(3)))
+            }.forEach { (actor, id, response) ->
+                connection.execute("UPDATE command_receipts SET response = ? WHERE room_id = ? AND actor = ? AND command_id = ?", WireJson.encodeToString(response.redact(playerId)), original.id, actor, id)
+            }
+        }
+        connection.execute("DELETE FROM command_receipts WHERE actor = ?", playerId)
+        connection.execute("DELETE FROM room_participants WHERE player_id = ?", playerId)
+        listOf("create", "join", "read", "command").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
+        connection.execute("DELETE FROM guests WHERE id = ?", playerId)
+        if (intent.confirmUntil > now) connection.execute("INSERT INTO deletion_receipts VALUES (?, ?, ?) ON CONFLICT (confirmation_hash) DO NOTHING", intent.proof, intent.deletedAt, intent.confirmUntil)
     }
 
     fun create(token: String, request: CreateRoomRequest): RoomUpdate {
@@ -258,9 +320,12 @@ class RoomService(private val database: Database, private val clock: () -> Long 
 
     private fun authenticate(connection: Connection, token: String, lock: Boolean = false): Guest {
         validToken(token)
-        return connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else " FOR SHARE"}", digest(token), clock()) {
+        verifyJournal(connection)
+        val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else " FOR SHARE"}", digest(token), clock()) {
             Guest(it.getString(1), it.getString(2), it.getInt(3))
         }.singleOrNull() ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
+        demand(journal?.suppresses(guest.id) != true, 401, "unauthorized", "This profile has been scheduled for deletion.")
+        return guest
     }
 
     private fun load(connection: Connection, code: String): RoomRecord {

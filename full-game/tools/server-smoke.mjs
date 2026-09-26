@@ -28,7 +28,8 @@ async function start() {
   processHandle = spawn(java, ['-cp', classpath, 'io.github.sbshrey.tambola.server.ServerKt'], {
     cwd: root, windowsHide: true, stdio: 'ignore',
     env: { ...process.env, TAMBOLA_DATABASE_URL: url, TAMBOLA_DATABASE_USER: process.env.TAMBOLA_TEST_DATABASE_USER,
-      TAMBOLA_DATABASE_PASSWORD: process.env.TAMBOLA_TEST_DATABASE_PASSWORD, TAMBOLA_BIND_HOST: '127.0.0.1', PORT: String(port) },
+      TAMBOLA_DATABASE_PASSWORD: process.env.TAMBOLA_TEST_DATABASE_PASSWORD, TAMBOLA_BIND_HOST: '127.0.0.1', PORT: String(port),
+      TAMBOLA_LOCAL_DEVELOPMENT: 'true', TAMBOLA_DELETION_DATABASE_URL: '', TAMBOLA_DELETION_DATABASE_USER: '', TAMBOLA_DELETION_DATABASE_PASSWORD: '' },
   });
   exitPromise = once(processHandle, 'exit');
   const deadline = Date.now() + 30_000;

@@ -95,6 +95,7 @@ try {
   service = child(java, ['-cp', resolve(root, 'server/build/install/server/lib/*'), 'io.github.sbshrey.tambola.server.ServerKt'], {
     ...process.env, TAMBOLA_DATABASE_URL: db, TAMBOLA_DATABASE_USER: process.env.TAMBOLA_TEST_DATABASE_USER,
     TAMBOLA_DATABASE_PASSWORD: process.env.TAMBOLA_TEST_DATABASE_PASSWORD, TAMBOLA_BIND_HOST: '127.0.0.1', PORT: '8080',
+    TAMBOLA_LOCAL_DEVELOPMENT: 'true', TAMBOLA_DELETION_DATABASE_URL: '', TAMBOLA_DELETION_DATABASE_USER: '', TAMBOLA_DELETION_DATABASE_PASSWORD: '',
   });
   await until(async () => {
     assert.ok(!service.error && !service.done, 'Owned service did not stay running');

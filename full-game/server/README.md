@@ -1,6 +1,6 @@
 # Private room service: local development candidate
 
-Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha08 APK connects to it through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha08 validation](../ALPHA08_VALIDATION.md).
+Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha08–alpha10 APKs connect through an explicitly configured endpoint; their packaged debug default is loopback for emulator testing. See [alpha10 validation](../ALPHA10_VALIDATION.md) and the later [service recovery validation](RECOVERY_VALIDATION.md).
 
 ## Run and test
 
@@ -10,22 +10,27 @@ From `full-game/`, build with no Android SDK requirement:
 .\gradlew.bat -PserverOnly=true :server:installDist
 ```
 
-Supply `TAMBOLA_DATABASE_URL` (PostgreSQL JDBC URL), `TAMBOLA_DATABASE_USER`, and `TAMBOLA_DATABASE_PASSWORD` through the process environment/secret manager. Do not place credentials in command arguments, source, APK resources or logs. Run `server/build/install/server/bin/server.bat` on Windows, or the adjacent `server` script on Linux. Startup applies the checked, immutable SQL migration under a PostgreSQL advisory transaction lock. Use a dedicated database and appropriately restricted database credentials.
+Supply `TAMBOLA_DATABASE_URL` (PostgreSQL JDBC URL), `TAMBOLA_DATABASE_USER`, and `TAMBOLA_DATABASE_PASSWORD` through the process environment/secret manager. Also supply `TAMBOLA_DELETION_DATABASE_URL`, `TAMBOLA_DELETION_DATABASE_USER` and `TAMBOLA_DELETION_DATABASE_PASSWORD` for the independently retained deletion journal. Startup verifies separate storage, applies checked immutable migrations and replays deletion intents before opening HTTP. The journal must stay current when primary room data is restored. See the [configuration and restore runbook](BACKUP_RECOVERY.md), including the controlled cutover and prohibition on pre-journal restore points/binaries.
+
+Do not place credentials in command arguments, source, APK resources or logs. Run `server/build/install/server/bin/server.bat` on Windows, or the adjacent `server` script on Linux. Without a journal, startup is permitted only with explicit `TAMBOLA_LOCAL_DEVELOPMENT=true`, a loopback listener and a primary URL exactly matching `jdbc:postgresql://127.0.0.1:<port>/tambola_test` or `tambola_dev`. This fixture exception provides no deletion-after-restore protection.
 
 Default listener: `127.0.0.1:8080`. `PORT` changes the port. A non-loopback `TAMBOLA_BIND_HOST` requires `TAMBOLA_TLS_PROXY=true`; this is a deployment acknowledgement, **not TLS implementation**. A correctly configured TLS reverse proxy is still required before exposing the service.
 
-Integration tests require explicit `TAMBOLA_TEST_DATABASE_URL`, `TAMBOLA_TEST_DATABASE_USER`, and `TAMBOLA_TEST_DATABASE_PASSWORD`. The URL must name `tambola_test`; the test role needs schema creation privileges in that isolated database. Every test creates a random schema and drops only that schema afterward. No database fallback and no silently skipped integration tests exist.
+Integration tests require explicit `TAMBOLA_TEST_DATABASE_URL`, `TAMBOLA_TEST_DATABASE_USER`, and `TAMBOLA_TEST_DATABASE_PASSWORD`. The backup drill requires the loopback URL above and `TAMBOLA_PG_BIN` pointing to PostgreSQL 16 client binaries (for example `C:\Program Files\PostgreSQL\16\bin`). The test role needs schema creation privileges in the isolated database. Every JUnit test creates random owned schemas and drops only those afterward. No database fallback and no silently skipped integration tests exist.
 
 ```powershell
-.\gradlew.bat -PserverOnly=true :domain:test :server:test :server:installDist
+.\gradlew.bat -PserverOnly=true :domain:test :client:test :server:test :server:installDist
 node tools/server-smoke.mjs
+node tools/server-deletion-recovery.mjs
 ```
 
-The smoke script requires Node 22+, a loopback JDBC URL for `tambola_test`, and the built distribution. It starts an owned Java child process on a free loopback port, registers two fictional players, calls a number, kills that process, restarts it, verifies the saved state/event/command receipt, ends the round, and stops the owned server. Session secrets stay in process memory. The small synthetic room remains in the test database until retention cleanup; it does not write to a production database.
+The smoke script requires Node 22+, a loopback JDBC URL for `tambola_test`, and the built distribution. It explicitly uses local-development mode, starts an owned Java child process on a free loopback port, registers two fictional players, calls a number, kills that process, restarts it, verifies the saved state/event/command receipt, ends the round, and stops the owned server. Session secrets stay in process memory. The small synthetic room remains in the test database until retention cleanup; it does not write to a production database.
+
+The separate deletion-recovery process drill also requires `TAMBOLA_PG_BIN` and `CREATEDB` on that isolated fixture role. It creates three fresh owned databases, runs the real service with journal enforcement, dumps/restores only the primary database, rejects a mismatched journal before listening and verifies recovery with the current journal. It removes its owned databases/processes and temporary dump, retaining only a safe evidence JSON file. These fixture privileges are not production runtime permissions.
 
 ## Protocol envelope 2, `/v1` routes
 
-Alpha08 snapshots include immutable round-player avatars. Use the matching alpha08 client; older clients do not understand these fields. Stored older rounds/receipts remain readable by the new service/client. No SQL migration is needed for this change. See [save/protocol compatibility](../AVATARS.md) before an upgrade or rollback.
+Alpha08–alpha10 clients use protocol 2, including immutable round-player avatars; earlier clients do not understand these fields. Stored older rounds/receipts remain readable by the new service/client. The avatar change needed no SQL migration; the current recovery change adds primary migration 003 and an independently versioned journal migration. See [save/protocol compatibility](../AVATARS.md) and [recovery constraints](BACKUP_RECOVERY.md) before an upgrade or rollback.
 
 All bodies and responses use strict JSON. Session credentials are opaque bearer tokens in the `Authorization` header; never put them in a URL. A guest has one active token, valid for seven days, stored as SHA-256 only. Logging out revokes it. There is no account/password recovery yet.
 
@@ -55,7 +60,7 @@ Ordinary membership changes are limited to the lobby/finished room; explicit pro
 - Public snapshots contain only the viewer's tickets, calls, awards and scores. The private domain `Round` is never a response DTO. Future draw order and nonce remain private until completion/cancellation.
 - The pre-round commitment is SHA-256 of UTF-8 `tambola-draw-v1\n<roundId>\n<nonce>\n<comma-separated draw order>`. At the end, order and nonce allow a client to check that the order did not change. This establishes consistency with the published commitment; it does not independently prove an unbiased server.
 - Activity updates presence at most every 15 seconds. After 45 seconds without activity, host controls move to the earliest joined connected member (ID breaks timestamp ties). A former host does not automatically reclaim controls. Automatic calling continues even if all players disconnect.
-- Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Expired guest credentials/profiles are deleted after 30 days. Rate buckets are short lived. Explicit [profile deletion](PROFILE_DELETION.md) removes access and redacts stored profile fields while preserving shared game records; its confirmation expires after 30 days. Backup retention/deletion-after-restore remain deployment work; logout does not claim to erase history.
+- Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Expired guest credentials/profiles are deleted after 30 days. Rate buckets are short lived. Explicit [profile deletion](PROFILE_DELETION.md) removes access and redacts stored profile fields while preserving shared game records; its confirmation expires after 30 days. Independently retained suppression intents have no automatic pruning in this version. Startup replays them after primary restoration; provider backup independence, retention and restore acceptance remain deployment work. Logout does not claim to erase history.
 
 ## Resource limits and remaining release work
 
@@ -63,7 +68,7 @@ JSON request bodies are capped at 32 KiB with a 10-second read timeout; WebSocke
 
 Persisted minute buckets limit guest creation to 60 per socket peer address and authenticated create/join/command/read requests to 10/20/180/300 per profile. A profile can own at most five unexpired open rooms. Authentication happens before creating profile rate buckets. The service does not trust forwarded address headers; proxy-aware rate enforcement and connection/body limits must be configured and tested with the actual ingress provider. These initial quotas are not a complete abuse/DoS defense.
 
-Native Android session storage/lobby/game/reconnect flows and explicit profile deletion are implemented in the [client](../client/README.md). Still required: invite links, production identity/recovery decisions, hosting/TLS/secrets, least-privilege migration/runtime roles, metrics/alerts, backup/restore with deletion suppression, dependency/advisory review, 10-room concurrent load and large-history deletion measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
+Native Android session storage/lobby/game/reconnect flows and explicit profile deletion are implemented in the [client](../client/README.md). Local deletion-after-restore checks pass with the real service process. Still required: invite links, production identity/recovery decisions, hosting/TLS/secrets, least-privilege migration/runtime roles, metrics/alerts, independently durable journal and provider restore/retention acceptance, updated user-facing recovery-data disclosure, dependency/advisory review, 10-room concurrent load and large-history deletion measurements, fault/rollback drills, two physical-phone acceptance and deployment validation. No cloud resources have been provisioned. Do not advertise this candidate as production ready.
 
 See [service validation](VALIDATION.md) and the repository execution ledger for observed evidence.
 

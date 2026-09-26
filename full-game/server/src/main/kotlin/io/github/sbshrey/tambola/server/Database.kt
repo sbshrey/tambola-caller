@@ -37,7 +37,7 @@ class Database(url: String, user: String, password: String, schema: String = "pu
     fun migrate() = transaction { connection ->
         connection.query("SELECT pg_advisory_xact_lock(749023801)") { true }
         connection.execute("CREATE TABLE IF NOT EXISTS schema_migrations (version integer PRIMARY KEY, checksum text NOT NULL)")
-        listOf("001_rooms.sql", "002_profile_deletion.sql").forEachIndexed { index, file ->
+        listOf("001_rooms.sql", "002_profile_deletion.sql", "003_deletion_recovery.sql").forEachIndexed { index, file ->
             val version = index + 1
             val sql = requireNotNull(javaClass.getResource("/db/$file")).readText()
             val checksum = digest(sql)

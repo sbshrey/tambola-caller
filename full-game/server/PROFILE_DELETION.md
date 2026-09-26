@@ -1,6 +1,6 @@
 # Online-profile deletion
 
-This describes the implemented local service and Android behavior. Public hosting, backup expiry, deletion after a backup restore and high-volume deletion acceptance remain release gates.
+This describes the implemented local service and Android behavior. Local deletion-after-restore validation passes; public hosting, independent journal durability, provider restore/backup expiry, user-facing retention disclosure and high-volume deletion acceptance remain release gates. See [recovery validation](RECOVERY_VALIDATION.md).
 
 ## What a player can do
 
@@ -18,7 +18,9 @@ Signing out only revokes access and clears this device's online data. **Reset on
 
 `POST /v1/guests/me/delete` accepts `DeleteProfileRequest { id }` and a bearer header. The ID is a canonical UUID generated and encrypted on the device **before** HTTP. The endpoint responds with `DeleteProfileReceipt { id, deletedAt, confirmUntil }`. The client verifies the response ID and timestamp ordering.
 
-The mutation and receipt commit in one PostgreSQL transaction. A confirmation key is SHA-256 of a versioned string containing the token and request ID. The receipt table contains only that hash and deletion/expiry times, not the profile ID, display name or raw token. Presenting the same token plus request ID returns the original receipt for **30 days**, even though that token can no longer access any room. A different ID does not prove a previous deletion. There are 30 deletion attempts per minute per socket peer address; production ingress enforcement remains separate.
+The service first commits an intent to its independent deletion journal, then commits primary redaction and the confirmation in one primary PostgreSQL transaction. A confirmation key is SHA-256 of a versioned string containing the token and request ID. The primary receipt table contains only that hash and deletion/expiry times. The independent journal additionally retains an opaque player ID and sequence so an older backup can be redacted again; neither store keeps a raw token or display name in its deletion records. Presenting the same token plus request ID returns the original receipt for **30 days**, even though that token can no longer access any room. A different ID does not prove a previous deletion. There are 30 deletion attempts per minute per socket peer address; production ingress enforcement remains separate.
+
+If the journal write fails, deletion cannot be confirmed. If it commits but primary redaction fails, the intent survives: that profile cannot authenticate, and replay or the original request completes primary redaction. A receipt is returned only after primary commit. Journal failure does not become deletion success, and expired confirmation does not remove the restore-suppression entry.
 
 If connectivity fails, Android retains the encrypted original intent, blocks other mutations, suspends room streaming and offers **Retry pending action**. A recreated/restored session can retry the same intent. HTTP 401, local reset, a timeout or a missing room is never interpreted as deletion success. Resetting while deletion is pending explicitly warns that it discards the details needed to confirm that request. If the service confirmed deletion but local cleanup failed, the app distinguishes those outcomes and offers local cleanup recovery.
 
@@ -26,15 +28,15 @@ Newly expired but **unrevoked** credentials may request deletion only; they cann
 
 ## Stored records, locking and migration
 
-Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Migration 001 stays unchanged. Startup applies ordered migrations under the existing advisory lock and verifies their immutable checksums.
+Migration `002_profile_deletion.sql` adds a separate revocation timestamp, a historical participant index and deletion confirmations. Migration 003 adds a binding to the independent journal and a transactional replay cursor; the journal has its own migration 001. Earlier primary migrations stay unchanged. Startup applies ordered migrations under advisory locks and verifies immutable checksums, then replays deletion before opening HTTP. See the [restore runbook](BACKUP_RECOVERY.md) for required startup configuration and handling of pre-journal restore points.
 
 The participant index covers current members/round players, past audits and command/create receipt actors. Backfill includes former members who no longer appear in the current lobby. Every later save records known guest participants. Deleted profiles are excluded from future index inserts even when their opaque player ID remains in an ongoing round.
 
 Version-1 logout records cannot be distinguished from ordinary expired sessions. The migration conservatively treats tokens already expired at upgrade as revoked; it does not grant those old tokens new destructive authority. Fresh unrevoked expirations use the explicit new policy above.
 
-Authentication holds a shared guest-row lock until its room transaction finishes. Deletion exclusively locks the guest, then affected rooms in ID order. This prevents a join/command authorized just before deletion from restoring the old name afterward. Worker room locks also use ID order within their fairness-selected batch. Room/profile edits, audit/receipt redaction and confirmation all roll back on failure. Other players' command IDs and request hashes are preserved while their historical response profile fields are redacted.
+Authentication holds a shared guest-row lock until its room transaction finishes and checks independent suppression. Deletion exclusively locks the guest, then affected rooms in ID order. This prevents a join/command authorized just before deletion from restoring the old name afterward. Worker room locks also use ID order within their fairness-selected batch. Primary room/profile edits, audit/receipt redaction and confirmation all roll back on failure; the independently committed intent remains for retry. Other players' command IDs and request hashes are preserved while their historical response profile fields are redacted.
 
-Rooms close 24 hours after creation; room records and audits expire 30 days later. Expired guest rows are removed after 30 days, and deletion confirmations are removed at `confirmUntil`. Short-lived rate records contain hashed socket addresses or opaque profile IDs. There is no deployed backup policy yet. Before public release, define backup expiry, retain an appropriate deletion-suppression record outside any restore point, and test that restoring a backup cannot make deleted profiles available again.
+Rooms close 24 hours after creation; room records and audits expire 30 days later. Expired guest rows are removed after 30 days, and primary deletion confirmations are removed at `confirmUntil`. Short-lived rate records contain hashed socket addresses or opaque profile IDs. Independent journal entries intentionally have no automatic pruning: they must outlive every backup/PITR/export capable of restoring that identity. This is retained pseudonymous recovery data. There is no deployed backup policy yet. Before public release, define and disclose its retention/retirement policy, update the Android deletion disclosure, and validate provider backup isolation and restore cutover. Existing alpha10 release files remain unchanged by the service update.
 
 ## Local fault fixture
 

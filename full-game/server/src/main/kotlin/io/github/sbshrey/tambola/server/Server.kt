@@ -31,9 +31,36 @@ fun main() {
         "Public binding requires TAMBOLA_TLS_PROXY=true and a TLS reverse proxy."
     }
     val port = (System.getenv("PORT") ?: "8080").toInt().also { require(it in 1..65535) }
-    Database(required("TAMBOLA_DATABASE_URL"), required("TAMBOLA_DATABASE_USER"), required("TAMBOLA_DATABASE_PASSWORD")).use { database ->
-        database.migrate()
-        embeddedServer(Netty, host = host, port = port) { roomsModule(database) }.start(wait = true)
+    val primaryUrl = required("TAMBOLA_DATABASE_URL")
+    val journalUrl = System.getenv("TAMBOLA_DELETION_DATABASE_URL")?.takeIf { it.isNotBlank() }
+    validateRecoveryConfiguration(host, primaryUrl, journalUrl, System.getenv("TAMBOLA_LOCAL_DEVELOPMENT") == "true")
+    val journalDatabase = journalUrl?.let { Database(it, required("TAMBOLA_DELETION_DATABASE_USER"), required("TAMBOLA_DELETION_DATABASE_PASSWORD")) }
+    try {
+        val journal = journalDatabase?.let { DeletionJournal(it).also(DeletionJournal::migrate) }
+        Database(primaryUrl, required("TAMBOLA_DATABASE_USER"), required("TAMBOLA_DATABASE_PASSWORD")).use { database ->
+            database.migrate()
+            journal?.verifyRestoreBoundary(database)
+            val service = RoomService(database, journal = journal)
+            // No listener exists while restored identities and historical receipts are being redacted.
+            while (service.replayDeletions() > 0) { /* bounded transactions, restartable cursor */ }
+            embeddedServer(Netty, host = host, port = port) { roomsModule(database, service) }.start(wait = true)
+        }
+    } finally { journalDatabase?.close() }
+}
+
+internal fun validateRecoveryConfiguration(host: String, primaryUrl: String, journalUrl: String?, localDevelopment: Boolean) {
+    val loopback = host in setOf("127.0.0.1", "::1")
+    if (journalUrl == null) {
+        require(localDevelopment && loopback && primaryUrl.matches(Regex("jdbc:postgresql://127\\.0\\.0\\.1:[0-9]+/tambola_(test|dev)"))) {
+            "An independent deletion database is required. The explicit local-development exception only supports loopback test/dev databases."
+        }
+    } else {
+        fun target(value: String): Triple<String, Int, String> {
+            require(value.startsWith("jdbc:postgresql://"))
+            val uri = java.net.URI(value.removePrefix("jdbc:"))
+            return Triple(requireNotNull(uri.host).lowercase(), if (uri.port < 0) 5432 else uri.port, uri.path)
+        }
+        require(target(primaryUrl) != target(journalUrl)) { "The deletion journal must use a different database restore boundary" }
     }
 }
 
@@ -60,7 +87,7 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
     }
     routing {
         get("/health/live") { call.respond(Health("ok")) }
-        get("/health/ready") { withContext(Dispatchers.IO) { database.healthy() }; call.respond(Health("ready")) }
+        get("/health/ready") { withContext(Dispatchers.IO) { database.healthy(); service.recoveryHealthy() }; call.respond(Health("ready")) }
         route("/v1") {
             post("/guests") {
                 val body = call.body<GuestRequest>()
@@ -122,6 +149,7 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             var ticks = 0
             while (isActive) {
                 try {
+                    service.replayDeletions(10)
                     service.tick()
                     if (++ticks % 60 == 0) service.cleanup()
                 } catch (error: CancellationException) { throw error }
