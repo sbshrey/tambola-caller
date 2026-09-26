@@ -17,3 +17,5 @@ GRANT UPDATE (requests) ON rate_limits TO :"runtime_role";
 GRANT UPDATE (journal_id, applied_sequence) ON deletion_recovery TO :"runtime_role";
 GRANT DELETE ON guests, rooms, command_receipts, room_events, rate_limits,
     room_participants, deletion_receipts TO :"runtime_role";
+GRANT SELECT, INSERT ON coin_wallets, coin_ledger TO :"runtime_role";
+GRANT UPDATE (refill_after) ON coin_wallets TO :"runtime_role";

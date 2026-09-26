@@ -14,6 +14,33 @@ import org.junit.Test
 import java.util.UUID
 
 class HttpTest : PostgresTest() {
+    @Test fun `wallet endpoints authenticate reject forged amounts and return only spendable balance`() = testApplication {
+        application { roomsModule(database, service, runWorker = false) }
+        val actor = service.register(GuestRequest("Wallet HTTP QA"), "wallet-http")
+        assertEquals(HttpStatusCode.Unauthorized, client.get("/v1/wallet").status)
+        val balance = client.get("/v1/wallet") { bearerAuth(actor.token) }
+        assertEquals(HttpStatusCode.OK, balance.status)
+        assertEquals("no-store", balance.headers[HttpHeaders.CacheControl])
+        assertEquals(1_500L, WireJson.decodeFromString<WalletView>(balance.bodyAsText()).balance)
+        assertFalse(balance.bodyAsText().contains(actor.token))
+        assertFalse(balance.bodyAsText().contains(actor.playerId))
+        val request = RefillRequest(UUID.randomUUID().toString())
+        val forged = client.post("/v1/wallet/refill") {
+            bearerAuth(actor.token); contentType(ContentType.Application.Json)
+            setBody("{\"id\":\"${request.id}\",\"amount\":900000}")
+        }
+        assertEquals(HttpStatusCode.BadRequest, forged.status)
+        database.transaction { CoinLedger.change(it, actor.playerId, "http:purchase", -1_500, now.get()) }
+        suspend fun refill() = client.post("/v1/wallet/refill") {
+            bearerAuth(actor.token); contentType(ContentType.Application.Json); setBody(WireJson.encodeToString(request))
+        }
+        val first = refill()
+        assertEquals(HttpStatusCode.OK, first.status)
+        assertEquals(COIN_REFILL, WireJson.decodeFromString<WalletView>(first.bodyAsText()).balance)
+        assertEquals(first.bodyAsText(), refill().bodyAsText())
+        service.revoke(actor.token)
+        assertEquals(HttpStatusCode.Unauthorized, refill().status)
+    }
     @Test fun `an open event stream closes after session revocation`() = testApplication {
         application { roomsModule(database, service, runWorker = false) }
         val actor = service.register(GuestRequest("Revoked stream"), "revoked-stream")

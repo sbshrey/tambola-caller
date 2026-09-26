@@ -130,6 +130,11 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             call.respondText(operations.render(database.poolStats(), journalDatabase?.poolStats()), ContentType.parse("text/plain; version=0.0.4; charset=utf-8"))
         }
         route("/v1") {
+            get("/wallet") { call.respond(withContext(Dispatchers.IO) { service.wallet(call.bearer()) }) }
+            post("/wallet/refill") {
+                val body = call.body<RefillRequest>()
+                call.respond(withContext(Dispatchers.IO) { service.refill(call.bearer(), body) })
+            }
             post("/guests") {
                 val body = call.body<GuestRequest>()
                 val result = withContext(Dispatchers.IO) { service.register(body, call.request.local.remoteHost) }

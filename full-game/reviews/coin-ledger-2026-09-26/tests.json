@@ -1,0 +1,30 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.HttpTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

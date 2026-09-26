@@ -88,6 +88,7 @@ class RuntimePrivilegesTest {
     @Test fun `restricted roles play archive redact retry replay and clean retained records`() {
         val host = service.register(GuestRequest("Role host", 5), "host")
         val peer = service.register(GuestRequest("Role peer", 3), "peer")
+        assertEquals(1_500L, service.wallet(host.token).balance)
         val code = service.create(host.token, CreateRoomRequest(UUID.randomUUID().toString(), RoomOptions(automaticCalling = false))).snapshot.code
         service.join(peer.token, code)
         fun command(player: GuestCredentials, action: RoomAction): RoomUpdate = service.command(player.token, code,
@@ -128,7 +129,9 @@ class RuntimePrivilegesTest {
     @Test fun `runtime has no schema temp registry or permission delegation authority`() {
         listOf("CREATE TABLE forbidden (id int)", "CREATE TEMP TABLE guests (id int)", "CREATE SCHEMA forbidden",
             "UPDATE schema_migrations SET checksum = 'changed'", "DELETE FROM schema_migrations", "TRUNCATE guests",
-            "ALTER TABLE guests ADD COLUMN bypass text", "INSERT INTO deletion_recovery VALUES(false, NULL, 0)").forEach { denied(mainRuntime, it) }
+            "ALTER TABLE guests ADD COLUMN bypass text", "INSERT INTO deletion_recovery VALUES(false, NULL, 0)",
+            "UPDATE coin_ledger SET amount = amount + 1", "DELETE FROM coin_ledger", "DELETE FROM coin_wallets",
+            "UPDATE coin_wallets SET player_id = 'another-profile'").forEach { denied(mainRuntime, it) }
         assertThrows(IllegalStateException::class.java) { RuntimePrivileges.verify(mainOwner, journal = false) }
         assertThrows(SQLException::class.java) { mainRuntime.migrate() }
     }
@@ -151,9 +154,10 @@ class RuntimePrivilegesTest {
     }
 
     @Test fun `verification rejects missing modified and newer migrations without repairing them`() {
+        val before = mainOwner.transaction { it.query("SELECT count(*) FROM schema_migrations") { row -> row.getInt(1) }.single() }
         mainOwner.transaction { it.execute("DELETE FROM schema_migrations WHERE version = 3") }
         assertThrows(IllegalStateException::class.java) { mainRuntime.verifyMigrations() }
-        assertEquals(2, mainOwner.transaction { it.query("SELECT count(*) FROM schema_migrations") { row -> row.getInt(1) }.single() })
+        assertEquals(before - 1, mainOwner.transaction { it.query("SELECT count(*) FROM schema_migrations") { row -> row.getInt(1) }.single() })
         mainOwner.transaction { it.execute("INSERT INTO schema_migrations VALUES (3, ?)", digest(requireNotNull(javaClass.getResource("/db/003_deletion_recovery.sql")).readText())) }
         mainRuntime.verifyMigrations()
         mainOwner.transaction { it.execute("INSERT INTO schema_migrations VALUES(99, 'future')") }

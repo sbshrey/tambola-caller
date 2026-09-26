@@ -15,7 +15,7 @@
 
 These are tuning defaults. Coins are free game currency without purchase, transfer or redemption.
 
-1. Grant 1,500 starter coins once per server wallet. Tickets cost 100 coins, independently chosen per player from 1–6. Provide a bounded, server-controlled free refill when broke; no purchase gate.
+1. Grant 1,500 starter coins once per server wallet. Tickets cost 100 coins, independently chosen per player from 1–6. Below one ticket's balance, allow 500 free coins at most once per five minutes; no purchase gate.
 2. Reserve/debit purchases atomically with lobby allocations. Quantity changes adjust only the difference. Leaving, removal or expired unstarted lobbies release reservations once. Display total before purchase. Retries never charge twice.
 3. Freeze the pool and schedule at sales closure. Include explicitly identified computer seats in the virtual pool. Publish total tickets, pool, prize values and prize count before the first call. Never change the schedule after observing draws.
 4. Allocate 10% each to Early 5, Corners, Top, Middle and Bottom; 50% to houses. Under 12 tickets: one house (50%). 12–23 tickets: two houses (35%, 15%). At least 24: three houses (30%, 15%, 5%). This yields 6, 7 or 8 prize slots. Integer allocation sums to the exact pool.

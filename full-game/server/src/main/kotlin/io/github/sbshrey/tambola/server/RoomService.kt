@@ -21,8 +21,29 @@ class RoomService(
         rate("guest:${digest(source)}", 60)
         val token = secret()
         val credentials = GuestCredentials(UUID.randomUUID().toString(), token, clock() + SESSION_LIFETIME)
-        database.transaction { it.execute("INSERT INTO guests (id, name, avatar, token_hash, expires_at) VALUES (?, ?, ?, ?, ?)", credentials.playerId, name, request.avatar, digest(token), credentials.expiresAt) }
+        database.transaction {
+            it.execute("INSERT INTO guests (id, name, avatar, token_hash, expires_at) VALUES (?, ?, ?, ?, ?)", credentials.playerId, name, request.avatar, digest(token), credentials.expiresAt)
+            CoinLedger.open(it, credentials.playerId, clock())
+        }
         return credentials
+    }
+
+    fun wallet(token: String): WalletView {
+        authenticatedRate(token, "wallet", 120)
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token)
+            CoinLedger.open(connection, guest.id, clock())
+        }
+    }
+
+    fun refill(token: String, request: RefillRequest): WalletView {
+        validId(request.id)
+        authenticatedRate(token, "refill", 10)
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token)
+            CoinLedger.open(connection, guest.id, clock())
+            CoinLedger.refill(connection, guest.id, request.id, clock())
+        }
     }
 
     fun revoke(token: String) = database.transaction { connection ->
@@ -148,7 +169,7 @@ class RoomService(
         }
         connection.execute("DELETE FROM command_receipts WHERE actor = ?", playerId)
         connection.execute("DELETE FROM room_participants WHERE player_id = ?", playerId)
-        listOf("create", "join", "read", "command").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
+        listOf("create", "join", "read", "command", "wallet", "refill").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
         connection.execute("DELETE FROM guests WHERE id = ?", playerId)
         if (intent.confirmUntil > now) connection.execute("INSERT INTO deletion_receipts VALUES (?, ?, ?) ON CONFLICT (confirmation_hash) DO NOTHING", intent.proof, intent.deletedAt, intent.confirmUntil)
     }
