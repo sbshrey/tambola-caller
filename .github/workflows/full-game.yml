@@ -14,9 +14,50 @@ on:
         description: Run the full automatic game with two services and recovery faults
         type: boolean
         default: false
+      automatic_soak:
+        description: Run nine automatic games in ten rooms (about seventy minutes)
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
+  automatic-soak:
+    if: github.event_name == 'workflow_dispatch' && inputs.automatic_soak
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: tambola_test
+          POSTGRES_USER: tambola_test
+          POSTGRES_PASSWORD: isolated-ci-test-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U tambola_test -d tambola_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TAMBOLA_TEST_DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/tambola_test
+      TAMBOLA_TEST_DATABASE_USER: tambola_test
+      TAMBOLA_TEST_DATABASE_PASSWORD: isolated-ci-test-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify sustained automatic capacity and rematches
+        working-directory: full-game
+        run: bash gradlew -PserverOnly=true :server:automaticSoakLoad --no-daemon --console=plain
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tambola-automatic-soak
+          path: |
+            full-game/.test-workspace/soak-*/evidence.json
+            full-game/.test-workspace/soak-*/gc.log
+            full-game/.test-workspace/soak-*/collection-*.txt
   automatic-recovery:
     if: github.event_name == 'workflow_dispatch' && inputs.automatic_recovery
     runs-on: ubuntu-24.04

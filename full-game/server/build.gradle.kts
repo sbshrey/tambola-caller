@@ -55,3 +55,15 @@ tasks.register<JavaExec>("automaticRecoveryLoad") {
     jvmArgs("-XX:ActiveProcessorCount=4")
     timeout.set(Duration.ofMinutes(20))
 }
+
+// Nine automatic rematches with persistent clients; opt-in, roughly seventy minutes.
+tasks.register<JavaExec>("automaticSoakLoad") {
+    dependsOn(tasks.testClasses, tasks.installDist)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("io.github.sbshrey.tambola.server.AutomaticSoakLoad")
+    workingDir = rootProject.projectDir
+    maxHeapSize = "768m"
+    jvmArgs("-XX:ActiveProcessorCount=4")
+    // The fixture's 85-minute deadline runs cleanup before this outer watchdog.
+    timeout.set(Duration.ofMinutes(90))
+}

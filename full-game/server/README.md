@@ -87,3 +87,5 @@ Protocol v1 native-client additions: `PublicRound.players` retains the immutable
 Retained-history deletion now streams records within its atomic transaction, and background replay defers work already locked by a live operation. See [the memory/contention regression, tests and evidence](HISTORY_DELETION_VALIDATION.md). No schema, grant or protocol change is required.
 
 The opt-in [automatic recovery fixture](AUTOMATIC_RECOVERY.md) completes a full 32-player game across two service processes, lost responses, host succession, slow native consumption and service outages. [Exact validation](AUTOMATIC_RECOVERY_VALIDATION.md) records the passing candidate and remaining hosted, Android-device, capacity and soak limits.
+
+The separate [automatic capacity/soak fixture](AUTOMATIC_SOAK.md) keeps ten rooms and 320 native clients connected through nine games and rematches. It records per-game correctness, delivery, retained-heap checkpoints and cleanup; only an actual complete run establishes its stated workload.
