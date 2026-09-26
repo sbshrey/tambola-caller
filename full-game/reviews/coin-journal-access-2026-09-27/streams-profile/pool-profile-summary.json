@@ -1,0 +1,87 @@
+{
+  "runId": "e3f5d9920a924338",
+  "definition": "Test-only JFR ThreadPark events with >=1 ms threshold and both RoomService.match and Hikari ConcurrentBag.borrow in the recorded stack. Includes instrumentation overhead. Events are not request counts or full connection-acquisition durations; missing stacks or shorter parks are not measured. Summed overlapping waits are concurrent thread time, not elapsed wall time. Epoch-millisecond window boundaries are approximate. No capacity acceptance.",
+  "analyzerSha256": "fb9fa0aaed87c3015c241340e645c0a1b0ef46ed23a44a4d8892dbfcb3c92fed",
+  "events": 2743,
+  "lastFlushEpochMs": 1790462548321,
+  "waves": [
+    {
+      "wave": 1,
+      "purchaseWindowMs": 4136,
+      "purchaseRoundTripMs": {
+        "count": 320,
+        "p50": 2270.6019,
+        "p95": 3732.4011,
+        "p99": 3953.3131,
+        "max": 4106.9762
+      },
+      "poolParks": {
+        "rate_primary": {
+          "parkEventsOverlappingWindow": 1000,
+          "sumOfWindowOverlapsMs": 163659.58740234375,
+          "fullEventDurationMs": {
+            "p50": 115.221569,
+            "p95": 382.09124,
+            "max": 464.188182
+          }
+        },
+        "rate_journal": {
+          "parkEventsOverlappingWindow": 0,
+          "sumOfWindowOverlapsMs": 0,
+          "fullEventDurationMs": null
+        },
+        "match_primary": {
+          "parkEventsOverlappingWindow": 10,
+          "sumOfWindowOverlapsMs": 430.9130859375,
+          "fullEventDurationMs": {
+            "p50": 37.763514,
+            "p95": 86.796818,
+            "max": 86.796818
+          }
+        },
+        "match_journal": {
+          "parkEventsOverlappingWindow": 0,
+          "sumOfWindowOverlapsMs": 0,
+          "fullEventDurationMs": null
+        }
+      }
+    },
+    {
+      "wave": 2,
+      "purchaseWindowMs": 1677,
+      "purchaseRoundTripMs": {
+        "count": 320,
+        "p50": 891.3065,
+        "p95": 1531.4296,
+        "p99": 1651.6975,
+        "max": 1673.4436
+      },
+      "poolParks": {
+        "rate_primary": {
+          "parkEventsOverlappingWindow": 1103,
+          "sumOfWindowOverlapsMs": 77755.46557617188,
+          "fullEventDurationMs": {
+            "p50": 56.093454,
+            "p95": 218.362467,
+            "max": 288.873411
+          }
+        },
+        "rate_journal": {
+          "parkEventsOverlappingWindow": 0,
+          "sumOfWindowOverlapsMs": 0,
+          "fullEventDurationMs": null
+        },
+        "match_primary": {
+          "parkEventsOverlappingWindow": 0,
+          "sumOfWindowOverlapsMs": 0,
+          "fullEventDurationMs": null
+        },
+        "match_journal": {
+          "parkEventsOverlappingWindow": 0,
+          "sumOfWindowOverlapsMs": 0,
+          "fullEventDurationMs": null
+        }
+      }
+    }
+  ]
+}

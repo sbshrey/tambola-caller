@@ -1,0 +1,108 @@
+{
+  "tests": 68.0,
+  "failures": 0.0,
+  "errors": 0.0,
+  "skipped": 0.0,
+  "suites": [
+    {
+      "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 6.246,
+      "timestamp": "2026-09-26T22:45:00.172Z",
+      "xmlSha256": "4bebf29839a68d4e6d7199141ee8fed6a4ecbf72d6b3ccbab8b4e9b71eb56e52"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 27.255,
+      "timestamp": "2026-09-26T22:45:06.454Z",
+      "xmlSha256": "f22023e5fef6ee31e9e6dc45abc0b8e44c59a03f5b4799db387cf07c2c1bb30f"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 28.902,
+      "timestamp": "2026-09-26T22:45:33.712Z",
+      "xmlSha256": "23e0f0cd2ba67729b0d57d32ade7673a67e11f93fc189a73c4a3d634563ae323"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 19.555,
+      "timestamp": "2026-09-26T22:46:02.617Z",
+      "xmlSha256": "6ada11a72440d365b2691a7d79a03fc7859c5222a29434c837b63ded09a53ccd"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 11.869,
+      "timestamp": "2026-09-26T22:46:22.174Z",
+      "xmlSha256": "f8622a41e96c6d2e7e1c970c6730d99fdf862bb381063db34d135e4baf1c78bd"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HttpTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 14.837,
+      "timestamp": "2026-09-26T22:46:34.050Z",
+      "xmlSha256": "641d461ea7229fb61add454b91dd2591e4182c0f1cac2ab4bc9af3385bc1d5be"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 10.306,
+      "timestamp": "2026-09-26T22:46:48.894Z",
+      "xmlSha256": "fea37a016e852471f3cef0e234767387a6ef18fbaeee8c63d6d246c46c21b787"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 5.943,
+      "timestamp": "2026-09-26T22:46:59.209Z",
+      "xmlSha256": "0bc579502f353dd07a9276912eb6b3ca5fc57bbf5207e896910d737d40c3358e"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 153.77,
+      "timestamp": "2026-09-26T22:47:05.171Z",
+      "xmlSha256": "ed39beb6bd0e682555908d601972ae8ce71bd5fb2ac57df013d5f7b3ba5f231c"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "durationSeconds": 17.699,
+      "timestamp": "2026-09-26T22:49:38.946Z",
+      "xmlSha256": "b668ae3bf15b3289805637820e6d5bd17e0c8ba29f761603fe7f66419960b0a5"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { parseRuntimeManifest } from '../tools/service-runtime.mjs';
+const directory = new URL('./journal-baseline-runtime/', import.meta.url);
+const names = await readdir(directory);
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const runtime = parseRuntimeManifest((await Promise.all(names.map(async name => `${sha(await readFile(new URL(name, directory)))}  ${name}\n`))).join(''));
+assert.equal(runtime.serviceRuntimeSha256, 'b80fe5ae8fb9435d22c5313f9d8b39e53f9b9cc87499f1be6c81af8e7ff92abb');
+function oldAuthentication(revision) {
+  const text = execFileSync('git', ['show', `${revision}:full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt`], {encoding: 'utf8', windowsHide: true});
+  return text.slice(text.indexOf('    private fun authenticate('), text.indexOf('    private fun load(')).replaceAll('\r\n', '\n');
+}
+const installedSource = '9fe335d47b5b76688c0a148f64e074af4630fbdf';
+assert.equal(oldAuthentication(installedSource), oldAuthentication('4550cb9'));
+const evidence = {copiedRuntimeSha256: runtime.serviceRuntimeSha256, serviceJarSha256: runtime.serviceJarSha256,
+  sourceCommit: installedSource, jarCount: names.length, previousCandidateSource: '4550cb9',
+  authenticationMethodIdenticalInBothSources: true, authenticationMethodSha256: sha(oldAuthentication(installedSource)),
+  testSourceSha256: sha(await readFile(new URL('../server/src/test/kotlin/io/github/sbshrey/tambola/server/JournalAuthenticationTest.kt', import.meta.url))),
+  method: 'Private verified copy of installed runtime precedes current test classpath. JUnit uses isolated random test schemas; installed host is not called or mutated.'};
+await writeFile(new URL('../reviews/coin-journal-access-2026-09-27/old-runtime-proof.json', import.meta.url), JSON.stringify(evidence, null, 2) + '\n');
+console.log(JSON.stringify(evidence, null, 2));

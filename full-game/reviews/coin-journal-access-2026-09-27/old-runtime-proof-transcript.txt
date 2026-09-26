@@ -1,0 +1,86 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:compileTestKotlin UP-TO-DATE
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:journalOldRuntimeProof
+JUnit version 4.13.2
+.04:23:06,101 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found logback-core version 1.6.4
+04:23:06,102 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6f1c29b7 - No custom configurators were discovered as a service.
+04:23:06,102 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6f1c29b7 - Trying to configure with ch.qos.logback.classic.util.DefaultJoranConfigurator
+04:23:06,103 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6f1c29b7 - Constructed configurator of type class ch.qos.logback.classic.util.DefaultJoranConfigurator
+04:23:06,103 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+04:23:06,106 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [jar:file:/D:/Github/App%20Ideas/tambola-caller/full-game/.test-workspace/journal-baseline-runtime/server.jar!/logback.xml]
+04:23:06,107 |-WARN in ch.qos.logback.classic.util.DefaultJoranConfigurator@4d6025c5 - Resource [logback.xml] occurs multiple times on the classpath.
+04:23:06,107 |-WARN in ch.qos.logback.classic.util.DefaultJoranConfigurator@4d6025c5 - Resource [logback.xml] occurs at [file:/D:/Github/App%20Ideas/tambola-caller/full-game/server/build/resources/main/logback.xml]
+04:23:06,107 |-WARN in ch.qos.logback.classic.util.DefaultJoranConfigurator@4d6025c5 - Resource [logback.xml] occurs at [jar:file:/D:/Github/App%20Ideas/tambola-caller/full-game/.test-workspace/journal-baseline-runtime/server.jar!/logback.xml]
+04:23:06,188 |-INFO in ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull - Scan attribute not set.
+04:23:06,195 |-INFO in ch.qos.logback.classic.model.processor.CallerInstructionLogic@7f284218 - No contradictions in caller extraction instruction were detected
+04:23:06,196 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [CONSOLE]
+04:23:06,196 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+04:23:06,202 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+04:23:06,238 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - NOTE: Writing to the console can be slow. Try to avoid logging to the 
+04:23:06,238 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - console in production environments, especially in high volume systems.
+04:23:06,238 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - See also https://logback.qos.ch/codes.html#slowConsole
+04:23:06,239 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [io.netty] to WARN
+04:23:06,239 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.zaxxer.hikari] to WARN
+04:23:06,239 |-INFO in ch.qos.logback.classic.model.processor.RootLoggerModelHandler - Setting level of ROOT logger to INFO
+04:23:06,240 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [CONSOLE] to Logger[ROOT]
+04:23:06,240 |-INFO in ch.qos.logback.core.model.processor.DefaultProcessor@407a7f2a - End of configuration.
+04:23:06,241 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@4ea5b703 - Registering current configuration as safe fallback point
+04:23:06,244 |-INFO in ch.qos.logback.classic.util.ContextInitializer@6f1c29b7 - ch.qos.logback.classic.util.DefaultJoranConfigurator.configure() call lasted 138 milliseconds. ExecutionStatus=DO_NOT_INVOKE_NEXT_IF_ANY
+
+.E...
+Time: 10.896
+There was 1 failure:
+1) journal rollback during authentication cannot pass a previously checked head(io.github.sbshrey.tambola.server.JournalAuthenticationTest)
+java.lang.AssertionError: expected java.sql.SQLException to be thrown, but nothing was thrown
+	at org.junit.Assert.assertThrows(Assert.java:1028)
+	at org.junit.Assert.assertThrows(Assert.java:981)
+	at io.github.sbshrey.tambola.server.JournalAuthenticationTest.unavailable(JournalAuthenticationTest.kt:20)
+	at io.github.sbshrey.tambola.server.JournalAuthenticationTest.journal rollback during authentication cannot pass a previously checked head(JournalAuthenticationTest.kt:86)
+
+FAILURES!!!
+Tests run: 5,  Failures: 1
+
+
+> Task :server:journalOldRuntimeProof FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:journalOldRuntimeProof' (registered in initialization script '.test-workspace\journal-old-runtime.init.gradle').
+> Process 'command 'D:\Github\App Ideas\tambola-caller\full-game\.test-workspace\temurin17\jdk-17.0.20.1+1\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 13s
+11 actionable tasks: 1 executed, 10 up-to-date

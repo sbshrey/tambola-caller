@@ -1,0 +1,11 @@
+{
+  "copiedRuntimeSha256": "b80fe5ae8fb9435d22c5313f9d8b39e53f9b9cc87499f1be6c81af8e7ff92abb",
+  "serviceJarSha256": "4df54270b7e6785ff984ab4aa7bda254d253f6879da3991cbe155b2295a0392d",
+  "sourceCommit": "9fe335d47b5b76688c0a148f64e074af4630fbdf",
+  "jarCount": 51,
+  "previousCandidateSource": "4550cb9",
+  "authenticationMethodIdenticalInBothSources": true,
+  "authenticationMethodSha256": "c234a9bd7d644e956278627eb3e5bd488cdac6ba4ab1f1316c72c0fd0c762db4",
+  "testSourceSha256": "5d6b3d9b4fda2f9914997a0d060f669d2c3ae2096408c472ae722d2f16ab395d",
+  "method": "Private verified copy of installed runtime precedes current test classpath. JUnit uses isolated random test schemas; installed host is not called or mutated."
+}
