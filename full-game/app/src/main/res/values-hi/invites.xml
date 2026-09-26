@@ -1,0 +1,16 @@
+<resources>
+    <string name="invite_title">रूम का निमंत्रण</string>
+    <string name="invite_invalid">यह निमंत्रण इस बिल्ड से मेल नहीं खाता या रूम कोड सही नहीं है। होस्ट से नया लिंक माँगें या उनका रूम कोड लिखें।</string>
+    <string name="invite_unavailable">यह कोड रख लें और जुड़ने के लिए ऑनलाइन रूम वाला बिल्ड इस्तेमाल करें।</string>
+    <string name="invite_already_here">आप इसी रूम में हैं। आपके टिकट और खेल की प्रगति नहीं बदली है।</string>
+    <string name="invite_other_room">आप रूम %1$s में हैं। इस निमंत्रण से जुड़ने से पहले उस रूम का खेल पूरा करें या रूम छोड़ें। निमंत्रण यहाँ रहेगा।</string>
+    <string name="invite_pending">पहले अपने लंबित अनुरोध की पुष्टि करें। यह निमंत्रण यहाँ रहेगा।</string>
+    <string name="invite_restore_profile">जुड़ने से पहले नीचे ऑनलाइन प्रोफ़ाइल की स्थिति ठीक करें।</string>
+    <string name="invite_create_profile">नीचे अपना उपनाम और अवतार चुनें। प्रोफ़ाइल बनाने के बाद निमंत्रण से जुड़ें पर टैप करें।</string>
+    <string name="invite_review">जुड़ने पर इस रूम के सदस्य आपका दिखने वाला नाम और अवतार देखेंगे। निमंत्रण भेजे जाने के बाद रूम की अवधि समाप्त हो सकती है, खेल शुरू हो सकता है या रूम लॉक हो सकता है।</string>
+    <string name="invite_view_room">इसी रूम में आगे खेलें</string>
+    <string name="invite_join">निमंत्रण से जुड़ें</string>
+    <string name="invite_dismiss">निमंत्रण हटाएँ</string>
+    <string name="invite_share">निमंत्रण साझा करें</string>
+    <string name="invite_share_message">मेरे निजी तंबोला टुगेदर रूम से जुड़ें:\n%1$s\n\nरूम कोड: %2$s\nऐप खोलें, निमंत्रण पढ़ें और जुड़ें। अंक और बैज वाला मुफ़्त सामाजिक खेल।</string>
+</resources>

@@ -30,37 +30,44 @@ import io.github.sbshrey.tambola.game.online.*
 import io.github.sbshrey.tambola.game.presentation.WinMoment
 
 @Composable
-fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiState, online: OnlineViewModel) {
+fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiState, online: OnlineViewModel,
+    invitation: RoomInviteState = RoomInviteState(), dismissInvitation: () -> Unit = {}) {
     val words = gameText()
     BackHandler(state.screen != Screen.HOME && state.ruleDraft == null) { model.navigate(Screen.HOME) }
     val pageScroll = key(state.screen, state.round?.id,
         onlineState.room?.roomId.takeIf { state.screen == Screen.ONLINE },
+        invitation.revision.takeIf { state.screen == Screen.ONLINE },
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
     Surface(Modifier.fillMaxSize().testTag("app-background"), color = MaterialTheme.colorScheme.background) {
-        Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (state.screen != Screen.HOME) TextButton(onClick = { model.navigate(Screen.HOME) }) { Text(words(R.string.ui_home)) }
-                else Box(Modifier.size(36.dp).background(Saffron, CircleShape), contentAlignment = Alignment.Center) { Text("T", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onPrimary, fontSize = 22.sp) }
-                Text(if (state.screen == Screen.HOME) words(R.string.ui_tambola_together) else words.screen(state.screen), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                if (state.screen != Screen.SETTINGS) TextButton(onClick = { model.navigate(Screen.SETTINGS) }) { Text(words(R.string.ui_settings), fontSize = 12.sp) }
-            }
-            if (state.loading) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
-            else Column(Modifier.weight(1f).verticalScroll(pageScroll).padding(horizontal = 20.dp).padding(top = 8.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(if (state.screen == Screen.GAME) 12.dp else 20.dp)) {
-                SoundNotice()
-                when (state.screen) {
-                    Screen.HOME -> Home(state, model)
-                    Screen.SETUP -> Setup(state, model)
-                    Screen.GAME -> state.round?.let { GameTable(it, state, model) }
-                    Screen.RESULTS -> (state.viewedResult ?: state.round)?.let { Results(it, model) }
-                    Screen.HISTORY -> History(state.history, model)
-                    Screen.SETTINGS -> Settings(state, model)
-                    Screen.ONLINE -> OnlineScreen(onlineState, online, state.preferences)
-                    Screen.TUTORIAL -> TutorialScreen(state, model) { pageScroll.scrollTo(0) }
-                    Screen.BADGES -> BadgesScreen(state, onlineState)
+        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
+            // A fixed action panel must not consume the reading area at large text sizes or
+            // in a short window. Keep those actions in the same scroll flow as the room.
+            val inlineOnlineControls = LocalDensity.current.fontScale >= 1.3f || maxHeight < 480.dp
+            Column(Modifier.fillMaxSize()) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    if (state.screen != Screen.HOME) TextButton(onClick = { model.navigate(Screen.HOME) }) { Text(words(R.string.ui_home)) }
+                    else Box(Modifier.size(36.dp).background(Saffron, CircleShape), contentAlignment = Alignment.Center) { Text("T", fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onPrimary, fontSize = 22.sp) }
+                    Text(if (state.screen == Screen.HOME) words(R.string.ui_tambola_together) else words.screen(state.screen), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    if (state.screen != Screen.SETTINGS) TextButton(onClick = { model.navigate(Screen.SETTINGS) }) { Text(words(R.string.ui_settings), fontSize = 12.sp) }
                 }
+                if (state.loading) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                else Column(Modifier.weight(1f).verticalScroll(pageScroll).padding(horizontal = 20.dp).padding(top = 8.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(if (state.screen == Screen.GAME) 12.dp else 20.dp)) {
+                    SoundNotice()
+                    when (state.screen) {
+                        Screen.HOME -> Home(state, model)
+                        Screen.SETUP -> Setup(state, model)
+                        Screen.GAME -> state.round?.let { GameTable(it, state, model) }
+                        Screen.RESULTS -> (state.viewedResult ?: state.round)?.let { Results(it, model) }
+                        Screen.HISTORY -> History(state.history, model)
+                        Screen.SETTINGS -> Settings(state, model)
+                        Screen.ONLINE -> OnlineScreen(onlineState, online, state.preferences, invitation, dismissInvitation, inlineOnlineControls)
+                        Screen.TUTORIAL -> TutorialScreen(state, model) { pageScroll.scrollTo(0) }
+                        Screen.BADGES -> BadgesScreen(state, onlineState)
+                    }
+                }
+                if (!state.loading && state.screen == Screen.GAME) state.round?.let { GameControls(it, state, model) }
+                if (!state.loading && state.screen == Screen.ONLINE && !inlineOnlineControls) OnlineControls(onlineState, online)
             }
-            if (!state.loading && state.screen == Screen.GAME) state.round?.let { GameControls(it, state, model) }
-            if (!state.loading && state.screen == Screen.ONLINE) OnlineControls(onlineState, online)
         }
     }
     if (state.screen == Screen.SETUP && state.ruleDraft != null) CustomRuleEditor(state, model)

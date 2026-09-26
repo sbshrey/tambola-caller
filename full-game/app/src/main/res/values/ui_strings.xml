@@ -152,9 +152,7 @@
     <string name="ui_reconnecting_showing_your_last_confirmed_table">"Reconnecting · showing your last confirmed table"</string>
     <string name="ui_disconnected_showing_your_last_confirmed_table">"Disconnected · showing your last confirmed table"</string>
     <string name="ui_reconnect_now">"Reconnect now"</string>
-    <string name="ui_join_my_private_tambola_together_room">"Join my private Tambola Together room: %1$s"</string>
     <string name="ui_invite_to_room">"Invite to room"</string>
-    <string name="ui_share_room_code">"Share room code"</string>
     <string name="ui_players_ticket_s_each">"%1$s/%2$s players · %3$s ticket(s) each"</string>
     <string name="ui_who_s_at_the_table">"Who\'s at the table?"</string>
     <string name="ui_avatar_changes_save_for_your_next_room_too">"Avatar changes save for your next room too. Choose before readying; avatars stay fixed during a round."</string>

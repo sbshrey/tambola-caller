@@ -40,6 +40,8 @@ fun main(args: Array<String>) {
     val localDevelopment = System.getenv("TAMBOLA_LOCAL_DEVELOPMENT") == "true"
     validateRecoveryConfiguration(host, primaryUrl, journalUrl, localDevelopment)
     val localFixture = localFixtureMode(host, primaryUrl, journalUrl, localDevelopment)
+    val inviteSite = InviteSite.configured(System.getenv("TAMBOLA_PUBLIC_ORIGIN"), System.getenv("TAMBOLA_ANDROID_CERT_SHA256"),
+        System.getenv("TAMBOLA_ANDROID_INSTALL_URL"), localFixture)
     val journalDatabase = journalUrl?.let { Database(it, required("TAMBOLA_DELETION_DATABASE_USER"), required("TAMBOLA_DELETION_DATABASE_PASSWORD")) }
     try {
         val journal = journalDatabase?.let { DeletionJournal(it).also { value ->
@@ -54,7 +56,7 @@ fun main(args: Array<String>) {
             while (service.replayDeletions() > 0) { /* bounded transactions, restartable cursor */ }
             val operations = ServiceOperations(workerEnabled = true, metricsToken = System.getenv("TAMBOLA_METRICS_TOKEN"))
             embeddedServer(Netty, host = host, port = port) {
-                roomsModule(database, service, operations = operations, journalDatabase = journalDatabase)
+                roomsModule(database, service, operations = operations, journalDatabase = journalDatabase, inviteSite = inviteSite)
             }.start(wait = true)
         }
     } finally { journalDatabase?.close() }
@@ -88,7 +90,7 @@ internal fun validateRecoveryConfiguration(host: String, primaryUrl: String, jou
 }
 
 fun Application.roomsModule(database: Database, service: RoomService = RoomService(database), runWorker: Boolean = true,
-    operations: ServiceOperations = ServiceOperations(runWorker), journalDatabase: Database? = null) {
+    operations: ServiceOperations = ServiceOperations(runWorker), journalDatabase: Database? = null, inviteSite: InviteSite? = null) {
     install(OperationsPlugin) { this.operations = operations }
     install(ContentNegotiation) { json(WireJson) }
     install(WebSockets) { pingPeriod = 15.seconds; timeout = 30.seconds; maxFrameSize = 1_024; masking = false }
@@ -111,6 +113,7 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
         call.response.headers.append("X-Content-Type-Options", "nosniff")
     }
     routing {
+        inviteSite?.routes(this)
         get("/health/live") { call.respond(Health("ok")) }
         get("/health/ready") {
             demand(operations.workerReady(), 503, "worker_unavailable", "The room worker is starting or temporarily unavailable.")

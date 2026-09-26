@@ -2,7 +2,9 @@
 
 Native Android game under development on `shrey/full-tambola-game`. See the [implementation plan](../docs/FULL_GAME_PLAN.md) and [execution ledger](../docs/FULL_GAME_PROGRESS.md) for the full production scope and evidence.
 
-Alpha11 adds **Your game data** in English/Hindi, available from Settings and before online registration. It explains storage, retention, deletion, the separate recovery record and aggregate monitoring; deletion confirmation explicitly states that recovery records currently have no automatic expiry. See [alpha11 validation](ALPHA11_VALIDATION.md) and the [installation guide](ALPHA_INSTALL.md). Provider retention policy, hosting, production signing and physical-device acceptance remain open.
+Alpha12 adds private-room **invitation links**, with English/Hindi review, explicit registration/join, preservation of current rooms and pending commands, and optional browser landing/install pages. Public App Links require the actual domain and installed signing certificate. See [alpha12 validation](ALPHA12_VALIDATION.md), [invite setup](INVITES.md) and the [installation guide](ALPHA_INSTALL.md). Hosting, production signing and physical-device acceptance remain open.
+
+**Your game data**, introduced in alpha11, remains available from Settings and before online registration. It explains storage, retention, deletion, the separate recovery record and aggregate monitoring; deletion confirmation states that recovery records currently have no automatic expiry. Provider retention policy and public privacy/support work remain release gates.
 
 The alpha10 storage update keeps one application-owned offline database across screen lifecycles and preserves coroutine cancellation during shutdown. It fixes a closed-connection/locked-history failure reproduced on Android 15. See [the lifecycle investigation](STORAGE_LIFECYCLE.md) and [alpha10 validation](ALPHA10_VALIDATION.md) for the failing fixture, fixed-candidate checks and tablet layouts.
 

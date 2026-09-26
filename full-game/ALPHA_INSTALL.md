@@ -1,10 +1,10 @@
-# Tambola Together 0.11.0-alpha11
+# Tambola Together 0.12.0-alpha12
 
 This is an internal **development alpha**, signed with an Android debug certificate. Solo and family play work offline. Native private rooms require a separately configured room service; this package targets a local test service, not a public hosted service. It is not the production release. Use fictional player names while testing. A future release signed with the production certificate may require uninstalling this alpha, which clears its local history.
 
 Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
 
-1. Copy `Tambola-Together-0.11.0-alpha11.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
+1. Copy `Tambola-Together-0.12.0-alpha12.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
 2. If Android asks, allow APK installation for the app you opened the file from.
 3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.
 4. Use **Call next number** or **Auto**. Tap **Mark ticket** for large buttons, or select assisted marking during setup.
@@ -35,11 +35,17 @@ Save the prize, then deal the tickets. Rules and points stay fixed for that roun
 
 ## Private rooms in this build
 
+**Share invitation** now includes a link and the room code. Open the link, review the code, create a profile if needed, then explicitly choose **Join invitation**. An existing room or pending request is preserved; a new invitation waits until you can leave the current room. A locked, full, started or expired room may reject a previously shared invitation. You can always dismiss an invitation or enter a code manually.
+
+With large text or a short window, room actions scroll with the content so the invitation and tickets stay readable. At ordinary phone sizes, actions remain pinned below the content.
+
+The local link in this debug APK works only with the configured loopback fixture. Public browser pages, Android domain verification and an installation destination require the actual hosted domain and signing certificate. See [invitation setup and acceptance](INVITES.md).
+
 The default debug endpoint is `http://127.0.0.1:8080`. It is useful with the local service and a dedicated Android emulator using `adb reverse tcp:8080 tcp:8080`; it does not connect a phone to a hosted game by itself. See [the native client guide](client/README.md) for configuration and test commands.
 
 With a reachable configured service, select **Play online**, choose a display name, and create a room or join with its eight-character code. The host can change standard/custom rules before play; everyone must ready again after a change. The host starts once at least two connected players are ready and enough tickets exist for the chosen house prizes. Each player sees only their own cards.
 
-Choose a profile avatar during registration or change it in the lobby before play. A lobby avatar change resets your ready flag; it does not change other players. Alpha10 uses the same protocol-2 service as alpha08/09; older protocol-1 clients do not understand these snapshots. [Compatibility notes](AVATARS.md) explain save/protocol changes.
+Choose a profile avatar during registration or change it in the lobby before play. A lobby avatar change resets your ready flag; it does not change other players. This build uses the same protocol-2 game messages as alpha08–11; older protocol-1 clients do not understand these snapshots. [Compatibility notes](AVATARS.md) explain save/protocol changes.
 
 Calls and prizes are server-confirmed. Host controls support pause/resume, ending and rematches. The room can continue while you leave the app; returning catches up without replaying old announcements. If an action cannot be confirmed, **Retry pending action** checks its original result rather than creating a second action. Completed results have a private sharing preview and encrypted local online history.
 

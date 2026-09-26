@@ -152,9 +152,7 @@
     <string name="ui_reconnecting_showing_your_last_confirmed_table">"फिर जुड़ रहे हैं · आखिरी पुष्टि किया हुआ खेल दिख रहा है"</string>
     <string name="ui_disconnected_showing_your_last_confirmed_table">"कनेक्शन टूटा है · आखिरी पुष्टि किया हुआ खेल दिख रहा है"</string>
     <string name="ui_reconnect_now">"अभी फिर जुड़ें"</string>
-    <string name="ui_join_my_private_tambola_together_room">"मेरे निजी Tambola Together रूम में जुड़ें: %1$s"</string>
     <string name="ui_invite_to_room">"रूम में बुलाएँ"</string>
-    <string name="ui_share_room_code">"रूम कोड साझा करें"</string>
     <string name="ui_players_ticket_s_each">"%1$s/%2$s खिलाड़ी · हर खिलाड़ी के %3$s टिकट"</string>
     <string name="ui_who_s_at_the_table">"कौन-कौन साथ है?"</string>
     <string name="ui_avatar_changes_save_for_your_next_room_too">"अवतार का बदलाव आपके अगले रूम के लिए भी सहेजता है। तैयार होने से पहले चुनें; दौर के बीच अवतार नहीं बदलते।"</string>

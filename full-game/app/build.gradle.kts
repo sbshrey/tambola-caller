@@ -1,4 +1,5 @@
 import java.security.MessageDigest
+import java.util.Locale
 import java.net.URI
 
 plugins {
@@ -15,8 +16,8 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 11
-        versionName = "0.11.0-alpha11"
+        versionCode = 12
+        versionName = "0.12.0-alpha12"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "hi")
     }
@@ -24,10 +25,17 @@ android {
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     buildTypes {
         val endpoint = providers.gradleProperty("tambolaApiUrl").getOrElse("")
-        require(endpoint.isEmpty() || (URI(endpoint).let { it.scheme == "https" && it.host != null && it.userInfo == null && it.query == null && it.fragment == null && it.path.orEmpty() in listOf("", "/") }))
-        debug { buildConfigField("String", "ROOM_API_URL", "\"${endpoint.ifEmpty { "http://127.0.0.1:8080" }}\"") }
+        require(endpoint.isEmpty() || (endpoint.length <= 256 && endpoint.all { it.code in 33..126 } && URI(endpoint).let { it.scheme == "https" && it.host != null && it.userInfo == null && it.query == null && it.fragment == null && it.path.orEmpty() in listOf("", "/") && (it.port == -1 || it.port in 1..65535) }))
+        debug {
+            val origin = endpoint.ifEmpty { "http://127.0.0.1:8080" }
+            buildConfigField("String", "ROOM_API_URL", "\"$origin\"")
+            manifestPlaceholders["inviteHost"] = URI(origin).host.lowercase(Locale.ROOT)
+            manifestPlaceholders["verifyInvites"] = endpoint.isNotEmpty().toString()
+        }
         release {
             buildConfigField("String", "ROOM_API_URL", "\"$endpoint\"")
+            manifestPlaceholders["inviteHost"] = if (endpoint.isEmpty()) "disabled.invalid" else URI(endpoint).host.lowercase(Locale.ROOT)
+            manifestPlaceholders["verifyInvites"] = endpoint.isNotEmpty().toString()
             isMinifyEnabled = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

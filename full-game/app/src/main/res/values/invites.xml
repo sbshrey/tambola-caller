@@ -1,0 +1,16 @@
+<resources>
+    <string name="invite_title">ROOM INVITATION</string>
+    <string name="invite_invalid">This invitation does not match this build or has an invalid room code. Ask the host for a new link, or enter their room code.</string>
+    <string name="invite_unavailable">Keep this code and use a build with online rooms to join.</string>
+    <string name="invite_already_here">You are already in this room. Your tickets and progress are unchanged.</string>
+    <string name="invite_other_room">You are in room %1$s. Finish or leave that room before joining this invitation. It will wait here.</string>
+    <string name="invite_pending">Confirm your pending action first. This invitation will wait here.</string>
+    <string name="invite_restore_profile">Resolve your online profile status below before joining.</string>
+    <string name="invite_create_profile">Choose a nickname and avatar below. After creating your profile, tap Join invitation.</string>
+    <string name="invite_review">Joining shares your display name and avatar with this room. The room may have expired, started or been locked since this invitation was sent.</string>
+    <string name="invite_view_room">Continue in this room</string>
+    <string name="invite_join">Join invitation</string>
+    <string name="invite_dismiss">Dismiss invitation</string>
+    <string name="invite_share">Share invitation</string>
+    <string name="invite_share_message">Join my private Tambola Together room:\n%1$s\n\nRoom code: %2$s\nOpen the app, review the invitation and join. Free social play with points and badges.</string>
+</resources>

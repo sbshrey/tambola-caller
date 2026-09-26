@@ -41,6 +41,8 @@ All bodies and responses use strict JSON. Session credentials are opaque bearer 
 | --- | --- |
 | `GET /health/live` / `GET /health/ready` | Process liveness / recent successful worker plus database and recovery readiness |
 | `GET /internal/metrics` | Private fixed-label Prometheus metrics; separate monitoring bearer secret, disabled unless configured |
+| `GET /invite/{code}` | Optional bilingual invitation/install page; no room lookup or registration |
+| `GET /.well-known/assetlinks.json` | Optional public Android package/signing association |
 | `POST /v1/guests` | Name (1–40 characters), avatar (0–7); returns guest ID and bearer token |
 | `POST /v1/guests/me/logout` | Revoke the current token; this is not data deletion |
 | `POST /v1/guests/me/delete` | Delete the authenticated profile and redact its stored profile fields; retry the original UUID to confirm |
@@ -67,6 +69,8 @@ Ordinary membership changes are limited to the lobby/finished room; explicit pro
 - Rooms close 24 hours after creation. Room data, receipts, events and finished-round audits are deleted 30 days after that expiry. Expired guest credentials/profiles are deleted after 30 days. Rate buckets are short lived. Explicit [profile deletion](PROFILE_DELETION.md) removes access and redacts stored profile fields while preserving shared game records; its confirmation expires after 30 days. Independently retained suppression intents have no automatic pruning in this version. Startup replays them after primary restoration; provider backup independence, retention and restore acceptance remain deployment work. Logout does not claim to erase history.
 
 ## Resource limits and remaining release work
+
+Public invitation pages are optional until `TAMBOLA_PUBLIC_ORIGIN` is configured. The domain must match the native app's HTTPS origin; signing fingerprints and an installation destination are separate configuration. See [invitation behavior and hosted acceptance](../INVITES.md).
 
 JSON request bodies are capped at 32 KiB with a 10-second read timeout; WebSocket input frames are capped at 1 KiB. Custom rules have bounded selectors/groups/counts. SQL uses prepared parameters, 5-second lock/pool timeouts and a 10-second statement timeout. Outbound sends have a 10-second deadline and no unbounded application event queue.
 

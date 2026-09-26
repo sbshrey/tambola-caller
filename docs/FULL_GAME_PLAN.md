@@ -2,7 +2,7 @@
 
 Date: 25 September 2026. Development branch: `shrey/full-tambola-game`.
 Starting commit: `76b6a2c5da5a4729a7dbcd28fac83878780ac9d8`.
-Status: execution in progress. The internal Android alpha includes offline/family play, native private rooms against a locally tested service, saved appearance, original offline music/effects, selectable avatars and verified-win celebrations. See [FULL_GAME_PROGRESS.md](FULL_GAME_PROGRESS.md) for current evidence; the production release gates below remain unchanged.
+Status: execution in progress. The internal Android alpha includes offline/family play, native private rooms against a locally tested service, saved appearance, original offline music/effects, selectable avatars, verified-win celebrations, English/Hindi data disclosure and private-room invitation links. Public link verification still requires the actual hosted domain and signing identity. See [FULL_GAME_PROGRESS.md](FULL_GAME_PROGRESS.md) for current evidence; the production release gates below remain unchanged.
 
 ## 1. Intended outcome
 

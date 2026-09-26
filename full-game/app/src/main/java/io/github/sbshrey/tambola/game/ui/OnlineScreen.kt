@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
 import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.game.BuildConfig
 
 import android.content.Intent
 import androidx.compose.foundation.*
@@ -30,7 +31,8 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 
 @Composable
-fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Preferences) {
+fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Preferences,
+    invitation: RoomInviteState = RoomInviteState(), dismissInvitation: () -> Unit = {}, inlineControls: Boolean = false) {
     val words = gameText()
     val context = LocalContext.current
     val focus = LocalFocusManager.current
@@ -49,6 +51,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
     val host = room?.hostId == state.playerId
     val enabled = !state.busy && !state.pending && !state.sessionExpired && !state.storageFailure
     if (state.loading) { CircularProgressIndicator(); return }
+    invitation.code?.let { RoomInvitationCard(it, state, { focus.clearFocus(); model.join(it) }, dismissInvitation) }
     if (room?.round == null) {
         Eyebrow(words(R.string.ui_a_game_night_anywhere))
         Text(words(R.string.ui_your_private_table), style = MaterialTheme.typography.headlineLarge)
@@ -64,6 +67,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
             else words(R.string.ui_retry_safely_to_recover_the_original_result_other), color = Muted)
         PrimaryAction(if (state.busy) words(R.string.ui_checking) else words(R.string.ui_retry_pending_action), enabled = !state.busy && !state.storageFailure) { model.retry() }
     }
+    if (inlineControls) OnlineControls(state, model)
     if (state.storageFailure || state.sessionExpired) {
         GameCard {
             Text(if (state.sessionExpired) words(R.string.ui_your_online_session_has_expired) else words(R.string.ui_your_saved_online_data_needs_attention))
@@ -105,9 +109,10 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                 if (state.connection != Connection.LIVE) TextButton(onClick = model::reconnect) { Text(words(R.string.ui_reconnect_now)) }
                 if (room.phase == RoomPhase.LOBBY) TextButton(onClick = {
                     runCatching { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"; putExtra(Intent.EXTRA_TEXT, words(R.string.ui_join_my_private_tambola_together_room, room.code))
+                        type = "text/plain"; putExtra(Intent.EXTRA_TEXT, words(R.string.invite_share_message,
+                            RoomInvites.link(BuildConfig.ROOM_API_URL, room.code, BuildConfig.DEBUG), room.code))
                     }, words(R.string.ui_invite_to_room))) }
-                }) { Text(words(R.string.ui_share_room_code)) }
+                }) { Text(words(R.string.invite_share)) }
                 Text(words(R.string.ui_players_ticket_s_each, room.members.size, room.options.capacity, room.options.game.ticketsPerPlayer), color = Muted)
             }
             if (room.phase == RoomPhase.LOBBY) {
