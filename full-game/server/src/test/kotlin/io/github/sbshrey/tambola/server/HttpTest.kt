@@ -14,6 +14,23 @@ import org.junit.Test
 import java.util.UUID
 
 class HttpTest : PostgresTest() {
+    @Test fun `an open event stream closes after session revocation`() = testApplication {
+        application { roomsModule(database, service, runWorker = false) }
+        val actor = service.register(GuestRequest("Revoked stream"), "revoked-stream")
+        val room = service.create(actor.token, CreateRoomRequest(UUID.randomUUID().toString())).snapshot
+        val websocketClient = createClient { install(WebSockets) }
+        withTimeout(5_000) {
+            websocketClient.webSocket("/v1/rooms/${room.code}/events", request = { bearerAuth(actor.token) }) {
+                assertTrue(incoming.receive() is Frame.Text)
+                service.revoke(actor.token)
+                val reason = closeReason.await()!!
+                assertEquals(CloseReason.Codes.VIOLATED_POLICY.code, reason.code)
+                assertEquals("unauthorized", reason.message)
+            }
+        }
+        websocketClient.close()
+    }
+
     @Test fun `profile deletion authenticates validates and confirms the same request after access is removed`() = testApplication {
         application { roomsModule(database, service, runWorker = false) }
         val guest = service.register(GuestRequest("Delete via HTTP"), "http-delete")

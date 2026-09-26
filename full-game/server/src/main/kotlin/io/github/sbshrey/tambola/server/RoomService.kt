@@ -202,6 +202,27 @@ class RoomService(
         }
     }
 
+    internal fun admitEvents(token: String) = authenticatedRate(token, "events", 20)
+
+    /** Quiet server-driven polls must not generate rate-limit or row-lock writes. */
+    internal fun pollEvents(token: String, code: String, after: Long? = null): RoomUpdate {
+        val quiet = database.transaction(readOnly = true) { connection ->
+            val guest = authenticate(connection, token, protect = false)
+            val room = load(connection, code, lock = false)
+            member(room, guest.id)
+            if (needsTouch(room, guest.id, clock())) null else update(connection, room, guest.id, after)
+        }
+        if (quiet != null) return quiet
+        // Revalidate under the normal guest-before-room locks before renewing presence.
+        // Never upgrade room locks ahead of a profile deletion's guest lock.
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token)
+            val room = load(connection, code)
+            member(room, guest.id)
+            update(connection, touch(connection, room, guest.id, clock()), guest.id, after)
+        }
+    }
+
     fun command(token: String, code: String, request: CommandRequest): RoomUpdate {
         validId(request.id)
         demand(request.expectedRevision >= 0, 400, "invalid_revision", "Revision must be non-negative.")
@@ -337,19 +358,19 @@ class RoomService(
             nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { !game.finished && room.options.automaticCalling })
     }
 
-    private fun authenticate(connection: Connection, token: String, lock: Boolean = false): Guest {
+    private fun authenticate(connection: Connection, token: String, lock: Boolean = false, protect: Boolean = true): Guest {
         validToken(token)
         verifyJournal(connection)
-        val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else " FOR SHARE"}", digest(token), clock()) {
+        val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else if (protect) " FOR SHARE" else ""}", digest(token), clock()) {
             Guest(it.getString(1), it.getString(2), it.getInt(3))
         }.singleOrNull() ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
         demand(journal?.suppresses(guest.id) != true, 401, "unauthorized", "This profile has been scheduled for deletion.")
         return guest
     }
 
-    private fun load(connection: Connection, code: String): RoomRecord {
+    private fun load(connection: Connection, code: String, lock: Boolean = true): RoomRecord {
         demand(code.matches(Regex("[A-Z2-9]{8}")), 404, "room_missing", "Room not found.")
-        val room = connection.query("SELECT payload FROM rooms WHERE code = ? FOR UPDATE", code) { decode(it.getString(1)) }.singleOrNull()
+        val room = connection.query("SELECT payload FROM rooms WHERE code = ?${if (lock) " FOR UPDATE" else ""}", code) { decode(it.getString(1)) }.singleOrNull()
             ?: fail(404, "room_missing", "Room not found.")
         demand(room.expiresAt > clock() && room.phase != RoomPhase.CLOSED, 410, "room_closed", "This room has closed or expired.")
         return room
@@ -357,9 +378,14 @@ class RoomService(
 
     private fun member(room: RoomRecord, actor: String) = demand(room.members.any { it.id == actor }, 403, "not_member", "Join this room before viewing it.")
 
-    private fun touch(connection: Connection, room: RoomRecord, actor: String, now: Long): RoomRecord {
+    private fun needsTouch(room: RoomRecord, actor: String, now: Long): Boolean {
         val member = room.members.first { it.id == actor }
-        if (now - member.lastSeen < TOUCH_INTERVAL && member.connected) return room
+        return now - member.lastSeen >= TOUCH_INTERVAL || !member.connected
+    }
+
+    private fun touch(connection: Connection, room: RoomRecord, actor: String, now: Long): RoomRecord {
+        if (!needsTouch(room, actor, now)) return room
+        val member = room.members.first { it.id == actor }
         val updated = room.copy(members = room.members.map { if (it.id == actor) it.copy(lastSeen = now, connected = true) else it })
         return if (!member.connected) changed(connection, updated, "reconnected", now) else updated.also { save(connection, it) }
     }
@@ -385,7 +411,7 @@ class RoomService(
     private fun update(connection: Connection, room: RoomRecord, actor: String, after: Long?): RoomUpdate {
         demand(after == null || after >= 0, 400, "invalid_cursor", "Event cursor must be non-negative.")
         val resync = after == null || after > room.revision || after < maxOf(0, room.revision - EVENT_LIMIT)
-        val events = if (resync) emptyList() else connection.query("SELECT payload FROM room_events WHERE room_id = ? AND revision > ? ORDER BY revision", room.id, after) { WireJson.decodeFromString<RoomEvent>(it.getString(1)) }
+        val events = if (resync) emptyList() else connection.query("SELECT payload FROM room_events WHERE room_id = ? AND revision > ? AND revision <= ? ORDER BY revision", room.id, after, room.revision) { WireJson.decodeFromString<RoomEvent>(it.getString(1)) }
         return RoomUpdate(room.view(actor, clock()), events, resync)
     }
 

@@ -20,7 +20,8 @@ class Database(url: String, user: String, password: String, schema: String = "pu
         addDataSourceProperty("socketTimeout", "15")
     })
 
-    fun <T> transaction(block: (Connection) -> T): T = pool.connection.use { connection ->
+    fun <T> transaction(readOnly: Boolean = false, block: (Connection) -> T): T = pool.connection.use { connection ->
+        connection.isReadOnly = readOnly
         connection.autoCommit = false
         try {
             connection.execute("SET LOCAL lock_timeout = '5s'")

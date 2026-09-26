@@ -23,6 +23,7 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLongArray
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.ceil
 import kotlin.system.exitProcess
@@ -81,7 +82,9 @@ object AutomaticSoakLoad {
         val observations = mutableListOf<JsonElement>()
         val heaps = mutableListOf<Int>()
         val latency = mutableListOf<Double>()
+        val databaseFailures = ConcurrentHashMap<String, AtomicInteger>()
         var child: Process? = null
+        var diagnosticReader: Thread? = null
         var stage = "initialize"
         var success = false
         var cleanup = true
@@ -117,10 +120,12 @@ object AutomaticSoakLoad {
             val response = http.send(HttpRequest.newBuilder(URI("$base/internal/metrics")).timeout(Duration.ofSeconds(5))
                 .header("Authorization", "Bearer $metricsToken").GET().build(), HttpResponse.BodyHandlers.ofString())
             check(response.statusCode() == 200)
+            val requiredMetrics = setOf("tambola_jvm_heap_used_bytes", "tambola_jvm_threads", "tambola_websocket_active",
+                "tambola_websocket_opened_total", "tambola_websocket_failures_total", "tambola_worker_ready", "tambola_process_cpu_seconds_total")
             val selected = response.body().lineSequence().mapNotNull { line ->
                 val pieces = line.split(' ')
-                if (pieces.size == 2 && pieces[0] in setOf("tambola_jvm_heap_used_bytes", "tambola_jvm_threads", "tambola_websocket_active",
-                        "tambola_websocket_opened_total", "tambola_websocket_failures_total", "tambola_worker_ready", "tambola_process_cpu_seconds_total"))
+                if (pieces.size == 2 && (pieces[0] in requiredMetrics || pieces[0] in setOf("tambola_worker_success_age_seconds", "tambola_cleanup_success_age_seconds") ||
+                        pieces[0].startsWith("tambola_database_connections{")))
                     pieces[0] to pieces[1].toDouble() else null
             }.toMap()
             observations += buildJsonObject {
@@ -128,7 +133,7 @@ object AutomaticSoakLoad {
                 selected.forEach { (name, value) -> put(name, value) }
             }
             if (validate) {
-                check(selected.size == 7 && selected["tambola_worker_ready"] == 1.0)
+                check(selected.keys.containsAll(requiredMetrics) && selected["tambola_worker_ready"] == 1.0)
                 check(selected["tambola_websocket_active"] == (roomCount * playerCount).toDouble())
                 check(selected["tambola_websocket_opened_total"] == (roomCount * playerCount).toDouble())
                 check(selected["tambola_websocket_failures_total"] == 0.0)
@@ -170,12 +175,20 @@ object AutomaticSoakLoad {
                 val builder = ProcessBuilder(bin.resolve("java$suffix").toString(), "-Xms128m", "-Xmx512m", "-XX:ActiveProcessorCount=4",
                     "-Xlog:gc:file=gc.log:time,uptime:filecount=0", "-cp", root.resolve("server/build/install/server/lib").toString() + "/*",
                     "io.github.sbshrey.tambola.server.ServerKt").directory(directory.toFile())
-                    .redirectOutput(ProcessBuilder.Redirect.DISCARD).redirectError(ProcessBuilder.Redirect.DISCARD)
+                    .redirectErrorStream(true)
                 builder.environment().putAll(mapOf("PORT" to "$port", "TAMBOLA_BIND_HOST" to "127.0.0.1", "TAMBOLA_LOCAL_DEVELOPMENT" to "true",
                     "TAMBOLA_DATABASE_URL" to dbUrl(names[0]), "TAMBOLA_DATABASE_USER" to user, "TAMBOLA_DATABASE_PASSWORD" to password,
                     "TAMBOLA_DELETION_DATABASE_URL" to dbUrl(names[1]), "TAMBOLA_DELETION_DATABASE_USER" to user,
                     "TAMBOLA_DELETION_DATABASE_PASSWORD" to password, "TAMBOLA_METRICS_TOKEN" to metricsToken))
                 child = builder.start(); record("serverPid", child!!.pid())
+                val process = child!!
+                // Retain only our fixed diagnostic fields; discard all other process output.
+                diagnosticReader = Thread({
+                    val safe = Regex("Room (stream|request) database failure type=([A-Za-z0-9_$]+) state=([A-Z0-9]{5}|none)")
+                    try { process.inputStream.bufferedReader().useLines { lines -> lines.forEach { line ->
+                        safe.find(line)?.let { match -> databaseFailures.computeIfAbsent(match.groupValues.drop(1).joinToString(":")) { AtomicInteger() }.incrementAndGet() }
+                    } } } catch (_: java.io.IOException) { /* Process termination may close the pipe. */ }
+                }, "soak-diagnostics-$runId").apply { isDaemon = true; start() }
                 awaitCondition { runCatching { http.send(HttpRequest.newBuilder(URI("$base/health/ready")).timeout(Duration.ofSeconds(1)).GET().build(), HttpResponse.BodyHandlers.discarding()).statusCode() == 200 }.getOrDefault(false) }
                 val groups = List(roomCount) { List(playerCount) { GuestCredentials(id(), secret(), System.currentTimeMillis() + SESSION_LIFETIME) } }
                 primary { connection ->
@@ -308,6 +321,7 @@ object AutomaticSoakLoad {
         } catch (e: Exception) {
             if (playStarted > 0) record("playElapsedUntilFailureSeconds", (System.nanoTime() - playStarted) / 1e9)
             record("failedStage", stage); record("failureType", e.javaClass.simpleName)
+            if (e is RoomApiFailure) { record("failureHttpStatus", e.status); record("failureApiCode", e.code) }
             record("failureLocation", e.stackTrace.firstOrNull { it.className.startsWith("io.github.sbshrey.tambola") }?.let { "${it.fileName}:${it.lineNumber}" })
             record("nativeFailure", failure.get())
             if (child?.isAlive == true) runCatching { sampleMetrics(validate = false) }
@@ -317,6 +331,7 @@ object AutomaticSoakLoad {
                 scope.cancel(); apis.forEach { runCatching { it.close() } }
                 if (withTimeoutOrNull(10_000) { scope.coroutineContext[Job]?.join(); true } != true) cleanup = false
                 child?.let { if (it.isAlive) { it.destroyForcibly(); if (!it.waitFor(10, TimeUnit.SECONDS)) cleanup = false } }
+                diagnosticReader?.let { it.join(5_000); if (it.isAlive) cleanup = false }
                 owned.toList().forEach { name ->
                     check(name in names && name.matches(Regex("tambola_load_(main|journal)_[a-f0-9]{16}")))
                     runCatching { control("DROP DATABASE $name WITH (FORCE)"); owned.remove(name) }.onFailure { cleanup = false }
@@ -327,6 +342,7 @@ object AutomaticSoakLoad {
             record("completedRounds", rounds.size); record("expectedDeliverySamples", roomCount * playerCount * calls * roundCount)
             evidence["deliveryMs"] = statistics(latency)
             evidence["postFullGcHeapMiB"] = JsonArray(heaps.map(::JsonPrimitive))
+            evidence["databaseFailureTypes"] = JsonObject(databaseFailures.toSortedMap().mapValues { JsonPrimitive(it.value.get()) })
             val stable = heaps.size >= 3 && heaps.drop(1).max() - heaps.drop(1).min() <= 16
             record("postWarmupRetainedHeapRangeWithin16MiB", stable)
             record("heapCriterion", "Diagnostic guard: checkpoints after round one must span at most 16MiB. Bounded warmup is allowed; this finite test cannot prove absence of leaks.")

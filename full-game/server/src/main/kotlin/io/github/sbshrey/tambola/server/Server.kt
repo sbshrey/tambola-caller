@@ -91,6 +91,7 @@ internal fun validateRecoveryConfiguration(host: String, primaryUrl: String, jou
 
 fun Application.roomsModule(database: Database, service: RoomService = RoomService(database), runWorker: Boolean = true,
     operations: ServiceOperations = ServiceOperations(runWorker), journalDatabase: Database? = null, inviteSite: InviteSite? = null) {
+    val streams = EventStreams()
     install(OperationsPlugin) { this.operations = operations }
     install(ContentNegotiation) { json(WireJson) }
     install(WebSockets) { pingPeriod = 15.seconds; timeout = 30.seconds; maxFrameSize = 1_024; masking = false }
@@ -100,7 +101,10 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             call.respond(HttpStatusCode.fromValue(error.status), ApiError(error.code, error.message))
         }
         exception<IllegalArgumentException> { call, _ -> call.respond(HttpStatusCode.BadRequest, ApiError("invalid_request", "The request is not valid for this protocol.")) }
-        exception<SQLException> { call, _ -> call.respond(HttpStatusCode.ServiceUnavailable, ApiError("database_unavailable", "The room service is temporarily unavailable. Retry the same command ID.")) }
+        exception<SQLException> { call, error ->
+            this@roomsModule.log.warn("Room request database failure type={} state={}", error.javaClass.simpleName, error.sqlState?.takeIf { it.matches(Regex("[A-Z0-9]{5}")) } ?: "none")
+            call.respond(HttpStatusCode.ServiceUnavailable, ApiError("database_unavailable", "The room service is temporarily unavailable. Retry the same command ID."))
+        }
         exception<Throwable> { call, error ->
             if (error is CancellationException) throw error
             // Do not log exception text, request bodies or credentials.
@@ -148,10 +152,13 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             }
             webSocket("/rooms/{code}/events") {
                 operations.streamOpened()
+                var admission: AutoCloseable? = null
                 try {
                     val token = call.bearer()
                     val code = call.code()
                     var cursor = call.cursor()
+                    admission = streams.acquire(token)
+                    withContext(Dispatchers.IO) { service.admitEvents(token) }
                     val lastSent = AtomicLong(-1)
                     val receiver = launch {
                         for (frame in incoming) {
@@ -164,7 +171,7 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                     }
                     try {
                         while (isActive && receiver.isActive) {
-                            val update = withContext(Dispatchers.IO) { service.read(token, code, cursor) }
+                            val update = withContext(Dispatchers.IO) { service.pollEvents(token, code, cursor) }
                             if (update.snapshot.revision != lastSent.get()) {
                                 // Backpressure cannot create an unbounded application queue.
                                 lastSent.set(update.snapshot.revision)
@@ -179,8 +186,9 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
                     close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, error.code))
                 } catch (error: SQLException) {
                     operations.streamFailed()
+                    this@roomsModule.log.warn("Room stream database failure type={} state={}", error.javaClass.simpleName, error.sqlState?.takeIf { it.matches(Regex("[A-Z0-9]{5}")) } ?: "none")
                     close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "Service temporarily unavailable."))
-                } finally { operations.streamClosed() }
+                } finally { admission?.close(); operations.streamClosed() }
             }
         }
     }
