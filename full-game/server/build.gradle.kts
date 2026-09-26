@@ -47,6 +47,16 @@ tasks.register<JavaExec>("coinGameLoad") {
     timeout.set(Duration.ofMinutes(12))
 }
 
+tasks.register<JavaExec>("coinPurchaseBurst") {
+    dependsOn(tasks.testClasses, tasks.installDist)
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("io.github.sbshrey.tambola.server.CoinPurchaseBurst")
+    workingDir = rootProject.projectDir
+    maxHeapSize = "1024m"
+    jvmArgs("-XX:ActiveProcessorCount=8")
+    timeout.set(Duration.ofMinutes(3))
+}
+
 // Opt-in real-process capacity fixture. Never part of the ordinary unit-test task.
 tasks.register<JavaExec>("loadTest") {
     dependsOn(tasks.testClasses, tasks.installDist)

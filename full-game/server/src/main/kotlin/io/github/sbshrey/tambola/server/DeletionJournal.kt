@@ -9,6 +9,7 @@ sealed interface RecoveryIntent { val sequence: Long; val playerId: String }
 data class DeletionIntent(override val sequence: Long, override val playerId: String, val proof: String, val deletedAt: Long, val confirmUntil: Long) : RecoveryIntent
 data class RevocationIntent(override val sequence: Long, override val playerId: String, val revokedAt: Long) : RecoveryIntent
 data class JournalPosition(val id: String, val head: Long)
+internal data class JournalAccess(val position: JournalPosition, val blocked: Boolean)
 
 /** A separate PostgreSQL database, never restored together with the room database. No raw tokens or names. */
 class DeletionJournal(private val database: Database) {
@@ -34,6 +35,10 @@ class DeletionJournal(private val database: Database) {
         val position = connection.query("SELECT journal_id, head FROM deletion_journal_identity WHERE singleton${if (lock) " FOR UPDATE" else ""}") {
             JournalPosition(it.getString(1), it.getLong(2))
         }.single()
+        return checkedPosition(position)
+    }
+
+    private fun checkedPosition(position: JournalPosition): JournalPosition {
         recoveryCheck(expectedId == null || expectedId == position.id, "Deletion journal identity changed")
         return position
     }
@@ -81,11 +86,18 @@ class DeletionJournal(private val database: Database) {
         result
     }
 
-    fun blocksAccess(playerId: String): Boolean = database.transaction { connection ->
-        position(connection)
-        connection.query("""SELECT EXISTS (SELECT 1 FROM profile_deletions WHERE player_id = ?)
-            OR EXISTS (SELECT 1 FROM session_revocations WHERE player_id = ?)""", playerId, playerId) { it.getBoolean(1) }.single()
+    /** One fresh statement observes journal identity, head and suppression at the same snapshot.
+     * A null player still verifies availability/identity for an unavailable primary credential. */
+    internal fun accessState(playerId: String?): JournalAccess = database.transaction(readOnly = true) { connection ->
+        connection.query("""SELECT journal_id, head,
+            EXISTS (SELECT 1 FROM profile_deletions WHERE player_id = ?)
+            OR EXISTS (SELECT 1 FROM session_revocations WHERE player_id = ?)
+            FROM deletion_journal_identity WHERE singleton""", playerId, playerId) {
+            JournalAccess(checkedPosition(JournalPosition(it.getString(1), it.getLong(2))), it.getBoolean(3))
+        }.single()
     }
+
+    fun blocksAccess(playerId: String): Boolean = accessState(playerId).blocked
 
     fun suppresses(playerId: String): Boolean = database.transaction { connection ->
         position(connection)

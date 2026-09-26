@@ -43,6 +43,8 @@ class DeletionJournalTest : PostgresTest() {
         assertEquals(401, assertThrows(ApiFailure::class.java) { service.deleteProfile(host.token, DeleteProfileRequest(id()), "rollback") }.status)
         assertThrows(SQLException::class.java) { service.replayDeletions() }
         assertThrows(SQLException::class.java) { service.recoveryHealthy() }
+        assertThrows(SQLException::class.java) { service.pollEvents(peer.token, room.code) }
+        assertThrows(SQLException::class.java) { service.wallet(peer.token) }
         assertEquals(0L, database.transaction { it.query("SELECT applied_sequence FROM deletion_recovery") { row -> row.getLong(1) }.single() })
         database.transaction { it.execute("DROP TRIGGER reject_delete ON guests") }
         assertEquals(1, service.replayDeletions())

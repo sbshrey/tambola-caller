@@ -8,6 +8,8 @@ import java.sql.Driver
 import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.util.Properties
+import java.time.Duration
+import jdk.jfr.consumer.RecordingStream
 
 /** Diagnostic launcher only: fixed timing labels, no query text, bindings, identities or credentials. */
 object ProfiledCoinServer {
@@ -19,6 +21,22 @@ object ProfiledCoinServer {
         DriverManager.registerDriver(object : Driver by original {
             override fun connect(url: String?, info: Properties?): Connection? = original.connect(url, info)?.let(::instrument)
         })
+        if (System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true") {
+            val recording = RecordingStream()
+            recording.enable("jdk.ThreadPark").withThreshold(Duration.ofMillis(1)).withStackTrace()
+            recording.onEvent("jdk.ThreadPark") { event ->
+                val frames = event.stackTrace?.frames.orEmpty()
+                if (frames.any { it.method.type.name == "io.github.sbshrey.tambola.server.RoomService" && it.method.name == "match" } &&
+                    frames.any { it.method.type.name == "com.zaxxer.hikari.util.ConcurrentBag" && it.method.name == "borrow" }) {
+                    val rate = frames.any { it.method.name == "authenticatedRate" }
+                    val journal = frames.any { it.method.type.name.startsWith("io.github.sbshrey.tambola.server.DeletionJournal") }
+                    val label = (if (rate) "rate" else "match") + (if (journal) "_journal" else "_primary")
+                    println("COIN_POOL_PARK|$label|${event.startTime.toEpochMilli()}|${event.duration.toNanos()}")
+                }
+            }
+            recording.onFlush { println("COIN_POOL_FLUSH|${System.currentTimeMillis()}") }
+            recording.startAsync()
+        }
         io.github.sbshrey.tambola.server.main(args)
     }
 

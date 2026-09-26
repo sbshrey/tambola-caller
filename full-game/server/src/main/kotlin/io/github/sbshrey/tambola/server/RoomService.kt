@@ -239,10 +239,18 @@ class RoomService(
 
     private fun verifyJournal(connection: Connection) {
         val journal = journal ?: return
+        verifyJournalPosition(recoveryPosition(connection), journal.position())
+    }
+
+    private fun recoveryPosition(connection: Connection): JournalPosition {
         recoveryCheck(!replayFailure, "Deletion recovery requires a successful retry")
-        val saved = connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton") { it.getString(1) to it.getLong(2) }.single()
-        val head = journal.position()
-        recoveryCheck(saved.first == head.id && saved.second <= head.head, "Deletion recovery is not initialized or its journal is inconsistent")
+        return connection.query("SELECT journal_id, applied_sequence FROM deletion_recovery WHERE singleton") {
+            JournalPosition(it.getString(1).orEmpty(), it.getLong(2))
+        }.single()
+    }
+
+    private fun verifyJournalPosition(saved: JournalPosition, head: JournalPosition) {
+        recoveryCheck(saved.id == head.id && saved.head <= head.head, "Deletion recovery is not initialized or its journal is inconsistent")
     }
 
     private fun applyDeletion(connection: Connection, intent: DeletionIntent) {
@@ -550,12 +558,16 @@ class RoomService(
 
     private fun authenticate(connection: Connection, token: String, lock: Boolean = false, protect: Boolean = true): Guest {
         validToken(token)
-        verifyJournal(connection)
+        val saved = journal?.let { recoveryPosition(connection) }
         val guest = connection.query("SELECT id, name, avatar FROM guests WHERE token_hash = ? AND expires_at > ? AND revoked_at IS NULL${if (lock) " FOR UPDATE" else if (protect) " FOR SHARE" else ""}", digest(token), clock()) {
             Guest(it.getString(1), it.getString(2), it.getInt(3))
-        }.singleOrNull() ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
-        demand(journal?.blocksAccess(guest.id) != true, 401, "unauthorized", "This profile's credentials were revoked.")
-        return guest
+        }.singleOrNull()
+        if (journal != null) {
+            val access = journal.accessState(guest?.id)
+            verifyJournalPosition(requireNotNull(saved), access.position)
+            demand(!access.blocked, 401, "unauthorized", "This profile's credentials were revoked.")
+        }
+        return guest ?: fail(401, "unauthorized", "This guest session has expired or was revoked.")
     }
 
     private fun load(connection: Connection, code: String, lock: Boolean = true, allowClosed: Boolean = false): RoomRecord {

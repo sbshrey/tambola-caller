@@ -24,6 +24,20 @@ python tools/analyze-coin-sql-profile.py .test-workspace/coin-load-<run-id>
 
 The resulting `sql-timings.txt` excludes ordinary service diagnostics. `sql-profile-summary.json` includes the analyzer hash. Time outside JDBC execution includes statement preparation, result decoding and application work; it is not a pure CPU measurement. Keep diagnostic runs separate from final uninstrumented measurements.
 
+## Repeated purchase diagnostic
+
+`coinPurchaseBurst` isolates cold versus repeat purchases using the same server, seeded players and HTTP clients. It buys mixed 1–6-ticket hands concurrently, checks full eight-player tables, cancels before the normal sales deadline, and verifies exact purchase/leave retries and refunds. Two waves are the default; `TAMBOLA_COIN_BURST_WAVES` allows 1–4. `TAMBOLA_COIN_BURST_STREAMS=true` subscribes to live updates immediately after each purchase, while other purchases are still pending, and requires every subscription to receive a snapshot before cancellation. Streams stop before refunds. The fixture always records `capacityAcceptance: false`: cancellation is not completed-round rematching or endurance, and this diagnostic has no call/claim/settlement acceptance.
+
+```powershell
+$env:TAMBOLA_COIN_LOAD_PLAYERS='320'
+$env:TAMBOLA_COIN_BURST_STREAMS='true'
+.\gradlew.bat :server:coinPurchaseBurst '-PserverOnly=true' --console=plain
+```
+
+For pool-wait diagnosis only, set both `TAMBOLA_COIN_LOAD_SQL_PROFILE=true` and `TAMBOLA_COIN_LOAD_POOL_PROFILE=true`. The test launcher streams JFR `ThreadPark` events with a 1 ms threshold and emits only parks whose recorded stack includes matchmaking and Hikari connection acquisition. It writes fixed category labels, epoch times and durations; it does not export a JFR recording, stack text, query parameters or identities. Run `python tools/analyze-coin-pool-profile.py .test-workspace/coin-load-<run-id>` to extract validated events into `pool-parks.txt` and summarize overlaps with the purchase windows in `pool-profile-summary.json`.
+
+These events are **not** complete acquisition timings or request counts: one request can park repeatedly, short parks and missing stack frames are excluded, and concurrent thread-wait sums exceed wall time. The analyzer requires a recording flush after the last purchase window, but a flush does not prove every wait was sampled. Instrumentation adds overhead; compare final timings with both profiling flags disabled. `burst-evidence.json` records the condition, source/runtime hashes, per-wave timing, exact-retry/refund checks and cleanup. Its two-minute inner deadline permits owned-resource cleanup before the three-minute task timeout.
+
 By default the task uses the local `installDist` runtime. To test an existing candidate, set `TAMBOLA_COIN_LOAD_RUNTIME_LIB` to its JAR directory and `TAMBOLA_COIN_LOAD_RUNTIME_SHA256` to its previously verified canonical runtime hash. The fixture hashes the source, copies only regular JARs into its new run directory, and verifies the complete copied manifest before launch. It verifies that manifest again after play. It does not overwrite either runtime. The manifest algorithm matches `tools/service-runtime.mjs`.
 
 ## Coverage and limits
