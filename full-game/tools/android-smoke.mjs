@@ -12,6 +12,7 @@ const lan = args.includes('--lan');
 const faultProxy = args.includes('--fault-proxy');
 const animations = args.includes('--animations');
 const idleGuard = args.includes('--idle-guard');
+const markGuard = args.includes('--mark-guard');
 const benchmark = args.includes('--benchmark');
 function option(name, fallback) {
   const index = args.indexOf(name);
@@ -23,9 +24,10 @@ const selectedClass = option('--class', undefined);
 assert.match(serial, /^emulator-\d+$/);
 assert.match(label, /^[a-z0-9-]+$/);
 if (selectedClass) assert.match(selectedClass, /^io\.github\.sbshrey\.tambola\.(game|benchmark)\.[A-Za-z0-9_.#]+$/);
-if (benchmark) assert.ok(selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.') && !online && !faultProxy && !idleGuard);
+if (benchmark) assert.ok(selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.') && !online && !faultProxy && !idleGuard && !markGuard);
 else assert.ok(!selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.'), 'Use --benchmark for the separate optimized-app driver');
 if (idleGuard) assert.equal(selectedClass, 'io.github.sbshrey.tambola.game.CoinIdleTest');
+if (markGuard) assert.ok(selectedClass === 'io.github.sbshrey.tambola.game.CoinMarkTest' && animations && !online && !lan && !idleGuard);
 if (lan) assert.ok(!online && selectedClass, '--lan requires an explicit test class and no loopback fixture');
 const sdk = process.env.ANDROID_SDK_ROOT || (process.env.LOCALAPPDATA && resolve(process.env.LOCALAPPDATA, 'Android/Sdk'));
 assert.ok(sdk, 'Set ANDROID_SDK_ROOT');
@@ -59,6 +61,7 @@ try {
   if (lan) command.push('-e', 'tambolaLan', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');
   if (idleGuard) command.push('-e', 'tambolaIdleGuard', 'true');
+  if (markGuard) command.push('-e', 'tambolaMarkGuard', 'true');
   if (benchmark) command.push('-e', 'tambolaBenchmark', 'true', '-e', 'androidx.benchmark.suppressErrors', 'EMULATOR');
   if (selectedClass) command.push('-e', 'class', selectedClass);
   else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest,io.github.sbshrey.tambola.game.LongSessionTest,io.github.sbshrey.tambola.game.CoinIdleTest');

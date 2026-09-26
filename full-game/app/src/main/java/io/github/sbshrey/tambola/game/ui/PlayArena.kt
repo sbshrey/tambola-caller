@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -247,10 +248,10 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
                                 if (!dabbed || reducedMotion) stamp.snapTo(if (dabbed) 1f else 0f)
                                 else if (stamp.value < 1f) stamp.animateTo(1f, tween(360))
                             }
-                            val fill by animateColorAsState(if (dabbed) DabGreen else if (number == 0) Color(0xFFECE7D9) else Color.White,
+                            val fill = animateColorAsState(if (dabbed) DabGreen else if (number == 0) Color(0xFFECE7D9) else Color.White,
                                 animationSpec = tween(if (reducedMotion) 0 else 160), label = "dab")
                             Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(4.dp))
-                                .background(fill)
+                                .drawBehind { drawRect(fill.value) }
                                 .then(if (latest) Modifier.border(2.dp, Color(0xFFAB6500), RoundedCornerShape(4.dp)) else Modifier)
                                 .drawWithContent {
                                     drawContent()
