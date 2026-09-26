@@ -9,6 +9,7 @@ import io.github.sbshrey.tambola.domain.BadgeProgress
 import io.github.sbshrey.tambola.domain.RoundSettings
 import io.github.sbshrey.tambola.domain.GameMode
 import io.github.sbshrey.tambola.domain.Prize
+import io.github.sbshrey.tambola.domain.ClaimSelection
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
@@ -43,6 +44,7 @@ data class OnlineUiState(
     val error: UiMessage? = null,
     val notice: UiMessage? = null,
     val winMoment: WinMoment? = null,
+    val claimMessage: UiMessage? = null,
 )
 
 class OnlineViewModel(application: Application) : AndroidViewModel(application) {
@@ -80,6 +82,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             room = value?.room, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
             badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null,
             deletingProfile = value?.pending is PendingOperation.DeleteProfile,
+            claimMessage = it.claimMessage?.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id },
             winMoment = it.winMoment?.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id }
                 ?.refreshPlayers(value?.room?.round?.players.orEmpty())) }
     }
@@ -117,8 +120,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             finally { mutable.update { it.copy(busy = false) } }
         }
     }
-    fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = true,
-        prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 5)) =
+    fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = false, manualClaims = true,
+        prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 5, computerPlayers = 2)) =
         begin(PendingOperation.Create(CreateRoomRequest(UUID.randomUUID().toString(), options)))
     fun join(rawCode: String) {
         val code = rawCode.trim().uppercase()
@@ -131,6 +134,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         begin(PendingOperation.Command(room.code, CommandRequest(UUID.randomUUID().toString(), room.revision, action),
             readyAgreement = if (action is RoomAction.Ready) room.readyAgreement() else null))
     }
+    fun claim(selection: ClaimSelection) { saved?.claimAction(selection)?.let(::command) }
     fun logout() = begin(PendingOperation.Logout)
     fun deleteProfile() = begin(PendingOperation.DeleteProfile(DeleteProfileRequest(UUID.randomUUID().toString())))
     private fun begin(pending: PendingOperation) {
@@ -185,6 +189,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         allowRoomChange = pending is PendingOperation.Create || pending is PendingOperation.Join)
                     persist(accepted.saved.copy(pending = null))
                     announceAccepted(latest, accepted)
+                    if (pending is PendingOperation.Command && pending.request.action is RoomAction.Claim)
+                        mutable.update { it.copy(claimMessage = UiMessage(R.string.play_claim_confirmed)) }
                 }
             }
         } catch (error: RoomApiFailure) {
@@ -257,11 +263,13 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         if (!active) return
         val nextStatus = accepted.saved.room?.round?.status
         if (nextStatus != previous.room?.round?.status && nextStatus in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) { audio.stop(); dismissWin() }
+        val moment = if (accepted.liveAwards) accepted.saved.room?.newWinMoment(previous.room) else null
+        if (moment != null) mutable.update { it.copy(winMoment = moment) }
         accepted.announcement?.let { number ->
-            val moment = accepted.saved.room?.winMoment()
-            if (moment != null) mutable.update { it.copy(winMoment = moment) }
+            mutable.update { it.copy(claimMessage = null) }
             audio.play(number, preferences.language, celebration = moment != null)
         }
+        if (accepted.announcement == null && moment != null) audio.effect(SoundCue.WIN)
     }
     fun reconnect() { stream?.cancel(); stream = null; connect() }
     fun mark(ticketId: String, number: Int) {
@@ -269,7 +277,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             try { mutex.withLock { saved?.let {
                 val next = it.mark(ticketId, number)
-                if (next != it) { persist(next); if (active) audio.effect(SoundCue.MARK) }
+                if (next != it) { persist(next); mutable.update { value -> value.copy(claimMessage = null) }; if (active) audio.effect(SoundCue.MARK) }
             } } }
             catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
@@ -305,6 +313,15 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     private fun showFailure(error: Exception) {
+        if (error is RoomApiFailure && error.code in setOf("no_valid_claim", "claim_window_closed", "claim_round_changed", "invalid_claim_marks", "invalid_claim_selection")) {
+            val resource = when (error.code) {
+                "claim_window_closed", "claim_round_changed" -> R.string.play_claim_late
+                "invalid_claim_marks", "invalid_claim_selection" -> R.string.play_claim_marks
+                else -> R.string.play_claim_none
+            }
+            mutable.update { it.copy(claimMessage = UiMessage(resource)) }
+            return
+        }
         val message = when (error) {
             is RoomApiFailure -> when (error.status) {
                 401 -> if (saved?.pending is PendingOperation.DeleteProfile) UiMessage(R.string.error_delete_unconfirmed)

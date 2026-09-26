@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const args = process.argv.slice(2);
 const online = args.includes('--online');
+const lan = args.includes('--lan');
 const faultProxy = args.includes('--fault-proxy');
 const animations = args.includes('--animations');
 function option(name, fallback) {
@@ -20,6 +21,7 @@ const selectedClass = option('--class', undefined);
 assert.match(serial, /^emulator-\d+$/);
 assert.match(label, /^[a-z0-9-]+$/);
 if (selectedClass) assert.match(selectedClass, /^io\.github\.sbshrey\.tambola\.game\.[A-Za-z0-9_.#]+$/);
+if (lan) assert.ok(!online && selectedClass, '--lan requires an explicit test class and no loopback fixture');
 const sdk = process.env.ANDROID_SDK_ROOT || (process.env.LOCALAPPDATA && resolve(process.env.LOCALAPPDATA, 'Android/Sdk'));
 assert.ok(sdk, 'Set ANDROID_SDK_ROOT');
 const adb = resolve(sdk, 'platform-tools', process.platform === 'win32' ? 'adb.exe' : 'adb');
@@ -49,6 +51,7 @@ try {
   for (const name of scales) run('shell', 'settings', 'put', 'global', name, animations && name === 'animator_duration_scale' ? '1' : '0');
   const command = ['shell', 'am', 'instrument', '-w'];
   if (online) command.push('-e', 'tambolaOnline', 'true');
+  if (lan) command.push('-e', 'tambolaLan', 'true');
   if (faultProxy) command.push('-e', 'tambolaFaultProxy', 'true');
   if (selectedClass) command.push('-e', 'class', selectedClass);
   else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest,io.github.sbshrey.tambola.game.LongSessionTest');

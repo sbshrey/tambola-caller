@@ -14,6 +14,36 @@ class ManualClaimTest {
     private fun numbers(round: Round, player: String) = round.tickets.filter { it.playerId == player }.flatMap { it.numbers }.toSet()
     private fun restored(round: Round) = RoundCodec.decode(RoundCodec.encode(round))
 
+    @Test fun `selected ticket and prize cannot silently award other schemes or tickets`() {
+        val round = atAllNumbers(game())
+        val first = round.tickets.first { it.playerId == "a" }
+        val second = round.tickets.filter { it.playerId == "a" }[1]
+        val choice = ClaimSelection(first.id, Prize.TOP_LINE.name)
+        val claimed = round.claim("a", numbers(round, "a"), choice)
+        assertEquals(listOf(Prize.TOP_LINE), claimed.awards.map { it.prize })
+        assertEquals(listOf(first.id), claimed.awards.single().ticketIds)
+        assertEquals(claimed, claimed.claim("a", numbers(round, "a"), choice))
+        val next = claimed.claim("a", numbers(round, "a"), choice.copy(ticketId = second.id))
+        assertEquals(listOf(first.id, second.id), next.awards.single().ticketIds)
+        assertEquals(next, restored(next))
+        assertThrows(IllegalArgumentException::class.java) { round.claim("b", numbers(round, "b"), choice) }
+        assertThrows(IllegalArgumentException::class.java) { round.claim("a", numbers(round, "a"), choice.copy(prizeId = "missing")) }
+    }
+
+    @Test fun `selected custom prize preserves hand-wide minimum and ticket ordinals`() {
+        val custom = CustomPrize("custom_pair", "Pair", 20, TicketPattern(listOf(listOf(RuleCondition(NumberSelection.Row(0))))),
+            minimumTickets = 2, ticketOrdinals = listOf(2, 3))
+        val round = atAllNumbers(game(tickets = 3, custom = listOf(custom)))
+        val own = round.tickets.filter { it.playerId == "a" }
+        val marks = own.flatMap { it.row(0) }.toSet()
+        assertEquals(round, round.claim("a", marks, ClaimSelection(own[0].id, custom.id)))
+        assertEquals(round, round.claim("a", own[1].row(0).toSet(), ClaimSelection(own[1].id, custom.id)))
+        val claimed = round.claim("a", marks, ClaimSelection(own[1].id, custom.id))
+        assertTrue(claimed.awards.isEmpty())
+        assertEquals(own.drop(1).map { it.id }, claimed.customAwards.single().ticketIds)
+        assertEquals(claimed, restored(claimed))
+    }
+
     @Test fun `human prizes require a real valid claim and retry is idempotent`() {
         val called = atAllNumbers(game())
         assertTrue(called.awards.isEmpty())

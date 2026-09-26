@@ -1,5 +1,7 @@
 # Complete Tambola Game: implementation and release plan
 
+**Current scope:** [ONLINE_COIN_GAME_PLAN.md](ONLINE_COIN_GAME_PLAN.md) supersedes earlier mode and interaction priorities: online multiplayer only, virtual coin tickets/prize pools, paged readable tickets, per-ticket prize selection and a persistent Wi-Fi host on this PC. Offline/family work remains historical compatibility, not the current product focus.
+
 **26 September design revision:** the user's APK trial identified major UX friction. [GAMEPLAY_REDESIGN.md](GAMEPLAY_REDESIGN.md) is the active product brief, competitor-review evidence, screen audit and iteration sequence. Prioritize one-action fast play, familiar prizes, complete visible owned hands, and disjoint physical ticket strips before further release packaging. Earlier ticket-carousel and long setup layouts are superseded.
 
 Date: 25 September 2026. Development branch: `shrey/full-tambola-game`.

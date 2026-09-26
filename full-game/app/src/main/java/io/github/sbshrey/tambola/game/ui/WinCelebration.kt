@@ -26,7 +26,7 @@ import kotlin.math.sin
 
 /** Decorative, finite motion. Its message and the game controls remain independently usable. */
 @Composable
-internal fun WinConfetti(eventId: String, reducedMotion: Boolean, modifier: Modifier = Modifier) {
+internal fun WinConfetti(eventId: String, reducedMotion: Boolean, modifier: Modifier = Modifier, intensity: Float = .22f) {
     val words = gameText()
     val progress = remember(eventId) { Animatable(1f) }
     val colors = listOf(Saffron, Jade, Coral)
@@ -48,7 +48,7 @@ internal fun WinConfetti(eventId: String, reducedMotion: Boolean, modifier: Modi
             val x = size.width * ((index * 37 % 101) / 100f) + sin(p * 5 + index) * 5.dp.toPx()
             val y = size.height * (((index * 17 % 31) / 100f) + p * .65f)
             rotate(index * 27f + p * 120f, Offset(x, y)) {
-                drawRect(colors[index % colors.size].copy(alpha = (1 - p) * .22f), Offset(x, y), Size(4.dp.toPx(), 7.dp.toPx()))
+                drawRect(colors[index % colors.size].copy(alpha = (1 - p) * intensity), Offset(x, y), Size(4.dp.toPx(), 7.dp.toPx()))
             }
         }
     }

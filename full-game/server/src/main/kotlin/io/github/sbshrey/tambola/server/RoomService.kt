@@ -131,7 +131,8 @@ class RoomService(
                 hostId = if (original.hostId == playerId) successor?.id.orEmpty() else original.hostId,
                 phase = if (remaining.isEmpty()) RoomPhase.CLOSED else original.phase,
                 round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
-                nextDrawAt = if (remaining.isEmpty()) null else redacted.nextDrawAt)
+                nextDrawAt = if (remaining.isEmpty()) null else redacted.nextDrawAt,
+                computerClaimsAt = if (remaining.isEmpty()) emptyMap() else redacted.computerClaimsAt)
             changed(connection, next, "profile_deleted", now)
             connection.forEachRow("SELECT round_id, payload FROM finished_rounds WHERE room_id = ? ORDER BY round_id FOR UPDATE", original.id) { row ->
                 val id = row.getString(1)
@@ -185,7 +186,7 @@ class RoomService(
             val now = clock()
             val joined = if (room.members.any { it.id == guest.id }) touch(connection, room, guest.id, now) else {
                 demand(room.phase == RoomPhase.LOBBY && !room.locked, 409, "room_locked", "This room is not accepting new players.")
-                demand(room.members.size < room.options.capacity, 409, "room_full", "This room is full.")
+                demand(room.members.size + room.options.computerPlayers < room.options.capacity, 409, "room_full", "This room is full.")
                 changed(connection, room.copy(members = room.members + Member(guest.id, guest.name, guest.avatar, now, lastSeen = now)), "joined", now)
             }
             update(connection, joined, guest.id, null)
@@ -239,7 +240,10 @@ class RoomService(
                 demand(receipt.hash == hash, 409, "id_reused", "This command ID was already used for another request.")
                 return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
             }
-            demand(room.revision == request.expectedRevision, 409, "stale_revision", "The room changed. Refresh before trying again.")
+            // A claim is tied to a round/call, not to unrelated readiness/presence or
+            // another same-call winner. Future revisions are still invalid.
+            demand(room.revision == request.expectedRevision || (request.action is RoomAction.Claim && request.expectedRevision < room.revision),
+                409, "stale_revision", "The room changed. Refresh before trying again.")
             val now = clock()
             room = room.copy(members = room.members.map { if (it.id == guest.id) it.copy(lastSeen = now, connected = true) else it })
             val next = apply(room, guest.id, request.action, now)
@@ -259,7 +263,7 @@ class RoomService(
             var room = original
             var event = "presence"
             if (room.expiresAt <= now) {
-                room = room.copy(phase = RoomPhase.CLOSED, round = room.round?.cancel(), nextDrawAt = null)
+                room = room.copy(phase = RoomPhase.CLOSED, round = room.round?.cancel(), nextDrawAt = null, computerClaimsAt = emptyMap())
                 event = "expired"
             } else {
                 val present = room.members.map { it.copy(connected = now - it.lastSeen < PRESENCE_TIMEOUT) }
@@ -273,6 +277,14 @@ class RoomService(
                 if (room.phase == RoomPhase.ACTIVE && room.nextDrawAt?.let { it <= now } == true) {
                     room = draw(room, now)
                     event = "drawn"
+                } else if (room.phase == RoomPhase.ACTIVE && room.round?.status == RoundStatus.PLAYING) {
+                    val due = room.computerClaimsAt.filterValues { it <= now }.keys
+                    if (due.isNotEmpty()) {
+                        var game = requireNotNull(room.round)
+                        due.forEach { game = game.claimComputer(it) }
+                        room = room.copy(round = game, computerClaimsAt = room.computerClaimsAt - due)
+                        event = "computer_claimed"
+                    }
                 }
             }
             if (room != original) changed(connection, room, event, now)
@@ -303,18 +315,22 @@ class RoomService(
             }
             is RoomAction.Configure -> {
                 host(); lobby()
-                demand(action.options.capacity >= room.members.size, 409, "capacity", "Capacity cannot be smaller than the current group.")
+                demand(action.options.capacity >= room.members.size + action.options.computerPlayers, 409, "capacity", "Capacity cannot be smaller than the current group, including computers.")
                 room.copy(options = action.options, members = room.members.map { it.copy(ready = false) })
             }
             is RoomAction.Lock -> { host(); lobby(); room.copy(locked = action.value) }
             RoomAction.Start -> {
                 host(); lobby()
-                demand(room.members.size >= 2 && room.members.all { it.ready && now - it.lastSeen < PRESENCE_TIMEOUT },
-                    409, "not_ready", "At least two connected players must be ready; every member must be ready.")
+                val count = room.members.size + room.options.computerPlayers
+                demand(count in 2..room.options.capacity && room.members.all { it.ready && now - it.lastSeen < PRESENCE_TIMEOUT },
+                    409, "not_ready", "At least two seats are needed; every human member must be connected and ready.")
                 val houses = room.options.game.prizes.count { it.isRankedHouse }.coerceAtLeast(1)
-                demand(room.members.size * room.options.game.ticketsPerPlayer >= houses,
+                demand(count * room.options.game.ticketsPerPlayer >= houses,
                     409, "insufficient_tickets", "$houses houses need at least $houses tickets at the table. Add players or increase tickets per player.")
-                val game = Round.create(room.members.map { Player(it.id, it.name, avatar = it.avatar) }, room.options.game, now = now).start()
+                val computers = (1..room.options.computerPlayers).map { index ->
+                    Player("computer-${room.id}-$index", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[index - 1], computer = true, avatar = index)
+                }
+                val game = Round.create(room.members.map { Player(it.id, it.name, avatar = it.avatar) } + computers, room.options.game, now = now).start()
                 val nonce = secret()
                 room.copy(phase = RoomPhase.ACTIVE, locked = true, round = game, nonce = nonce, drawCommitment = commitment(game, nonce),
                     nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { room.options.automaticCalling })
@@ -325,17 +341,34 @@ class RoomService(
                 demand(!room.options.automaticCalling, 409, "automatic_calling", "The server calls numbers automatically in this room.")
                 draw(room, now)
             }
-            RoomAction.Pause -> { host(); active(); room.copy(round = room.round!!.pause(), nextDrawAt = null) }
+            is RoomAction.Claim -> {
+                active()
+                val game = requireNotNull(room.round)
+                demand(game.settings.manualClaims, 409, "automatic_awards", "This round awards prizes automatically.")
+                demand(action.roundId == game.id, 409, "claim_round_changed", "This claim belongs to another round.")
+                demand(action.drawIndex == game.called.size, 409, "claim_window_closed", "That call has ended. Check the current number before claiming again.")
+                val owned = game.tickets.filter { it.playerId == actor }.flatMap { it.numbers }.toSet()
+                demand(action.markedNumbers.all { it in game.called && it in owned }, 400, "invalid_claim_marks", "Claims can use only your called ticket numbers.")
+                demand(game.tickets.any { it.id == action.selection.ticketId && it.playerId == actor } &&
+                    (game.settings.prizes.any { it.name == action.selection.prizeId } || game.settings.customPrizes.any { it.id == action.selection.prizeId }),
+                    400, "invalid_claim_selection", "Choose an owned ticket and an enabled prize.")
+                val claimed = game.claim(actor, action.markedNumbers, action.selection)
+                demand(claimed != game, 422, "no_valid_claim", "No new prize matches your marked numbers yet.")
+                room.copy(round = claimed)
+            }
+            RoomAction.Pause -> { host(); active(); room.copy(round = room.round!!.pause(), nextDrawAt = null, computerClaimsAt = emptyMap()) }
             RoomAction.Resume -> {
                 host(); active()
                 demand(room.round?.status == RoundStatus.PAUSED, 409, "not_paused", "This round is not paused.")
-                room.copy(round = room.round!!.start(), nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { room.options.automaticCalling })
+                val game = room.round!!.start()
+                room.copy(round = game, nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { room.options.automaticCalling },
+                    computerClaimsAt = game.computerClaimDelays().mapValues { now + it.value })
             }
-            RoomAction.End -> { host(); active(); room.copy(phase = RoomPhase.FINISHED, round = room.round!!.cancel(), nextDrawAt = null) }
+            RoomAction.End -> { host(); active(); room.copy(phase = RoomPhase.FINISHED, round = room.round!!.cancel(), nextDrawAt = null, computerClaimsAt = emptyMap()) }
             RoomAction.Rematch -> {
                 host()
                 demand(room.phase == RoomPhase.FINISHED, 409, "not_finished", "Finish this round before starting a rematch.")
-                room.copy(phase = RoomPhase.LOBBY, locked = false, round = null, nonce = null, drawCommitment = null, nextDrawAt = null,
+                room.copy(phase = RoomPhase.LOBBY, locked = false, round = null, nonce = null, drawCommitment = null, nextDrawAt = null, computerClaimsAt = emptyMap(),
                     members = room.members.map { it.copy(ready = false) })
             }
             is RoomAction.Remove -> {
@@ -355,7 +388,8 @@ class RoomService(
     private fun draw(room: RoomRecord, now: Long): RoomRecord {
         val game = requireNotNull(room.round).draw()
         return room.copy(round = game, phase = if (game.finished) RoomPhase.FINISHED else RoomPhase.ACTIVE,
-            nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { !game.finished && room.options.automaticCalling })
+            nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { !game.finished && room.options.automaticCalling },
+            computerClaimsAt = game.computerClaimDelays().mapValues { now + it.value })
     }
 
     private fun authenticate(connection: Connection, token: String, lock: Boolean = false, protect: Boolean = true): Guest {
@@ -431,12 +465,13 @@ class RoomService(
     private fun validToken(token: String) = demand(token.matches(Regex("[A-Za-z0-9_-]{43}")), 401, "unauthorized", "A valid guest session is required.")
     private fun decode(payload: String): RoomRecord = WireJson.decodeFromString<RoomRecord>(payload).let { record ->
         record.copy(round = record.round?.let { game ->
-            require(game.version in 1..3) { "Unsupported stored round format" }
-            game.copy(version = 3)
+            require(game.version in 1..5) { "Unsupported stored round format" }
+            game.copy(version = maxOf(3, game.version))
         })
     }
     private fun actionName(action: RoomAction): String = when (action) {
         is RoomAction.ChooseAvatar -> "avatar_changed"
+        is RoomAction.Claim -> "claimed"
         is RoomAction.Ready -> "ready"; is RoomAction.Configure -> "configured"; is RoomAction.Lock -> "locked"
         RoomAction.Start -> "started"; RoomAction.Draw -> "drawn"; RoomAction.Pause -> "paused"; RoomAction.Resume -> "resumed"
         RoomAction.End -> "ended"; RoomAction.Rematch -> "rematch"; is RoomAction.Remove -> "removed"; RoomAction.Leave -> "left"

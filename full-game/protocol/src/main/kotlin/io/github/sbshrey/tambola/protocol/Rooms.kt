@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 2
+const val PROTOCOL_VERSION = 3
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -20,8 +20,12 @@ val WireJson = Json { encodeDefaults = true }
     val capacity: Int = 32,
     val intervalSeconds: Int = 10,
     val automaticCalling: Boolean = true,
+    val computerPlayers: Int = 0,
 ) {
-    init { require(game.mode == GameMode.ONLINE && capacity in 2..32 && intervalSeconds in 5..30) }
+    init {
+        require(game.mode == GameMode.ONLINE && capacity in 2..32 && intervalSeconds in 5..30)
+        require(computerPlayers in 0..5 && computerPlayers < capacity)
+    }
 }
 @Serializable data class CreateRoomRequest(val id: String, val options: RoomOptions = RoomOptions())
 @Serializable data class MemberView(val playerId: String, val displayName: String, val avatar: Int, val ready: Boolean, val connected: Boolean)
@@ -70,6 +74,9 @@ val WireJson = Json { encodeDefaults = true }
     @Serializable @SerialName("lock") data class Lock(val value: Boolean) : RoomAction()
     @Serializable @SerialName("start") data object Start : RoomAction()
     @Serializable @SerialName("draw") data object Draw : RoomAction()
+    @Serializable @SerialName("claim") data class Claim(val roundId: String, val drawIndex: Int, val markedNumbers: Set<Int>, val selection: ClaimSelection) : RoomAction() {
+        init { require(roundId.length in 1..64 && drawIndex in 1..90 && markedNumbers.size <= 90 && markedNumbers.all { it in 1..90 }) }
+    }
     @Serializable @SerialName("pause") data object Pause : RoomAction()
     @Serializable @SerialName("resume") data object Resume : RoomAction()
     @Serializable @SerialName("end") data object End : RoomAction()

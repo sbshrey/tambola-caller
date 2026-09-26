@@ -38,6 +38,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
     val phase: RoomPhase = RoomPhase.LOBBY, val locked: Boolean = false,
     val round: Round? = null, val nonce: String? = null, val drawCommitment: String? = null,
     val nextDrawAt: Long? = null,
+    val computerClaimsAt: Map<String, Long> = emptyMap(),
 ) {
     fun view(actor: String, now: Long): RoomView = RoomView(
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,

@@ -114,7 +114,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                             RoomInvites.link(BuildConfig.ROOM_API_URL, room.code, BuildConfig.DEBUG), room.code))
                     }, words(R.string.ui_invite_to_room))) }
                 }) { Text(words(R.string.invite_share)) }
-                Text(words(R.string.ui_players_ticket_s_each, room.members.size, room.options.capacity, room.options.game.ticketsPerPlayer), color = Muted)
+                Text(words(R.string.ui_players_ticket_s_each, room.members.size + room.options.computerPlayers, room.options.capacity, room.options.game.ticketsPerPlayer), color = Muted)
             }
             if (room.phase == RoomPhase.LOBBY) {
                 GameCard {
@@ -134,6 +134,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                             if (host && member.playerId != state.playerId) TextButton(onClick = { model.command(RoomAction.Remove(member.playerId)) }, enabled = enabled && state.connection == Connection.LIVE) { Text(words(R.string.ui_remove)) }
                         }
                     }
+                    if (room.options.computerPlayers > 0) Text("${words(R.string.ui_computer_players)} · ${room.options.computerPlayers}", color = Muted)
                 }
                 GameCard {
                     Text(room.options.game.prizes.joinToString(" · ") { words.prizeTitle(it) }, maxLines = 2, overflow = TextOverflow.Ellipsis,
@@ -142,7 +143,8 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                     TextButton(onClick = { showRules = !showRules }, modifier = Modifier.testTag("lobby-prizes")) { Text(words(R.string.play_prizes)) }
                     if (showRules) {
                         Text(words.endExplanation(room.options.game), color = Saffron)
-                        Text(if (room.options.game.assistedMarking) words(R.string.ui_assisted_marking_for_everyone) else words(R.string.ui_mark_your_own_called_numbers_wins_are_checked), color = Muted)
+                        Text(if (room.options.game.manualClaims) words(R.string.play_claim_rules) else if (room.options.game.assistedMarking)
+                            words(R.string.ui_assisted_marking_for_everyone) else words(R.string.ui_mark_your_own_called_numbers_wins_are_checked), color = Muted)
                         room.options.game.prizes.forEach { Text(words(R.string.ui_pts_n, words.prizeTitle(it), it.points, words.prizeExplanation(it))) }
                         room.options.game.customPrizes.forEach { Text(words(R.string.ui_pts_n, it.title, it.points, words.customPrize(it))) }
                         Text(words(R.string.ui_ties_on_the_same_call_share_full_points), color = Muted)
@@ -193,7 +195,8 @@ fun OnlineControls(state: OnlineUiState, model: OnlineViewModel) {
     val me = room.members.firstOrNull { it.playerId == state.playerId } ?: return
     val enabled = state.connection == Connection.LIVE && !state.pending && !state.busy && !state.sessionExpired && !state.storageFailure
     val host = room.hostId == state.playerId
-    val enoughTickets = room.members.size * room.options.game.ticketsPerPlayer >= room.options.game.prizes.count { it.isRankedHouse }.coerceAtLeast(1)
+    val playerCount = room.members.size + room.options.computerPlayers
+    val enoughTickets = playerCount * room.options.game.ticketsPerPlayer >= room.options.game.prizes.count { it.isRankedHouse }.coerceAtLeast(1)
     var end by remember { mutableStateOf(false) }
     var seconds by remember { mutableIntStateOf(0) }
     LaunchedEffect(room.nextDrawAt, room.serverTime) {
@@ -205,7 +208,7 @@ fun OnlineControls(state: OnlineUiState, model: OnlineViewModel) {
             RoomPhase.LOBBY -> {
                 PrimaryAction(if (me.ready) words(R.string.ui_i_m_not_ready_yet) else words(R.string.ui_i_m_ready), enabled = enabled) { model.command(RoomAction.Ready(!me.ready)) }
                 if (!enoughTickets) Text(words(R.string.ui_these_house_prizes_need_more_tickets_add_players), color = Saffron)
-                if (host) PrimaryAction(words(R.string.ui_start_online_round), enabled = enabled && enoughTickets && room.members.size >= 2 && room.members.all { it.ready && it.connected }) { model.command(RoomAction.Start) }
+                if (host) PrimaryAction(words(R.string.ui_start_online_round), enabled = enabled && enoughTickets && playerCount >= 2 && room.members.all { it.ready && it.connected }) { model.command(RoomAction.Start) }
                 else Text(words(R.string.ui_the_host_starts_when_everyone_is_ready), color = Muted)
             }
             RoomPhase.ACTIVE -> {
@@ -265,9 +268,9 @@ private fun ConfirmOnline(title: String, message: String, action: String, confir
 private fun RoomSettingsEditor(room: RoomView, enabled: Boolean, save: (RoomOptions) -> Unit, dismiss: () -> Unit) {
     val words = gameText()
     val game = room.options.game
-    var rawDraft by rememberSaveable(room.roomId) { mutableStateOf(WireJson.encodeToString(SetupDraft(mode = GameMode.ONLINE, names = "", bots = 0,
+    var rawDraft by rememberSaveable(room.roomId) { mutableStateOf(WireJson.encodeToString(SetupDraft(mode = GameMode.ONLINE, names = "", bots = room.options.computerPlayers,
         tickets = game.ticketsPerPlayer, assisted = game.assistedMarking, prizes = game.prizes.filterNot { it.isRankedHouse || it == Prize.FULL_HOUSE },
-        houses = game.prizes.count { it.isRankedHouse }.coerceAtLeast(1), playAllNumbers = game.playAllNumbers, customPrizes = game.customPrizes))) }
+        houses = game.prizes.count { it.isRankedHouse }.coerceAtLeast(1), playAllNumbers = game.playAllNumbers, customPrizes = game.customPrizes, manualClaims = game.manualClaims))) }
     val draft = remember(rawDraft) { WireJson.decodeFromString<SetupDraft>(rawDraft) }
     val update: (SetupDraft) -> Unit = { rawDraft = WireJson.encodeToString(it) }
     var automatic by rememberSaveable { mutableStateOf(room.options.automaticCalling) }
@@ -287,17 +290,22 @@ private fun RoomSettingsEditor(room: RoomView, enabled: Boolean, save: (RoomOpti
                         Text(words(R.string.ui_tickets_per_player))
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { (1..6).forEach { n -> FilterChip(draft.tickets == n, { update(draft.copy(tickets = n)) }, label = { Text("$n") }, modifier = Modifier.testTag("online-tickets-$n")) } }
                         SettingSwitch(words(R.string.ui_help_with_marking), words(R.string.ui_automatically_dab_called_numbers), draft.assisted) { update(draft.copy(assisted = it)) }
+                        Text(words(R.string.ui_computer_players))
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { (0..5).forEach { n ->
+                            FilterChip(draft.bots == n, { update(draft.copy(bots = n)) }, enabled = n + room.members.size <= capacity,
+                                label = { Text("$n") }, modifier = Modifier.testTag("online-computers-$n"))
+                        } }
                         SettingSwitch(words(R.string.ui_automatic_online_calling), words(R.string.ui_the_server_keeps_time_for_everyone), automatic) { automatic = it }
                         if (automatic) FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf(5, 10, 15, 20, 30).forEach { n -> FilterChip(interval == n, { interval = n }, label = { Text(words(R.string.seconds_short, n)) }) } }
                         Text(words(R.string.ui_maximum_players))
-                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf(2, 4, 8, 16, 32).forEach { n -> FilterChip(capacity == n, { capacity = n }, enabled = n >= room.members.size, label = { Text("$n") }) } }
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf(2, 4, 8, 16, 32).forEach { n -> FilterChip(capacity == n, { capacity = n }, enabled = n >= room.members.size + draft.bots, label = { Text("$n") }) } }
                     }
                     RoundRules(draft, update, edit = { prize ->
                         rawRule = WireJson.encodeToString(prize?.let(CustomRuleDraft::from) ?: CustomRuleDraft()); originalRule = rawRule
                     }, remove = { id -> update(draft.copy(customPrizes = draft.customPrizes.filterNot { it.id == id })) })
                     draft.errors.forEach { Text(words.message(it), color = Coral) }
                 }
-                Column(Modifier.padding(16.dp)) { PrimaryAction(words(R.string.ui_save_room_rules), enabled = enabled && draft.errors.isEmpty() && capacity >= room.members.size) { save(RoomOptions(draft.settings(), capacity, interval, automatic)) } }
+                Column(Modifier.padding(16.dp)) { PrimaryAction(words(R.string.ui_save_room_rules), enabled = enabled && draft.errors.isEmpty() && capacity >= room.members.size + draft.bots) { save(RoomOptions(draft.settings(), capacity, interval, automatic, draft.bots)) } }
             }
         }
     }

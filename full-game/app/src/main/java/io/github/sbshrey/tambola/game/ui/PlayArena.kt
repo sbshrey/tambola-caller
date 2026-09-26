@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.CornerRadius
@@ -20,6 +22,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
@@ -49,8 +53,15 @@ fun PlayArena(
     dabCalled: () -> Unit, repeatCall: () -> Unit, back: () -> Unit,
     win: WinMoment?, dismissWin: () -> Unit, enabled: Boolean = true,
     extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit = {},
+    markNumber: ((String, Int) -> Unit)? = null, claim: ((ClaimSelection) -> Unit)? = null,
+    claimMessage: String? = null, claimEnabled: Boolean = enabled,
     footer: @Composable () -> Unit,
 ) {
+    if (table.settings.manualClaims && markNumber != null && claim != null) {
+        ClaimArena(table, ownerId, preferences, status, markNumber, claim, claimMessage, repeatCall, back,
+            win, dismissWin, enabled, claimEnabled, extraMenu, footer)
+        return
+    }
     val words = gameText()
     val tickets = table.tickets.filter { it.playerId == ownerId }.take(6)
     val ownTable = table.copy(tickets = tickets)
@@ -184,9 +195,10 @@ fun PlayArena(
 }
 
 @Composable
-private fun TicketHand(table: TableRound, modifier: Modifier, reducedMotion: Boolean) {
+internal fun TicketHand(table: TableRound, modifier: Modifier, reducedMotion: Boolean, markNumber: ((String, Int) -> Unit)? = null, markEnabled: Boolean = true) {
     BoxWithConstraints(modifier.fillMaxWidth().testTag("owned-hand")) {
         val columns = when {
+            markNumber != null -> if (maxWidth > 380.dp && table.tickets.size >= 3) 2 else 1
             maxWidth > 580.dp && maxHeight < 300.dp && table.tickets.size >= 3 -> 3
             maxWidth > 580.dp && table.tickets.size > 1 -> 2
             else -> 1
@@ -196,7 +208,7 @@ private fun TicketHand(table: TableRound, modifier: Modifier, reducedMotion: Boo
         Column(Modifier.fillMaxWidth().height(handHeight).align(Alignment.Center), verticalArrangement = Arrangement.spacedBy(5.dp)) {
             rows.forEach { row ->
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    row.forEach { ticket -> CompactTicket(ticket, table, Modifier.weight(1f).fillMaxHeight(), reducedMotion) }
+                    row.forEach { ticket -> key(ticket.id) { CompactTicket(ticket, table, Modifier.weight(1f).fillMaxHeight(), reducedMotion, markNumber, markEnabled) } }
                     if (row.size < columns) Spacer(Modifier.weight(1f))
                 }
             }
@@ -205,7 +217,8 @@ private fun TicketHand(table: TableRound, modifier: Modifier, reducedMotion: Boo
 }
 
 @Composable
-internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier, reducedMotion: Boolean) {
+internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier, reducedMotion: Boolean, markNumber: ((String, Int) -> Unit)? = null, markEnabled: Boolean = true,
+    claimTicket: (() -> Unit)? = null, claimEnabled: Boolean = true) {
     val words = gameText()
     val marked = table.marks[ticket.id].orEmpty()
     val ordinal = table.tickets.indexOf(ticket) + 1
@@ -221,18 +234,37 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
             val numberSize = minOf(cellHeight.value * .95f, cellWidth.value * .8f, 26f * density.fontScale) / density.fontScale
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(1.dp)) {
                 (0..2).forEach { row ->
-                    Row(Modifier.weight(1f).fillMaxWidth().semantics(mergeDescendants = true) {
+                    Row(Modifier.weight(1f).fillMaxWidth().then(if (markNumber != null) Modifier else Modifier.semantics(mergeDescendants = true) {
                         contentDescription = words(R.string.ui_row_marked, words.row(row), ticket.row(row).joinToString(), ticket.row(row).filter { it in marked }.joinToString().ifEmpty { words(R.string.no_marked_numbers) })
-                    }, horizontalArrangement = Arrangement.spacedBy(1.dp)) {
+                    }), horizontalArrangement = Arrangement.spacedBy(1.dp)) {
                         (0..8).forEach { col ->
                             val number = ticket.cells[row * 9 + col]
                             val dabbed = number in marked
                             val latest = number != 0 && number == table.latest
+                            val canMark = markEnabled && markNumber != null && number in table.called && !table.finished && !table.settings.assistedMarking
+                            val stamp = remember(ticket.id, number) { Animatable(if (dabbed) 1f else 0f) }
+                            LaunchedEffect(dabbed, reducedMotion) {
+                                if (!dabbed || reducedMotion) stamp.snapTo(if (dabbed) 1f else 0f)
+                                else if (stamp.value < 1f) stamp.animateTo(1f, tween(360))
+                            }
                             val fill by animateColorAsState(if (dabbed) DabGreen else if (number == 0) Color(0xFFECE7D9) else Color.White,
                                 animationSpec = tween(if (reducedMotion) 0 else 160), label = "dab")
                             Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(4.dp))
                                 .background(fill)
-                                .then(if (latest) Modifier.border(2.dp, Color(0xFFAB6500), RoundedCornerShape(4.dp)) else Modifier), contentAlignment = Alignment.Center) {
+                                .then(if (latest) Modifier.border(2.dp, Color(0xFFAB6500), RoundedCornerShape(4.dp)) else Modifier)
+                                .drawWithContent {
+                                    drawContent()
+                                    if (dabbed && !reducedMotion && stamp.value < 1f) drawCircle(BallGold.copy(alpha = 1f - stamp.value),
+                                        radius = size.minDimension * (.15f + stamp.value * .45f), style = Stroke(2.dp.toPx()))
+                                }
+                                .then(if (number != 0 && markNumber != null) Modifier.testTag("dab-$number")
+                                    .pointerInput(ticket.id, number, canMark) { detectTapGestures { if (canMark) markNumber(ticket.id, number) } }
+                                    .semantics(mergeDescendants = true) {
+                                        role = Role.Button
+                                        contentDescription = words(if (number !in table.called) R.string.play_number_uncalled else if (dabbed) R.string.play_unmark_number else R.string.play_mark_number, number)
+                                        if (!canMark) disabled()
+                                        onClick { if (canMark) { markNumber(ticket.id, number); true } else false }
+                                    } else Modifier), contentAlignment = Alignment.Center) {
                                 if (number != 0) Text("$number", fontSize = numberSize.sp, lineHeight = numberSize.sp, color = if (dabbed) Color.White else Ink,
                                     fontWeight = FontWeight.Bold, maxLines = 1, modifier = Modifier.testTag("ticket-number").clearAndSetSemantics {})
                                 if (dabbed) Canvas(Modifier.align(Alignment.BottomEnd).size(5.dp).padding(1.dp)) {
@@ -243,6 +275,14 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
                         }
                     }
                 }
+            }
+        }
+        if (claimTicket != null) Box(Modifier.width(82.dp).fillMaxHeight().padding(horizontal = 3.dp), contentAlignment = Alignment.Center) {
+            Button(onClick = claimTicket, enabled = claimEnabled, contentPadding = PaddingValues(horizontal = 6.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = BallGold, contentColor = Ink),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("claim-ticket-$ordinal")
+                    .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = RoundedCornerShape(12.dp)) {
+                Text(words(R.string.play_claim), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -302,7 +342,7 @@ private fun PrizeRail(table: TableRound, ink: Color, muted: Color, compact: Bool
 }
 
 @Composable
-private fun ArenaDialog(title: String, dismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+internal fun ArenaDialog(title: String, dismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     val words = gameText()
     AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp), content = content)
@@ -313,13 +353,14 @@ private fun ArenaDialog(title: String, dismiss: () -> Unit, content: @Composable
 fun OfflineArena(round: Round, state: GameUiState, model: GameViewModel) {
     val words = gameText()
     val humans = round.players.filterNot { it.computer }
-    val iconControls = LocalDensity.current.fontScale > 1.3f
+    val iconControls = round.settings.manualClaims || LocalDensity.current.fontScale > 1.3f
     var ownerId by rememberSaveable(round.id) { mutableStateOf(humans.first().id) }
     var handoff by rememberSaveable(round.id) { mutableStateOf(false) }
     var end by remember { mutableStateOf(false) }
     if (!handoff) PlayArena(round.toTable(), ownerId, state.preferences,
         if (round.status == RoundStatus.PAUSED) words(R.string.play_paused) else words(R.string.play_offline),
         { model.dabCalled(ownerId) }, model::repeatCall, { model.navigate(Screen.HOME) }, state.winMoment, model::dismissWin,
+        markNumber = model::toggleMark, claim = { model.claim(ownerId, it) }, claimMessage = state.claimMessage?.let(words::message),
         extraMenu = { close ->
             DropdownMenuItem(text = { Text(words(R.string.ui_settings)) }, onClick = { close(); model.navigate(Screen.SETTINGS) })
             if (humans.size > 1) DropdownMenuItem(text = { Text(words(R.string.play_hand_off)) }, onClick = { close(); model.pause(); handoff = true })
@@ -357,7 +398,7 @@ fun OfflineArena(round: Round, state: GameUiState, model: GameViewModel) {
 }
 
 @Composable
-private fun PlaybackSymbol(next: Boolean = false, paused: Boolean = false) {
+internal fun PlaybackSymbol(next: Boolean = false, paused: Boolean = false) {
     val color = LocalContentColor.current
     Canvas(Modifier.size(24.dp)) {
         if (paused) {
@@ -389,7 +430,7 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
     val table = room.toTable(state.marks) ?: return
     val enabled = state.connection == Connection.LIVE && !state.pending && !state.busy && !state.sessionExpired && !state.storageFailure
     val host = state.playerId == room.hostId
-    val iconControls = LocalDensity.current.fontScale > 1.3f
+    val iconControls = table.settings.manualClaims || LocalDensity.current.fontScale > 1.3f
     val status = when {
         state.sessionExpired -> words(R.string.ui_your_online_session_has_expired)
         state.pending -> words(R.string.ui_an_action_is_waiting_for_confirmation)
@@ -398,7 +439,8 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
         else -> words(R.string.play_live)
     }
     PlayArena(table, state.playerId.orEmpty(), preferences, status, model::dabCalled, model::repeatCall, back,
-        state.winMoment, model::dismissWin, enabled = !state.deletingProfile && !state.storageFailure && !state.sessionExpired, extraMenu = { close ->
+        state.winMoment, model::dismissWin, enabled = !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
+        markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled, extraMenu = { close ->
             DropdownMenuItem(text = { Text(words(R.string.play_room)) }, onClick = { close(); roomDetails() })
         }) {
         Row(Modifier.fillMaxWidth().heightIn(min = 52.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

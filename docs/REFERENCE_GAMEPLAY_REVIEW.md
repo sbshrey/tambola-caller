@@ -1,5 +1,7 @@
 # Reference gameplay and next interaction revision
 
+**Superseded proposal:** Later instructions request up/down ticket pages, a Claim button and prize picker per ticket, and online-only virtual-coin play on a persistent Wi-Fi server. [ONLINE_COIN_GAME_PLAN.md](ONLINE_COIN_GAME_PLAN.md) is the active scope. The earlier single-Claim/all-visible decisions below are an intermediate proposal, not the release target.
+
 26 September 2026. User-supplied local reference: `WhatsApp Video 2026-09-26 at 21.25.08.mp4` (13.76 seconds, 496 × 368). Reviewed frames throughout the clip, including half-second contact sheets. The private recording stays outside source control; no competitor artwork is imported.
 
 ## What is visible

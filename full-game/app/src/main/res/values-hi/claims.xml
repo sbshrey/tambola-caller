@@ -1,0 +1,23 @@
+<resources>
+    <string name="play_claim">दावा करें</string>
+    <string name="play_claim_confirmed">दावा सही है!</string>
+    <string name="play_claim_none">अभी कोई नया इनाम नहीं — अपने निशान जाँचें।</string>
+    <string name="play_claim_late">वह कॉल समाप्त हो गई। टिकट जाँचकर फिर दावा करें।</string>
+    <string name="play_claim_marks">दावे में केवल आपके बुलाए गए अंक गिने जाते हैं।</string>
+    <string name="play_claim_hint">अंकों पर निशान लगाएँ। दावा करें।</string>
+    <string name="play_claim_rules">टिकट के पास दावा करें दबाकर इनाम चुनें। अगली कॉल से पहले दावा करें।</string>
+    <string name="play_claim_ticket">टिकट %1$d का दावा करें</string>
+    <string name="play_choose_prize">टिकट %1$d · दावा</string>
+    <string name="play_previous_tickets">पिछले टिकट</string>
+    <string name="play_next_tickets">अगले टिकट</string>
+    <string name="play_ticket_page">टिकट पृष्ठ %1$d / %2$d</string>
+    <string name="play_mark_number">%1$d पर निशान लगाएँ</string>
+    <string name="play_unmark_number">%1$d का निशान हटाएँ</string>
+    <string name="play_number_uncalled">%1$d, अभी नहीं बुलाया गया</string>
+    <string name="play_prizes_left">%1$d इनाम बाकी</string>
+    <string name="play_players_short">%1$d खिलाड़ी</string>
+    <string name="play_tickets_short">आपके %1$d टिकट</string>
+    <string name="play_calls_short">%1$d / 90</string>
+    <string name="play_computer_short">कंप्यूटर</string>
+    <string name="play_final_claims">आखिरी कॉल — अपने दावे जाँचें</string>
+</resources>

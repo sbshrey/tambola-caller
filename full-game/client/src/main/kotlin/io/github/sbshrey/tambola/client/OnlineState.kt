@@ -29,7 +29,7 @@ import java.security.MessageDigest
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }
 
-data class AcceptedRoom(val saved: OnlineSaved, val announcement: Int?)
+data class AcceptedRoom(val saved: OnlineSaved, val announcement: Int?, val liveAwards: Boolean = false)
 
 /** Apply only current snapshots. Receipt replay may legitimately contain an older revision. */
 fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boolean = false): AcceptedRoom {
@@ -50,7 +50,8 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
     val progress = badgeProgress().let { current -> nextGame?.let { current.record(it.id, it.status,
         it.awards.hasHouseFor(setOf(credentials.playerId))) } ?: current }
     return AcceptedRoom(copy(room = next, marks = nextMarks, history = archive, badges = progress,
-        avatar = next.members.firstOrNull { it.playerId == credentials.playerId }?.avatar ?: avatar), number)
+        avatar = next.members.firstOrNull { it.playerId == credentials.playerId }?.avatar ?: avatar), number,
+        live && !update.resyncRequired && sameRound)
 }
 
 /** Lazily includes pre-badge cached results; later writes retain milestones beyond the 50-result cache. */
@@ -66,11 +67,27 @@ fun OnlineSaved.mark(ticketId: String, number: Int): OnlineSaved {
     return copy(marks = marks + (ticketId to if (number in old) old - number else old + number))
 }
 
+/** Freeze the exact hand marks and call identity before persisting a pending command. */
+fun OnlineSaved.claimAction(selection: ClaimSelection): RoomAction.Claim? {
+    val view = room ?: return null
+    val game = view.round ?: return null
+    if (!view.options.game.manualClaims || game.called.isEmpty() || game.status !in setOf(RoundStatus.PLAYING, RoundStatus.PAUSED)) return null
+    if (game.ownTickets.none { it.id == selection.ticketId } ||
+        (view.options.game.prizes.none { it.name == selection.prizeId } && view.options.game.customPrizes.none { it.id == selection.prizeId })) return null
+    val called = game.called.toSet()
+    val marked = game.ownTickets.flatMap { ticket ->
+        if (view.options.game.assistedMarking) ticket.numbers.filter { it in called }
+        else marks[ticket.id].orEmpty().filter { it in ticket.numbers && it in called }
+    }.toSet()
+    return RoomAction.Claim(game.id, game.called.size, marked, selection)
+}
+
 /** Reject malformed or privacy-breaking snapshots at the boundary, before saving/rendering. */
 fun RoomView.validateFor(playerId: String) {
     try {
         // Version-one cached receipts/snapshots predate round avatars; Player defaults them to zero.
         require(protocolVersion in 1..PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
+        require(protocolVersion >= 3 || (!options.game.manualClaims && options.computerPlayers == 0))
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
         require(members.size <= 32 && members.map { it.playerId }.distinct().size == members.size)
         require(members.all { it.displayName.isNotBlank() && it.displayName.length <= 40 && it.avatar in 0 until AVATAR_COUNT })
@@ -78,7 +95,10 @@ fun RoomView.validateFor(playerId: String) {
         round?.let { game ->
             require(phase in setOf(RoomPhase.ACTIVE, RoomPhase.FINISHED, RoomPhase.CLOSED))
             require(game.players.size in 2..32 && game.players.map { it.id }.distinct().size == game.players.size)
-            require(game.players.none { it.computer } && game.players.any { it.id == playerId })
+            require(game.players.any { it.id == playerId && !it.computer })
+            require(game.players.count { it.computer } == options.computerPlayers)
+            require(protocolVersion >= 3 || (!options.game.manualClaims && game.players.none { it.computer }))
+            require(game.players.filter { it.computer }.none { bot -> members.any { it.playerId == bot.id } })
             require(game.ownTickets.size == options.game.ticketsPerPlayer && game.ownTickets.all { it.playerId == playerId })
             require(game.ownTickets.map { it.id }.distinct().size == game.ownTickets.size)
             require(game.called.size <= 90 && game.called.distinct() == game.called && game.called.all { it in 1..90 })

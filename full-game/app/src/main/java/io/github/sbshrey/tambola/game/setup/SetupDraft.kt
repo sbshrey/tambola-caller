@@ -17,6 +17,7 @@ data class SetupDraft(
     val playAllNumbers: Boolean = false,
     val customPrizes: List<CustomPrize> = emptyList(),
     val avatars: List<Int> = emptyList(),
+    val manualClaims: Boolean = true,
 ) {
     val playerNames get() = names.lines().map(String::trim).filter(String::isNotBlank)
     val playerCount get() = playerNames.size + if (mode == GameMode.PRACTICE) bots else 0
@@ -41,15 +42,15 @@ data class SetupDraft(
     fun settings(): RoundSettings {
         errors.firstOrNull()?.let { throw UiMessageException(it) }
         val housePrizes = if (houses == 1) listOf(Prize.FULL_HOUSE) else listOf(Prize.HOUSE_ONE, Prize.HOUSE_TWO, Prize.HOUSE_THREE).take(houses)
-        return RoundSettings(mode, tickets, assisted, prizes + housePrizes, playAllNumbers, customPrizes)
+        return RoundSettings(mode, tickets, assisted, prizes + housePrizes, playAllNumbers, customPrizes, manualClaims)
     }
     companion object {
-        fun fresh(mode: GameMode) = SetupDraft(mode = mode, names = if (mode == GameMode.FAMILY) "Asha\nBina" else "You", assisted = true,
+        fun fresh(mode: GameMode) = SetupDraft(mode = mode, names = if (mode == GameMode.FAMILY) "Asha\nBina" else "You", assisted = false,
             prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE))
         fun from(round: Round) = SetupDraft(round.settings.mode, round.players.filterNot { it.computer }.joinToString("\n") { it.name },
             round.settings.ticketsPerPlayer, round.players.count { it.computer }, round.settings.assistedMarking,
             round.settings.prizes.filterNot { it == Prize.FULL_HOUSE || it.isRankedHouse },
             round.settings.prizes.count { it.isRankedHouse }.coerceAtLeast(1), round.settings.playAllNumbers, round.settings.customPrizes,
-            round.players.filterNot { it.computer }.map { it.avatar })
+            round.players.filterNot { it.computer }.map { it.avatar }, round.settings.manualClaims)
     }
 }

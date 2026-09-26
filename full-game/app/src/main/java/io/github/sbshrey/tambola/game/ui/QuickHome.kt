@@ -28,26 +28,6 @@ fun QuickHome(state: GameUiState, model: GameViewModel) {
         Text(words(R.string.play_tagline), color = Ivory, style = MaterialTheme.typography.headlineMedium)
         // Original vector art stays offline and costs no image download at startup.
         Box(Modifier.fillMaxWidth().height(136.dp)) { GameNightArtwork() }
-        PrimaryAction(if (state.round?.finished == false) words(R.string.ui_resume_round) else words(R.string.play_quick),
-            modifier = Modifier.testTag("quick-play"), enabled = !state.saving) { model.quickPlay() }
-        Text(state.round?.takeIf { !it.finished }?.let { pluralStringResource(R.plurals.ticket_count, it.settings.ticketsPerPlayer, it.settings.ticketsPerPlayer) + " · " + words.mode(it.settings.mode) }
-            ?: words(R.string.play_quick_details), color = Color(0xFFC6DDCF), fontSize = 12.sp, lineHeight = 16.sp)
-    }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        FilledTonalButton(onClick = { model.navigate(Screen.ONLINE) }, modifier = Modifier.weight(1f).heightIn(min = 56.dp), shape = RoundedCornerShape(18.dp)) {
-            Text(words(R.string.play_friends), fontWeight = FontWeight.Bold)
-        }
-        OutlinedButton(onClick = { model.setup(GameMode.FAMILY) }, modifier = Modifier.weight(1f).heightIn(min = 56.dp), shape = RoundedCornerShape(18.dp)) {
-            Text(words(R.string.play_family))
-        }
-    }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = { model.setup(GameMode.PRACTICE) }, modifier = Modifier.testTag("custom-game")) { Text(words(R.string.play_custom)) }
-        Text(words(R.string.play_free), color = Muted, fontSize = 11.sp)
-    }
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-        TextButton(onClick = { model.navigate(Screen.HISTORY) }) { Text(words(R.string.ui_your_rounds)) }
-        TextButton(onClick = { model.navigate(Screen.BADGES) }) { Text(words(R.string.ui_your_badges)) }
-        TextButton(onClick = { model.navigate(Screen.TUTORIAL) }) { Text(words(R.string.ui_how_to_play)) }
+        PrimaryAction(words(R.string.ui_online_play), modifier = Modifier.testTag("quick-play"), enabled = !state.saving) { model.navigate(Screen.ONLINE) }
     }
 }

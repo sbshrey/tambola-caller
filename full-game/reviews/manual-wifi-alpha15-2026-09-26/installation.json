@@ -1,0 +1,26 @@
+{
+  "createdAt": "2026-09-26T17:18:57.665408+00:00",
+  "branch": "shrey/full-tambola-game",
+  "versionCode": 15,
+  "versionName": "0.15.0-alpha15-wifi",
+  "apkSha256": "371edc612ff6bdd12937afb554c3f920dbd0a98cea6cb23fed9ae72d032106a1",
+  "apkBytes": 41813135,
+  "protocol": 3,
+  "origin": "https://192.168.1.4:8443",
+  "publicLanCaSha256": "98ef33aa08d19a2a0ad67c097d90864c352a1e2011e725d8f0cdf8ca7c0cc24f",
+  "caddyVersion": "2.11.4",
+  "caddyArchiveSha256": "1708333f79e274c7697285afe6d592ab39314e0b131e9ec6bea08ad27df62ebf",
+  "postgresVersion": "16.15",
+  "postgresArchiveObservedSha256": "f5f55b03bd54ce0dd1c51d524b54c7e015abd4d620af27d6971288a2dbe4a8f8",
+  "installedServiceJars": {},
+  "notValidated": [
+    "physical phone Wi-Fi",
+    "firewall administrator rule",
+    "Windows reboot",
+    "boot-before-login",
+    "installed backup restore",
+    "coin wallet/purchase UI",
+    "public Internet",
+    "release signing/Store"
+  ]
+}

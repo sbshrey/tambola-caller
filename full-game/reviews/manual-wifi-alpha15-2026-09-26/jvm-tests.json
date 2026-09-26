@@ -1,0 +1,166 @@
+{
+  "domain": {
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.sbshrey.tambola.domain.AvatarRoundTest",
+        "tests": 2
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.BadgeTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.CoinPoolTest",
+        "tests": 6
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.CustomPrizeTest",
+        "tests": 6
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.ManualClaimTest",
+        "tests": 15
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.RoundTest",
+        "tests": 11
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.RuleInspectionTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.domain.TicketStripTest",
+        "tests": 4
+      }
+    ]
+  },
+  "client": {
+    "tests": 19,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.sbshrey.tambola.client.OnlineStateTest",
+        "tests": 10
+      },
+      {
+        "name": "io.github.sbshrey.tambola.client.ReadyAgreementTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.client.RoomApiTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.client.RoomInvitesTest",
+        "tests": 3
+      }
+    ]
+  },
+  "server": {
+    "tests": 85,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.sbshrey.tambola.server.AvatarTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+        "tests": 1
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+        "tests": 10
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+        "tests": 6
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.EventStreamsTest",
+        "tests": 2
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+        "tests": 2
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.HttpTest",
+        "tests": 5
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+        "tests": 2
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.InviteSiteTest",
+        "tests": 4
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+        "tests": 8
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.NativeClientTest",
+        "tests": 2
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+        "tests": 7
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.RoomServiceTest",
+        "tests": 15
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+        "tests": 7
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+        "tests": 2
+      }
+    ]
+  },
+  "app": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+        "tests": 4
+      },
+      {
+        "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+        "tests": 4
+      },
+      {
+        "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+        "tests": 1
+      }
+    ]
+  }
+}

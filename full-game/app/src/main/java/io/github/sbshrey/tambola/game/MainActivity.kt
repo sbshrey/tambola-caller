@@ -2,6 +2,7 @@ package io.github.sbshrey.tambola.game
 
 import android.os.Bundle
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -46,6 +47,11 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(state.screen) { online.setActive(state.screen == Screen.ONLINE && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
             val playing = (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
                 (state.screen == Screen.ONLINE && onlineState.room?.round?.status == RoundStatus.PLAYING)
+            val manualTable = (state.screen == Screen.GAME && state.round?.settings?.manualClaims == true) ||
+                (state.screen == Screen.ONLINE && onlineState.room?.round != null && onlineState.room?.options?.game?.manualClaims == true)
+            LaunchedEffect(manualTable) {
+                requestedOrientation = if (manualTable) ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
             val ambient = when (state.screen) {
                 Screen.GAME -> state.round?.status == RoundStatus.PLAYING
                 Screen.ONLINE -> onlineState.room?.round == null || onlineState.room?.round?.status == RoundStatus.PLAYING
@@ -89,5 +95,8 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen == Screen.ONLINE) }
     override fun onResume() { super.onResume(); GameAudio.get(application).setForeground(true) }
     override fun onPause() { GameAudio.get(application).setForeground(false); super.onPause() }
-    override fun onStop() { model.setForeground(false); online.setActive(false); super.onStop() }
+    override fun onStop() {
+        if (!isChangingConfigurations) { model.setForeground(false); online.setActive(false) }
+        super.onStop()
+    }
 }

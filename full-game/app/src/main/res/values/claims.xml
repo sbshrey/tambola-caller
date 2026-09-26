@@ -1,0 +1,23 @@
+<resources>
+    <string name="play_claim">Claim</string>
+    <string name="play_claim_confirmed">Claim verified!</string>
+    <string name="play_claim_none">No new prize yet — check your marked numbers.</string>
+    <string name="play_claim_late">That call has ended. Check your tickets and claim again.</string>
+    <string name="play_claim_marks">Only your called numbers can count toward a claim.</string>
+    <string name="play_claim_hint">Tap numbers. Make your claim.</string>
+    <string name="play_claim_rules">Claim beside a ticket, then choose a prize. Claim before the next call.</string>
+    <string name="play_claim_ticket">Claim for ticket %1$d</string>
+    <string name="play_choose_prize">Ticket %1$d · claim</string>
+    <string name="play_previous_tickets">Previous tickets</string>
+    <string name="play_next_tickets">Next tickets</string>
+    <string name="play_ticket_page">Ticket page %1$d of %2$d</string>
+    <string name="play_mark_number">Mark %1$d</string>
+    <string name="play_unmark_number">Unmark %1$d</string>
+    <string name="play_number_uncalled">%1$d, not called</string>
+    <string name="play_prizes_left">%1$d prizes left</string>
+    <string name="play_players_short">%1$d players</string>
+    <string name="play_tickets_short">%1$d tickets · yours</string>
+    <string name="play_calls_short">%1$d / 90</string>
+    <string name="play_computer_short">Computer</string>
+    <string name="play_final_claims">Last call — check your claims</string>
+</resources>

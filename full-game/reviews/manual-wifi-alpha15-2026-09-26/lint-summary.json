@@ -1,0 +1,6 @@
+{
+  "task": "lintDebug",
+  "buildResult": "successful",
+  "findings": 82,
+  "note": "Existing lint notices remain; not a zero-warning claim."
+}

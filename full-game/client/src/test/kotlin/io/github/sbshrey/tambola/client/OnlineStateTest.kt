@@ -10,9 +10,37 @@ import java.util.Random
 import java.util.UUID
 
 class OnlineStateTest {
+    @Test fun `claim freezes selected ticket prize marks and call through pending persistence`() {
+        var game = Round.create(players, round.settings.copy(manualClaims = true), Random(44)).start()
+        repeat(90) { game = game.draw() }
+        val ticket = game.tickets.first { it.playerId == "asha" }
+        val choice = ClaimSelection(ticket.id, Prize.TOP_LINE.name)
+        val session = saved(game).copy(marks = mapOf(ticket.id to (ticket.row(0).toSet() + 999)))
+        val action = session.claimAction(choice)!!
+        assertEquals(ticket.row(0).toSet(), action.markedNumbers)
+        assertEquals(90, action.drawIndex); assertEquals(choice, action.selection)
+        val pending = PendingOperation.Command("ABCD2345", CommandRequest(UUID.randomUUID().toString(), session.room!!.revision, action))
+        val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(session.copy(pending = pending)))
+        assertEquals(pending, restored.pending)
+        assertNull(session.claimAction(choice.copy(ticketId = "foreign")))
+        assertNull(session.claimAction(choice.copy(prizeId = "unknown")))
+    }
+
+    @Test fun `between-call claims animate only for live updates never receipts or resync`() {
+        var game = Round.create(players, round.settings.copy(manualClaims = true), Random(44)).start()
+        repeat(90) { game = game.draw() }
+        val ticket = game.tickets.first { it.playerId == "asha" }
+        val next = game.claim("asha", ticket.numbers.toSet(), ClaimSelection(ticket.id, Prize.TOP_LINE.name))
+        val session = saved(game)
+        val update = RoomUpdate(view(next, session.room!!.revision + 1), emptyList(), false)
+        assertTrue(session.accept(update, live = true).liveAwards)
+        assertFalse(session.accept(update, live = false).liveAwards)
+        assertFalse(session.accept(update.copy(resyncRequired = true), live = true).liveAwards)
+        assertFalse(session.accept(update, true).saved.accept(RoomUpdate(session.room!!, emptyList(), false), true).liveAwards)
+    }
     @Test fun `legacy snapshots default round avatars and accepted profile changes cannot be rolled back by receipts`() {
         val original = view()
-        val legacy = WireJson.encodeToString(original).replace("\"protocolVersion\":2", "\"protocolVersion\":1")
+        val legacy = WireJson.encodeToString(original).replace("\"protocolVersion\":$PROTOCOL_VERSION", "\"protocolVersion\":1")
             .replace("\"computer\":false,\"avatar\":0", "\"computer\":false")
         val restored = WireJson.decodeFromString<RoomView>(legacy)
         restored.validateFor("asha")

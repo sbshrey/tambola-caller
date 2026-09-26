@@ -6,6 +6,30 @@ import org.junit.Test
 import java.util.Random
 
 class WinMomentTest {
+    @Test fun `another ticket from the same owner creates a separate claim celebration`() {
+        var game = Round.create(players, RoundSettings(manualClaims = true, ticketsPerPlayer = 2, playAllNumbers = true), Random(12)).start()
+        repeat(90) { game = game.draw() }
+        val cards = game.tickets.filter { it.playerId == "a" }
+        val first = game.claim("a", cards[0].numbers.toSet(), ClaimSelection(cards[0].id, Prize.TOP_LINE.name))
+        val second = first.claim("a", cards[1].numbers.toSet(), ClaimSelection(cards[1].id, Prize.TOP_LINE.name))
+        val moment = second.newWinMoment(first)!!
+        assertEquals(listOf(players[0]), moment.players)
+        assertEquals(1, moment.lines.single().ticketCount)
+        assertNotEquals(first.newWinMoment(game)!!.id, moment.id)
+        assertNull(second.newWinMoment(second))
+    }
+    @Test fun `a selected claim celebrates once between calls and a later tie celebrates only the new player`() {
+        var before = Round.create(players, RoundSettings(manualClaims = true, playAllNumbers = true), Random(12)).start()
+        repeat(90) { before = before.draw() }
+        val first = before.claim("a", before.tickets.first().numbers.toSet(), ClaimSelection(before.tickets.first().id, Prize.EARLY_FIVE.name))
+        assertEquals(listOf(players[0]), first.newWinMoment(before)!!.players)
+        assertNull(first.newWinMoment(first))
+        val secondTicket = before.tickets.first { it.playerId == "b" }
+        val tied = first.claim("b", secondTicket.numbers.toSet(), ClaimSelection(secondTicket.id, Prize.EARLY_FIVE.name))
+        assertEquals(listOf(players[1]), tied.newWinMoment(first)!!.players)
+        assertEquals(90, tied.newWinMoment(first)!!.drawIndex)
+        assertNull(tied.draw().newWinMoment(tied))
+    }
     private val custom = CustomPrize("custom_all", "All my numbers", 25, TicketPattern(listOf(listOf(RuleCondition(NumberSelection.All)))))
     private val players = listOf(Player("a", "Asha", avatar = 1), Player("b", "Bina", avatar = 7))
     private val settings = RoundSettings(prizes = listOf(Prize.FULL_HOUSE), playAllNumbers = true, customPrizes = listOf(custom))

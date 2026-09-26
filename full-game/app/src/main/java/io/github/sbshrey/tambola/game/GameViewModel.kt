@@ -35,6 +35,7 @@ data class GameUiState(
     val error: UiMessage? = null,
     val auto: Boolean = false,
     val winMoment: WinMoment? = null,
+    val claimMessage: UiMessage? = null,
 )
 
 class GameViewModel(application: Application, private val savedState: SavedStateHandle) : AndroidViewModel(application) {
@@ -47,6 +48,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
     val state: StateFlow<GameUiState> = mutable.asStateFlow()
     private val audio = CallAudio(application) { mutable.update { it.copy(error = UiMessage(R.string.error_recording)) } }
     private var timer: Job? = null
+    private var computerTimer: Job? = null
     private var lastDrawAt = -1_000L
     private var foreground = false
 
@@ -140,7 +142,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
     fun quickPlay() {
         if (mutable.value.saving) return
         if (mutable.value.round?.finished == false) { navigate(Screen.GAME); resume(); return }
-        updateSetup(SetupDraft(tickets = 3, bots = 2, assisted = true,
+        updateSetup(SetupDraft(tickets = 3, bots = 2, assisted = false,
             prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE)))
         val fastPreferences = mutable.value.preferences.copy(interval = 5)
         mutable.update { it.copy(preferences = fastPreferences) }
@@ -161,8 +163,8 @@ class GameViewModel(application: Application, private val savedState: SavedState
                     val round = withContext(Dispatchers.Default) { Round.create(players, settings).start() }
                     // Keep any previous in-progress round as a cancelled history entry.
                     repository.replaceActive(mutable.value.round, round)
-                    audio.stop(); stopTimer(); lastDrawAt = -1_000
-                    mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null, winMoment = null) }
+                    audio.stop(); stopTimer(); computerTimer?.cancel(); lastDrawAt = -1_000
+                    mutable.update { it.copy(round = round, viewedResult = null, screen = Screen.GAME, error = null, winMoment = null, claimMessage = null) }
                     if (foreground) audio.effect(SoundCue.DEAL)
                     if (automatic) auto()
                 } catch (cancelled: CancellationException) { throw cancelled }
@@ -172,20 +174,23 @@ class GameViewModel(application: Application, private val savedState: SavedState
         }
     }
 
-    private fun mutate(speak: Boolean = false, markSound: Boolean = false, afterSave: () -> Unit = {}, transform: (Round) -> Round) {
+    private fun mutate(speak: Boolean = false, markSound: Boolean = false, afterSave: () -> Unit = {}, afterUnchanged: () -> Unit = {}, transform: (Round) -> Round) {
         viewModelScope.launch {
             mutex.withLock {
                 val previous = mutable.value.round ?: return@withLock
                 try {
                     val next = transform(previous)
-                    if (next == previous) return@withLock
+                    if (next == previous) { afterUnchanged(); return@withLock }
                     repository.save(next)
                     val liveCall = foreground && mutable.value.screen == Screen.GAME && speak && next.latest != null && next.called.size > previous.called.size
-                    val moment = if (liveCall) next.winMoment() else null
-                    mutable.update { it.copy(round = next, winMoment = if (next.status in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) null else moment ?: it.winMoment) }
+                    val moment = if (foreground && mutable.value.screen == Screen.GAME) next.newWinMoment(previous) else null
+                    mutable.update { it.copy(round = next, winMoment = if (next.status in setOf(RoundStatus.PAUSED, RoundStatus.CANCELLED)) null else moment ?: it.winMoment,
+                        claimMessage = if (next.called != previous.called || next.marks != previous.marks) null else it.claimMessage) }
                     if (liveCall) audio.play(next.latest!!, mutable.value.preferences.language, celebration = moment != null)
+                    else if (moment != null) audio.effect(SoundCue.WIN)
                     if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
+                    if (next.called.size != previous.called.size) scheduleComputers()
                     afterSave()
                 } catch (cancelled: CancellationException) { throw cancelled }
                 catch (error: Exception) { reportStorageFailure("save-progress", error); mutable.update { it.copy(error = error.uiMessage(R.string.error_save_progress)) } }
@@ -200,16 +205,20 @@ class GameViewModel(application: Application, private val savedState: SavedState
         mutate(speak = true) { it.draw() }
     }
     fun toggleMark(ticketId: String, number: Int) = mutate(markSound = true) { it.toggleMark(ticketId, number) }
+    fun claim(playerId: String, selection: ClaimSelection) = mutate(
+        afterSave = { mutable.update { it.copy(claimMessage = UiMessage(R.string.play_claim_confirmed)) } },
+        afterUnchanged = { mutable.update { it.copy(claimMessage = UiMessage(R.string.play_claim_none)) } },
+    ) { round -> if (round.settings.manualClaims && !round.finished && round.called.isNotEmpty()) round.claim(playerId, selection = selection) else round }
     fun dabCalled(playerId: String) = mutate(markSound = true) { round ->
         if (round.finished || round.settings.assistedMarking) round else round.tickets.filter { it.playerId == playerId && round.players.none { player -> player.id == playerId && player.computer } }
             .fold(round) { next, ticket -> ticket.numbers.filter { it in next.called && it !in next.marks[ticket.id].orEmpty() }
                 .fold(next) { marked, number -> marked.toggleMark(ticket.id, number) } }
     }
-    fun undo() { stopTimer(); audio.stop(); dismissWin(); mutate { it.undo() } }
-    fun resume() { mutate(afterSave = { if (savedState.get<String>("auto_round") == mutable.value.round?.id) auto() }) { it.start() } }
-    fun pause() { stopTimer(); audio.stop(); dismissWin(); mutate { audio.stop(); it.pause() } }
+    fun undo() { stopTimer(); computerTimer?.cancel(); audio.stop(); dismissWin(); mutate { it.undo() } }
+    fun resume() { mutate(afterSave = { scheduleComputers(); if (savedState.get<String>("auto_round") == mutable.value.round?.id) auto() }) { it.start() } }
+    fun pause() { stopTimer(); computerTimer?.cancel(); audio.stop(); dismissWin(); mutate { audio.stop(); it.pause() } }
     fun setForeground(value: Boolean) { foreground = value; if (!value) pause() }
-    fun finish() { stopTimer(); audio.stop(); dismissWin(); mutate { it.cancel() } }
+    fun finish() { stopTimer(); computerTimer?.cancel(); audio.stop(); dismissWin(); mutate { it.cancel() } }
     fun repeatCall() { if (foreground) mutable.value.round?.latest?.let { audio.repeat(it, mutable.value.preferences.language) } }
     fun auto() {
         if (mutable.value.auto) { savedState.remove<String>("auto_round"); stopTimer(); return }
@@ -225,6 +234,22 @@ class GameViewModel(application: Application, private val savedState: SavedState
         }
     }
     private fun stopTimer() { timer?.cancel(); timer = null; mutable.update { it.copy(auto = false) } }
+    private fun scheduleComputers() {
+        computerTimer?.cancel()
+        val round = mutable.value.round ?: return
+        val reactions = round.computerClaimDelays().entries.sortedBy { it.value }
+        if (reactions.isEmpty() || !foreground) return
+        computerTimer = viewModelScope.launch {
+            var elapsed = 0L
+            reactions.forEach { (playerId, at) ->
+                delay(at - elapsed); elapsed = at
+                mutate { current ->
+                    if (foreground && current.id == round.id && current.called.size == round.called.size && current.status == RoundStatus.PLAYING)
+                        current.claimComputer(playerId) else current
+                }
+            }
+        }
+    }
     fun updatePreferences(value: Preferences) {
         viewModelScope.launch { try { preferences.update(value) } catch (_: Exception) { mutable.update { it.copy(error = UiMessage(R.string.error_save_settings)) } } }
     }

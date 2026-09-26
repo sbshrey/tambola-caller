@@ -27,3 +27,30 @@ private fun moment(id: String, called: List<Int>, players: List<Player>, awards:
 
 fun Round.winMoment(): WinMoment? = moment(id, called, players, awards, customAwards, settings.customPrizes)
 fun RoomView.winMoment(): WinMoment? = round?.let { moment(it.id, it.called, it.players, it.awards, it.customAwards, options.game.customPrizes) }
+
+/** Claims arrive between calls. Receipts must not announce an already seen win again. */
+private fun newMoment(id: String, called: List<Int>, players: List<Player>, awards: List<Award>, custom: List<CustomAward>,
+    previousAwards: List<Award>, previousCustom: List<CustomAward>, rules: List<CustomPrize>, owners: Map<String, String>): WinMoment? {
+    val fresh = awards.mapNotNull { award ->
+        val tickets = award.ticketIds - previousAwards.firstOrNull { it.prize == award.prize }?.ticketIds.orEmpty().toSet()
+        if (tickets.isEmpty()) null else award.copy(playerIds = award.playerIds.filter { id -> tickets.any { owners[it] == id } }, ticketIds = tickets)
+    }
+    val freshCustom = custom.mapNotNull { award ->
+        val tickets = award.ticketIds - previousCustom.firstOrNull { it.prizeId == award.prizeId }?.ticketIds.orEmpty().toSet()
+        if (tickets.isEmpty()) null else award.copy(playerIds = award.playerIds.filter { id -> tickets.any { owners[it] == id } }, ticketIds = tickets)
+    }
+    val draw = (fresh.map { it.drawIndex } + freshCustom.map { it.drawIndex }).maxOrNull() ?: return null
+    val event = moment(id, called.take(draw), players, fresh, freshCustom, rules) ?: return null
+    val suffix = fresh.joinToString { "${it.prize}:${it.ticketIds.joinToString()}" } + freshCustom.joinToString { "${it.prizeId}:${it.ticketIds.joinToString()}" }
+    return event.copy(id = "${event.id}:$suffix")
+}
+
+fun Round.newWinMoment(previous: Round): WinMoment? = if (id != previous.id) null else newMoment(id, called, players,
+    awards, customAwards, previous.awards, previous.customAwards, settings.customPrizes, tickets.associate { it.id to it.playerId })
+
+fun RoomView.newWinMoment(previous: RoomView?): WinMoment? {
+    val next = round ?: return null
+    val before = previous?.round?.takeIf { it.id == next.id } ?: return null
+    return newMoment(next.id, next.called, next.players, next.awards, next.customAwards, before.awards, before.customAwards,
+        options.game.customPrizes, next.winningTickets.associate { it.id to it.playerId })
+}

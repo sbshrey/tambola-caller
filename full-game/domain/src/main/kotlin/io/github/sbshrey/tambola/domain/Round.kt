@@ -72,6 +72,7 @@ data class Round(
     val status: RoundStatus = RoundStatus.READY,
     val customAwards: List<CustomAward> = emptyList(),
     val claims: List<ManualClaim> = emptyList(),
+    val ticketCounts: Map<String, Int> = emptyMap(),
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
@@ -146,18 +147,21 @@ data class Round(
 
     /** Validate untrusted persistence at the boundary, including awards by replay. */
     fun validated(): Round {
-        require(version in 1..4 && id.isNotBlank() && createdAt >= 0)
+        require(version in 1..5 && id.isNotBlank() && createdAt >= 0)
+        require(version >= 5 || ticketCounts.isEmpty())
+        require(ticketCounts.isEmpty() || (ticketCounts.keys == players.map { it.id }.toSet() && ticketCounts.values.all { it in 1..settings.ticketsPerPlayer }))
         require(version >= 4 || (!settings.manualClaims && claims.isEmpty()))
         require(settings.manualClaims || claims.isEmpty())
         require(version >= 3 || players.all { it.avatar == 0 }) { "This saved format cannot contain player avatars" }
         require(version != 1 || (settings.customPrizes.isEmpty() && customAwards.isEmpty()))
         require(players.size in 1..32 && players.map { it.id }.distinct().size == players.size)
         require(settings.mode != GameMode.FAMILY || (players.size in 2..8 && players.none { it.computer }))
-        require(settings.mode != GameMode.ONLINE || (players.size in 2..32 && players.none { it.computer }))
-        require(tickets.size == players.size * settings.ticketsPerPlayer)
+        require(settings.mode != GameMode.ONLINE || (players.size in 2..32 && players.any { !it.computer }))
+        require(version >= 4 || settings.mode != GameMode.ONLINE || players.none { it.computer })
+        require(tickets.size == players.sumOf { ticketCounts[it.id] ?: settings.ticketsPerPlayer })
         require(tickets.map { it.id }.distinct().size == tickets.size && tickets.map { it.fingerprint }.distinct().size == tickets.size)
         require(tickets.all { t -> players.any { it.id == t.playerId } })
-        require(players.all { p -> tickets.count { it.playerId == p.id } == settings.ticketsPerPlayer })
+        require(players.all { p -> tickets.count { it.playerId == p.id } == (ticketCounts[p.id] ?: settings.ticketsPerPlayer) })
         require(drawOrder.size == 90 && drawOrder.toSet() == (1..90).toSet())
         require(called.size <= 90 && called == drawOrder.take(called.size))
         require(marks.all { (id, values) -> tickets.any { it.id == id && it.numbers.containsAll(values) } && called.containsAll(values) })
@@ -179,9 +183,15 @@ data class Round(
     }
 
     companion object {
-        fun create(players: List<Player>, settings: RoundSettings = RoundSettings(), random: Random = SecureRandom(), now: Long = System.currentTimeMillis()): Round =
-            Round(version = if (settings.manualClaims) 4 else 3, id = UUID.randomUUID().toString(), createdAt = now, settings = settings, players = players.toList(),
-                tickets = TicketGenerator(random).deal(players, settings.ticketsPerPlayer), drawOrder = (1..90).toList().shuffledWith(random)).validated()
+        fun create(players: List<Player>, settings: RoundSettings = RoundSettings(), random: Random = SecureRandom(), now: Long = System.currentTimeMillis(),
+            ticketCounts: Map<String, Int> = emptyMap()): Round {
+            require(ticketCounts.isEmpty() || (ticketCounts.keys == players.map { it.id }.toSet() && ticketCounts.values.all { it in 1..settings.ticketsPerPlayer }))
+            val dealt = TicketGenerator(random).deal(players, settings.ticketsPerPlayer)
+            val tickets = players.flatMap { player -> dealt.filter { it.playerId == player.id }.take(ticketCounts[player.id] ?: settings.ticketsPerPlayer) }
+            return Round(version = if (ticketCounts.isNotEmpty()) 5 else if (settings.manualClaims || (settings.mode == GameMode.ONLINE && players.any { it.computer })) 4 else 3,
+                id = UUID.randomUUID().toString(), createdAt = now, settings = settings, players = players.toList(),
+                tickets = tickets, drawOrder = (1..90).toList().shuffledWith(random), ticketCounts = ticketCounts.toMap()).validated()
+        }
     }
 }
 

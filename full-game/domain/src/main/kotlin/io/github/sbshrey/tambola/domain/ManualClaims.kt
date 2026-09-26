@@ -4,18 +4,47 @@ import kotlinx.serialization.Serializable
 
 /** One compact, replayable proof per player and call. Hands in this mode are disjoint. */
 @Serializable
-data class ManualClaim(val playerId: String, val drawIndex: Int, val submissions: List<Set<Int>>)
+data class ManualClaim(val playerId: String, val drawIndex: Int, val submissions: List<Set<Int>>,
+    val selections: List<ClaimSelection?> = emptyList())
+
+/** A human chooses exactly one ticket and one scheme; computer turns may check all. */
+@Serializable
+data class ClaimSelection(val ticketId: String, val prizeId: String) {
+    init { require(ticketId.length in 1..100 && prizeId.length in 1..64) }
+}
+
+/** Stable 1.2–2.8 second reactions can be restored after a service restart.
+ * Only computers eligible on the revealed prefix need a scheduled action.
+ */
+fun Round.computerClaimDelays(): Map<String, Long> {
+    if (!settings.manualClaims || status != RoundStatus.PLAYING || called.isEmpty()) return emptyMap()
+    return players.filter { it.computer }.mapNotNull { player ->
+        val marked = tickets.filter { it.playerId == player.id }.flatMap { it.numbers }.filter { it in called }.toSet()
+        if (claim(player.id, marked) == this) null
+        else player.id to (1_200L + Math.floorMod("$id:${called.size}:${player.id}".hashCode(), 1_601))
+    }.toMap()
+}
+
+fun Round.claimComputer(playerId: String): Round {
+    require(players.any { it.id == playerId && it.computer }) { "Unknown computer player" }
+    val marked = tickets.filter { it.playerId == playerId }.flatMap { it.numbers }.filter { it in called }.toSet()
+    return claim(playerId, marked)
+}
 
 /** Check every owned ticket and every enabled scheme in one action. No match is a no-op.
  * A prize remains open to ties until the next call, including a terminal house or number 90.
  * Only revealed, manually marked numbers are accepted; the caller must authenticate playerId.
  */
 fun Round.claim(playerId: String, markedNumbers: Set<Int> = tickets.filter { it.playerId == playerId }
-    .flatMap { marks[it.id].orEmpty() }.toSet()): Round {
+    .flatMap { marks[it.id].orEmpty() }.toSet(), selection: ClaimSelection? = null): Round {
     require(settings.manualClaims) { "This round uses automatic awards" }
     require(status == RoundStatus.PLAYING || status == RoundStatus.PAUSED) { "This round is not active" }
     require(players.any { it.id == playerId }) { "Unknown player" }
     val owned = tickets.filter { it.playerId == playerId }
+    if (selection != null) {
+        require(owned.any { it.id == selection.ticketId }) { "Claim ticket is not owned by this player" }
+        require(settings.prizes.any { it.name == selection.prizeId } || settings.customPrizes.any { it.id == selection.prizeId }) { "Unknown claim prize" }
+    }
     require(markedNumbers.all { it in called && owned.any { ticket -> it in ticket.numbers } }) { "Only owned, called numbers can be claimed" }
     if (called.isEmpty()) return this
 
@@ -26,10 +55,11 @@ fun Round.claim(playerId: String, markedNumbers: Set<Int> = tickets.filter { it.
     val earlierHouseTickets = closedRanks.flatMap { it.ticketIds }.toSet()
     val nextAwards = awards.toMutableList()
     settings.prizes.forEach { prize ->
+        if (selection != null && selection.prizeId != prize.name) return@forEach
         val existing = nextAwards.firstOrNull { it.prize == prize }
         if (existing != null && existing.drawIndex < called.size) return@forEach
         if (prize.isRankedHouse && prize != nextRank) return@forEach
-        val matching = owned.filter { prize.matches(it, markedNumbers) && (!prize.isRankedHouse || it.id !in earlierHouseTickets) }
+        val matching = owned.filter { (selection == null || it.id == selection.ticketId) && prize.matches(it, markedNumbers) && (!prize.isRankedHouse || it.id !in earlierHouseTickets) }
         if (matching.isEmpty()) return@forEach
         val ids = existing?.ticketIds.orEmpty().toSet() + matching.map { it.id }
         val winningTickets = tickets.filter { it.id in ids }
@@ -38,9 +68,13 @@ fun Round.claim(playerId: String, markedNumbers: Set<Int> = tickets.filter { it.
     }
     val nextCustom = customAwards.toMutableList()
     settings.customPrizes.forEach { prize ->
+        if (selection != null && selection.prizeId != prize.id) return@forEach
         val existing = nextCustom.firstOrNull { it.prizeId == prize.id }
         if (existing != null && existing.drawIndex < called.size) return@forEach
-        val matching = prize.eligibleTickets(owned, markedNumbers)
+        val eligible = prize.eligibleTickets(owned, markedNumbers)
+        // Hand-wide custom schemes retain their declared ordinal/minimum-ticket rules.
+        if (selection != null && eligible.none { it.id == selection.ticketId }) return@forEach
+        val matching = if (selection == null || prize.minimumTickets > 1) eligible else eligible.filter { it.id == selection.ticketId }
         if (matching.isEmpty()) return@forEach
         val ids = existing?.ticketIds.orEmpty().toSet() + matching.map { it.id }
         val winningTickets = tickets.filter { it.id in ids }
@@ -53,7 +87,9 @@ fun Round.claim(playerId: String, markedNumbers: Set<Int> = tickets.filter { it.
     val previous = claims.firstOrNull { it.playerId == playerId && it.drawIndex == called.size }
     // Keep separate successful submissions: merging their marks would manufacture
     // a pattern when the player unmarked a number between two presses.
-    val proof = ManualClaim(playerId, called.size, previous?.submissions.orEmpty() + listOf(markedNumbers.toSet()))
+    val selections = (previous?.selections?.takeIf { it.isNotEmpty() } ?: List(previous?.submissions?.size ?: 0) { null }) + selection
+    val proof = ManualClaim(playerId, called.size, previous?.submissions.orEmpty() + listOf(markedNumbers.toSet()),
+        selections.takeIf { it.any { choice -> choice != null } }.orEmpty())
     return copy(awards = orderedAwards, customAwards = orderedCustom,
         claims = (claims.filterNot { it == previous } + proof).sortedWith(compareBy<ManualClaim> { it.drawIndex }
             .thenBy { claim -> players.indexOfFirst { it.id == claim.playerId } }))
@@ -64,8 +100,7 @@ internal fun Round.drawManual(): Round {
     if (status != RoundStatus.PLAYING) return this
     var settled = this
     if (called.isNotEmpty()) players.filter { it.computer }.forEach { player ->
-        val marked = tickets.filter { it.playerId == player.id }.flatMap { it.numbers }.filter { it in called }.toSet()
-        settled = settled.claim(player.id, marked)
+        settled = settled.claimComputer(player.id)
     }
     if (called.size == 90 || (!settings.playAllNumbers && settled.terminalAward(settled.awards, settled.customAwards))) {
         return settled.copy(status = RoundStatus.COMPLETED)
@@ -87,13 +122,14 @@ internal fun Round.validateManualClaims() {
     require(claims.map { it.playerId to it.drawIndex }.distinct().size == claims.size)
     val maxSubmissions = settings.ticketsPerPlayer * (settings.prizes.size + settings.customPrizes.size)
     require(claims.all { it.drawIndex in 1..called.size && it.submissions.size in 1..maxSubmissions && it.submissions.all { marks -> marks.size <= 90 } })
+    require(claims.all { it.selections.isEmpty() || it.selections.size == it.submissions.size })
     var replay = copy(called = emptyList(), awards = emptyList(), customAwards = emptyList(), claims = emptyList(), marks = emptyMap(), status = RoundStatus.PLAYING)
     repeat(called.size) { index ->
         replay = replay.drawManual()
         require(replay.called.size == index + 1 && !replay.finished) { "Saved round contains draws after completion" }
         claims.filter { it.drawIndex == index + 1 }.forEach { proof ->
-            proof.submissions.forEach { marks ->
-                val next = replay.claim(proof.playerId, marks)
+            proof.submissions.forEachIndexed { submission, marks ->
+                val next = replay.claim(proof.playerId, marks, proof.selections.getOrNull(submission))
                 require(next != replay) { "Saved claim does not win a prize" }
                 replay = next
             }

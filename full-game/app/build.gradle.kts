@@ -1,6 +1,8 @@
 import java.security.MessageDigest
 import java.util.Locale
 import java.net.URI
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.OutputDirectory
 
@@ -17,8 +19,8 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 14
-        versionName = "0.14.0-alpha14"
+        versionCode = 15
+        versionName = "0.15.0-alpha15"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -31,6 +33,12 @@ android {
             buildConfigField("String", "ROOM_API_URL", "\"$origin\"")
             manifestPlaceholders["inviteHost"] = URI(origin).host.lowercase(Locale.ROOT)
             manifestPlaceholders["verifyInvites"] = endpoint.isNotEmpty().toString()
+        }
+        create("lan") {
+            initWith(getByName("debug"))
+            matchingFallbacks += "debug"
+            versionNameSuffix = "-wifi"
+            manifestPlaceholders["verifyInvites"] = "false"
         }
         release {
             buildConfigField("String", "ROOM_API_URL", "\"$endpoint\"")
@@ -45,6 +53,10 @@ android {
 }
 kotlin { jvmToolchain(17) }
 kapt { arguments { arg("room.schemaLocation", "$projectDir/schemas") } }
+// Generic assemble/build tasks must not require a developer's private host CA.
+androidComponents.beforeVariants(androidComponents.selector().withBuildType("lan")) { variant ->
+    variant.enable = providers.gradleProperty("tambolaLanCa").isPresent
+}
 
 // Lint has its own tool classpath; root buildscript constraints do not reach it.
 configurations.matching { it.name == "androidLintTool" }.configureEach {
@@ -63,6 +75,46 @@ configurations.matching { it.name == "androidLintTool" }.configureEach {
 
 abstract class GeneratedGameAssets : Sync() {
     @get:OutputDirectory abstract val generatedRoot: DirectoryProperty
+}
+abstract class GeneratedLanTrust : DefaultTask() {
+    @get:OutputDirectory abstract val generatedRoot: DirectoryProperty
+}
+
+// A separate, explicitly configured Wi-Fi candidate trusts only its host CA for
+// that private address. Debug/release builds never inherit this extra trust.
+val lanResources = layout.buildDirectory.dir("generated/lanTrust")
+val prepareLanTrust = tasks.register<GeneratedLanTrust>("prepareLanTrust") {
+    generatedRoot.set(lanResources)
+    val origin = providers.gradleProperty("tambolaApiUrl").orElse("")
+    val caPath = providers.gradleProperty("tambolaLanCa").orElse("")
+    inputs.property("origin", origin)
+    if (caPath.get().isNotEmpty()) inputs.file(caPath)
+    outputs.dir(lanResources)
+    doLast {
+        val address = URI(origin.get()).host ?: error("Wi-Fi APK requires -PtambolaApiUrl=https://<private-ip>:8443")
+        val octets = address.split('.').map { it.toIntOrNull() ?: -1 }
+        require(octets.size == 4 && octets.all { it in 0..255 } &&
+            (octets[0] == 10 || (octets[0] == 172 && octets[1] in 16..31) || (octets[0] == 192 && octets[1] == 168)))
+        require(caPath.get().isNotEmpty()) { "Wi-Fi APK requires -PtambolaLanCa=<host root.crt>" }
+        val pem = file(caPath.get()).readBytes()
+        require(!pem.toString(Charsets.US_ASCII).contains("PRIVATE KEY")) { "Never bundle a private key" }
+        val certificate = CertificateFactory.getInstance("X.509")
+            .generateCertificate(pem.inputStream()) as X509Certificate
+        certificate.checkValidity()
+        require(certificate.basicConstraints >= 0) { "Wi-Fi trust file must contain a CA certificate" }
+        val folder = lanResources.get().asFile
+        folder.resolve("raw").mkdirs(); folder.resolve("xml").mkdirs()
+        folder.resolve("raw/tambola_lan_ca.pem").writeBytes(pem)
+        folder.resolve("xml/network_security_config.xml").writeText("""
+            <network-security-config>
+                <base-config cleartextTrafficPermitted="false" />
+                <domain-config cleartextTrafficPermitted="false">
+                    <domain includeSubdomains="false">$address</domain>
+                    <trust-anchors><certificates src="@raw/tambola_lan_ca" /></trust-anchors>
+                </domain-config>
+            </network-security-config>
+        """.trimIndent())
+    }
 }
 
 val prepareVoices = tasks.register<GeneratedGameAssets>("prepareVoices") {
@@ -105,6 +157,7 @@ val prepareSounds = tasks.register<GeneratedGameAssets>("prepareSounds") {
     }
 }
 androidComponents.onVariants { variant ->
+    if (variant.buildType == "lan") variant.sources.res?.addGeneratedSourceDirectory(prepareLanTrust) { it.generatedRoot }
     variant.sources.assets?.addGeneratedSourceDirectory(prepareVoices) { it.generatedRoot }
     variant.sources.assets?.addGeneratedSourceDirectory(prepareSounds) { it.generatedRoot }
 }

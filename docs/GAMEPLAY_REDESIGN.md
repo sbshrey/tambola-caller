@@ -1,5 +1,7 @@
 # Gameplay redesign: research, decisions, and release gates
 
+**Active brief:** [ONLINE_COIN_GAME_PLAN.md](ONLINE_COIN_GAME_PLAN.md) incorporates the latest online-only coin economy and per-ticket claim/paging instructions. Earlier contradictory proposals below are superseded.
+
 26 September 2026 · branch `shrey/full-tambola-game` · supersedes the alpha12 screen layout.
 
 **Latest direction:** the user's gameplay recording and manual-marking/single-Claim request supersede the interaction choices below for the next version. See [REFERENCE_GAMEPLAY_REVIEW.md](REFERENCE_GAMEPLAY_REVIEW.md) for observed reference behavior, the revised landscape layout, real claim semantics and implementation order. This document describes the research and alpha13/14 baseline; those APKs have not acquired the new behavior yet.
