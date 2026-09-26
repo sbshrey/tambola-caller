@@ -27,4 +27,22 @@ The driver adds a local forwarding hop. Do not infer production latency, data-pl
 
 ## Remaining device budgets
 
+### Native long-session fixture — awaiting compilation and execution
+
+`LongSessionTest` and `tools/android-long-session.mjs` add an opt-in session on a dedicated emulator. They have not yet been compiled or run. Run a short fixture probe after the service endurance workload ends, then the default workload only if the probe passes:
+
+```powershell
+.\gradlew.bat :app:assembleDebugAndroidTest --no-daemon --console=plain
+node tools/android-long-session.mjs --serial emulator-5582 --label alpha14-session-probe --rounds 3 --draws 3
+node tools/android-long-session.mjs --serial emulator-5582 --label alpha14-session-full
+```
+
+The default is nine full 90-call automatic games, six owned tickets, two labelled computers, five-second real timers, assisted marking, and enabled voice/music/effects/motion. Setup and rematch use the app's ViewModel actions while a real Activity renders; this is not a touch-navigation or cold-start benchmark. It checks fresh complete strips, stable cards, calls/marks, completed history and the app's own keep-screen-on behavior. A three-call probe deliberately cancels rounds; it cannot satisfy `fullSessionAtLeast60Minutes`. That flag requires nine full games and at least 3,600 seconds of actual game phases, excluding between-game memory sampling.
+
+After every game the fixture stops audio and samples memory in the same finished-table state after two GC requests. It records managed heap, native allocated heap, process PSS/private dirty memory and available ART GC counters. GC requests do not prove a particular full collection. A fixed 16 MiB managed-heap span after the first warmup round is a diagnostic regression guard, not proof of no leak; PSS and native memory must be reviewed separately. History remains retained through rematches. The fixture stores only counters and test identity, with no tickets, names or online credentials in its report.
+
+During gameplay a fixed-size histogram records Android Window frame durations, with first-draw frames separate, unavailable durations and dropped reports explicit. The 16.67 ms count is a 60 Hz reference, not a measured display deadline or a physical-device jank certification. Percentiles use one-millisecond upper buckets, with values above two seconds reported as overflow. A zero frame count fails the fixture; missing reports prevent complete frame evidence. Android documents the [duration metrics](https://developer.android.com/reference/kotlin/android/view/FrameMetrics), [reused callback objects and dropped reports](https://developer.android.com/reference/android/view/Window.OnFrameMetricsAvailableListener), and [memory units](https://developer.android.com/reference/android/os/Debug.MemoryInfo).
+
+The driver verifies exact app/test APKs before and after execution, uses a new output directory, records device/display settings, and restores global animation scales. The instrumentation restores original app preferences and closes its Activity/listener/thread. A crash or forced timeout that prevents preference restoration is reported as incomplete cleanup. Ordinary smoke runs exclude this long fixture. No production app code or runtime dependency was added for collection.
+
 The [plan](../docs/FULL_GAME_PLAN.md) sets provisional targets for cold launch, mark feedback, frame time, resync, APK size and a 60-minute session. Alpha14's universal debug APK is 42,497,990 bytes. Physical-device cold-launch p95, draw/mark-to-frame timing, jank, audio routing and battery measurements remain open. The service endurance test does not measure Android retained memory. Reduced-motion and emulator layout tests establish their named behaviors only.
