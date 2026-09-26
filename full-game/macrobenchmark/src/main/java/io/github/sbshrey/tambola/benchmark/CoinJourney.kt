@@ -203,7 +203,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             assertEquals(3300L, balance())
             assertEquals(6000L, balance() + runBlocking { peers.sumOf { api.wallet(it.token).balance } })
             report.put("finishedCalls", result.round!!.called.size).put("settledWinnings", 2400).put("finalBalance", 3300)
-            assertTrue(node("buy-tickets-6").isSelected)
+            // Compose exposes a selected non-tab choice as Android's checked state.
+            (1..6).forEach { assertEquals("Ticket choice $it", it == 6, node("buy-tickets-$it").isChecked) }
             assertTrue(textOf(node("coin-play")).contains("600"))
             report.put("rememberedSixTickets", true)
             device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
@@ -211,7 +212,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             assertEquals(3000L, balance())
             tap("cancel-match"); node("coin-play")
             until { balance() == 3300L }
-            assertTrue(node("buy-tickets-3").isSelected)
+            (1..6).forEach { assertEquals("Ticket choice $it", it == 3, node("buy-tickets-$it").isChecked) }
             report.put("newRoundPurchasedAndRefunded", true).put("completed", true)
             checkpoint("passed")
     }
