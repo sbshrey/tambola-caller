@@ -32,6 +32,8 @@ The alpha06 appearance update adds saved System/Light/Dark themes, native home a
 
 JDK 17, Android SDK platform 36, and an `ANDROID_SDK_ROOT` or `local.properties` SDK location are required. The wrapper pins Gradle 8.13 with its official SHA-256; the version catalog pins library/plugin versions. Gradle dependency verification checks the committed SHA-256 metadata. New dependencies require a reviewed metadata update.
 
+The [runtime dependency review](DEPENDENCY_REVIEW.md) records resolved library inventories, advisory checks and the Netty/Logback security update. Use the current service build or `releases/service-security-2026-09-26/Tambola-service.zip` for private-room testing with the unchanged alpha12 APK. CI checks exact runtime Maven versions; process reports identify every bundled service library, including changes that leave the main JAR unchanged.
+
 ```powershell
 python tools/check-localization.py
 .\gradlew.bat :domain:test :app:assembleDebug :app:lintDebug

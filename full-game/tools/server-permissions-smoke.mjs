@@ -2,13 +2,14 @@
 // Role passwords are random, stay in memory/environment/stdin, and are never printed or exported.
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { randomUUID, randomBytes, createHash } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
 import { once } from 'node:events';
 import { createServer } from 'node:net';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
+import { serviceRuntime, parseRuntimeManifest } from './service-runtime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const jdbc = process.env.TAMBOLA_TEST_DATABASE_URL || '';
@@ -116,11 +117,14 @@ async function api(path, token, body, method = 'POST', status = 200) {
   assert.equal(response.status, status, 'Unexpected HTTP status in ' + stage); return response.json();
 }
 try {
+  Object.assign(evidence, await serviceRuntime(root));
   if (serviceImage) {
     evidence.serviceImage = serviceImage;
-    const imageJar = docker(['run', '--rm', '--network=none', '--read-only', '--cap-drop=ALL', '--entrypoint', 'sha256sum', serviceImage, '/app/lib/server.jar']).split(' ')[0];
-    assert.equal(imageJar, createHash('sha256').update(await readFile(resolve(root, 'server/build/install/server/lib/server.jar'))).digest('hex'));
-    evidence.imageJarSha256 = imageJar;
+    const imageRuntime = parseRuntimeManifest(docker(['run', '--rm', '--network=none', '--read-only', '--cap-drop=ALL', '--entrypoint', 'sh', serviceImage,
+      '-c', 'sha256sum /app/lib/*.jar']));
+    assert.equal(imageRuntime.serviceRuntimeSha256, evidence.serviceRuntimeSha256);
+    evidence.imageJarSha256 = imageRuntime.serviceJarSha256;
+    evidence.imageRuntimeSha256 = imageRuntime.serviceRuntimeSha256;
   }
   for (const identity of Object.values(identities)) {
     sql('tambola_test', `CREATE ROLE ${identifier(identity.user)} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS PASSWORD '${identity.password}';`);
@@ -211,7 +215,8 @@ try {
     mark('container-graceful-shutdown'); await stop(true);
     assert.equal(new Set(evidence.containerInstanceIds).size, 2);
   }
-  evidence.serviceJarSha256 = createHash('sha256').update(await readFile(resolve(root, 'server/build/install/server/lib/server.jar'))).digest('hex');
+  assert.deepEqual(await serviceRuntime(root), { serviceJarSha256: evidence.serviceJarSha256,
+    serviceRuntimeSha256: evidence.serviceRuntimeSha256, serviceRuntimeManifest: evidence.serviceRuntimeManifest });
   evidence.completed = true;
 } catch (error) {
   evidence.failedStage = stage; evidence.failureType = error.code || error.name; process.exitCode = 1;
@@ -228,5 +233,5 @@ try {
   for (const role of [...ownedRoles]) { try { assert.ok(Object.values(identities).some(identity => identity.user === role)); sql('tambola_test', `DROP ROLE ${identifier(role)}`); ownedRoles.delete(role); } catch { failures.push('owned-role'); } }
   evidence.cleanupComplete = failures.length === 0; if (failures.length) { evidence.cleanupErrors = failures; process.exitCode = 1; }
   await writeFile(resolve(directory, 'evidence.json'), JSON.stringify(evidence, null, 2) + '\n');
-  console.log(JSON.stringify({ evidence: resolve(directory, 'evidence.json'), ...evidence }, null, 2));
+  console.log(JSON.stringify({ evidence: resolve(directory, 'evidence.json'), ...evidence, serviceRuntimeManifest: undefined }, null, 2));
 }

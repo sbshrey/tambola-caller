@@ -4,6 +4,8 @@ This is an internal **development alpha**, signed with an Android debug certific
 
 Android 8 or later is required. The app installs separately from Tambola Keyboard; enabling a keyboard is not needed.
 
+For local private rooms, use the updated service build or `releases/service-security-2026-09-26/Tambola-service.zip`, which includes the Netty/Logback fixes described in the [dependency review](DEPENDENCY_REVIEW.md). Extract the service into a fresh directory and follow its permission/recovery setup. The alpha12 APK and protocol remain compatible and unchanged.
+
 1. Copy `Tambola-Together-0.12.0-alpha12.apk` to your Android phone and open it. This version uses the same debug signing identity as the earlier alphas, so Android can update that installation without clearing its data. It reads save formats 1–3 and writes format 3, as alpha08 did. Do not return to an older APK that cannot read format 3.
 2. If Android asks, allow APK installation for the app you opened the file from.
 3. Open **Tambola Together**, select **Play solo** or **Play on one device**, then configure your round and tap **Deal the tickets**.

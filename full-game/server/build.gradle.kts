@@ -4,6 +4,8 @@ plugins { application; alias(libs.plugins.kotlin.jvm); alias(libs.plugins.kotlin
 kotlin { jvmToolchain(17) }
 application { mainClass.set("io.github.sbshrey.tambola.server.ServerKt") }
 dependencies {
+    // Align every transitive Netty module with the HTTP/security fixes newer than Ktor's baseline.
+    implementation(platform(libs.netty.bom))
     implementation(project(":domain")); implementation(project(":protocol")); implementation(libs.serialization.json)
     implementation(libs.ktor.server.core); implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.websockets); implementation(libs.ktor.server.content.negotiation)

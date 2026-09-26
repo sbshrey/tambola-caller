@@ -171,6 +171,20 @@ jobs:
         run: python3 full-game/tools/check-localization.py
       - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - uses: gradle/actions/setup-gradle@v4
+      - name: Verify dependency review helpers and exact runtime advisories
+        working-directory: full-game
+        run: |
+          python3 tools/test-runtime-advisories.py
+          node --test tools/service-runtime.test.mjs
+          bash gradlew -I tools/runtime-inventory.gradle runtimeDependencyInventory --no-daemon --console=plain
+          python3 tools/check-runtime-advisories.py .test-workspace/runtime-dependencies.json --output .test-workspace/runtime-advisories.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tambola-runtime-dependency-review
+          path: |
+            full-game/.test-workspace/runtime-dependencies.json
+            full-game/.test-workspace/runtime-advisories.json
       - name: Verify domain and Android build
         working-directory: full-game
         run: bash gradlew :domain:test :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --console=plain

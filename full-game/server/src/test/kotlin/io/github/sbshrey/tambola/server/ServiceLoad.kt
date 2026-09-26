@@ -57,6 +57,7 @@ object ServiceLoad {
         val interval = setting("TAMBOLA_LOAD_INTERVAL_MS", 5_000, 2_000..10_000)
         val runId = UUID.randomUUID().toString().replace("-", "").take(16)
         val root = Path.of("").toAbsolutePath()
+        val runtimeIdentity = serviceRuntimeIdentity(root)
         Files.createDirectories(root.resolve(".test-workspace"))
         val directory = root.resolve(".test-workspace/load-$runId")
         Files.createDirectory(directory)
@@ -112,8 +113,7 @@ object ServiceLoad {
                 fixtureHash.update(it.fileName.toString().toByteArray()); fixtureHash.update(Files.readAllBytes(it))
             } }
             record("fixtureClassesSha256", fixtureHash.digest().joinToString("") { "%02x".format(it) })
-            val jar = root.resolve("server/build/install/server/lib/server.jar")
-            record("serviceJarSha256", MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(jar)).joinToString("") { "%02x".format(it) })
+            runtimeIdentity.forEach { (key, value) -> record(key, value) }
             DriverManager.getConnection(url, user, password).use { connection ->
                 check(connection.query("SELECT rolsuper OR rolcreatedb FROM pg_roles WHERE rolname = current_user") { it.getBoolean(1) }.single())
             }
@@ -223,6 +223,7 @@ object ServiceLoad {
             } }.awaitAll() }
             checkStreams()
             record("completedDrawsPerRoom", draws); record("matchingResultsForEveryPlayer", true)
+            check(serviceRuntimeIdentity(root) == runtimeIdentity)
             success = true
         } catch (error: Exception) {
             record("failedStage", stage)

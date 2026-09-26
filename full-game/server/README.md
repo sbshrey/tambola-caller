@@ -1,6 +1,6 @@
 # Private room service: local development candidate
 
-Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The native alpha08–alpha10 APKs connect through an explicitly configured endpoint; their packaged debug default is loopback for emulator testing. See [alpha10 validation](../ALPHA10_VALIDATION.md) and the later [service recovery validation](RECOVERY_VALIDATION.md).
+Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The current alpha12 APK connects through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha12 validation](../ALPHA12_VALIDATION.md), [runtime dependency review](../DEPENDENCY_REVIEW.md) and [service recovery validation](RECOVERY_VALIDATION.md). Use the current source build or `releases/service-security-2026-09-26/Tambola-service.zip` under `full-game/` for the updated Netty/Logback runtime.
 
 ## Run and test
 
@@ -33,7 +33,7 @@ The separate deletion-recovery process drill creates three fresh owned databases
 
 ## Protocol envelope 2, `/v1` routes
 
-Alpha08–alpha10 clients use protocol 2, including immutable round-player avatars; earlier clients do not understand these fields. Stored older rounds/receipts remain readable by the new service/client. Current schemas are primary migration 003 and journal migration 002. See [save/protocol compatibility](../AVATARS.md), [permission upgrades](DATABASE_PERMISSIONS.md) and [recovery constraints](BACKUP_RECOVERY.md) before an upgrade or rollback.
+Alpha08–alpha12 clients use protocol 2, including immutable round-player avatars; earlier clients do not understand these fields. Stored older rounds/receipts remain readable by the new service/client. Current schemas are primary migration 003 and journal migration 002. See [save/protocol compatibility](../AVATARS.md), [permission upgrades](DATABASE_PERMISSIONS.md) and [recovery constraints](BACKUP_RECOVERY.md) before an upgrade or rollback.
 
 All bodies and responses use strict JSON. Session credentials are opaque bearer tokens in the `Authorization` header; never put them in a URL. A guest has one active token, valid for seven days, stored as SHA-256 only. Logging out revokes it. There is no account/password recovery yet.
 

@@ -19,5 +19,6 @@ full-game/**/build/
 full-game/local.properties
 full-game/releases/
 full-game/.test-workspace/
+full-game/tools/__pycache__/
 full-game/**/*.jks
 full-game/**/*.keystore

@@ -44,6 +44,7 @@ object AutomaticRecoveryLoad {
         val user = required("TAMBOLA_TEST_DATABASE_USER")
         val password = required("TAMBOLA_TEST_DATABASE_PASSWORD")
         val root = Path.of("").toAbsolutePath()
+        val runtimeIdentity = serviceRuntimeIdentity(root)
         val runId = id().replace("-", "").take(16)
         val directory = root.resolve(".test-workspace/automatic-$runId")
         Files.createDirectories(directory)
@@ -115,7 +116,7 @@ object AutomaticRecoveryLoad {
                 record("automaticCalls", 90); record("intervalMs", 5_000); record("serviceProcesses", 2)
                 record("heapMiBPerService", 256); record("activeProcessorsPerService", 2)
                 record("scope", "One maximum-size room; real native HTTP/WebSocket clients and two loopback Java services sharing isolated primary/journal databases. No Android UI, hosted TLS, physical network, restricted-role or ten-room capacity acceptance.")
-                record("serviceJarSha256", hash(Files.readAllBytes(root.resolve("server/build/install/server/lib/server.jar"))))
+                runtimeIdentity.forEach { (key, value) -> record(key, value) }
                 record("fixtureSourceSha256", hash(Files.readAllBytes(root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/AutomaticRecoveryLoad.kt"))))
                 record("clientJarSha256", hash(Files.readAllBytes(root.resolve("client/build/libs/client.jar"))))
                 checkpoint("start-two-independent-workers")
@@ -300,7 +301,7 @@ object AutomaticRecoveryLoad {
                 record("durablePauseEvents", 1); record("durableResumeEvents", 1)
                 record("uniqueTicketsVerified", 192); record("manualMarksPreservedForEveryPlayer", true)
                 record("noDuplicateOrCatchUpBurst", true)
-                healthy(); success = true
+                healthy(); check(serviceRuntimeIdentity(root) == runtimeIdentity); success = true
             }
         } catch (e: Exception) {
             record("failedStage", stage); record("failureType", e.javaClass.simpleName)

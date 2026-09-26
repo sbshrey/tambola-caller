@@ -2,10 +2,11 @@
 // Raw sessions, SQL payloads, server logs and dumps are never included in the safe evidence file.
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { randomUUID, createHash } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
+import { serviceRuntime } from './service-runtime.mjs';
 import { once } from 'node:events';
 import { createServer } from 'node:net';
-import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -82,6 +83,7 @@ async function api(path, token, body, method = 'POST', status = 200) {
   return response.json();
 }
 try {
+  Object.assign(evidence, await serviceRuntime(root));
   for (const name of Object.values(names)) createDatabase(name);
   mark('start-with-independent-journal'); evidence.seedPid = await start(names.journal);
   const host = await api('/v1/guests', null, { displayName: 'Recovery fixture host', avatar: 6 }, 'POST', 201);
@@ -126,9 +128,8 @@ try {
   assert.equal((await command(peer, { type: 'draw' })).snapshot.round.called.length, 2);
   assert.equal(sql(names.main, 'SELECT applied_sequence FROM deletion_recovery'), '1');
   assert.equal(sql(names.main, `SELECT count(*) FROM guests WHERE id = '${host.playerId}'`), '0');
-  const jars = (await readdir(resolve(root, 'server/build/install/server/lib'))).filter(name => /^server(?:-.*)?\.jar$/.test(name));
-  assert.equal(jars.length, 1);
-  evidence.serviceJarSha256 = createHash('sha256').update(await readFile(resolve(root, 'server/build/install/server/lib', jars[0]))).digest('hex');
+  assert.deepEqual(await serviceRuntime(root), { serviceJarSha256: evidence.serviceJarSha256,
+    serviceRuntimeSha256: evidence.serviceRuntimeSha256, serviceRuntimeManifest: evidence.serviceRuntimeManifest });
   evidence.completed = true;
 } catch (error) {
   evidence.failedStage = stage; evidence.failureType = error.code || error.name;
@@ -141,5 +142,5 @@ try {
   evidence.cleanupComplete = cleanupErrors.length === 0;
   if (cleanupErrors.length) { evidence.cleanupErrors = cleanupErrors; process.exitCode = 1; }
   await writeFile(resolve(directory, 'evidence.json'), JSON.stringify(evidence, null, 2) + '\n');
-  console.log(JSON.stringify({ evidence: resolve(directory, 'evidence.json'), ...evidence }, null, 2));
+  console.log(JSON.stringify({ evidence: resolve(directory, 'evidence.json'), ...evidence, serviceRuntimeManifest: undefined }, null, 2));
 }

@@ -8,6 +8,7 @@ import { createServer } from 'node:net';
 import { resolve, delimiter } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
+import { serviceRuntime } from './service-runtime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const url = process.env.TAMBOLA_TEST_DATABASE_URL || '';
@@ -58,6 +59,7 @@ async function api(path, token, body, method = 'POST') {
 }
 
 try {
+  const runtime = await serviceRuntime(root);
   await start();
   const host = await api('/v1/guests', null, { displayName: 'Smoke Asha' });
   const other = await api('/v1/guests', null, { displayName: 'Smoke Bina' });
@@ -84,7 +86,8 @@ try {
   assert.deepEqual(await api(`${path}/commands`, host.token, draw), drawn);
   room = await command(host, { type: 'end' });
   assert.equal(room.snapshot.phase, 'FINISHED');
-  console.log(JSON.stringify({ result: 'passed', checks: ['real HTTP server', 'two sessions', 'private tickets', 'process kill/restart', 'durable event replay', 'idempotent retry after restart', 'round ended'] }));
+  assert.deepEqual(await serviceRuntime(root), runtime);
+  console.log(JSON.stringify({ result: 'passed', ...runtime, checks: ['real HTTP server', 'two sessions', 'private tickets', 'process kill/restart', 'durable event replay', 'idempotent retry after restart', 'round ended'] }));
 } catch (error) {
   // Server log contents are deliberately excluded from terminal output.
   console.error(error.message);

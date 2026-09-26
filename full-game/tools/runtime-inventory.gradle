@@ -1,0 +1,38 @@
+// Gradle init script: selected runtime modules and exact resolved artifact hashes, without private paths.
+// Run: gradlew -I tools/runtime-inventory.gradle runtimeDependencyInventory
+import groovy.json.JsonOutput
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import java.security.MessageDigest
+
+gradle.projectsEvaluated {
+    rootProject.tasks.register('runtimeDependencyInventory') {
+        group = 'verification'
+        description = 'Export the resolved app/client/service runtime inventory for advisory review.'
+        doLast {
+            def targets = [[':server', 'runtimeClasspath'], [':client', 'runtimeClasspath']]
+            if (rootProject.findProject(':app') != null) {
+                targets += [[':app', 'debugRuntimeClasspath'], [':app', 'releaseRuntimeClasspath']]
+            }
+            def scopes = targets.collect { target ->
+                def configuration = rootProject.project(target[0]).configurations.getByName(target[1])
+                def components = configuration.incoming.resolutionResult.allComponents
+                    .collect { it.id }.findAll { it instanceof ModuleComponentIdentifier }
+                    .collect { [group: it.group, name: it.module, version: it.version] }
+                    .sort { a, b -> "${a.group}:${a.name}:${a.version}" <=> "${b.group}:${b.name}:${b.version}" }
+                def artifacts = configuration.resolvedConfiguration.resolvedArtifacts
+                    .findAll { it.id.componentIdentifier instanceof ModuleComponentIdentifier }
+                    .collect { item ->
+                        def id = item.id.componentIdentifier
+                        [group: id.group, name: id.module, version: id.version, file: item.file.name,
+                            sha256: MessageDigest.getInstance('SHA-256').digest(item.file.bytes).encodeHex().toString()]
+                    }.sort { a, b -> "${a.group}:${a.name}:${a.file}" <=> "${b.group}:${b.name}:${b.file}" }
+                [project: target[0], configuration: target[1], components: components, artifacts: artifacts]
+            }
+            def output = rootProject.file('.test-workspace/runtime-dependencies.json')
+            output.parentFile.mkdirs()
+            output.text = JsonOutput.prettyPrint(JsonOutput.toJson([formatVersion: 1,
+                scope: 'Selected runtime configurations; build plugins and test-only dependencies excluded', scopes: scopes])) + '\n'
+            println "Runtime inventory: ${scopes.size()} configurations; ${output.name}"
+        }
+    }
+}
