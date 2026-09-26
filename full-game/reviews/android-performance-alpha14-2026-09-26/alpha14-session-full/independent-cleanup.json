@@ -1,0 +1,12 @@
+{
+  "checkedAtUtc": "2026-09-26T16:09:17.7576026Z",
+  "runId": "b646f794-6c02-4dd5-9244-856371ae4a71",
+  "ownedRunnerProcessesAbsent": true,
+  "animationSettings": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "appSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "testSha256": "7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25"
+}

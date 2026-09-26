@@ -1,0 +1,26 @@
+{
+  "runId": "b646f794-6c02-4dd5-9244-856371ae4a71",
+  "serial": "emulator-5582",
+  "avd": "tambola_full_game_alpha12_api30",
+  "apkSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "testApkSha256": "7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25",
+  "rounds": 9,
+  "draws": 90,
+  "driverSha256": "9984157b0cf9be2c52e350e1d1f03d09d338604101dbc4951b2ec17816aa3e4c",
+  "completed": true,
+  "fixtureSourceSha256": "eb84aa017e2db23c14150e3f1f9c52875dd8a7a27b88f6a9dcee3cb365913ff5",
+  "fingerprint": "google/sdk_gphone_x86_arm/generic_x86_arm:11/RSR1.201013.001/6903271:userdebug/dev-keys",
+  "displaySize": "Physical size: 1080x1920",
+  "displayDensity": "Physical density: 420",
+  "fontScale": "1.0",
+  "rendererProperty": "opengl",
+  "animationsBefore": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "scope": "Debug emulator long-session diagnostics; not physical release performance acceptance.",
+  "adbPid": 16396,
+  "stage": "round-9-called-90",
+  "deviceSettingsRestored": true
+}

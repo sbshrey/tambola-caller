@@ -1,0 +1,58 @@
+{
+  "checkedAtUtc": "2026-09-26T16:10:03.062222+00:00",
+  "runId": "b646f794-6c02-4dd5-9244-856371ae4a71",
+  "acceptedBaselineSession": true,
+  "newManualClaimDesignValidated": false,
+  "scope": "Unchanged alpha14 debug APK on API30 software emulator; no physical frame-time or redesigned gameplay acceptance.",
+  "appSource": "cfd809ed1f290c7f65576afe80fe999adaefa6ab",
+  "fixtureSource": "7b391ff4e070752b50261d2fe5bc507d3d090107",
+  "apkSha256": "49344972eaf57381bfbd02a445882b71f3104259bed0ea4f638cc21c1a0cc891",
+  "testApkSha256": "7d75970630d0755f1756c7ed03de9fffae1cc33deb42812c685503cd9ec9ef25",
+  "activePlayMs": 4571828,
+  "elapsedMs": 4624946,
+  "managedHeapSpanAfterWarmupBytes": 130296,
+  "pssSpanAfterWarmupKiB": 2510,
+  "frames": {
+    "observedNonFirstDrawFrames": 11331,
+    "firstDrawFramesExcluded": 9,
+    "droppedReports": 0,
+    "unavailableDurations": 0,
+    "over16666667Nanoseconds": 11331,
+    "maximumMs": 430.03587,
+    "p95BucketUpperMs": 98,
+    "p95Beyond2000Ms": false,
+    "reportsComplete": true
+  },
+  "files": [
+    {
+      "path": "alpha14-session-full/device-report.json",
+      "bytes": 4262,
+      "sha256": "27978afe7513265881058234829b532f7529607e6be8d0df3c3ac0d161d21e65"
+    },
+    {
+      "path": "alpha14-session-full/evidence.json",
+      "bytes": 1109,
+      "sha256": "aa893d4fd032366d74a38ead030fa7d0ca076d811076fd22ebacc791cb424025"
+    },
+    {
+      "path": "alpha14-session-full/independent-cleanup.json",
+      "bytes": 467,
+      "sha256": "6216b65001d61ae149e0deb2da84b90bb1079f67a2a841b7b320f80337827976"
+    },
+    {
+      "path": "alpha14-session-full/instrumentation.txt",
+      "bytes": 90,
+      "sha256": "80eabb9d7ba6ff1fc590c364750720019ea7be7540ac837ccc3d78cb376b78fa"
+    },
+    {
+      "path": "alpha14-session-full/alpha14-native-session-status.json",
+      "bytes": 448,
+      "sha256": "0f954e05768d32b1f6a6050f7c114da6bcd48b975869753516575b112e33bba0"
+    },
+    {
+      "path": "alpha14-session-full/alpha14-native-session-log.txt",
+      "bytes": 5973,
+      "sha256": "33a983f4c2c6c1af0c2bd1f1e28a5cd60a71cccae70baf35049e6b0deade640c"
+    }
+  ]
+}
