@@ -157,21 +157,6 @@ object CoinPurchaseBurst {
         } catch (error: Exception) {
             val line = error.stackTrace.firstOrNull { it.className.startsWith("io.github.sbshrey.tambola") }
             record("failure", "${error.javaClass.simpleName}:${line?.fileName}:${line?.lineNumber}")
-            record("serverAliveAtFailure", runCatching { env.alive(); true }.getOrDefault(false))
-            // Fixed categories only: exception messages may contain endpoint or request details.
-            val connectionError = generateSequence(error as Throwable) { it.cause }.take(8)
-                .filterIsInstance<java.net.ConnectException>().firstOrNull()
-            connectionError?.let {
-                val message = it.message.orEmpty().lowercase(java.util.Locale.ROOT)
-                record("connectionFailureCategory", when {
-                    "refused" in message -> "refused"
-                    "address already in use" in message -> "address_in_use"
-                    "cannot assign requested address" in message -> "address_unavailable"
-                    "no buffer space" in message -> "buffer_unavailable"
-                    "timed out" in message -> "timeout"
-                    else -> "unclassified"
-                })
-            }
             if (error is RoomApiFailure) { record("httpStatus", error.status); record("httpCode", error.code) }
         } finally {
             streamScope.cancel(); streamScope.coroutineContext[Job]?.join()

@@ -31,7 +31,10 @@ def analyze(evidence_path, capture_path):
     capture = json.loads(capture_path.read_text(encoding="utf-8-sig"))
     check(evidence.get("passed") is True and evidence.get("cleanupComplete") is True, "Fixture failed or cleanup is incomplete")
     check(evidence.get("capacityAcceptance") is False and evidence.get("clientTransportProfiling") is True, "Wrong fixture mode")
-    check(evidence["sharedHttpTransports"] * 8 == evidence["players"], "Transport sharing changed")
+    # Captures before this condition was configurable used exactly eight players per transport.
+    sharing = evidence.get("playersPerTransport", 8)
+    check(type(sharing) is int and sharing in (1, 8), "Unsupported transport sharing")
+    check(type(evidence["sharedHttpTransports"]) is int and evidence["sharedHttpTransports"] * sharing == evidence["players"], "Inconsistent transport sharing")
     check(set(capture) == {"schema", "scope", "dispatcherLimits", "samples"} and capture["schema"] == 1, "Unknown capture schema")
     check(capture["dispatcherLimits"] == [{"maxRequests": 64, "maxRequestsPerHost": 5}], "Default dispatcher settings changed")
     count, waves = evidence["players"], evidence["requestedWaves"]
@@ -70,6 +73,7 @@ def analyze(evidence_path, capture_path):
                         "shareOfSummedApiTimePercent": {**{key: calculated[key]["sum"] / api_sum * 100 for key in PHASES},
                                                        "outsideOkHttp": (api_sum - call_sum) / api_sum * 100}})
     return {"passed": True, "capacityAcceptance": False, "players": count, "waves": summary,
+            "playersPerTransport": sharing, "httpTransports": evidence["sharedHttpTransports"],
             "serviceRuntimeSha256": evidence["serviceRuntimeSha256"], "clientJarSha256": evidence["clientJarSha256"],
             "inputSha256": {"fixture": digest(evidence_path), "transport": digest(capture_path), "analyzer": digest(Path(__file__))},
             "interpretation": "Shares use sums of concurrent request durations, not wall time or CPU. Server and network waiting remain together in awaitResponseHeadersMs. Connect time is nested. Outside-OkHttp time is an aggregate residual, not a percentile difference. Profiling does not establish a latency improvement."}

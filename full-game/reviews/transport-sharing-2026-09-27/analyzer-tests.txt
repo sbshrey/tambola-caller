@@ -1,0 +1,8 @@
+test_mislabelling_and_incomplete_evidence_are_rejected (__main__.TransportAnalysisTest.test_mislabelling_and_incomplete_evidence_are_rejected) ... ok
+test_original_eight_player_sharing_remains_valid (__main__.TransportAnalysisTest.test_original_eight_player_sharing_remains_valid) ... ok
+test_separate_clients_remain_labelled_diagnostic (__main__.TransportAnalysisTest.test_separate_clients_remain_labelled_diagnostic) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.429s
+
+OK

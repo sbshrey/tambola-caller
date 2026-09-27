@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-09-27T14:06:37.575Z",
+  "passed": true,
+  "runs": 11,
+  "configuredInstalledRuntime": {
+    "serviceJarSha256": "3f49a9add7a603f8dbefcbc48cb978c8c1d456dc1b887ee949c957edabf51fbd",
+    "serviceRuntimeSha256": "f26bc71a48b349ad77fa722a7ebe7938ef1d94981859af1f4ac78aa03e95e372"
+  },
+  "diagnosticRuntime": {
+    "serviceJarSha256": "2135b43b2bd7c75dc5a713031f92fc4c5757c39324e2c7a56e74fdd285b20e1b",
+    "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7"
+  },
+  "sourceSha256": {
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseTransportProfile.kt": "9a049341a58de9a81d44a88dce476cf6501c7ff521296d0c0fccadd318e2ceb9",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinPurchaseBurst.kt": "5ae50b2d92a59c2249cfaaa603e9f79d98b98748c587072d2f230e3b9fa7d3cc",
+    "tools/analyze-client-transport.py": "4e4027eaacbb104a431ea806aacb006a460ffc8caed68687c796888625f86e5c",
+    "tools/test-client-transport-analysis.py": "81cc61a0e15a0e1ba331ccbeb7071160167aed23e0edbe63b4b28ab8891c492f"
+  },
+  "publishedApk": {
+    "url": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha32-call-history/Tambola-Internet-Beta-0.32.0.apk",
+    "sha256": "a6767986b21dd987fc6c9e15b6bd6552be30f58ce6aed5af4fc26eebdb33d7fa",
+    "bytes": 29192205,
+    "verification": "GitHub release asset digest; no new APK build or download in this checkpoint"
+  },
+  "serverDeploymentChanged": false,
+  "publicBridgeRestarted": false
+}
