@@ -1,4 +1,4 @@
-export const DOWNLOAD = 'https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha33-readable-claims';
+export const DOWNLOAD = 'https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha34-round-recovery';
 const CODE = /^[A-HJ-NP-Z2-9]{8}$/;
 
 // The fragment stays in the browser: no room lookup, tokens or table code sent to a service.
