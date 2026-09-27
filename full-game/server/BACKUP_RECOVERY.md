@@ -54,3 +54,19 @@ The fixture recreates its owned namespace before schema-filtered restoration; `p
 Run the complete service suite with the normal test database variables plus `TAMBOLA_PG_BIN` pointing to matching PostgreSQL 16 client binaries. Missing tools fail the drill; it is not silently skipped. Windows example: `C:\Program Files\PostgreSQL\16\bin`. The CI definition installs PostgreSQL 16 client tools on Ubuntu 24.04; editing CI is not evidence of a hosted CI run.
 
 Local tests cover durable intent/primary rollback, journal-write failure, duplicates, concurrent writers/replayers, expired confirmation with retained suppression, journal identity/cursor/gap failures, readiness during outage and the actual logical restore. This establishes application-level recovery within the tested boundaries. It does **not** establish deployed backup independence, external-journal disaster recovery, provider PITR, large-history latency, production permissions, multi-region failover, cutover under live load or hosted operations.
+
+## Copied installed Windows backup rehearsal
+
+`tools/rehearse-windows-recovery.ps1` reads the installed upgrade's retained primary archive and snapshots its current independent journal with the restricted journal account. Sensitive copies stay in a new ACL-protected subdirectory of the installed host. It never rewinds the live journal, restores over the live databases or rotates the retained backup pairs.
+
+The Node driver restores only fresh owned databases on the separate test PostgreSQL port **55432**. Four fresh roles separate migration ownership from runtime access. It uses the installed JDK and exact installed JAR distribution, runs an explicit migration job, reapplies grants and starts with `TAMBOLA_LOCAL_DEVELOPMENT=false`. Startup must finish journal replay and preserve surviving installed wallet/ledger rows. The installed HTTPS endpoint is checked before and after.
+
+Further scenarios mutate only the isolated copies: create temporary wallets and device credentials, purchase/cancel tickets, snapshot primary, record logout/deletion, restore only that older primary and prove stale accessible records really returned before replay. Restricted startup must reject both bearer and device access, preserve the signed-out wallet, remove the deleted wallet, retain exact survivor purchase/refund responses and support a fresh purchase/refund followed by restart. Only hashes, counts, process IDs and assertion results leave the drill. Cleanup removes the owned databases/roles/process and protected archive copies; original backup hashes are checked independently.
+
+Run from `full-game` in PowerShell 7 with Node available and the isolated `tambola_test` administrator credential already provisioned in `.test-workspace/postgres-password.txt`:
+
+```powershell
+./tools/rehearse-windows-recovery.ps1
+```
+
+The [27 September evidence](../reviews/installed-recovery-2026-09-27/README.md) passed with primary schema 006→007 and journal cursor 58→68. The installed snapshot contained one wallet and no logout intents; the explicit logout API scenario was tested in the isolated copy. This establishes copied installed-archive recovery with restricted roles, not a live-host cutover, provider backup independence or large-history recovery timing.

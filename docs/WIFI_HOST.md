@@ -64,7 +64,9 @@ Before migration starts, a failed upgrade resumes the old service. Once migratio
 
 `tools/verify-coin-host.mjs` used two temporary profiles to purchase six and two tickets into one lobby, verify a 1,400-coin/seven-prize pool, retry exact purchase/refund receipts and restore each 1,500-coin balance. Profiles were deleted afterwards. `tools/verify-native-host-restart.ps1` only permits a Java fault probe during the expected four-player `LanCoinGameTest` QA round; it refuses other live rooms and checks process identity. Native round completion must be assessed together with its report, not inferred from backend readiness.
 
-Physical phone Wi-Fi, Internet reachability, reboot behavior, installed-backup restoration and release signing remain separate acceptance checks. PC request timings are not a mobile-network latency guarantee.
+The [copied installed-backup rehearsal](../full-game/reviews/installed-recovery-2026-09-27/README.md) passed with the exact installed runtime and restricted database roles. It restored the retained primary plus a newer journal into isolated stores, checked wallet continuity and exercised logout/deletion and receipt replay. The live host stayed in place; original archives were preserved and temporary copies removed. The repeatable command is `full-game/tools/rehearse-windows-recovery.ps1`; see [the runbook](../full-game/server/BACKUP_RECOVERY.md#copied-installed-windows-backup-rehearsal).
+
+Physical phone Wi-Fi, Internet reachability, reboot behavior, live disaster cutover and release signing remain separate acceptance checks. PC request timings are not a mobile-network latency guarantee.
 
 The alpha16 LAN APK also passed a complete native coin round on the dedicated emulator: 86 calls, all eight selected prizes, 2,400 coins paid, conserved aggregate wallets, results, Play Again and cancellation/refund. The Java server recovered in 5,678 ms during that round and the app continued over WSS. See [the archived results and frame-time limits](../full-game/reviews/coin-wifi-alpha16-2026-09-26/README.md).
 
