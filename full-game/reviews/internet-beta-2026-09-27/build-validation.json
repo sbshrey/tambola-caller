@@ -1,0 +1,16 @@
+{
+  "versionName": "0.24.0-alpha24-internet-beta",
+  "minAndroidApi": 26,
+  "gatewayTests": "passed",
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "clientTests": 37,
+  "lintErrors": 0,
+  "bytes": 29116477,
+  "versionCode": 24,
+  "appUnitTests": 15,
+  "signedWith": "existing development certificate",
+  "appSha256": "dbdd4a5a7764868feb43a5ce802544a9a2891014069b20f1888076edf0c97367",
+  "tunnelRestartDirectoryRecovery": "verified before native acceptance",
+  "lintWarnings": 118
+}

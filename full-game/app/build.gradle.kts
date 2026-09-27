@@ -19,8 +19,9 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 23
-        versionName = "0.23.0-alpha23"
+        versionCode = 24
+        versionName = "0.24.0-alpha24"
+        buildConfigField("String", "ROOM_DISCOVERY_URL", "\"\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -53,6 +54,19 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             isDebuggable = false
             versionNameSuffix = "-wifi-optimized"
+            manifestPlaceholders["verifyInvites"] = "false"
+        }
+        create("publicBeta") {
+            initWith(getByName("release"))
+            matchingFallbacks += "release"
+            applicationIdSuffix = ".beta"
+            versionNameSuffix = "-internet-beta"
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            // Stable saved-profile identity; actual transport is resolved through the publisher directory.
+            buildConfigField("String", "ROOM_API_URL", "\"https://sbshrey.github.io\"")
+            buildConfigField("String", "ROOM_DISCOVERY_URL", "\"https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json\"")
+            manifestPlaceholders["inviteHost"] = "disabled.invalid"
             manifestPlaceholders["verifyInvites"] = "false"
         }
     }

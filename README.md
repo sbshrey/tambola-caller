@@ -8,7 +8,9 @@ Built from the [shared V1 discussion and design reference](https://chatgpt.com/s
 
 ## Full Android game in development
 
-**Review the new landscape design without installing an APK:** [editable Figma screens](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=3-1215) and [clickable preview instructions](designs/landscape-lobby-v1/README.md). The design review is separate from the currently packaged alpha22 app.
+**Internet multiplayer beta:** [download Tambola Internet Beta](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha24-internet-beta) for Android 8+. It connects over mobile data or other Wi-Fi through the temporary PC host. The PC must stay awake, signed in and online. This beta installs alongside the Wi-Fi app with a separate player profile. [Hosting and operating guide](docs/INTERNET_BETA.md).
+
+**Review the new landscape design without installing an APK:** [editable Figma screens](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=3-1215) and [clickable preview instructions](designs/landscape-lobby-v1/README.md). The Game night design is included in alpha23 and the Internet beta.
 
 Tambola Together is developing online multiplayer with free virtual coins, 1–6 disjoint tickets, manual marking, per-ticket prize claims, paged landscape play, caller audio and win animations. Empty seats use labelled computers. The development work is on `shrey/full-tambola-game`, with this PC hosting private Wi-Fi testing. See the [full-game guide](full-game/README.md), [current online plan](docs/ONLINE_COIN_GAME_PLAN.md), [alpha installation](full-game/ALPHA_INSTALL.md) and [host operation](docs/WIFI_HOST.md). Public hosting and production release gates remain unfinished.
 

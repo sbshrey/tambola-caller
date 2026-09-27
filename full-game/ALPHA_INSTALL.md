@@ -1,5 +1,7 @@
 # Tambola Together alpha23 — Wi-Fi testing
 
+For players outside this Wi-Fi network, use the separate [Internet beta download](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha24-internet-beta). It installs as **Tambola Internet Beta** with its own player profile. The PC host must remain online. [Internet hosting details](../docs/INTERNET_BETA.md).
+
 For design feedback without installing, use the [editable landscape Figma board](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696) or [clickable browser preview](../designs/landscape-lobby-v1/README.md).
 
 Install [the optimized alpha23 Wi-Fi APK](releases/0.23.0-alpha23-wifi-optimized/Tambola-Together-0.23.0-alpha23-wifi-optimized.apk) on Android 8 or newer. It now includes the Game night welcome/lobby, animated roster arrivals, five-second call ring, minimal Settings, cream tickets, coral per-ticket Claim buttons and adaptive prize picker. Install over the previous full-game alpha and keep its data; uninstalling or resetting can lose the saved wallet. Tambola Keyboard is separate and is not required.

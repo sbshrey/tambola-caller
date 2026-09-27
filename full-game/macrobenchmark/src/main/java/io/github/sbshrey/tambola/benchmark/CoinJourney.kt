@@ -16,8 +16,10 @@ import java.util.regex.Pattern
 
 /** All actions for the measured player go through the visible app; peers supply only public calls/awards. */
 internal class CoinJourney(private val context: Context, private val device: UiDevice, private val expectedRounds: Int = 1,
-    private val computerOpponents: Boolean = false) : AutoCloseable {
-    private val api = HttpRoomApi("https://192.168.1.4:8443")
+    private val computerOpponents: Boolean = false,
+    private val target: String = "io.github.sbshrey.tambola.game",
+    discoveryUrl: String? = null) : AutoCloseable {
+    private val api = HttpRoomApi(if (discoveryUrl == null) "https://192.168.1.4:8443" else "https://sbshrey.github.io", discoveryUrl = discoveryUrl)
     private val peers = mutableListOf<GuestCredentials>()
     private var code: String? = null
     private var mainId: String? = null
@@ -41,6 +43,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private val originalIdle = Configurator.getInstance().waitForIdleTimeout
 
     init {
+        require(target in setOf("io.github.sbshrey.tambola.game", "io.github.sbshrey.tambola.game.beta"))
         require(expectedRounds in listOf(1, 9))
         require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
@@ -297,10 +300,18 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                 if (!reopened && seen >= 20) {
                     // Keep most endurance rounds in one process; one cold recovery remains deliberate.
                     val cold = expectedRounds == 1 || roundNumber == 3
-                    if (cold) device.executeShellCommand("am force-stop io.github.sbshrey.tambola.game")
+                    if (cold) device.executeShellCommand("am force-stop $target")
                     else { device.pressHome(); SystemClock.sleep(1500) }
-                    device.executeShellCommand("am start -n io.github.sbshrey.tambola.game/.MainActivity")
-                    until(20_000) { find("play-arena") != null || find("resume-match") != null }
+                    device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+                    until(30_000) { find("play-arena") != null || find("resume-match") != null || find("coin-retry") != null }
+                    if (find("coin-retry") != null) {
+                        // Process death may interrupt a claim before its receipt is saved. Use the
+                        // existing explicit retry, preserving the original request identity.
+                        until(30_000) { find("coin-retry")?.isEnabled == true }
+                        tap("coin-retry")
+                        report.put("coldPendingReceiptRetried", true)
+                        until(30_000) { find("play-arena") != null || find("resume-match") != null }
+                    }
                     if (find("resume-match") != null) tap("resume-match")
                     node("play-arena")
                     for (number in marks) {
@@ -404,7 +415,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     }
 
     private fun recordMemory(stage: String) {
-        val output = device.executeShellCommand("dumpsys meminfo -s io.github.sbshrey.tambola.game")
+        val output = device.executeShellCommand("dumpsys meminfo -s $target")
         fun value(pattern: String) = checkNotNull(Regex(pattern).find(output)) { "Missing memory diagnostic" }.groupValues[1].toLong()
         memorySamples.put(JSONObject().put("round", roundNumber).put("stage", stage)
             .put("elapsedMs", SystemClock.elapsedRealtime() - started)
@@ -429,7 +440,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         try {
             if (createdMain) {
                 // Macrobenchmark can stop the measured app before this finally block.
-                device.executeShellCommand("am start -n io.github.sbshrey.tambola.game/.MainActivity")
+                device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
                 until(20_000) { find("coin-wallet") != null || find("play-arena") != null }
                 repeat(4) { if (find("coin-wallet") == null) { device.pressBack(); SystemClock.sleep(150) } }
                 tap("coin-wallet")

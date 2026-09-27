@@ -52,7 +52,9 @@ data class OnlineUiState(
 
 class OnlineViewModel(application: Application) : AndroidViewModel(application) {
     private val store = OnlineStore(application)
-    private val api: RoomApi? = BuildConfig.ROOM_API_URL.takeIf { it.isNotEmpty() }?.let { HttpRoomApi(it, BuildConfig.DEBUG) }
+    private val api: RoomApi? = BuildConfig.ROOM_API_URL.takeIf { it.isNotEmpty() }?.let {
+        HttpRoomApi(it, BuildConfig.DEBUG, discoveryUrl = BuildConfig.ROOM_DISCOVERY_URL.takeIf(String::isNotEmpty))
+    }
     private val mutex = Mutex()
     private var saved: OnlineSaved? = null
     private val mutable = MutableStateFlow(OnlineUiState())

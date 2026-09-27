@@ -55,8 +55,10 @@ interface RoomApi : AutoCloseable {
 }
 
 class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
-    private val client: HttpClient = roomHttpClient()) : RoomApi {
+    private val client: HttpClient = roomHttpClient(), discoveryUrl: String? = null) : RoomApi {
     private val base = checkedEndpoint(endpoint, allowLocalHttp)
+    private val directory = discoveryUrl?.let { PublicEndpointDirectory(it, client) }
+    private suspend fun origin() = directory?.origin() ?: base
     @Volatile override var serverTime: ServerTime? = null
         private set
     private fun roomPath(code: String): String {
@@ -64,7 +66,7 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
         return "/v1/rooms/$code"
     }
     private suspend fun text(path: String, token: String? = null, body: String? = null, post: Boolean = false): String =
-        client.prepareRequest(base + path) {
+        client.prepareRequest(origin() + path) {
             method = if (post) HttpMethod.Post else HttpMethod.Get
             token?.let { bearerAuth(it) }
             if (body != null) { contentType(ContentType.Application.Json); setBody(body) }
@@ -108,7 +110,7 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     }
     override fun events(token: String, code: String, after: Long?): Flow<RoomUpdate> = channelFlow {
         require(after == null || after >= 0)
-        val url = base.replaceFirst("http", "ws") + roomPath(code) + "/events" + (after?.let { "?after=$it" } ?: "")
+        val url = origin().replaceFirst("http", "ws") + roomPath(code) + "/events" + (after?.let { "?after=$it" } ?: "")
         client.webSocket(urlString = url, request = { bearerAuth(token) }) {
             for (frame in incoming) {
                 if (frame !is Frame.Text || frame.data.size > MAX_RESPONSE_BYTES) throw InvalidRoomResponse()

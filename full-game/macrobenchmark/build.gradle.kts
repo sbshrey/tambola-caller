@@ -17,10 +17,15 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += "release"
         }
+        create("publicBeta") {
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += "release"
+        }
     }
 }
 kotlin { jvmToolchain(17) }
-androidComponents.beforeVariants { it.enable = it.buildType == "lanRelease" }
+androidComponents.beforeVariants { it.enable = it.buildType in setOf("lanRelease", "publicBeta") }
 abstract class BenchmarkTrust : Sync() {
     @get:OutputDirectory abstract val generatedRoot: DirectoryProperty
 }
@@ -41,7 +46,7 @@ val prepareTrust = tasks.register<BenchmarkTrust>("prepareBenchmarkTrust") {
     }
 }
 androidComponents.onVariants { variant ->
-    variant.sources.res?.addGeneratedSourceDirectory(prepareTrust) { it.generatedRoot }
+    if (variant.buildType == "lanRelease") variant.sources.res?.addGeneratedSourceDirectory(prepareTrust) { it.generatedRoot }
 }
 dependencies {
     implementation(libs.macrobenchmark)

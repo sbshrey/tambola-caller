@@ -1,0 +1,42 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in fullRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: UI condition timed out at playing
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:61)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:58)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:306)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda6.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:422)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:244)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:22)
+	Suppressed: java.lang.IllegalStateException: No button contains Delete online profile
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.textButton(CoinJourney.kt:78)
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.close(CoinJourney.kt:439)
+		at io.ktor.client.HttpClient$$ExternalSyntheticAutoCloseableDispatcher0.m(D8$$SyntheticClass:0)
+		at kotlin.jdk7.AutoCloseableKt.closeFinally(AutoCloseableJVM.kt:46)
+		at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:20)
+
+
+Time: 155.559
+There was 1 failure:
+1) fullRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: UI condition timed out at playing
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:61)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:58)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:306)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda6.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:422)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:244)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:22)
+	Suppressed: java.lang.IllegalStateException: No button contains Delete online profile
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.textButton(CoinJourney.kt:78)
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.close(CoinJourney.kt:439)
+		at io.ktor.client.HttpClient$$ExternalSyntheticAutoCloseableDispatcher0.m(D8$$SyntheticClass:0)
+		at kotlin.jdk7.AutoCloseableKt.closeFinally(AutoCloseableJVM.kt:46)
+		at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:20)
+		... 32 more
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
