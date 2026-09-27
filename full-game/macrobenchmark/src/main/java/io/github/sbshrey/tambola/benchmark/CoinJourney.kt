@@ -28,7 +28,6 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private var createdMain = false
     private val cards = linkedMapOf<Int, Ticket>()
     private val marks = mutableSetOf<Int>()
-    private val usedHouses = mutableSetOf<Int>()
     private val report = JSONObject().put("completed", false)
         .put("scope", "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; " +
             if (computerOpponents) "one passive HTTP QA peer and two labelled computer opponents" else "three passive HTTP QA peers")
@@ -110,7 +109,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         roundStarted = SystemClock.elapsedRealtime()
         roundNumber++
         check(roundNumber <= expectedRounds)
-        cards.clear(); marks.clear(); usedHouses.clear(); code = null
+        cards.clear(); marks.clear(); code = null
         report.put("roundNumber", roundNumber).put("calls", 0).put("claims", 0)
         checkpoint(if (createdMain) "next-round-wallet-check" else "fresh-profile-check")
         node("coin-play")
@@ -455,7 +454,13 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     val closed = current.awards.filter { it.prize.isRankedHouse && it.drawIndex < current.called.size }
                     val nextHouse = room.options.game.prizes.filter { it.isRankedHouse && closed.none { award -> award.prize == it } }.minByOrNull { it.ordinal }
                     if (prize.isRankedHouse && prize != nextHouse) continue
+                    // A claim can settle after the call-rollover observation. Derive used
+                    // tickets from the latest public awards, not only receipts seen inline.
+                    val usedHouses = closedHouseOrdinals(current, requireNotNull(mainId))
                     val entry = cards.entries.firstOrNull { prize.matches(it.value, marks) && (!prize.isRankedHouse || it.key !in usedHouses) } ?: continue
+                    report.put("lastClaimSelection", JSONObject().put("prize", prize.name).put("ticket", entry.key)
+                        .put("call", current.called.size).put("revision", room.revision).put("closedHouseTickets", JSONArray(usedHouses.toList())))
+                    checkpoint("selecting-claim")
                     showTicket(entry.key)
                     tap("claim-ticket-${entry.key}")
                     val choice = device.wait(Until.findObject(By.res("claim-prize-${prize.name}")), 1500)
@@ -481,7 +486,6 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                         val selectedWon = room.round!!.winningTickets.any {
                             it.id in award.ticketIds && it.playerId == mainId && it.ordinal == entry.key
                         }
-                        if (prize.isRankedHouse && selectedWon) usedHouses += entry.key
                         if (selectedWon && sawFeedback) {
                             report.put("contextualClaimVerified", true).put("confirmedClaimText", expectedFeedback)
                         }

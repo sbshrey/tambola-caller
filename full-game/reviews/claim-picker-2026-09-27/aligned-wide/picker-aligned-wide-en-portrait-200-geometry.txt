@@ -1,0 +1,17 @@
+Ticket 6 · claim | scale=2.0 | size=806 x 107 | paragraph=806.0x107.0 | overflowFlag=false | clipped=false
+Early five | scale=2.0 | size=265 x 81 | paragraph=403.0x81.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=99 x 69 | paragraph=403.0x69.0 | overflowFlag=true | clipped=false
+Four corners | scale=2.0 | size=370 x 81 | paragraph=404.0x81.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=99 x 69 | paragraph=404.0x69.0 | overflowFlag=true | clipped=false
+Top line | scale=2.0 | size=228 x 81 | paragraph=403.0x81.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=99 x 69 | paragraph=403.0x69.0 | overflowFlag=true | clipped=false
+Middle line | scale=2.0 | size=321 x 81 | paragraph=404.0x81.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=99 x 69 | paragraph=404.0x69.0 | overflowFlag=true | clipped=false
+Bottom line | scale=2.0 | size=337 x 81 | paragraph=403.0x81.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=99 x 69 | paragraph=403.0x69.0 | overflowFlag=true | clipped=false
+House one | scale=2.0 | size=312 x 81 | paragraph=404.0x81.0 | overflowFlag=true | clipped=false
+1080 | scale=2.0 | size=132 x 69 | paragraph=404.0x69.0 | overflowFlag=true | clipped=false
+House two | scale=2.0 | size=311 x 81 | paragraph=403.0x81.0 | overflowFlag=true | clipped=false
+540 | scale=2.0 | size=99 x 69 | paragraph=403.0x69.0 | overflowFlag=true | clipped=false
+House three | scale=2.0 | size=355 x 81 | paragraph=404.0x81.0 | overflowFlag=true | clipped=false
+180 | scale=2.0 | size=99 x 69 | paragraph=404.0x69.0 | overflowFlag=true | clipped=false

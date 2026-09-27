@@ -1,0 +1,17 @@
+टिकट 6 · दावा | scale=2.0 | size=728 x 147 | paragraph=728.0x147.0 | overflowFlag=false | clipped=false
+अर्ली फ़ाइव | scale=2.0 | size=347 x 116 | paragraph=363.0x116.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=126 x 88 | paragraph=363.0x88.0 | overflowFlag=true | clipped=false
+चार कोने | scale=2.0 | size=271 x 116 | paragraph=364.0x116.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=126 x 88 | paragraph=364.0x88.0 | overflowFlag=true | clipped=false
+टॉप लाइन | scale=2.0 | size=307 x 220 | paragraph=363.0x116.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=126 x 88 | paragraph=363.0x88.0 | overflowFlag=true | clipped=false
+मिडिल लाइन | scale=2.0 | size=364 x 220 | paragraph=364.0x220.0 | overflowFlag=false | clipped=false
+360 | scale=2.0 | size=126 x 88 | paragraph=364.0x88.0 | overflowFlag=true | clipped=false
+बॉटम लाइन | scale=2.0 | size=358 x 220 | paragraph=363.0x116.0 | overflowFlag=true | clipped=false
+360 | scale=2.0 | size=126 x 88 | paragraph=363.0x88.0 | overflowFlag=true | clipped=false
+पहला हाउस | scale=2.0 | size=364 x 220 | paragraph=364.0x220.0 | overflowFlag=false | clipped=false
+1080 | scale=2.0 | size=169 x 88 | paragraph=364.0x88.0 | overflowFlag=true | clipped=false
+दूसरा हाउस | scale=2.0 | size=356 x 220 | paragraph=363.0x116.0 | overflowFlag=true | clipped=false
+540 | scale=2.0 | size=126 x 88 | paragraph=363.0x88.0 | overflowFlag=true | clipped=false
+तीसरा हाउस | scale=2.0 | size=364 x 220 | paragraph=364.0x220.0 | overflowFlag=false | clipped=false
+180 | scale=2.0 | size=127 x 88 | paragraph=364.0x88.0 | overflowFlag=true | clipped=false

@@ -1,0 +1,135 @@
+{
+  "completed": true,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; three passive HTTP QA peers",
+  "expectedRounds": 1,
+  "roundReports": [
+    {
+      "round": 1,
+      "calls": 85,
+      "prizes": 8,
+      "pool": 2400,
+      "balanceBefore": 1500,
+      "finalBalance": 3300,
+      "aggregateBalance": 6000,
+      "durationMs": 468242,
+      "peerTicketQuantities": [
+        6,
+        6,
+        6
+      ],
+      "reconnect": "process-death",
+      "retainedMarks": 20,
+      "replayQuantityAndRefund": true
+    }
+  ],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 85,
+  "claims": 8,
+  "stage": "passed",
+  "elapsedMs": 473246,
+  "peerTicketQuantities": [
+    6,
+    6,
+    6
+  ],
+  "expectedPool": 2400,
+  "balanceBefore": 1500,
+  "friendTable": true,
+  "ownedTickets": 6,
+  "distinctOwnNumbers": 90,
+  "callHistoryVerified": true,
+  "coldProcessRestoredMarks": 20,
+  "restoredCallHistoryVerified": true,
+  "lastClaimSelection": {
+    "prize": "HOUSE_THREE",
+    "ticket": 3,
+    "call": 85,
+    "revision": 98,
+    "closedHouseTickets": [
+      4,
+      6
+    ]
+  },
+  "pickerCallRollovers": 4,
+  "feedbackObservationsMissed": 1,
+  "lastObservedClaimFeedback": "",
+  "contextualClaimVerified": true,
+  "confirmedClaimText": "Ticket 1 · Early five verified",
+  "publicWinnerSharesVerified": true,
+  "prizeWinners": [
+    {
+      "prize": "EARLY_FIVE",
+      "coins": 240,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "CORNERS",
+      "coins": 240,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "TOP_LINE",
+      "coins": 240,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "MIDDLE_LINE",
+      "coins": 240,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "BOTTOM_LINE",
+      "coins": 240,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "HOUSE_ONE",
+      "coins": 720,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "HOUSE_TWO",
+      "coins": 360,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "HOUSE_THREE",
+      "coins": 120,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    }
+  ],
+  "finishedCalls": 85,
+  "settledWinnings": 2400,
+  "finalBalance": 3300,
+  "rememberedSixTickets": true,
+  "sameFriendsReplay": {
+    "players": 2,
+    "pool": 500,
+    "ownTickets": 3,
+    "peerTickets": 2,
+    "exactPeerReceipt": true,
+    "processRecovery": true,
+    "bothPurchasesRefunded": true
+  },
+  "newRoundPurchasedAndRefunded": true,
+  "roundsCompleted": 1,
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 3
+}

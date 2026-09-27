@@ -1,0 +1,25 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in friendsHistory(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: Selected prize disabled within the same call
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.clickPrizeChoice(CoinJourney.kt:372)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:462)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda25.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:661)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:420)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsHistory(InternetBetaTest.kt:20)
+
+
+Time: 409.103
+There was 1 failure:
+1) friendsHistory(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: Selected prize disabled within the same call
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.clickPrizeChoice(CoinJourney.kt:372)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:462)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda25.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:661)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:420)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsHistory(InternetBetaTest.kt:20)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

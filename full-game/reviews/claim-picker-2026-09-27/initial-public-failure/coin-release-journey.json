@@ -1,0 +1,33 @@
+{
+  "completed": false,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; three passive HTTP QA peers",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 70,
+  "claims": 4,
+  "stage": "failed",
+  "elapsedMs": 408605,
+  "peerTicketQuantities": [
+    6,
+    6,
+    6
+  ],
+  "expectedPool": 2400,
+  "balanceBefore": 1500,
+  "friendTable": true,
+  "ownedTickets": 6,
+  "distinctOwnNumbers": 90,
+  "callHistoryVerified": true,
+  "feedbackObservationsMissed": 2,
+  "lastObservedClaimFeedback": "You won Middle line!",
+  "coldProcessRestoredMarks": 20,
+  "restoredCallHistoryVerified": true,
+  "contextualClaimVerified": true,
+  "confirmedClaimText": "Ticket 2 · Four corners verified",
+  "pickerCallRollovers": 4,
+  "failureType": "IllegalStateException",
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 3
+}

@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.benchmark.ClaimJourneySelectionTest:...
+
+Time: 0.035
+
+OK (3 tests)

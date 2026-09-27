@@ -1,6 +1,6 @@
 # Tambola Together alpha23 — Wi-Fi testing
 
-For players outside this Wi-Fi network, use the separate [alpha27 Internet beta download](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha27-readable-results). It installs as **Tambola Internet Beta** with its own player profile. Update an existing Internet Beta in place to retain that profile. The PC host must remain online. [Internet hosting details](../docs/INTERNET_BETA.md).
+For players outside this Wi-Fi network, use the separate [alpha33 Internet beta download](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha33-readable-claims). It installs as **Tambola Internet Beta** with its own player profile. Update an existing Internet Beta in place to retain that profile. The PC host must remain online. [Internet hosting details](../docs/INTERNET_BETA.md).
 
 For design feedback without installing, use the [editable landscape Figma board](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696) or [clickable browser preview](../designs/landscape-lobby-v1/README.md).
 

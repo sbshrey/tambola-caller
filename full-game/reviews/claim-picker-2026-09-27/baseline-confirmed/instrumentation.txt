@@ -1,0 +1,21 @@
+
+io.github.sbshrey.tambola.game.PrizePickerUiTest:
+Error in hindiPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Prize text must remain complete at the requested scale: अर्ली फ़ाइव | scale=2.0 | size=266 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; चार कोने | scale=2.0 | size=207 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; टॉप लाइन | scale=2.0 | size=235 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; मिडिल लाइन | scale=2.0 | size=304 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; बॉटम लाइन | scale=2.0 | size=275 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; पहला हाउस | scale=2.0 | size=284 x 89 | overflow=true; 1080 | scale=2.0 | size=132 x 69 | overflow=true; दूसरा हाउस | scale=2.0 | size=273 x 89 | overflow=true; 540 | scale=2.0 | size=99 x 69 | overflow=true; तीसरा हाउस | scale=2.0 | size=293 x 89 | overflow=true; 180 | scale=2.0 | size=99 x 69 | overflow=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:94)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.hindiPortraitChoicesRemainReadable(PrizePickerUiTest.kt:33)
+
+
+Time: 4.771
+There was 1 failure:
+1) hindiPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Prize text must remain complete at the requested scale: अर्ली फ़ाइव | scale=2.0 | size=266 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; चार कोने | scale=2.0 | size=207 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; टॉप लाइन | scale=2.0 | size=235 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; मिडिल लाइन | scale=2.0 | size=304 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; बॉटम लाइन | scale=2.0 | size=275 x 89 | overflow=true; 360 | scale=2.0 | size=99 x 69 | overflow=true; पहला हाउस | scale=2.0 | size=284 x 89 | overflow=true; 1080 | scale=2.0 | size=132 x 69 | overflow=true; दूसरा हाउस | scale=2.0 | size=273 x 89 | overflow=true; 540 | scale=2.0 | size=99 x 69 | overflow=true; तीसरा हाउस | scale=2.0 | size=293 x 89 | overflow=true; 180 | scale=2.0 | size=99 x 69 | overflow=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:94)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.hindiPortraitChoicesRemainReadable(PrizePickerUiTest.kt:33)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

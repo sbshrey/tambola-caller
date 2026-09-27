@@ -1,0 +1,60 @@
+{
+  "androidJvm": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.ClaimFeedbackTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.CoinResultsTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "lint": {
+    "Warning": 123
+  },
+  "nativeCases": 19,
+  "webTests": 71,
+  "driverSha256": "134d7f1bcdfccfa426af4d87ec28d58c3d7490b6456bb8ef0fb0cec03e876688",
+  "uiMatchesNativeReview": true,
+  "driverSelectionRegressionCases": 3
+}

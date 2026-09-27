@@ -1,0 +1,87 @@
+{
+  "baselineCommit": "6d4681cd6f3acbb70d7f0064f633969374c029c2",
+  "baselineUiSha256": "106c4e3c020f6bafd81c096e2fd36ae1dcc1eeace8c93e1bcc56a1438c7520e7",
+  "candidateUiNormalizedSha256": "b3c60b41673225a0080ccb7b40841d9d7aacbb8ff5dc35e99f24605ffe3449dc",
+  "testSourceNormalizedSha256": "8d490c5e7272c400d1d2c6f6dabbc151e161eb4993d138b294ae0ebc2ad5656a",
+  "finalNativeCases": 19,
+  "finalLayoutCases": 12,
+  "regressionCases": 7,
+  "records": [
+    {
+      "run": "baseline-confirmed",
+      "passed": false,
+      "scale": "2.0",
+      "density": "unchanged",
+      "apks": {
+        "io.github.sbshrey.tambola.game.uireview": "e3517fab3d44b8302eb1523d4ce8152eff8889ff8b290b099059a6d586ad6cbe",
+        "io.github.sbshrey.tambola.game.uireview.test": "a27ccfd44b99add09bce587fe87e8553b4246b9ab097b01a75ed1eaf506e5602"
+      },
+      "junitTests": 1
+    },
+    {
+      "run": "narrow-baseline",
+      "passed": false,
+      "scale": "2.0",
+      "density": "540",
+      "apks": {
+        "io.github.sbshrey.tambola.game.uireview": "e3517fab3d44b8302eb1523d4ce8152eff8889ff8b290b099059a6d586ad6cbe",
+        "io.github.sbshrey.tambola.game.uireview.test": "2bbd97233aab179d6c1ce1688465b26f83af75e3639dd2319ea8f806cdac0c68"
+      },
+      "junitTests": 1
+    },
+    {
+      "run": "aligned-large",
+      "passed": true,
+      "scale": "2.0",
+      "density": "540",
+      "apks": {
+        "io.github.sbshrey.tambola.game.uireview": "524b4a70f5335a73f0ea5688399fcdd9e2d780ef4a9452596e1d4e827b782d8b",
+        "io.github.sbshrey.tambola.game.uireview.test": "2bbd97233aab179d6c1ce1688465b26f83af75e3639dd2319ea8f806cdac0c68"
+      },
+      "junitTests": 4
+    },
+    {
+      "run": "aligned-normal",
+      "passed": true,
+      "scale": "1.0",
+      "density": "540",
+      "apks": {
+        "io.github.sbshrey.tambola.game.uireview": "524b4a70f5335a73f0ea5688399fcdd9e2d780ef4a9452596e1d4e827b782d8b",
+        "io.github.sbshrey.tambola.game.uireview.test": "2bbd97233aab179d6c1ce1688465b26f83af75e3639dd2319ea8f806cdac0c68"
+      },
+      "junitTests": 4
+    },
+    {
+      "run": "aligned-wide",
+      "passed": true,
+      "scale": "2.0",
+      "density": "unchanged",
+      "apks": {
+        "io.github.sbshrey.tambola.game.uireview": "524b4a70f5335a73f0ea5688399fcdd9e2d780ef4a9452596e1d4e827b782d8b",
+        "io.github.sbshrey.tambola.game.uireview.test": "2bbd97233aab179d6c1ce1688465b26f83af75e3639dd2319ea8f806cdac0c68"
+      },
+      "junitTests": 4
+    },
+    {
+      "run": "regressions",
+      "passed": true,
+      "scale": "1.0",
+      "density": "unchanged",
+      "apks": {
+        "io.github.sbshrey.tambola.game.uireview": "524b4a70f5335a73f0ea5688399fcdd9e2d780ef4a9452596e1d4e827b782d8b",
+        "io.github.sbshrey.tambola.game.uireview.test": "2bbd97233aab179d6c1ce1688465b26f83af75e3639dd2319ea8f806cdac0c68"
+      },
+      "junitTests": 7
+    }
+  ],
+  "screenshotSha256": {
+    "wide-baseline-readable.png": "663b447cc278f13fe0ee69fea06bd3e370c9256a227a0e5210708a5a6d42ade3",
+    "baseline-truncated.png": "83c00f7d48a176d86af8545a2d82ce0a9efd51d5344a909375935a75a24f8d07",
+    "english-portrait-top-200.png": "4539382d3a3b9c5d1d66d50f2d11f773d7002ac3ddcfbe974620e6552b2bf20e",
+    "english-portrait-houses-200.png": "1dfe92c5018b3c16b5d918d8dac966ac4675f7c6523a35b8a0a8bd1ab13d6101",
+    "hindi-landscape-200.png": "3a590bb5322e1ba12376df9f134ee7dd64c80560a7ae8d2fcd2c95643eaf9209",
+    "hindi-portrait-200.png": "10908f7fd2cb5a15fc6e5d45c5fd5a85defa01f01ea18cd12b92764bfa5f58f9",
+    "english-landscape-100.png": "678a2c8b59961c198c592a500313ae01fafc7c0b3173c0f879fddd5fc986d2a7"
+  },
+  "scope": "Isolated review package on owned API30 emulator; real system font scale and density; no physical-phone or TalkBack acceptance"
+}

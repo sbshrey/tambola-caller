@@ -1,0 +1,21 @@
+
+io.github.sbshrey.tambola.game.PrizePickerUiTest:
+Error in englishPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Prize text must remain complete at the requested scale: Ticket 6 · claim | scale=2.0 | size=728 x 137 | paragraph=728.0x137.0 | overflowFlag=true | clipped=true; Four corners | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true; Middle line | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true; Bottom line | scale=2.0 | size=363 x 104 | paragraph=363.0x104.0 | overflowFlag=true | clipped=true; House one | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true; House two | scale=2.0 | size=363 x 104 | paragraph=363.0x104.0 | overflowFlag=true | clipped=true; House three | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:100)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.englishPortraitChoicesRemainReadable(PrizePickerUiTest.kt:32)
+
+
+Time: 4.759
+There was 1 failure:
+1) englishPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Prize text must remain complete at the requested scale: Ticket 6 · claim | scale=2.0 | size=728 x 137 | paragraph=728.0x137.0 | overflowFlag=true | clipped=true; Four corners | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true; Middle line | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true; Bottom line | scale=2.0 | size=363 x 104 | paragraph=363.0x104.0 | overflowFlag=true | clipped=true; House one | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true; House two | scale=2.0 | size=363 x 104 | paragraph=363.0x104.0 | overflowFlag=true | clipped=true; House three | scale=2.0 | size=364 x 104 | paragraph=364.0x104.0 | overflowFlag=true | clipped=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:100)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.englishPortraitChoicesRemainReadable(PrizePickerUiTest.kt:32)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
