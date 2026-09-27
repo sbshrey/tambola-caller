@@ -9,6 +9,16 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class InternetBetaTest {
+    @Test fun friendInvitation() {
+        assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaInternetBeta") == "true")
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+        val target = "io.github.sbshrey.tambola.game.beta"
+        assertEquals(0, instrumentation.context.packageManager.getApplicationInfo(target, 0).flags and ApplicationInfo.FLAG_DEBUGGABLE)
+        device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+        CoinJourney(instrumentation.context, device, target = target, friendTable = true,
+            discoveryUrl = PublicEndpointDirectory.DIRECTORY_URL).use { it.verifyFriendInvitation() }
+    }
     @Test fun friendsRound() {
         assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaInternetBeta") == "true")
         val instrumentation = InstrumentationRegistry.getInstrumentation()

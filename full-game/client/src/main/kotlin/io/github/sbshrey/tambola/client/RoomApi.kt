@@ -39,6 +39,7 @@ fun checkedEndpoint(value: String, allowLocalHttp: Boolean = false): String {
 
 interface RoomApi : AutoCloseable {
     val serverTime: ServerTime? get() = null
+    suspend fun friendInvitation(code: String): String? = null
     suspend fun guest(request: GuestRequest): GuestCredentials
     suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment
     suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession
@@ -59,6 +60,10 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     private val base = checkedEndpoint(endpoint, allowLocalHttp)
     private val directory = discoveryUrl?.let { PublicEndpointDirectory(it, client) }
     private suspend fun origin() = directory?.origin() ?: base
+    override suspend fun friendInvitation(code: String): String? {
+        require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
+        return directory?.origin()?.let { "$it/friends/$code" }
+    }
     @Volatile override var serverTime: ServerTime? = null
         private set
     private fun roomPath(code: String): String {

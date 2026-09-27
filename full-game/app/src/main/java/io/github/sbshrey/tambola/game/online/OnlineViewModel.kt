@@ -130,6 +130,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     fun clearError() { mutable.update { it.copy(error = null) } }
+    /** Resolve a share link without sending credentials or changing the current game. */
+    suspend fun friendInvitation(code: String): String? = try { api?.friendInvitation(code) }
+        catch (error: CancellationException) { throw error }
+        catch (_: Exception) { null } // The share message always retains the manual code.
     fun clearNotice() { mutable.update { it.copy(notice = null) } }
     fun dismissWin() { mutable.update { it.copy(winMoment = null) } }
     fun register(name: String, avatar: Int = 0) {

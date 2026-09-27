@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:.............
+
+Time: 61.273
+
+OK (13 tests)
+
+

@@ -1,3 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
-    <application android:label="@string/public_beta_app_name" tools:replace="android:label" />
+    <application android:label="@string/public_beta_app_name" tools:replace="android:label">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tambola-beta" android:host="friends" android:pathPrefix="/" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

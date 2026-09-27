@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "name": "public-host.ps1",
+      "sha256": "134c385050ead050a7fc517b5365f3ced5a0f957d3dd61fe4a5bcfd95eb8efe2"
+    },
+    {
+      "name": "public-host.mjs",
+      "sha256": "0da42379eeac5493d0d0965b6bb8f1a1b19cfe55672055eca23374c9084a47c9"
+    },
+    {
+      "name": "public-gateway.mjs",
+      "sha256": "7493d44246bdb34be01217910751b0b27266e98bda8c3b03e3b9dbbb24bbf7c4"
+    },
+    {
+      "name": "public-invite.mjs",
+      "sha256": "0e447ee7f45f47d1bbe17107512fbebeeafa2858e07aa866385248816ca4970e"
+    }
+  ],
+  "status": "online",
+  "checkedAt": "2026-09-27T10:19:03.981Z",
+  "rollback": "upgrades/alpha28-20260927-101229",
+  "origin": "https://oral-assume-paintings-dvds.trycloudflare.com",
+  "preflightActiveRooms": 0,
+  "gameServiceChanged": false
+}

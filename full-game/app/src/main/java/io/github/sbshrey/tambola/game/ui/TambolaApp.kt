@@ -52,7 +52,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
                 (onlineState.room.phase == io.github.sbshrey.tambola.protocol.RoomPhase.FINISHED && !onlineState.room.options.coinGame)) &&
             !onlineState.storageFailure && !onlineState.deletingProfile && invitation.code == null && !roomDetails) {
             OnlineArena(onlineState, online, state.preferences, { model.navigate(Screen.HOME) }, { roomDetails = true })
-        } else if (!state.loading && state.screen in setOf(Screen.HOME, Screen.ONLINE) && invitation.code == null &&
+        } else if (!state.loading && state.screen in setOf(Screen.HOME, Screen.ONLINE) && (invitation.code == null || invitation.friendTable) &&
             (onlineState.room == null || onlineState.room.options.coinGame)) {
             CoinLobby(onlineState, online, play = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets) },
                 friends = { tickets, code -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets, friendTable = true, friendCode = code) },
@@ -91,6 +91,9 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
             }
         }
     }
+    if (!state.loading && invitation.friendTable && invitation.code != null) FriendInviteDialog(invitation.code, onlineState,
+        join = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets, true, invitation.code) },
+        close = dismissInvitation, resume = { dismissInvitation(); roomDetails = false; model.navigate(Screen.ONLINE) })
     if (state.screen == Screen.SETUP && state.ruleDraft != null) CustomRuleEditor(state, model)
     state.error?.let { error -> AlertDialog(onDismissRequest = model::clearError, title = { Text(words(R.string.ui_a_quick_heads_up)) }, text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
 }

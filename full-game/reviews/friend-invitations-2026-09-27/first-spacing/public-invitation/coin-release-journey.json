@@ -1,0 +1,16 @@
+{
+  "completed": true,
+  "scope": "Optimized public beta: cold\/warm external invitations, explicit ticket purchase, duplicate\/occupied guards and refund; one HTTP QA host",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "stage": "invitation-passed",
+  "elapsedMs": 29449,
+  "openingDidNotRegisterOrJoin": true,
+  "selectedTickets": 2,
+  "walletAfterPurchase": 1300,
+  "duplicateAndOtherInvitationDidNotCharge": true,
+  "walletAfterRefund": 1500,
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 1
+}

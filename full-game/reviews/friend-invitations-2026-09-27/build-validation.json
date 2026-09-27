@@ -1,0 +1,14 @@
+{
+  "clientTests": 39.0,
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "clientFailures": 0.0,
+  "appJvmFailures": 0.0,
+  "versionName": "0.28.0-alpha28-internet-beta",
+  "apkSha256": "5f79aff1ea22f0aee09b3c81c84f41c2f8db57edd17711e1a70787e8a1aa7c10",
+  "lintWarnings": 122,
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "apkBytes": 29141105,
+  "appJvmTests": 15.0,
+  "lintErrors": 0,
+  "versionCode": 28
+}

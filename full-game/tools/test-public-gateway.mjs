@@ -6,6 +6,34 @@ import { createConnection } from 'node:net';
 import { once } from 'node:events';
 import { createGateway } from './public-gateway.mjs';
 
+test('friend landing is local, bounded, bilingual and launches only after a user gesture', async () => {
+  const gateway = createGateway({ upstreamPort: 1 }); // Any accidental upstream dependency would fail.
+  gateway.listen(0, '127.0.0.1'); await once(gateway, 'listening');
+  const origin = `http://127.0.0.1:${gateway.address().port}`;
+  try {
+    for (const suffix of ['', '?lang=en', '?lang=hi']) {
+      const response = await fetch(`${origin}/friends/ABCDEFG2${suffix}`);
+      assert.equal(response.status, 200);
+      const body = await response.text();
+      assert.match(body, /ABCD EFG2/);
+      assert.match(body, /intent:\/\/friends\/ABCDEFG2#Intent;scheme=tambola-beta;package=io.github.sbshrey.tambola.game.beta;/);
+      assert.match(body, /S.browser_fallback_url=https%3A%2F%2Fgithub.com/);
+      assert.doesNotMatch(body, /<script|onload=|http-equiv|<iframe|<form/i);
+      assert.equal(response.headers.get('cache-control'), 'no-store');
+      assert.equal(response.headers.get('referrer-policy'), 'no-referrer');
+      const css = body.match(/<style>(.*?)<\/style>/s)[1];
+      assert.ok(response.headers.get('content-security-policy').includes(`'sha256-${createHash('sha256').update(css).digest('base64')}'`));
+      assert.ok(body.includes(suffix.endsWith('hi') ? 'ऐप में खोलें' : 'Open in app'));
+    }
+    const head = await fetch(`${origin}/friends/ABCDEFG2`, { method: 'HEAD' });
+    assert.equal(head.status, 200); assert.equal(await head.text(), '');
+    for (const path of ['/friends/ABCDEFG0', '/friends/ABCDEFG2/', '/friends/%41BCDEFG2', '/friends/ABCDEFG2?lang=fr',
+      '/friends/ABCDEFG2?server=https://evil.example', '/friends/ABCDEFG2?lang=hi&token=x'])
+      assert.equal((await fetch(origin + path)).status, 404);
+    assert.equal((await fetch(`${origin}/friends/ABCDEFG2`, { method: 'POST' })).status, 404);
+  } finally { gateway.closeAllConnections(); gateway.close(); }
+});
+
 test('public ingress bounds routes and bodies, strips forwarded headers and carries a WebSocket', async () => {
   const seen = [];
   const upstream = http.createServer((req, res) => {

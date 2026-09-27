@@ -185,6 +185,62 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         checkpoint("playing")
     }
 
+    /** External links must review first and preserve already purchased tables. */
+    fun verifyFriendInvitation() = captureFailure {
+        report.put("scope", "Optimized public beta: cold/warm external invitations, explicit ticket purchase, duplicate/occupied guards and refund; one HTTP QA host")
+        Configurator.getInstance().waitForIdleTimeout = 100
+        checkpoint("invitation-empty-profile")
+        node("coin-play"); verifyEmptyProfile()
+        runBlocking {
+            peers += api.guest(GuestRequest("Invitation QA host", 2))
+            code = api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 3, true)).snapshot.code
+        }
+        fun open(inviteCode: String) {
+            check(inviteCode.matches(Regex("[A-HJ-NP-Z2-9]{8}")))
+            device.executeShellCommand("am start -W -a android.intent.action.VIEW -d tambola-beta://friends/$inviteCode -p $target")
+            node("friend-invitation-code")
+        }
+        checkpoint("cold-invitation-review")
+        device.executeShellCommand("am force-stop $target")
+        open(requireNotNull(code))
+        node("friend-invitation-join")
+        (1..6).forEach { assertTrue("Ticket choice $it is visible before scrolling", node("invite-tickets-$it").visibleBounds.height() > 0) }
+        device.takeScreenshot(File(context.filesDir, "friend-link-review.png"))
+        assertEquals(1, snapshot().members.size)
+        tap("friend-invitation-dismiss"); verifyEmptyProfile()
+        checkpoint("warm-invitation-purchase")
+        open(requireNotNull(code))
+        node("friend-invitation-scroll").scroll(Direction.DOWN, .6f)
+        tap("invite-tickets-2")
+        assertTrue(textOf(node("friend-invitation-join")).contains("200"))
+        createdMain = true
+        tap("friend-invitation-join")
+        node("friend-waiting", 30_000)
+        until(30_000) { balance() == 1300L && snapshot().members.size == 2 }
+        assertEquals(500L, snapshot().coins!!.pool)
+        device.takeScreenshot(File(context.filesDir, "friend-link-joined.png"))
+        checkpoint("same-table-invitation")
+        device.executeShellCommand("am force-stop $target")
+        open(requireNotNull(code))
+        node("friend-invitation-resume")
+        assertNull(find("friend-invitation-join"))
+        tap("friend-invitation-resume"); node("friend-waiting")
+        assertEquals(1300L, balance()); assertEquals(500L, snapshot().coins!!.pool)
+        checkpoint("other-table-invitation")
+        open(if (code == "ABCDEFG2") "ABCDEFG3" else "ABCDEFG2")
+        node("friend-invitation-resume")
+        assertNull(find("friend-invitation-join"))
+        device.takeScreenshot(File(context.filesDir, "friend-link-occupied.png"))
+        tap("friend-invitation-resume"); node("friend-waiting")
+        assertEquals(1300L, balance()); assertEquals(500L, snapshot().coins!!.pool)
+        tap("cancel-match")
+        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        assertEquals(300L, snapshot().coins!!.pool)
+        report.put("openingDidNotRegisterOrJoin", true).put("selectedTickets", 2).put("walletAfterPurchase", 1300)
+            .put("duplicateAndOtherInvitationDidNotCharge", true).put("walletAfterRefund", 1500).put("completed", true)
+        checkpoint("invitation-passed")
+    }
+
     /** Focused acceptance of a purchase, enabled cancellation, exact refund and cold wallet recovery. */
     fun verifyPurchaseRefund() = captureFailure {
         report.put("scope", "External native UI purchase/cancellation/refund and cold wallet recovery over public HTTPS; no full round in this focused test")
@@ -524,6 +580,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             if (createdMain) {
                 // Macrobenchmark can stop the measured app before this finally block.
                 device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+                if (find("friend-invitation-dismiss") != null) tap("friend-invitation-dismiss")
                 until(20_000) { find("coin-wallet") != null || find("play-arena") != null }
                 repeat(4) { if (find("coin-wallet") == null) { device.pressBack(); SystemClock.sleep(150) } }
                 tap("coin-wallet")

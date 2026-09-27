@@ -1,0 +1,213 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:prepareSounds UP-TO-DATE
+> Task :app:prepareVoices UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:generateDebugGlobalSynthetics UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:mergeDebugAndroidTestManifest UP-TO-DATE
+> Task :app:processDebugAndroidTestManifest UP-TO-DATE
+> Task :app:generateDebugAndroidTestBuildConfig UP-TO-DATE
+> Task :app:generateDebugAndroidTestResources UP-TO-DATE
+> Task :app:packageDebugAndroidTestResources UP-TO-DATE
+> Task :app:processDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:parseDebugAndroidTestLocalResources UP-TO-DATE
+> Task :app:generateDebugAndroidTestRFile UP-TO-DATE
+> Task :app:javaPreCompileDebugAndroidTest UP-TO-DATE
+> Task :app:generateDebugAndroidTestAssets UP-TO-DATE
+> Task :app:mergeDebugAndroidTestAssets UP-TO-DATE
+> Task :app:compressDebugAndroidTestAssets UP-TO-DATE
+> Task :app:generateDebugAndroidTestGlobalSynthetics UP-TO-DATE
+> Task :app:checkDebugAndroidTestDuplicateClasses UP-TO-DATE
+> Task :app:desugarDebugAndroidTestFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexDebugAndroidTest UP-TO-DATE
+> Task :app:mergeLibDexDebugAndroidTest UP-TO-DATE
+> Task :app:checkDebugAndroidTestAarMetadata UP-TO-DATE
+> Task :app:mapDebugAndroidTestSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:mergeDebugAndroidTestResources UP-TO-DATE
+> Task :app:processDebugAndroidTestResources UP-TO-DATE
+> Task :app:mergeDebugAndroidTestJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:validateSigningDebugAndroidTest UP-TO-DATE
+> Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app:prePublicBetaBuild UP-TO-DATE
+> Task :app:mergePublicBetaJniLibFolders UP-TO-DATE
+> Task :app:mergePublicBetaNativeLibs UP-TO-DATE
+> Task :app:stripPublicBetaDebugSymbols UP-TO-DATE
+> Task :app:extractPublicBetaNativeSymbolTables UP-TO-DATE
+> Task :app:mergePublicBetaNativeDebugMetadata NO-SOURCE
+> Task :app:checkPublicBetaDuplicateClasses UP-TO-DATE
+> Task :app:generatePublicBetaBuildConfig UP-TO-DATE
+> Task :app:generatePublicBetaResources UP-TO-DATE
+> Task :app:packagePublicBetaResources UP-TO-DATE
+> Task :app:processPublicBetaNavigationResources UP-TO-DATE
+> Task :app:parsePublicBetaLocalResources UP-TO-DATE
+> Task :app:generatePublicBetaRFile UP-TO-DATE
+> Task :app:javaPreCompilePublicBeta UP-TO-DATE
+> Task :app:mergePublicBetaArtProfile UP-TO-DATE
+> Task :app:checkPublicBetaAarMetadata UP-TO-DATE
+> Task :app:mapPublicBetaSourceSetPaths UP-TO-DATE
+> Task :app:compilePublicBetaNavigationResources UP-TO-DATE
+> Task :app:mergePublicBetaResources UP-TO-DATE
+> Task :app:createPublicBetaCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksPublicBeta UP-TO-DATE
+> Task :app:processPublicBetaMainManifest UP-TO-DATE
+> Task :app:processPublicBetaManifest UP-TO-DATE
+> Task :app:processPublicBetaManifestForPackage UP-TO-DATE
+> Task :app:processPublicBetaResources UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergePublicBetaStartupProfile UP-TO-DATE
+> Task :app:generatePublicBetaAssets UP-TO-DATE
+> Task :app:mergePublicBetaAssets UP-TO-DATE
+> Task :app:compressPublicBetaAssets UP-TO-DATE
+> Task :app:extractPublicBetaVersionControlInfo UP-TO-DATE
+> Task :app:collectPublicBetaDependencies UP-TO-DATE
+> Task :app:sdkPublicBetaDependencyData UP-TO-DATE
+> Task :app:validateSigningPublicBeta UP-TO-DATE
+> Task :app:writePublicBetaAppMetadata UP-TO-DATE
+> Task :app:writePublicBetaSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:preBuild UP-TO-DATE
+> Task :macrobenchmark:prePublicBetaBuild UP-TO-DATE
+> Task :macrobenchmark:checkTestedAppObfuscationPublicBeta UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:packagePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaNavigationResources UP-TO-DATE
+> Task :macrobenchmark:parsePublicBetaLocalResources UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaRFile UP-TO-DATE
+> Task :macrobenchmark:compilePublicBetaKotlin UP-TO-DATE
+> Task :macrobenchmark:javaPreCompilePublicBeta UP-TO-DATE
+> Task :macrobenchmark:compilePublicBetaJavaWithJavac NO-SOURCE
+> Task :macrobenchmark:generatePublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:compressPublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaGlobalSynthetics UP-TO-DATE
+> Task :macrobenchmark:checkPublicBetaDuplicateClasses UP-TO-DATE
+> Task :macrobenchmark:desugarPublicBetaFileDependencies UP-TO-DATE
+> Task :macrobenchmark:mergeExtDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:mergeLibDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:checkPublicBetaAarMetadata UP-TO-DATE
+> Task :macrobenchmark:mapPublicBetaSourceSetPaths UP-TO-DATE
+> Task :macrobenchmark:compilePublicBetaNavigationResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaManifest UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaManifest UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:dexBuilderPublicBeta UP-TO-DATE
+> Task :macrobenchmark:mergeProjectDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaJavaRes UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaJavaResource UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaJniLibFolders UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaNativeLibs UP-TO-DATE
+> Task :macrobenchmark:stripPublicBetaDebugSymbols UP-TO-DATE
+> Task :macrobenchmark:validateSigningPublicBeta UP-TO-DATE
+> Task :macrobenchmark:writePublicBetaSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:packagePublicBeta UP-TO-DATE
+> Task :macrobenchmark:createPublicBetaApkListingFileRedirect UP-TO-DATE
+> Task :macrobenchmark:assemblePublicBeta UP-TO-DATE
+> Task :app:kaptGenerateStubsPublicBetaKotlin
+> Task :app:kaptGenerateStubsDebugKotlin
+> Task :app:kaptPublicBetaKotlin
+> Task :app:kaptDebugKotlin
+> Task :app:compilePublicBetaKotlin
+> Task :app:compilePublicBetaJavaWithJavac UP-TO-DATE
+> Task :app:mergePublicBetaGeneratedProguardFiles UP-TO-DATE
+> Task :app:processPublicBetaJavaRes UP-TO-DATE
+> Task :app:mergePublicBetaJavaResource UP-TO-DATE
+> Task :app:generatePublicBetaLintVitalReportModel
+> Task :app:generatePublicBetaLintReportModel
+> Task :app:expandPublicBetaArtProfileWildcards
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:dexBuilderDebug
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:mergeProjectDexDebug
+> Task :app:kaptGenerateStubsDebugAndroidTestKotlin
+> Task :app:kaptDebugAndroidTestKotlin SKIPPED
+> Task :app:lintVitalAnalyzePublicBeta
+> Task :app:lintVitalReportPublicBeta SKIPPED
+> Task :app:lintVitalPublicBeta SKIPPED
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
+> Task :app:producePublicBetaComposeMapping
+> Task :app:reportPublicBetaComposeMappingErrors
+> Task :app:compileDebugAndroidTestKotlin
+> Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE
+> Task :app:processDebugAndroidTestJavaRes UP-TO-DATE
+> Task :app:mergeDebugAndroidTestJavaResource UP-TO-DATE
+> Task :app:dexBuilderDebugAndroidTest
+> Task :app:mergeProjectDexDebugAndroidTest
+> Task :app:packageDebugAndroidTest
+> Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebugAndroidTest
+> Task :app:lintAnalyzePublicBeta
+> Task :app:minifyPublicBetaWithR8
+> Task :app:mergePublicBetaComposeMapping
+> Task :app:convertShrunkResourcesToBinaryPublicBeta UP-TO-DATE
+> Task :app:optimizePublicBetaResources UP-TO-DATE
+> Task :app:compilePublicBetaArtProfile
+
+> Task :app:lintReportPublicBeta
+Wrote HTML report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-publicBeta.html
+Wrote SARIF report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-publicBeta.sarif
+
+> Task :app:lintPublicBeta
+> Task :app:packagePublicBeta
+> Task :app:createPublicBetaApkListingFileRedirect UP-TO-DATE
+> Task :app:assemblePublicBeta
+
+BUILD SUCCESSFUL in 1m 17s
+171 actionable tasks: 28 executed, 143 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

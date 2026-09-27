@@ -1,0 +1,8 @@
+{
+  "scope": "Dedicated API30 emulator; no physical-phone performance claim",
+  "appSha256": "5f79aff1ea22f0aee09b3c81c84f41c2f8db57edd17711e1a70787e8a1aa7c10",
+  "driverSha256": "b6ede3250dbb1dd02a091813528160cea768d9fde8499fdfb577c4963434c23e",
+  "transport": "Public HTTPS/WSS through Cloudflare; no adb reverse",
+  "checkedAt": "2026-09-27T10:22:45.3406573+00:00",
+  "passed": true
+}

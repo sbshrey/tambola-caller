@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="friend_preparing_link">लिंक तैयार हो रहा है…</string>
+    <string name="friend_invitation_title">दोस्तों के साथ जुड़ें</string>
+    <string name="friend_invitation_review">अपने टिकट चुनें। सबके जुड़ने पर होस्ट खेल शुरू करेंगे। इस टेबल पर आपका नाम और अवतार दिखेगा।</string>
+    <string name="friend_invitation_join">जुड़ें · %1$d सिक्के</string>
+    <string name="friend_invitation_pending">पहले गेम स्क्रीन पर अपना अधूरा अनुरोध पूरा करें, फिर यह निमंत्रण दोबारा खोलें।</string>
+    <string name="friend_invitation_occupied">आप टेबल %1$s पर खेल रहे हैं। पहले वह खेल पूरा करें या उसकी प्रतीक्षा कक्ष से निकलें, फिर यह निमंत्रण दोबारा खोलें।</string>
+    <string name="friend_invitation_return">अपने गेम पर लौटें</string>
+    <string name="friend_invitation_refill">होम स्क्रीन पर मुफ़्त सिक्के लें, फिर यह निमंत्रण दोबारा खोलें।</string>
     <string name="friend_play">दोस्तों के साथ खेलें</string>
     <string name="friend_replay">उन्हीं दोस्तों संग · %1$d सिक्के</string>
     <string name="friend_replay_hint">साथ रहें। हर दोस्त अपने टिकट की पुष्टि करेगा।</string>

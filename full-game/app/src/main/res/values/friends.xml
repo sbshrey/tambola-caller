@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="friend_preparing_link">Preparing link…</string>
+    <string name="friend_invitation_title">Join your friends</string>
+    <string name="friend_invitation_review">Choose your tickets. Your host starts after everyone joins. Your name and avatar will appear at this table.</string>
+    <string name="friend_invitation_join">Join · %1$d coins</string>
+    <string name="friend_invitation_pending">Resolve your pending action on the game screen, then reopen this invitation.</string>
+    <string name="friend_invitation_occupied">You are playing at table %1$s. Finish that game or leave its waiting room before reopening this invitation.</string>
+    <string name="friend_invitation_return">Return to my game</string>
+    <string name="friend_invitation_refill">Collect free coins on the home screen, then reopen this invitation.</string>
     <string name="friend_play">Play with friends</string>
     <string name="friend_replay">Same friends · %1$d coins</string>
     <string name="friend_replay_hint">Stay together. Each friend confirms their own tickets.</string>

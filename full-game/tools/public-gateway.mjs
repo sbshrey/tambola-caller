@@ -1,5 +1,6 @@
 import http from 'node:http';
 import { isIP } from 'node:net';
+import { invitationPage } from './public-invite.mjs';
 
 // The tunnel is the only ingress. This listener is always loopback and never proxies arbitrary URLs.
 export function createGateway({ upstreamPort = 18080, maxStreams = 80 } = {}) {
@@ -31,6 +32,13 @@ export function createGateway({ upstreamPort = 18080, maxStreams = 80 } = {}) {
   }
   const server = http.createServer({ maxHeaderSize: 8192, requestTimeout: 12_000, headersTimeout: 10_000 }, (req, res) => {
     const fail = (status) => { res.writeHead(status, { 'content-type': 'application/json', 'cache-control': 'no-store', connection: 'close' }); res.end('{}'); };
+    const invitation = (req.method === 'GET' || req.method === 'HEAD') && invitationPage(req.url);
+    if (invitation) {
+      if (!admit(req)) return fail(429);
+      if (req.headers['transfer-encoding'] || Number(req.headers['content-length'] || 0) !== 0) return fail(413);
+      res.writeHead(200, { ...invitation.headers, 'content-length': Buffer.byteLength(invitation.body) });
+      return res.end(req.method === 'HEAD' ? undefined : invitation.body);
+    }
     if (!allowed(req)) return fail(404);
     if (!admit(req)) return fail(429);
     if (Number(req.headers['content-length'] || 0) > 32768) return fail(413);

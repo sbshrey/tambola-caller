@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.protocol.RoomView
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun FriendEntryDialog(tickets: Int, cost: Long, enabled: Boolean, enter: (String?) -> Unit, close: () -> Unit) {
@@ -54,10 +55,13 @@ internal fun FriendEntryDialog(tickets: Int, cost: Long, enabled: Boolean, enter
 
 /** Only actual members appear here. The host controls the start; seats do not fill with computers. */
 @Composable
-internal fun FriendWaitingRoom(room: RoomView, playerId: String?, enabled: Boolean, start: () -> Unit) {
+internal fun FriendWaitingRoom(room: RoomView, playerId: String?, enabled: Boolean, start: () -> Unit,
+    invitationLink: suspend (String) -> String? = { null }) {
     val words = gameText()
     val context = LocalContext.current
     var copied by remember(room.code) { mutableStateOf(false) }
+    var sharing by remember(room.code) { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     val host = room.hostId == playerId
     val remaining = remainingCoinTime(room.expiresAt, room.serverTime, room.roomId)
     val seconds by countdownSeconds(remaining)
@@ -72,9 +76,17 @@ internal fun FriendWaitingRoom(room: RoomView, playerId: String?, enabled: Boole
                     letterSpacing = 3.sp, modifier = Modifier.testTag("friend-code"))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = {
-                        val text = words(R.string.friend_share_text, room.code)
-                        context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, text) }, null))
-                    }, modifier = Modifier.heightIn(min = 48.dp).testTag("friend-share")) { Text(words(R.string.friend_invite)) }
+                        sharing = true
+                        scope.launch {
+                            try {
+                                val link = invitationLink(room.code)
+                                val text = (link?.let { "$it\n\n" } ?: "") + words(R.string.friend_share_text, room.code)
+                                context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, text) }, null))
+                            } finally { sharing = false }
+                        }
+                    }, enabled = !sharing, modifier = Modifier.heightIn(min = 48.dp).testTag("friend-share")) {
+                        Text(words(if (sharing) R.string.friend_preparing_link else R.string.friend_invite))
+                    }
                     TextButton(onClick = {
                         (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText(words(R.string.friend_code_label), room.code))
                         copied = true

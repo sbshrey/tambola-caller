@@ -76,7 +76,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (waiting) {
                         if (coins?.friendTable == true) FriendWaitingRoom(room, state.playerId, enabled && state.connection == Connection.LIVE,
-                            start = { model.command(RoomAction.Start) })
+                            start = { model.command(RoomAction.Start) }, invitationLink = model::friendInvitation)
                         else TableCountdown(room, state.playerId, reducedMotion)
                         Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
                             " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 13.sp, fontWeight = FontWeight.Bold)

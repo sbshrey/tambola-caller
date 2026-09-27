@@ -10,6 +10,21 @@ import org.junit.Test
 import java.util.UUID
 
 class PublicEndpointDirectoryTest {
+    @Test fun `sharing resolves only the trusted directory without a room or wallet request`() = runBlocking {
+        var requests = 0
+        val api = HttpRoomApi("https://sbshrey.github.io", client = HttpClient(MockEngine { call ->
+            requests++
+            assertEquals("raw.githubusercontent.com", call.url.host)
+            assertNull(call.headers[HttpHeaders.Authorization])
+            respond(entry(expires = System.currentTimeMillis() + 600_000))
+        }), discoveryUrl = PublicEndpointDirectory.DIRECTORY_URL)
+        try {
+            assertEquals("https://one-table.trycloudflare.com/friends/ABCDEFG2", api.friendInvitation("ABCDEFG2"))
+            assertEquals(1, requests)
+            try { api.friendInvitation("ABCDEFG2?token=x"); fail() } catch (_: IllegalArgumentException) { }
+            assertEquals(1, requests)
+        } finally { api.close() }
+    }
     private fun entry(origin: String = "https://one-table.trycloudflare.com", expires: Long = 100_000) =
         """{"version":1,"service":"${PublicEndpointDirectory.SERVICE}","origin":"$origin","expiresAt":$expires}"""
 

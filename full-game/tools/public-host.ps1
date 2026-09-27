@@ -13,7 +13,7 @@ if ($Action -eq 'Install') {
     $ghPath = (Get-Command gh).Source
     $cloudPath = (Get-Command cloudflared).Source
     New-Item -ItemType Directory -Path $publicDirectory -Force | Out-Null
-    foreach ($name in @('public-host.ps1','public-host.mjs','public-gateway.mjs')) {
+    foreach ($name in @('public-host.ps1','public-host.mjs','public-gateway.mjs','public-invite.mjs')) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $publicDirectory $name) -Force
     }
     @{node=$nodePath;gh=$ghPath;cloudflared=$cloudPath;pwsh=$pwshPath} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $publicDirectory 'runtime.json')

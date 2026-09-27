@@ -1,0 +1,98 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.client.DeviceSessionsTest",
+    "tests": "8",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.636"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.client.FriendInvitesTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.003"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.client.OnlineStateTest",
+    "tests": "15",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.401"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.client.PublicEndpointDirectoryTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.102"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.client.ReadyAgreementTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.005"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.client.RoomApiTest",
+    "tests": "5",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.114"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.client.RoomInvitesTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.007"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.039"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.CoinResultsTest",
+    "tests": "5",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.191"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.081"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.056"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+    "tests": "1",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.037"
+  }
+]
