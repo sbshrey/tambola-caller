@@ -1,0 +1,27 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in fullRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: Missing UI control coin-profile-scroll
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node(CoinJourney.kt:71)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node$default(CoinJourney.kt:71)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.close(CoinJourney.kt:753)
+	at io.ktor.client.HttpClient$$ExternalSyntheticAutoCloseableDispatcher0.m(D8$$SyntheticClass:0)
+	at kotlin.jdk7.AutoCloseableKt.closeFinally(AutoCloseableJVM.kt:43)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:86)
+
+
+Time: 918.572
+There was 1 failure:
+1) fullRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: Missing UI control coin-profile-scroll
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node(CoinJourney.kt:71)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node$default(CoinJourney.kt:71)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.close(CoinJourney.kt:753)
+	at io.ktor.client.HttpClient$$ExternalSyntheticAutoCloseableDispatcher0.m(D8$$SyntheticClass:0)
+	at kotlin.jdk7.AutoCloseableKt.closeFinally(AutoCloseableJVM.kt:43)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:86)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

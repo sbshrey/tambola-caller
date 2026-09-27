@@ -1,0 +1,7 @@
+{
+  "deletedTestProfile": "Player 2970",
+  "method": "Visible Android profile delete flow on owned emulator",
+  "verifiedWelcome": true,
+  "verifiedUnregisteredBalance": 50000,
+  "driverFix": "Use the dialog scroll view instead of an unexported Compose test tag"
+}

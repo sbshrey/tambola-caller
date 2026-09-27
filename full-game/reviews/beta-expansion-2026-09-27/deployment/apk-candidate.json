@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "fa2f112533b330f6040a56a1f7a587c222582b3a",
+  "versionCode": 36,
+  "versionName": "0.36.0-alpha36-internet-beta",
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "bytes": 31541730,
+  "sha256": "0a57c88d909e6320dfd13ac7a6cd1d8ef7ff6a8f1c03a7958323a6a989ab2b8e",
+  "signingCertificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "firebaseConfigured": false,
+  "liveAdsEnabled": false,
+  "vcsMetadata": "AGP reports NO_SUPPORTED_VCS_FOUND; source commit recorded from clean build checkout",
+  "acceptance": "Full public round gameplay, payouts and replay refund passed; original cleanup selector failed and was repaired. Original QA profile deleted through UI; new focused purchase/refund/restart/deletion check passed against this unchanged APK."
+}

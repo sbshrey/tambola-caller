@@ -1,0 +1,102 @@
+{
+  "completed": true,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; one passive HTTP QA peer and two labelled computer opponents",
+  "expectedRounds": 1,
+  "roundReports": [
+    {
+      "round": 1,
+      "calls": 84,
+      "prizes": 6,
+      "pool": 1800,
+      "balanceBefore": 50500,
+      "finalBalance": 50770,
+      "aggregateBalance": 51670,
+      "durationMs": 907311,
+      "peerTicketQuantities": [
+        6
+      ],
+      "reconnect": "process-death",
+      "retainedMarks": 20,
+      "replayQuantityAndRefund": true
+    }
+  ],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 84,
+  "claims": 6,
+  "stage": "passed",
+  "elapsedMs": 918095,
+  "peerTicketQuantities": [
+    6
+  ],
+  "expectedPool": 1800,
+  "balanceBefore": 50500,
+  "labelledComputers": 2,
+  "computerFundedCoins": 600,
+  "ownedTickets": 6,
+  "distinctOwnNumbers": 90,
+  "coldProcessRestoredMarks": 20,
+  "lastClaimSelection": {
+    "prize": "FULL_HOUSE",
+    "ticket": 2,
+    "call": 84,
+    "revision": 99,
+    "closedHouseTickets": []
+  },
+  "contextualClaimVerified": true,
+  "confirmedClaimText": "Ticket 6 · Early five verified",
+  "publicWinnerSharesVerified": true,
+  "prizeWinners": [
+    {
+      "prize": "EARLY_FIVE",
+      "coins": 180,
+      "winningTickets": 2,
+      "computerTickets": 1,
+      "ownTickets": 1
+    },
+    {
+      "prize": "CORNERS",
+      "coins": 180,
+      "winningTickets": 2,
+      "computerTickets": 1,
+      "ownTickets": 1
+    },
+    {
+      "prize": "TOP_LINE",
+      "coins": 180,
+      "winningTickets": 3,
+      "computerTickets": 2,
+      "ownTickets": 1
+    },
+    {
+      "prize": "MIDDLE_LINE",
+      "coins": 180,
+      "winningTickets": 2,
+      "computerTickets": 1,
+      "ownTickets": 1
+    },
+    {
+      "prize": "BOTTOM_LINE",
+      "coins": 180,
+      "winningTickets": 2,
+      "computerTickets": 1,
+      "ownTickets": 1
+    },
+    {
+      "prize": "FULL_HOUSE",
+      "coins": 900,
+      "winningTickets": 2,
+      "computerTickets": 1,
+      "ownTickets": 1
+    }
+  ],
+  "computerWinnings": 930,
+  "humanWinnings": 870,
+  "finishedCalls": 84,
+  "settledWinnings": 870,
+  "finalBalance": 50770,
+  "rememberedSixTickets": true,
+  "newRoundPurchasedAndRefunded": true,
+  "roundsCompleted": 1,
+  "deletedQaPeers": 1
+}

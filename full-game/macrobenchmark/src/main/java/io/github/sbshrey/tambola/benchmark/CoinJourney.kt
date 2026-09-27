@@ -750,7 +750,11 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                 repeat(4) { if (find("coin-wallet") == null) { device.pressBack(); SystemClock.sleep(150) } }
                 tap("coin-wallet")
                 repeat(8) {
-                    if (!device.hasObject(By.text("Delete online profile"))) node("coin-profile-scroll").scroll(Direction.DOWN, .7f)
+                    if (!device.hasObject(By.text("Delete online profile"))) {
+                        // Compose dialogs are separate windows; their test tags are not exported as resource IDs.
+                        val scroll = device.findObjects(By.scrollable(true)).single()
+                        scroll.scroll(Direction.DOWN, .7f)
+                    }
                 }
                 textButton("Delete online profile").click()
                 assertTrue(device.wait(Until.hasObject(By.text("Keep playing")), 10_000))

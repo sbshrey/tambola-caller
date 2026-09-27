@@ -1,0 +1,10 @@
+{
+  "restrictedStartup": true,
+  "sourceCommit": "fa2f112533b330f6040a56a1f7a587c222582b3a",
+  "backendReady": true,
+  "tlsClientAndCoinWriteRead": "pending external verification",
+  "freshServerProcess": true,
+  "origin": "https://192.168.1.4:8443",
+  "completedAt": "2026-09-27T18:01:03.4661655Z",
+  "backupPair": "20260927-180051.json"
+}

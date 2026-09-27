@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-27T18:07:34.536Z",
+  "origin": "https://selecting-tanks-deer-participant.trycloudflare.com",
+  "checks": [
+    "concurrent 50000 starter plus day-one reward exactly once",
+    "two friends with rules v2 and ten-second calls",
+    "50-seat capacity and two winners per category",
+    "six fixed category pools",
+    "persisted power-up selections",
+    "exact purchase/leave retry and full refund",
+    "live ads disabled pending activation",
+    "QA profiles deleted"
+  ],
+  "scope": "Public HTTPS from the host PC, lobby and economy checks; no physical-phone acceptance or completed round claim"
+}

@@ -1,6 +1,6 @@
 # Expanded multiplayer candidate
 
-Candidate: alpha36, version code 36. The published release is still alpha35 while native acceptance and deployment are being completed.
+Alpha36, version code 36. Public gameplay acceptance is complete; release publication and download verification are recorded below.
 
 The implementation adds ten-second online calls, two tickets per page, manual marking without called-number hints, a claim picker that survives incoming calls, fifty-player tables and six fixed prize pools with multiple distinct winners. Daily coins preserve existing spending while raising the total starting grant to 50,000. Ticket insurance and a 25% prize boost use additional beta coins without reducing other winners' shares.
 
@@ -19,4 +19,12 @@ Firebase Crashlytics and custom Performance traces are integrated behind an opti
 
 Twenty native reward/lobby/disclosure/arena checks passed after fixing results alignment, disclosure recreation and the pre-registration disclosure entry. Both English and Hindi reward screens passed, including larger text. Three additional narrow/200% checks passed for the fifty-player roster and the two-ticket claim flow. The official Google test rewarded ad loaded into AdActivity and dismissed back to the app; this check never granted coins. Android unit tests (18) and lint passed. Three final offline cadence/settings checks passed after refreshing older fixtures: quick play has ten-second calls, manual marking and two tickets per page. Lobby copy now says ten-second calls and six shared prizes; the latest captures are in `native-cadence`. Earlier native captures preserve the previous label as historical evidence.
 
-The optimized APK, committed-source packaging, live PC migration, public full-round acceptance and release publication are still being completed. No Firebase console, live ad revenue, physical phone or cellular-network success is claimed by this record.
+The optimized alpha36 APK was built from clean commit `fa2f112533b330f6040a56a1f7a587c222582b3a` and retains the installed beta signing certificate. Its identity is recorded in `deployment/apk-candidate.json`.
+
+PC deployment retained fresh backups of both databases. The first migration attempt failed before entering its migration transaction because the existing trimmed Java runtime lacked `jdk.jfr`, required by purchase timing. A separate runtime including that module was built, preserving the original. Provisioning now includes the module and upgrades check it before stopping service. The subsequent migration and restricted-role startup passed. Old-client TLS purchase/session/refund/deletion checks and new public HTTPS reward/pool/power-up/refund checks passed. The GitHub directory's old path remained cached for roughly six minutes after tunnel rotation; the final public checks used the normal APK directory, without an alternate origin override.
+
+The exact optimized APK completed a public HTTPS/WSS round after 84 calls. All six prize pools settled, including a three-way Top line tie; the test player received 870 coins and its balance became 50,770. The 1,800-coin pool reconciled with human and computer winnings. Twenty marks survived a cold process restart; the next purchase and refund also passed.
+
+The full-round runner then failed during cleanup because a Compose dialog test tag was not exported as a UIAutomator resource ID. This was a driver failure, preserved in `public-round-attempt1`; its `validation.json` correctly remains false. The owned QA profile was deleted using the visible app flow. The driver now scrolls the dialog's native scroll view. A focused public purchase/refund/cold-restart/deletion check passed against the unchanged APK (`public-refund-cleanup`). It verifies 50,200 after a 300-coin purchase, 50,500 after refund and restart, and successful profile deletion. The full fifteen-minute round was not rerun for this test-driver-only fix.
+
+Release publication and anonymous download verification are being finalized. No Firebase console, live ad revenue, physical phone or cellular-network success is claimed by this record.
