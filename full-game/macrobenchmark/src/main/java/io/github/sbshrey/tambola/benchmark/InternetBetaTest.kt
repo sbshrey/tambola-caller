@@ -9,6 +9,18 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class InternetBetaTest {
+    @Test fun friendsRoundRecovery() {
+        assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaInternetBeta") == "true")
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+        check(device.executeShellCommand("getprop ro.kernel.qemu").trim() == "1")
+        val target = "io.github.sbshrey.tambola.game.beta"
+        assertEquals(0, instrumentation.context.packageManager.getApplicationInfo(target, 0).flags and ApplicationInfo.FLAG_DEBUGGABLE)
+        device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+        CoinJourney(instrumentation.context, device, target = target, friendTable = true, checkCallHistory = true, checkRoundRecovery = true,
+            discoveryUrl = PublicEndpointDirectory.DIRECTORY_URL).use { journey -> journey.prepare(); journey.play() }
+    }
+
     @Test fun friendsHistory() {
         assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaInternetBeta") == "true")
         val instrumentation = InstrumentationRegistry.getInstrumentation()

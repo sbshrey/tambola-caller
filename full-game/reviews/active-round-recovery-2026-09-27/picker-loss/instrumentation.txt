@@ -1,0 +1,35 @@
+
+io.github.sbshrey.tambola.game.RoundRecoveryUiTest:
+Error in englishLandscapeRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest):
+java.lang.AssertionError: Failed: assertDoesNotExist.
+Reason: Did not expect any node but found '1' node that satisfies: (TestTag = 'ticket-prize-picker')
+Node found:
+Node #337 at (l=32.0, t=135.0, r=1762.0, b=882.0)px, Tag: 'ticket-prize-picker'
+IsContainer = 'true'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 24.0.dp), topEnd = CornerSize(size = 24.0.dp), bottomEnd = CornerSize(size = 24.0.dp), bottomStart = CornerSize(size = 24.0.dp))'
+TestTagsAsResourceId = 'true'
+Has 3 children
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.assertDoesNotExist(SemanticsNodeInteraction.kt:101)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:107)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.englishLandscapeRetryRemainsReadable(RoundRecoveryUiTest.kt:33)
+
+
+Time: 5.875
+There was 1 failure:
+1) englishLandscapeRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest)
+java.lang.AssertionError: Failed: assertDoesNotExist.
+Reason: Did not expect any node but found '1' node that satisfies: (TestTag = 'ticket-prize-picker')
+Node found:
+Node #337 at (l=32.0, t=135.0, r=1762.0, b=882.0)px, Tag: 'ticket-prize-picker'
+IsContainer = 'true'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 24.0.dp), topEnd = CornerSize(size = 24.0.dp), bottomEnd = CornerSize(size = 24.0.dp), bottomStart = CornerSize(size = 24.0.dp))'
+TestTagsAsResourceId = 'true'
+Has 3 children
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.assertDoesNotExist(SemanticsNodeInteraction.kt:101)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:107)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.englishLandscapeRetryRemainsReadable(RoundRecoveryUiTest.kt:33)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

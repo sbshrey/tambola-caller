@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([string]$Serial = 'emulator-5554', [ValidateSet('fullRound','purchaseRefund','friendsRound','friendInvitation','friendsReconnect','friendsHistory')][string]$Test = 'fullRound')
+param([string]$Serial = 'emulator-5554', [ValidateSet('fullRound','purchaseRefund','friendsRound','friendInvitation','friendsReconnect','friendsHistory','friendsRoundRecovery')][string]$Test = 'fullRound')
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $adb = Join-Path $env:ANDROID_SDK_ROOT 'platform-tools/adb.exe'
@@ -23,7 +23,7 @@ $runner = Start-Process -FilePath $adb -ArgumentList $testArgs -WindowStyle Hidd
 if (!$runner.WaitForExit(900000)) { $runner.Kill($true); throw 'Internet beta test exceeded fifteen minutes; inspect and clean QA profiles' }
 $transcript = Get-Content -LiteralPath (Join-Path $evidence 'instrumentation.txt') -Raw
 $passed = $runner.ExitCode -eq 0 -and $transcript -match 'OK \(1 test\)'
-foreach ($name in @('coin-release-journey.json','coin-release-results.png','coin-release-failure.png','coin-release-failure.xml','friends-public-ready.png','friends-replay-ready.png','friend-link-review.png','friend-link-joined.png','friend-link-occupied.png','claim-confirmed-public.png','friend-network-connected.png','friend-network-disconnected.png','friend-network-restored.png','call-history-public.png','call-history-restored.png')) {
+foreach ($name in @('coin-release-journey.json','coin-release-results.png','coin-release-failure.png','coin-release-failure.xml','friends-public-ready.png','friends-replay-ready.png','friend-link-review.png','friend-link-joined.png','friend-link-occupied.png','claim-confirmed-public.png','friend-network-connected.png','friend-network-disconnected.png','friend-network-restored.png','call-history-public.png','call-history-restored.png','round-network-connected.png','round-network-disconnected.png','round-network-restored.png','round-network-failure.png')) {
     $exists = & $adb -s $Serial shell run-as io.github.sbshrey.tambola.benchmark test -f "files/$name"
     if ($LASTEXITCODE -eq 0) {
         & $adb -s $Serial exec-out run-as io.github.sbshrey.tambola.benchmark cat "files/$name" > (Join-Path $evidence $name)

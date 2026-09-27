@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.benchmark
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.os.SystemClock
 import androidx.test.uiautomator.*
 import io.github.sbshrey.tambola.client.HttpRoomApi
@@ -20,6 +21,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private val target: String = "io.github.sbshrey.tambola.game",
     private val friendTable: Boolean = false,
     private val checkCallHistory: Boolean = false,
+    private val checkRoundRecovery: Boolean = false,
     discoveryUrl: String? = null) : AutoCloseable {
     private val api = HttpRoomApi(if (discoveryUrl == null) "https://192.168.1.4:8443" else "https://sbshrey.github.io", discoveryUrl = discoveryUrl)
     private val peers = mutableListOf<GuestCredentials>()
@@ -49,7 +51,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
         listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png", "claim-confirmed-public.png",
-            "friend-network-connected.png", "friend-network-disconnected.png", "friend-network-restored.png", "call-history-public.png", "call-history-restored.png")
+            "friend-network-connected.png", "friend-network-disconnected.png", "friend-network-restored.png", "call-history-public.png", "call-history-restored.png",
+            "round-network-connected.png", "round-network-disconnected.png", "round-network-restored.png", "round-network-failure.png")
             .forEach { File(context.filesDir, it).delete() }
     }
 
@@ -91,6 +94,75 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     }.orEmpty()
     private fun balance() = Regex("(\\d+) coins").find(textOf(node("coin-wallet")))!!.groupValues[1].toLong()
     private fun snapshot() = runBlocking { api.read(peers.first().token, requireNotNull(code)).snapshot }
+
+    /** Interrupt only the owned emulator; calls keep advancing on the unchanged PC host. */
+    private fun verifyActiveRoundRecovery() {
+        check(device.executeShellCommand("getprop ro.kernel.qemu").trim() == "1")
+        val connectivity = context.getSystemService(ConnectivityManager::class.java)
+        check(connectivity.activeNetwork != null) { "Start with a connected emulator" }
+        val wifi = device.executeShellCommand("settings get global wifi_on").trim()
+        val data = device.executeShellCommand("settings get global mobile_data").trim()
+        check(wifi in setOf("0", "1") && data in setOf("0", "1"))
+        val before = snapshot()
+        val marked = marks.last()
+        val ordinal = cards.entries.single { marked in it.value.numbers }.key
+        showTicket(ordinal)
+        val page = textOf(node("ticket-page"))
+        val bounds = node("hand-ticket-$ordinal").visibleBounds
+        assertEquals("Unmark $marked", description(node("dab-$marked")))
+        tap("claim-ticket-$ordinal")
+        node("ticket-prize-picker")
+        device.takeScreenshot(File(context.filesDir, "round-network-connected.png"))
+        checkpoint("disconnecting-active-round")
+        try {
+            device.executeShellCommand("svc wifi disable")
+            device.executeShellCommand("svc data disable")
+            until(10_000) { device.executeShellCommand("settings get global wifi_on").trim() == "0" &&
+                device.executeShellCommand("settings get global mobile_data").trim() == "0" }
+            // Settings can change while a stuck emulator Wi-Fi service retains its route.
+            until(20_000) { connectivity.activeNetwork == null }
+            report.put("activeNetworkAbsentDuringOutage", true)
+            checkpoint("active-round-network-unavailable")
+            node("round-reconnect", 90_000)
+            assertEquals("Reconnect now", textOf(node("round-reconnect")))
+            assertNull(find("ticket-prize-picker"))
+            assertFalse(node("claim-ticket-$ordinal").isEnabled)
+            assertEquals(page, textOf(node("ticket-page")))
+            assertEquals(bounds, node("hand-ticket-$ordinal").visibleBounds)
+            assertNull(find("deadline-ring-${before.round!!.id}"))
+            // Saved calls can still be marked offline; toggling twice preserves the hand.
+            tap("dab-$marked"); until { description(find("dab-$marked")) == "Mark $marked" }
+            tap("dab-$marked"); until { description(find("dab-$marked")) == "Unmark $marked" }
+            device.takeScreenshot(File(context.filesDir, "round-network-disconnected.png"))
+            tap("round-reconnect")
+            assertFalse(node("claim-ticket-$ordinal").isEnabled)
+            report.put("offlinePickerDismissed", true).put("offlineTicketGeometryRetained", true)
+                .put("offlineMarkingVerified", true).put("offlineClaimsDisabled", true).put("manualRoundReconnectRequested", true)
+        } catch (error: Throwable) {
+            report.put("activeNetworkPresentAtOutageFailure", connectivity.activeNetwork != null)
+            device.takeScreenshot(File(context.filesDir, "round-network-failure.png"))
+            throw error
+        } finally {
+            device.executeShellCommand("svc wifi ${if (wifi == "1") "enable" else "disable"}")
+            device.executeShellCommand("svc data ${if (data == "1") "enable" else "disable"}")
+            until(10_000) { device.executeShellCommand("settings get global wifi_on").trim() == wifi &&
+                device.executeShellCommand("settings get global mobile_data").trim() == data }
+            report.put("roundNetworkSettingsRestored", true)
+            checkpoint("active-round-network-restored")
+        }
+        until(60_000, 500) { connectivity.activeNetwork != null && runCatching { snapshot() }.isSuccess && find("round-recovery") == null &&
+            find("claim-ticket-$ordinal")?.isEnabled == true }
+        val after = snapshot()
+        assertEquals(before.roomId, after.roomId); assertEquals(before.round!!.id, after.round!!.id)
+        assertEquals(before.round!!.ticketCounts, after.round!!.ticketCounts)
+        assertEquals(before.coins!!.pool, after.coins!!.pool)
+        assertEquals(page, textOf(node("ticket-page")))
+        assertEquals(bounds, node("hand-ticket-$ordinal").visibleBounds)
+        assertEquals("Unmark $marked", description(node("dab-$marked")))
+        device.takeScreenshot(File(context.filesDir, "round-network-restored.png"))
+        report.put("activeRoundRecoveryVerified", true).put("callsBeforeOutage", before.round!!.called.size)
+            .put("callsAfterOutage", after.round!!.called.size)
+    }
 
     private fun verifyEmptyProfile() {
         node("lobby-welcome-heading")
@@ -518,11 +590,13 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     if (checkCallHistory) verifyCallHistory(restored = true)
                     if (expectedRounds > 1) recordMemory(if (cold) "cold-restored" else "foreground-restored")
                 }
+                if (checkRoundRecovery && seen >= 30 && !report.optBoolean("activeRoundRecoveryVerified")) verifyActiveRoundRecovery()
                 report.put("calls", seen).put("claims", room.round!!.awards.size)
                 checkpoint("playing")
             }
             val result = snapshot()
             assertEquals(expectedPrizeCount, result.round!!.awards.size)
+            if (checkRoundRecovery) assertTrue(report.optBoolean("activeRoundRecoveryVerified"))
             if (checkCallHistory) assertTrue(report.optBoolean("callHistoryVerified") && report.optBoolean("restoredCallHistoryVerified"))
             assertTrue("A server-confirmed claim must identify its ticket and prize", report.optBoolean("contextualClaimVerified"))
             if (!computerOpponents) assertTrue(result.round!!.awards.all { it.playerIds == listOf(mainId) })

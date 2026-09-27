@@ -19,6 +19,8 @@
     <string name="play_resume">जारी रखें</string>
     <string name="play_live">लाइव</string>
     <string name="play_reconnecting">फिर जुड़ रहे हैं…</string>
+    <string name="play_waiting_result">पुष्टि का इंतज़ार है</string>
+    <string name="play_saved_calls">आखिरी पुष्टि की गई कॉल दिख रही हैं</string>
     <string name="play_offline">ऑफ़लाइन</string>
     <string name="play_paused">रुका हुआ</string>
     <string name="play_ticket_label">टिकट %1$d, 15 में से %2$d निशान</string>

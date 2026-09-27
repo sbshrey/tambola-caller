@@ -1,0 +1,63 @@
+
+io.github.sbshrey.tambola.game.RoundRecoveryUiTest:.
+Error in hindiLandscapeRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest):
+java.lang.AssertionError: Recovery text must be complete: बाकी कार्रवाई फिर आज़माएँ | scale=2.0 | size=389 x 137 | clipped=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable$readableText(RoundRecoveryUiTest.kt:88)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:122)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.hindiLandscapeRetryRemainsReadable(RoundRecoveryUiTest.kt:35)
+
+Error in hindiPortraitRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest):
+java.lang.AssertionError: expected:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=320.7619.dp)> but was:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=323.8095.dp)>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable$retained(RoundRecoveryUiTest.kt:96)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:110)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.hindiPortraitRetryRemainsReadable(RoundRecoveryUiTest.kt:37)
+
+Error in englishPortraitRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest):
+java.lang.AssertionError: expected:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=320.7619.dp)> but was:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=323.8095.dp)>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable$retained(RoundRecoveryUiTest.kt:96)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:110)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.englishPortraitRetryRemainsReadable(RoundRecoveryUiTest.kt:36)
+
+
+Time: 21.956
+There were 3 failures:
+1) hindiLandscapeRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest)
+java.lang.AssertionError: Recovery text must be complete: बाकी कार्रवाई फिर आज़माएँ | scale=2.0 | size=389 x 137 | clipped=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable$readableText(RoundRecoveryUiTest.kt:88)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:122)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.hindiLandscapeRetryRemainsReadable(RoundRecoveryUiTest.kt:35)
+2) hindiPortraitRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest)
+java.lang.AssertionError: expected:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=320.7619.dp)> but was:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=323.8095.dp)>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable$retained(RoundRecoveryUiTest.kt:96)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:110)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.hindiPortraitRetryRemainsReadable(RoundRecoveryUiTest.kt:37)
+3) englishPortraitRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest)
+java.lang.AssertionError: expected:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=320.7619.dp)> but was:<DpRect(left=9.904762.dp, top=120.38095.dp, right=347.42856.dp, bottom=323.8095.dp)>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable$retained(RoundRecoveryUiTest.kt:96)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:110)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.englishPortraitRetryRemainsReadable(RoundRecoveryUiTest.kt:36)
+
+FAILURES!!!
+Tests run: 4,  Failures: 3

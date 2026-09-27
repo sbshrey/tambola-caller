@@ -1,0 +1,20 @@
+{
+  "observedAt": "2026-09-27T15:48:23.006Z",
+  "previous": {
+    "wifi": "1",
+    "data": "1"
+  },
+  "routes": "default dev dummy0 table 1002 proto static scope link \r\ndefault via 10.0.2.2 dev wlan0 table 1015 proto static \r\n10.0.2.0/24 dev wlan0 table 1015 proto static scope link \r\n10.0.2.0/24 dev wlan0 proto kernel scope link src 10.0.2.16 \r\nbroadcast 10.0.2.0 dev wlan0 table local proto kernel scope link src 10.0.2.16 \r\nlocal 10.0.2.15 dev radio0 table local proto kernel scope host src 10.0.2.15 \r\nlocal 10.0.2.16 dev wlan0 table local proto kernel scope host src 10.0.2.16 \r\nbroadcast 10.0.2.255 dev wlan0 table local proto kernel scope link src 10.0.2.16 \r\nbroadcast 127.0.0.0 dev lo table local proto kernel scope link src 127.0.0.1 \r\nlocal 127.0.0.0/8 dev lo table local proto kernel scope host src 127.0.0.1 \r\nlocal 127.0.0.1 dev lo table local proto kernel scope host src 127.0.0.1 \r\nbroadcast 127.255.255.255 dev lo table local proto kernel scope link src 127.0.0.1 \r\nfe80::/64 dev dummy0 table 1002 proto kernel metric 256 pref medium\r\ndefault dev dummy0 table 1002 proto static metric 1024 pref medium\r\nfe80::/64 dev wlan0 table 1015 proto kernel metric 256 pref medium\r\nfe80::/64 dev wlan0 table 1015 proto static metric 1024 pref medium\r\nfec0::/64 dev wlan0 table 1015 proto kernel metric 256 expires 86320sec pref medium\r\nfec0::/64 dev wlan0 table 1015 proto static metric 1024 pref medium\r\ndefault via fe80::2 dev wlan0 table 1015 proto ra metric 1024 expires 1720sec hoplimit 64 pref medium\r\nlocal ::1 dev lo table local proto kernel metric 0 pref medium\r\nlocal fe80::34a6:35ff:feea:dff1 dev dummy0 table local proto kernel metric 0 pref medium\r\nlocal fe80::dffc:3f3f:6d1c:f46 dev wlan0 table local proto kernel metric 0 pref medium\r\nlocal fec0::a3b6:73f5:d696:788c dev wlan0 table local proto kernel metric 0 pref medium\r\nlocal fec0::f44f:b936:9905:8d17 dev wlan0 table local proto kernel metric 0 pref medium\r\nff00::/8 dev dummy0 table local metric 256 pref medium\r\nff00::/8 dev wlan0 table local metric 256 pref medium",
+  "defaultNetwork": [
+    "Active default network: 101\r",
+    "  NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: , failover: false, available: true, roaming: false]}  network{101}  nethandle{437197393933}  lp{{InterfaceName: wlan0 LinkAddresses: [ fe80::dffc:3f3f:6d1c:f46/64,10.0.2.16/24,fec0::a3b6:73f5:d696:788c/64,fec0::f44f:b936:9905:8d17/64 ] DnsAddresses: [ /fec0::3,/10.0.2.3 ] Domains: null MTU: 0 ServerAddress: /10.0.2.2 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576 Routes: [ fe80::/64 -> :: wlan0 mtu 0,::/0 -> fe80::2 wlan0 mtu 0,fec0::/64 -> :: wlan0 mtu 0,10.0.2.0/24 -> 0.0.0.0 wlan0 mtu 0,0.0.0.0/0 -> 10.0.2.2 wlan0 mtu 0 ]}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=141000Kbps LinkDnBandwidth>=141000Kbps SignalStrength: -30 OwnerUid: 1000 SSID: \"AndroidWifi\" RequestorUid: -1 RequestorPackageName: null]}  Score{60}  everValidated{true}  lastValidated{true}  created{true} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} partialConnectivity{false} acceptPartialConnectivity{false} clat{mBaseIface: null, mIface: null, mState: IDLE} }\r"
+  ],
+  "settings": {
+    "wifi": "0",
+    "data": "0"
+  },
+  "restored": {
+    "wifi": "1",
+    "data": "1"
+  }
+}

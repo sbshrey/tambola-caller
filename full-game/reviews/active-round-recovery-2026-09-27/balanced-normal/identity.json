@@ -1,0 +1,79 @@
+{
+  "observedAt": "2026-09-27T15:36:34.132Z",
+  "serial": "emulator-5582",
+  "scale": "1.0",
+  "method": "all",
+  "density": "unchanged",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "07fa13553663e4aad3f49e83dc10e911d18d903d16ea5b9d84e1c0877b7ad9db",
+    "io.github.sbshrey.tambola.game.uireview.test": "6d656950988fd16a927057b5257bf56033f32c6a7d2f994376eab0b1cc483aa5"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "e318900b61708846db7bd6010f3091f420d8e95efdcbff739d287aa6465d1583"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "e318900b61708846db7bd6010f3091f420d8e95efdcbff739d287aa6465d1583"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": true,
+  "screensAndGeometry": [
+    "recovery-balanced-normal-en-landscape-100-connecting.png",
+    "recovery-balanced-normal-en-landscape-100-geometry.txt",
+    "recovery-balanced-normal-en-landscape-100-live.png",
+    "recovery-balanced-normal-en-landscape-100-pending.png",
+    "recovery-balanced-normal-en-landscape-100-reconnecting.png",
+    "recovery-balanced-normal-en-landscape-100-restored.png",
+    "recovery-balanced-normal-en-landscape-100-suspended.png",
+    "recovery-balanced-normal-en-portrait-100-connecting.png",
+    "recovery-balanced-normal-en-portrait-100-geometry.txt",
+    "recovery-balanced-normal-en-portrait-100-live.png",
+    "recovery-balanced-normal-en-portrait-100-pending.png",
+    "recovery-balanced-normal-en-portrait-100-reconnecting.png",
+    "recovery-balanced-normal-en-portrait-100-restored.png",
+    "recovery-balanced-normal-en-portrait-100-suspended.png",
+    "recovery-balanced-normal-hi-landscape-100-connecting.png",
+    "recovery-balanced-normal-hi-landscape-100-geometry.txt",
+    "recovery-balanced-normal-hi-landscape-100-live.png",
+    "recovery-balanced-normal-hi-landscape-100-pending.png",
+    "recovery-balanced-normal-hi-landscape-100-reconnecting.png",
+    "recovery-balanced-normal-hi-landscape-100-restored.png",
+    "recovery-balanced-normal-hi-landscape-100-suspended.png",
+    "recovery-balanced-normal-hi-portrait-100-connecting.png",
+    "recovery-balanced-normal-hi-portrait-100-geometry.txt",
+    "recovery-balanced-normal-hi-portrait-100-live.png",
+    "recovery-balanced-normal-hi-portrait-100-pending.png",
+    "recovery-balanced-normal-hi-portrait-100-reconnecting.png",
+    "recovery-balanced-normal-hi-portrait-100-restored.png",
+    "recovery-balanced-normal-hi-portrait-100-suspended.png"
+  ]
+}

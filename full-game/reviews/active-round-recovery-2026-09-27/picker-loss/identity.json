@@ -1,0 +1,53 @@
+{
+  "observedAt": "2026-09-27T15:30:40.363Z",
+  "serial": "emulator-5582",
+  "scale": "1.0",
+  "method": "englishLandscapeRetryRemainsReadable",
+  "density": "unchanged",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "3604bb87836656c995a25b9420419b8563ac1dcc90fccadfd4bd158b71f00c5b",
+    "io.github.sbshrey.tambola.game.uireview.test": "a849b3ca6bc91f71b74b44c763c8b51476b8539d32ce42ec32e4c22c78b08d9e"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "e318900b61708846db7bd6010f3091f420d8e95efdcbff739d287aa6465d1583"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "e318900b61708846db7bd6010f3091f420d8e95efdcbff739d287aa6465d1583"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": false,
+  "screensAndGeometry": [
+    "recovery-picker-loss-en-landscape-100-live.png",
+    "recovery-picker-loss-en-landscape-100-reconnecting.png"
+  ]
+}

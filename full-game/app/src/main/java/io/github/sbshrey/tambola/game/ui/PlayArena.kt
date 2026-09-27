@@ -55,13 +55,13 @@ fun PlayArena(
     win: WinMoment?, dismissWin: () -> Unit, enabled: Boolean = true,
     extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit = {},
     markNumber: ((String, Int) -> Unit)? = null, claim: ((ClaimSelection) -> Unit)? = null,
-    claimMessage: String? = null, claimEnabled: Boolean = enabled,
+    claimMessage: String? = null, claimEnabled: Boolean = enabled, expandedFooter: Boolean = false,
     footer: @Composable () -> Unit,
 ) {
     if (table.settings.manualClaims && markNumber != null && claim != null) {
         MaterialTheme(colorScheme = if (table.coins != null) GameNightPalette.colors else MaterialTheme.colorScheme) {
             ClaimArena(table, ownerId, preferences, status, markNumber, claim, claimMessage, repeatCall, back,
-                win, dismissWin, enabled, claimEnabled, extraMenu, footer)
+                win, dismissWin, enabled, claimEnabled, expandedFooter, extraMenu, footer)
         }
         return
     }
@@ -426,13 +426,16 @@ private fun ArenaPrimaryAction(text: String, enabled: Boolean = true, onClick: (
 }
 
 @Composable
-fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Preferences, back: () -> Unit, roomDetails: () -> Unit) {
+fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Preferences, back: () -> Unit, roomDetails: () -> Unit,
+    retry: () -> Unit = model::retry, reconnect: () -> Unit = model::reconnect) {
     val words = gameText()
     val room = state.room ?: return
     val table = room.toTable(state.marks) ?: return
     val enabled = state.connection == Connection.LIVE && !state.pending && !state.busy && !state.sessionExpired && !state.storageFailure
     val host = state.playerId == room.hostId
     val iconControls = table.settings.manualClaims || LocalDensity.current.fontScale > 1.3f
+    val recovering = room.options.coinGame && !table.finished && !state.sessionExpired && !state.storageFailure &&
+        !state.deletingProfile && (state.pending || state.connection != Connection.LIVE)
     val status = when {
         state.sessionExpired -> words(R.string.ui_your_online_session_has_expired)
         state.pending -> words(R.string.ui_an_action_is_waiting_for_confirmation)
@@ -440,13 +443,17 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
         table.status == RoundStatus.PAUSED -> words(R.string.play_paused)
         else -> words(R.string.play_live)
     }
-    PlayArena(table, state.playerId.orEmpty(), preferences, status, model::dabCalled, model::repeatCall, back,
+    // A saved deadline is not a live countdown while the stream is disconnected.
+    val displayed = if (state.connection == Connection.LIVE) table else table.copy(nextDrawAt = null)
+    PlayArena(displayed, state.playerId.orEmpty(), preferences, status, model::dabCalled, model::repeatCall, back,
         state.winMoment, model::dismissWin, enabled = !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
-        markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled, extraMenu = { close ->
+        markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled,
+        expandedFooter = recovering, extraMenu = { close ->
             DropdownMenuItem(text = { Text(words(R.string.play_room)) }, onClick = { close(); roomDetails() })
         }) {
-        Row(Modifier.fillMaxWidth().heightIn(min = 52.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().heightIn(min = if (room.options.coinGame) 56.dp else 52.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             if (table.finished) ArenaPrimaryAction(words(R.string.ui_see_round_results)) { roomDetails() }
+            else if (recovering) RoundRecoveryControls(state, retry, reconnect)
             else if (state.pending) ArenaPrimaryAction(words(R.string.ui_retry_pending_action), enabled = !state.busy && !state.storageFailure) { model.retry() }
             else if (room.options.coinGame) CoinCallClock(room, state.connection, model::reconnect)
             else if (host && !table.finished) {

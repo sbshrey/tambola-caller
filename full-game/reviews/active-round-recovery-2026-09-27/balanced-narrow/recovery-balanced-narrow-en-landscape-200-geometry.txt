@@ -1,0 +1,5 @@
+Reconnect now | scale=2.0 | size=509 x 88 | clipped=false
+Reconnect now | scale=2.0 | size=509 x 88 | clipped=false
+Reconnect now | scale=2.0 | size=509 x 88 | clipped=false
+Retry pending action | scale=2.0 | size=683 x 88 | clipped=false
+Checking… | scale=2.0 | size=361 x 88 | clipped=false

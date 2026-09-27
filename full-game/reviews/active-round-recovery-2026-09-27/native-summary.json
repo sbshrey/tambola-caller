@@ -1,0 +1,68 @@
+{
+  "acceptedCases": 19,
+  "acceptedRuns": [
+    "balanced-large",
+    "balanced-normal",
+    "balanced-narrow",
+    "regressions"
+  ],
+  "runs": [
+    {
+      "run": "baseline",
+      "passed": false,
+      "scale": "1.0",
+      "density": "unchanged"
+    },
+    {
+      "run": "picker-loss",
+      "passed": false,
+      "scale": "1.0",
+      "density": "unchanged"
+    },
+    {
+      "run": "final-normal",
+      "passed": true,
+      "scale": "1.0",
+      "density": "unchanged"
+    },
+    {
+      "run": "final-large",
+      "passed": false,
+      "scale": "2.0",
+      "density": "unchanged"
+    },
+    {
+      "run": "balanced-large",
+      "passed": true,
+      "scale": "2.0",
+      "density": "unchanged"
+    },
+    {
+      "run": "balanced-normal",
+      "passed": true,
+      "scale": "1.0",
+      "density": "unchanged"
+    },
+    {
+      "run": "balanced-narrow",
+      "passed": true,
+      "scale": "2.0",
+      "density": "540"
+    },
+    {
+      "run": "regressions",
+      "passed": true,
+      "scale": "1.0",
+      "density": "unchanged"
+    }
+  ],
+  "candidateUiNormalizedSha256": {
+    "ui/RoundRecoveryControls.kt": "e28bc13408f5efcf67f835e4e66f43563fb2146de46950ab4564c157a5537cef",
+    "ui/PlayArena.kt": "cf3240abd6321a37dda36e9bfabaf668b132664a843a2d3bf7a04a431a3a6b06",
+    "ui/ClaimArena.kt": "8678a149f5f9f82e6226d92eb7d60c08f7a89b9862e05b1420822b84d7b31b80",
+    "ui/CoinLobby.kt": "e2689cf5aaddb5ed2684ff8d9c26c456c8c019f53ef773911b233f014dd8b17c"
+  },
+  "reviewVersionCode": 33,
+  "reviewPackage": "io.github.sbshrey.tambola.game.uireview",
+  "scope": "Recovery controls, saved ticket geometry and marks, unavailable picker dismissal; not all arena text or TalkBack acceptance"
+}

@@ -19,8 +19,8 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 33
-        versionName = "0.33.0-alpha33"
+        versionCode = 34
+        versionName = "0.34.0-alpha34"
         buildConfigField("String", "ROOM_DISCOVERY_URL", "\"\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -1,0 +1,9 @@
+Reconnect now | scale=2.0 | size=389 x 138 | clipped=false
+Showing last confirmed calls | scale=2.0 | size=936 x 69 | clipped=false
+Reconnect now | scale=2.0 | size=389 x 138 | clipped=false
+Showing last confirmed calls | scale=2.0 | size=936 x 69 | clipped=false
+Reconnect now | scale=2.0 | size=389 x 138 | clipped=false
+Showing last confirmed calls | scale=2.0 | size=936 x 69 | clipped=false
+Retry pending action | scale=2.0 | size=389 x 138 | clipped=false
+Waiting for confirmation | scale=2.0 | size=936 x 69 | clipped=false
+Checking… | scale=2.0 | size=279 x 69 | clipped=false

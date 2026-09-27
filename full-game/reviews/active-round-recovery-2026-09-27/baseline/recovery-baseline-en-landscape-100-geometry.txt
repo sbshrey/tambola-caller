@@ -1,0 +1,1 @@
+Retry pending action | scale=1.0 | size=247 x 53 | ellipsis=true

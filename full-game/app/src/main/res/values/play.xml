@@ -19,6 +19,8 @@
     <string name="play_resume">Resume</string>
     <string name="play_live">Live</string>
     <string name="play_reconnecting">Reconnecting…</string>
+    <string name="play_waiting_result">Waiting for confirmation</string>
+    <string name="play_saved_calls">Showing last confirmed calls</string>
     <string name="play_offline">Offline</string>
     <string name="play_paused">Paused</string>
     <string name="play_ticket_label">Ticket %1$d, %2$d of 15 marked</string>

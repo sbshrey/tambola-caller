@@ -1,0 +1,12 @@
+{
+  "sha256": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916",
+  "bytes": 29192565,
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "versionCode": 34,
+  "versionName": "0.34.0-alpha34-internet-beta",
+  "minSdk": 26,
+  "targetSdk": 36,
+  "signerCertificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "signatureVerified": true,
+  "debuggable": false
+}

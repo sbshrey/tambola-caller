@@ -1,0 +1,21 @@
+
+io.github.sbshrey.tambola.game.RoundRecoveryUiTest:
+Error in englishLandscapeRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest):
+java.lang.AssertionError: Recovery action must be readable: Retry pending action | scale=1.0 | size=247 x 53 | ellipsis=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:76)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.englishLandscapeRetryRemainsReadable(RoundRecoveryUiTest.kt:33)
+
+
+Time: 4.388
+There was 1 failure:
+1) englishLandscapeRetryRemainsReadable(io.github.sbshrey.tambola.game.RoundRecoveryUiTest)
+java.lang.AssertionError: Recovery action must be readable: Retry pending action | scale=1.0 | size=247 x 53 | ellipsis=true
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.readable(RoundRecoveryUiTest.kt:76)
+	at io.github.sbshrey.tambola.game.RoundRecoveryUiTest.englishLandscapeRetryRemainsReadable(RoundRecoveryUiTest.kt:33)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

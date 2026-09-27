@@ -1,0 +1,176 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug FROM-CACHE
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:prePublicBetaBuild UP-TO-DATE
+> Task :app:generatePublicBetaBuildConfig
+> Task :app:generatePublicBetaResources
+> Task :app:packagePublicBetaResources
+> Task :app:processPublicBetaNavigationResources
+> Task :app:javaPreCompilePublicBeta UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:parsePublicBetaLocalResources
+> Task :app:extractDeepLinksPublicBeta UP-TO-DATE
+> Task :app:processPublicBetaMainManifest
+> Task :app:mergePublicBetaJniLibFolders UP-TO-DATE
+> Task :app:generatePublicBetaRFile
+> Task :app:mergePublicBetaNativeLibs UP-TO-DATE
+> Task :app:stripPublicBetaDebugSymbols UP-TO-DATE
+> Task :app:extractPublicBetaNativeSymbolTables UP-TO-DATE
+> Task :app:mergePublicBetaNativeDebugMetadata NO-SOURCE
+> Task :app:checkPublicBetaDuplicateClasses UP-TO-DATE
+> Task :app:mergePublicBetaArtProfile UP-TO-DATE
+> Task :app:checkPublicBetaAarMetadata UP-TO-DATE
+> Task :app:mapPublicBetaSourceSetPaths
+> Task :app:compilePublicBetaNavigationResources UP-TO-DATE
+> Task :app:createPublicBetaCompatibleScreenManifests
+> Task :app:processPublicBetaManifest
+> Task :app:mergePublicBetaStartupProfile UP-TO-DATE
+> Task :app:generatePublicBetaAssets UP-TO-DATE
+> Task :app:prepareSounds
+> Task :app:kaptGenerateStubsDebugKotlin
+> Task :app:mergePublicBetaResources
+> Task :app:prepareVoices
+> Task :app:mergePublicBetaAssets UP-TO-DATE
+> Task :app:compressPublicBetaAssets UP-TO-DATE
+> Task :app:extractPublicBetaVersionControlInfo UP-TO-DATE
+> Task :app:collectPublicBetaDependencies UP-TO-DATE
+> Task :app:sdkPublicBetaDependencyData UP-TO-DATE
+> Task :app:validateSigningPublicBeta UP-TO-DATE
+> Task :app:writePublicBetaAppMetadata UP-TO-DATE
+> Task :app:writePublicBetaSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:preBuild UP-TO-DATE
+> Task :macrobenchmark:prePublicBetaBuild UP-TO-DATE
+> Task :app:processPublicBetaManifestForPackage
+
+> Task :app:kaptDebugKotlin
+warning: The following options were not recognized by any processor: '[room.schemaLocation, kapt.kotlin.generated]'
+
+> Task :macrobenchmark:checkTestedAppObfuscationPublicBeta UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:packagePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaNavigationResources UP-TO-DATE
+> Task :macrobenchmark:parsePublicBetaLocalResources UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaRFile UP-TO-DATE
+> Task :app:processDebugManifestForPackage
+> Task :macrobenchmark:javaPreCompilePublicBeta UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:compressPublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaGlobalSynthetics UP-TO-DATE
+> Task :macrobenchmark:checkPublicBetaDuplicateClasses UP-TO-DATE
+> Task :macrobenchmark:desugarPublicBetaFileDependencies UP-TO-DATE
+> Task :macrobenchmark:mergeExtDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:mergeLibDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:checkPublicBetaAarMetadata UP-TO-DATE
+> Task :macrobenchmark:mapPublicBetaSourceSetPaths UP-TO-DATE
+> Task :macrobenchmark:compilePublicBetaNavigationResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaManifest UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaManifest UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaJniLibFolders UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaNativeLibs UP-TO-DATE
+> Task :macrobenchmark:stripPublicBetaDebugSymbols UP-TO-DATE
+> Task :macrobenchmark:validateSigningPublicBeta UP-TO-DATE
+> Task :macrobenchmark:writePublicBetaSigningConfigVersions UP-TO-DATE
+> Task :app:processPublicBetaResources
+> Task :app:processDebugResources
+> Task :app:kaptGenerateStubsPublicBetaKotlin
+
+> Task :app:compileDebugKotlin
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/src/main/java/io/github/sbshrey/tambola/game/online/OnlineViewModel.kt:303:97 Check for instance is always 'true'.
+
+> Task :macrobenchmark:compilePublicBetaKotlin
+> Task :app:kaptPublicBetaKotlin
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :macrobenchmark:compilePublicBetaJavaWithJavac NO-SOURCE
+> Task :app:kaptGenerateStubsDebugUnitTestKotlin
+> Task :macrobenchmark:dexBuilderPublicBeta
+> Task :app:kaptDebugUnitTestKotlin SKIPPED
+> Task :macrobenchmark:processPublicBetaJavaRes UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaJavaResource UP-TO-DATE
+> Task :macrobenchmark:mergeProjectDexPublicBeta
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:testDebugUnitTest
+> Task :macrobenchmark:packagePublicBeta
+> Task :macrobenchmark:createPublicBetaApkListingFileRedirect UP-TO-DATE
+> Task :macrobenchmark:assemblePublicBeta
+
+> Task :app:compilePublicBetaKotlin
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/src/main/java/io/github/sbshrey/tambola/game/online/OnlineViewModel.kt:303:97 Check for instance is always 'true'.
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/src/main/java/io/github/sbshrey/tambola/game/online/OnlineViewModel.kt:303:97 Check for instance is always 'true'.
+
+> Task :app:compilePublicBetaJavaWithJavac
+> Task :app:generatePublicBetaLintReportModel
+> Task :app:mergePublicBetaGeneratedProguardFiles UP-TO-DATE
+> Task :app:processPublicBetaJavaRes
+> Task :app:generatePublicBetaLintVitalReportModel
+> Task :app:mergePublicBetaJavaResource
+> Task :app:expandPublicBetaArtProfileWildcards
+> Task :app:producePublicBetaComposeMapping
+> Task :app:reportPublicBetaComposeMappingErrors
+> Task :app:lintAnalyzePublicBeta
+> Task :app:lintVitalAnalyzePublicBeta
+> Task :app:minifyPublicBetaWithR8
+> Task :app:lintVitalReportPublicBeta SKIPPED
+> Task :app:lintVitalPublicBeta SKIPPED
+> Task :app:mergePublicBetaComposeMapping
+> Task :app:convertShrunkResourcesToBinaryPublicBeta
+> Task :app:compilePublicBetaArtProfile
+> Task :app:optimizePublicBetaResources
+> Task :app:packagePublicBeta
+> Task :app:createPublicBetaApkListingFileRedirect
+> Task :app:assemblePublicBeta
+
+> Task :app:lintReportPublicBeta
+Wrote HTML report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-publicBeta.html
+Wrote SARIF report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-publicBeta.sarif
+
+> Task :app:lintPublicBeta
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 3m 42s
+126 actionable tasks: 57 executed, 1 from cache, 68 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

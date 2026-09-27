@@ -39,7 +39,7 @@ import kotlin.math.sin
 internal fun ClaimArena(
     table: TableRound, ownerId: String, preferences: Preferences, status: String,
     markNumber: (String, Int) -> Unit, claim: (ClaimSelection) -> Unit, claimMessage: String?, repeatCall: () -> Unit,
-    back: () -> Unit, win: WinMoment?, dismissWin: () -> Unit, markEnabled: Boolean, claimEnabled: Boolean,
+    back: () -> Unit, win: WinMoment?, dismissWin: () -> Unit, markEnabled: Boolean, claimEnabled: Boolean, expandedFooter: Boolean,
     extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit, footer: @Composable () -> Unit,
 ) {
     val words = gameText()
@@ -57,7 +57,7 @@ internal fun ClaimArena(
     var history by remember(table.id) { mutableStateOf(false) }
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
-    LaunchedEffect(table.called.size, table.finished) { claimTicketId = null }
+    LaunchedEffect(table.called.size, table.finished, claimEnabled) { claimTicketId = null }
     LaunchedEffect(win?.id) { if (win != null) { delay(3400); dismissWin() } }
     val winText = win?.lines?.joinToString(" · ") { line ->
         val title = line.prize?.let(words::prizeTitle) ?: line.title
@@ -92,7 +92,7 @@ internal fun ClaimArena(
                     }
                     val target = hand.tickets.firstOrNull { table.latest in it.numbers && table.latest !in table.marks[it.id].orEmpty() }
                     Box(Modifier.size(62.dp), contentAlignment = Alignment.Center) {
-                    if (table.coins != null) DeadlineRing(table.nextDrawAt, table.serverTime, table.id, 5_000,
+                    if (table.coins != null && table.nextDrawAt != null) DeadlineRing(table.nextDrawAt, table.serverTime, table.id, 5_000,
                         preferences.reducedMotion, Modifier.matchParentSize())
                     Box(Modifier.size(52.dp).graphicsLayer {
                         val p = reveal.value
@@ -110,6 +110,10 @@ internal fun ClaimArena(
                             fontSize = (30 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
                     }
                     }
+                    if (landscape && expandedFooter && !table.finished) {
+                        // Reuse the header, so recovery never shifts the ticket touch targets.
+                        Box(Modifier.weight(1f)) { footer() }
+                    } else {
                     Row(Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
                         .clickable(role = Role.Button) { history = true; board = true }
                         .testTag("open-call-history").semantics(mergeDescendants = true) { contentDescription = words(R.string.board_history) },
@@ -132,6 +136,7 @@ internal fun ClaimArena(
                         if (!largeText) Text(table.coins?.let { words(R.string.coin_pool, it.pool) } ?: words(R.string.play_prizes_left, remaining), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
                     }
                     if (landscape && !table.finished) Box(Modifier.width(110.dp)) { footer() }
+                    }
                 }
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     if (landscape) TableSidebar(table, ownerId, ink, muted,

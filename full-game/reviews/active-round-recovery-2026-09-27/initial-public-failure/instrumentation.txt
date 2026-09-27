@@ -1,0 +1,27 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in friendsRoundRecovery(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: Missing UI control round-reconnect
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node(CoinJourney.kt:70)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.verifyActiveRoundRecovery(CoinJourney.kt:119)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:582)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda25.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:728)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:480)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRoundRecovery(InternetBetaTest.kt:21)
+
+
+Time: 268.383
+There was 1 failure:
+1) friendsRoundRecovery(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: Missing UI control round-reconnect
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.node(CoinJourney.kt:70)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.verifyActiveRoundRecovery(CoinJourney.kt:119)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:582)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda25.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:728)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:480)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRoundRecovery(InternetBetaTest.kt:21)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
