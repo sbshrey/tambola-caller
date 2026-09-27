@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-09-27T13:16:35.8045074Z",
+  "runs": [
+    {
+      "runId": "4d70b80746bf4952",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 7620,
+      "serverStillRunning": false
+    },
+    {
+      "runId": "7dd8cdf7f5924736",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 24020,
+      "serverStillRunning": false
+    },
+    {
+      "runId": "bdade4ba59964299",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 22216,
+      "serverStillRunning": false
+    },
+    {
+      "runId": "d5f387c5ae974a1d",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 3852,
+      "serverStillRunning": false
+    }
+  ],
+  "remainingOwnedDatabases": 0,
+  "remainingTestSchemas": 0,
+  "remainingTestStoreConnections": 0,
+  "testPostgresStopped": true,
+  "testPostgresPort": 55432
+}

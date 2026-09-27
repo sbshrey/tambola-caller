@@ -1,0 +1,68 @@
+[
+  {
+    "run": "profile-1",
+    "wave": 1,
+    "clientP95": 3166.4634,
+    "queueP95": 1490.2607,
+    "awaitHeadersP95": 1855.7708,
+    "queueShare": 17.51517622322019,
+    "awaitHeadersShare": 66.6675180295593,
+    "outsideCallShare": 10.25341867962255,
+    "queuedCalls": 120
+  },
+  {
+    "run": "profile-1",
+    "wave": 2,
+    "clientP95": 1450.58,
+    "queueP95": 675.7353,
+    "awaitHeadersP95": 930.7751,
+    "queueShare": 17.580066732485438,
+    "awaitHeadersShare": 77.48896832495741,
+    "outsideCallShare": 0.5316327675248342,
+    "queuedCalls": 120
+  },
+  {
+    "run": "unprofiled-1",
+    "wave": 1,
+    "clientP95": 3106.9063,
+    "queueP95": null,
+    "awaitHeadersP95": null,
+    "queueShare": null,
+    "awaitHeadersShare": null,
+    "outsideCallShare": null,
+    "queuedCalls": null
+  },
+  {
+    "run": "unprofiled-1",
+    "wave": 2,
+    "clientP95": 1438.8407,
+    "queueP95": null,
+    "awaitHeadersP95": null,
+    "queueShare": null,
+    "awaitHeadersShare": null,
+    "outsideCallShare": null,
+    "queuedCalls": null
+  },
+  {
+    "run": "profile-2",
+    "wave": 1,
+    "clientP95": 3118.0278,
+    "queueP95": 1541.9447,
+    "awaitHeadersP95": 1961.1122,
+    "queueShare": 17.03433236085337,
+    "awaitHeadersShare": 66.42827363855355,
+    "outsideCallShare": 9.976164897777963,
+    "queuedCalls": 120
+  },
+  {
+    "run": "profile-2",
+    "wave": 2,
+    "clientP95": 1259.5819,
+    "queueP95": 552.7679,
+    "awaitHeadersP95": 810.8419,
+    "queueShare": 17.447159635627212,
+    "awaitHeadersShare": 76.67334847584166,
+    "outsideCallShare": 0.532645752322837,
+    "queuedCalls": 120
+  }
+]

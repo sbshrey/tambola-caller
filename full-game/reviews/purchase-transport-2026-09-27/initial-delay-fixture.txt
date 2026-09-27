@@ -1,0 +1,51 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:compileTestKotlin
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:test
+
+PurchaseTransportProfileTest > real dispatcher queuing is separate from body delivery and no content is exported FAILED
+    java.lang.AssertionError at PurchaseTransportProfileTest.kt:19
+
+2 tests completed, 1 failed
+
+> Task :server:test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:test'.
+> There were failing tests. See the report at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 16s
+11 actionable tasks: 2 executed, 9 up-to-date

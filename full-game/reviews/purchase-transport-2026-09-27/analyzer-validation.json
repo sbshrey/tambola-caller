@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "validFixtureAccepted": true,
+  "rejectedCases": [
+    "missing_call",
+    "extra_field",
+    "bad_partition",
+    "false_coverage",
+    "changed_dispatcher",
+    "wrong_boolean",
+    "failed_cleanup",
+    "duplicated_wave"
+  ],
+  "analyzerSha256": "7754ff393319754fcbca3d14af1ab8d0b89e6a5784416fd934de14fd33dad534"
+}

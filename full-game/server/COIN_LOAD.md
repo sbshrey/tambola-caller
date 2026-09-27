@@ -63,6 +63,26 @@ python tools/analyze-purchase-phases.py .test-workspace/coin-load-<run-id>/burst
 
 The analyzer requires a complete successful event for every primary purchase in each wave, verifies phase arithmetic and emits an aggregate JSON plus a validated `.timings.txt` file. It records input, analyzer and timing hashes. Receipt retries outside purchase windows remain in the filtered evidence but are excluded from wave statistics. Keep raw service logs private. Profiling adds overhead; these results diagnose waits and cannot establish latency or capacity acceptance.
 
+### Client transport phases
+
+Set `TAMBOLA_COIN_LOAD_CLIENT_PROFILE=true` for test-only OkHttp transport observations in `coinPurchaseBurst`. The profiled client mirrors the shipping client's timeout, redirect and WebSocket settings; the default unprofiled fixture still uses the native client directly. Keep SQL, pool and server-request profiling disabled when isolating this diagnostic. The fixture retains one transport per eight players and records its actual dispatcher limits (currently 64 requests overall, five per host).
+
+```powershell
+$env:TAMBOLA_COIN_LOAD_CLIENT_PROFILE='true'
+$env:TAMBOLA_COIN_BURST_STREAMS='true'
+$env:TAMBOLA_COIN_LOAD_SQL_PROFILE='false'
+$env:TAMBOLA_COIN_LOAD_POOL_PROFILE='false'
+$env:TAMBOLA_COIN_LOAD_REQUEST_PROFILE='false'
+.\gradlew.bat :server:coinPurchaseBurst '-PserverOnly=true' --console=plain
+python tools/analyze-client-transport.py .test-workspace/coin-load-<run-id>/burst-evidence.json .test-workspace/coin-load-<run-id>/client-transport.json .test-workspace/coin-load-<run-id>/client-transport-summary.json
+```
+
+The installed OkHttp 5.2.1 provides exact dispatcher queue start/end events. A completed single exchange is partitioned into queueing, remaining time before request headers, writing the request, waiting for response headers, reading the response and closing. Connect duration is nested in the pre-request phase and must not be added again. The header callback does not establish precise time to first byte. Header waiting includes server work and transport, not SQL or CPU alone.
+
+The capture retains no identifiers, headers, URLs, request/response bodies, credentials, exception messages or stacks. File writing occurs after the workload. `succeeded` indicates call completion; application correctness is checked separately by the purchase fixture. The analyzer requires all primary purchases and receipt replays, valid single exchanges, complete phase arithmetic, unchanged dispatcher settings, full tables, subscriptions and successful refunds/cleanup. It rejects failed calls and incomplete captures.
+
+Time outside OkHttp is the difference between **sums** of API and call durations, including client work, scheduling and callback overhead. It is not a difference of percentiles. Shares of accumulated concurrent duration are neither wall time nor CPU utilization. Do not combine separate server JFR runs with these captures as a per-request partition. This profiling cannot establish a latency improvement or capacity acceptance; repeat final timing with profiling disabled. [Validated captures and limits](../reviews/purchase-transport-2026-09-27/README.md).
+
 ## Coverage and limits
 
 - Profiles are seeded directly into the isolated database. Wallet opening, ticket purchases, claims, receipts and wallet reads use public APIs. Registration, abuse limits and restricted database-role grants are separate tests.

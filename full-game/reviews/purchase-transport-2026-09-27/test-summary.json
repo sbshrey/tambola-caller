@@ -1,0 +1,18 @@
+{
+  "tests": 2,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "timeSeconds": 1.665,
+  "scope": "Two focused transport-profile tests; not a rerun of the complete server suite",
+  "cases": [
+    {
+      "name": "real dispatcher queuing is separate from body delivery and no content is exported",
+      "seconds": 1.644
+    },
+    {
+      "name": "failed connection remains invalid evidence and cannot pass coverage",
+      "seconds": 0.018
+    }
+  ]
+}

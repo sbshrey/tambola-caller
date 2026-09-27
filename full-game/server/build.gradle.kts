@@ -14,6 +14,7 @@ dependencies {
     testImplementation(libs.junit); testImplementation(libs.ktor.test.host)
     testImplementation(project(":client"))
     testImplementation(libs.ktor.client.content.negotiation); testImplementation(libs.ktor.client.websockets)
+    testImplementation(libs.ktor.client.okhttp)
 }
 tasks.test {
     maxHeapSize = "1024m"

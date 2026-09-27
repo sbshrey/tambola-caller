@@ -29,7 +29,8 @@ object CoinPurchaseBurst {
         val waves = (System.getenv("TAMBOLA_COIN_BURST_WAVES")?.toInt() ?: 2).also { require(it in 1..4) }
         val streams = System.getenv("TAMBOLA_COIN_BURST_STREAMS") == "true"
         val env = IsolatedLoadService()
-        val clients = List(count / 8) { HttpRoomApi(env.base, true) }
+        val transport = if (System.getenv("TAMBOLA_COIN_LOAD_CLIENT_PROFILE") == "true") PurchaseTransportProfile() else null
+        val clients = List(count / 8) { transport?.let { HttpRoomApi(env.base, true, it.client()) } ?: HttpRoomApi(env.base, true) }
         val streamScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val evidence = linkedMapOf<String, JsonElement>()
         val rounds = mutableListOf<JsonElement>()
@@ -48,6 +49,8 @@ object CoinPurchaseBurst {
                 record("runId", env.runId); record("players", count); record("requestedWaves", waves)
                 record("scope", "Synthetic seeded profiles; native public HTTP purchase/read/leave/wallet routes, optional immediate WebSocket subscriptions; no registration, calls, claims, Android, TLS or capacity acceptance. Same clients/server reused between waves.")
                 record("immediateStreams", streams)
+                record("clientTransportProfiling", transport != null)
+                if (transport != null) record("transportProfilerSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseTransportProfile.kt"))))
                 record("serverHeapMiB", 512); record("serverActiveProcessors", 4)
                 record("sharedHttpTransports", count / 8)
                 record("lifecycleSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/IsolatedLoadService.kt"))))
@@ -68,6 +71,7 @@ object CoinPurchaseBurst {
                     val connected = AtomicInteger()
                     val failure = AtomicReference<Exception?>()
                     checkpoint("wave-${wave + 1}-buy")
+                    transport?.phase(wave + 1, primary = true)
                     val start = System.currentTimeMillis()
                     val entries = coroutineScope { guests.mapIndexed { index, guest -> async(Dispatchers.IO) {
                         val quantity = (index + wave) % 6 + 1
@@ -93,6 +97,7 @@ object CoinPurchaseBurst {
                         Entry(index, guest, request, update)
                     } }.awaitAll() }
                     val end = System.currentTimeMillis()
+                    transport?.phase(wave + 1, primary = false)
                     val groups = entries.groupBy { it.update.snapshot.roomId }
                     check(groups.size == count / 8 && groups.values.all { it.size == 8 })
                     if (streams) withTimeout(5000) {
@@ -136,6 +141,7 @@ object CoinPurchaseBurst {
                         put("tables", groups.size); put("allRefundsAndReceiptReplaysVerified", true)
                         put("streamsObservedBeforeCancellation", connected.get())
                         put("purchaseRoundTripMs", stats(times.toList()))
+                        transport?.let { put("clientTransport", it.summary(wave + 1, count, times.sum())) }
                     }
                     checkpoint("wave-${wave + 1}-verified")
                 }
@@ -152,6 +158,7 @@ object CoinPurchaseBurst {
             streamScope.cancel(); streamScope.coroutineContext[Job]?.join()
             clients.forEach { runCatching { it.close() } }
             clean = runCatching { env.close(); true }.getOrDefault(false)
+            transport?.write(env.directory.resolve("client-transport.json"))
             record("passed", passed); record("cleanupComplete", clean); record("capacityAcceptance", false)
             checkpoint(if (passed) "completed" else "failed")
         }

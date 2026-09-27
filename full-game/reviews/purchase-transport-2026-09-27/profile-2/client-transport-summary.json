@@ -1,0 +1,147 @@
+{
+  "passed": true,
+  "capacityAcceptance": false,
+  "players": 320,
+  "waves": [
+    {
+      "wave": 1,
+      "purchases": 320,
+      "receiptReplays": 320,
+      "clientRoundTripP95Ms": 3118.0278,
+      "queuedCalls": 120,
+      "metrics": {
+        "callMs": {
+          "sum": 585072.8384,
+          "p50": 1993.5855,
+          "p95": 2891.3987,
+          "max": 3073.0817
+        },
+        "dispatcherQueueMs": {
+          "sum": 110707.62730000001,
+          "p50": 0.0,
+          "p95": 1541.9447,
+          "max": 1945.2307
+        },
+        "nonQueueBeforeRequestMs": {
+          "sum": 32366.8911,
+          "p50": 131.4386,
+          "p95": 159.1649,
+          "max": 356.4449
+        },
+        "requestWriteMs": {
+          "sum": 8685.1094,
+          "p50": 6.9603,
+          "p95": 99.4412,
+          "max": 107.4499
+        },
+        "awaitResponseHeadersMs": {
+          "sum": 431723.2049,
+          "p50": 1496.0597,
+          "p95": 1961.1122,
+          "max": 2044.7773
+        },
+        "responseReadMs": {
+          "sum": 1370.0204,
+          "p50": 1.4978,
+          "p95": 18.5639,
+          "max": 53.8079
+        },
+        "closingMs": {
+          "sum": 219.9853,
+          "p50": 0.0228,
+          "p95": 0.7519,
+          "max": 68.3461
+        },
+        "connectMsNested": {
+          "sum": 6562.7972,
+          "p50": 21.2523,
+          "p95": 58.5037,
+          "max": 81.2139
+        }
+      },
+      "shareOfSummedApiTimePercent": {
+        "dispatcherQueueMs": 17.034332360853373,
+        "nonQueueBeforeRequestMs": 4.980220369016498,
+        "requestWriteMs": 1.3363581509073836,
+        "awaitResponseHeadersMs": 66.42827363855355,
+        "responseReadMs": 0.21080194205146044,
+        "closingMs": 0.03384864083978102,
+        "outsideOkHttp": 9.976164897777965
+      }
+    },
+    {
+      "wave": 2,
+      "purchases": 320,
+      "receiptReplays": 320,
+      "clientRoundTripP95Ms": 1259.5819,
+      "queuedCalls": 120,
+      "metrics": {
+        "callMs": {
+          "sum": 227457.16389999999,
+          "p50": 724.8451,
+          "p95": 1259.2955,
+          "max": 1315.3237
+        },
+        "dispatcherQueueMs": {
+          "sum": 39897.325899999996,
+          "p50": 0.0,
+          "p95": 552.7679,
+          "max": 731.3541
+        },
+        "nonQueueBeforeRequestMs": {
+          "sum": 11695.0387,
+          "p50": 43.47,
+          "p95": 76.0724,
+          "max": 85.3858
+        },
+        "requestWriteMs": {
+          "sum": 5.701,
+          "p50": 0.0107,
+          "p95": 0.0477,
+          "max": 0.3405
+        },
+        "awaitResponseHeadersMs": {
+          "sum": 175332.9273,
+          "p50": 645.3701,
+          "p95": 810.8419,
+          "max": 872.0129
+        },
+        "responseReadMs": {
+          "sum": 497.04269999999997,
+          "p50": 0.6453,
+          "p95": 6.4479,
+          "max": 17.9165
+        },
+        "closingMs": {
+          "sum": 29.1283,
+          "p50": 0.0084,
+          "p95": 0.2226,
+          "max": 6.7196
+        },
+        "connectMsNested": {
+          "sum": 5557.851,
+          "p50": 18.146,
+          "p95": 38.6432,
+          "max": 46.2469
+        }
+      },
+      "shareOfSummedApiTimePercent": {
+        "dispatcherQueueMs": 17.44715963562722,
+        "nonQueueBeforeRequestMs": 5.114257723817481,
+        "requestWriteMs": 0.0024930557334097115,
+        "awaitResponseHeadersMs": 76.67334847584164,
+        "responseReadMs": 0.21735750797832717,
+        "closingMs": 0.012737848679087548,
+        "outsideOkHttp": 0.5326457523228497
+      }
+    }
+  ],
+  "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+  "clientJarSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+  "inputSha256": {
+    "fixture": "64c98099aae612f0990e3537eb54c7f5e8dcd6a38f846bcc794b4086cc7635ab",
+    "transport": "0ae7eca27e2f69f6ca697a8bae6eb52759040ac1da8f03dd2d07b26d0e32c41b",
+    "analyzer": "7754ff393319754fcbca3d14af1ab8d0b89e6a5784416fd934de14fd33dad534"
+  },
+  "interpretation": "Shares use sums of concurrent request durations, not wall time or CPU. Server and network waiting remain together in awaitResponseHeadersMs. Connect time is nested. Outside-OkHttp time is an aggregate residual, not a percentile difference. Profiling does not establish a latency improvement."
+}

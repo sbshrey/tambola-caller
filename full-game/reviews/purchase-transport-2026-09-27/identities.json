@@ -1,0 +1,64 @@
+{
+  "observedAt": "2026-09-27T13:17:35.878Z",
+  "installed": {
+    "serviceJarSha256": "3f49a9add7a603f8dbefcbc48cb978c8c1d456dc1b887ee949c957edabf51fbd",
+    "serviceRuntimeSha256": "f26bc71a48b349ad77fa722a7ebe7938ef1d94981859af1f4ac78aa03e95e372"
+  },
+  "diagnosticRuntime": {
+    "serviceJarSha256": "2135b43b2bd7c75dc5a713031f92fc4c5757c39324e2c7a56e74fdd285b20e1b",
+    "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7"
+  },
+  "sourceSha256": {
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseTransportProfile.kt": "9a049341a58de9a81d44a88dce476cf6501c7ff521296d0c0fccadd318e2ceb9",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseTransportProfileTest.kt": "a1c9ddab89f0c414e6abe7bc07ed79e5c1cd64dc0e42038399f333148b098852",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinPurchaseBurst.kt": "3e9307e7ce4f973c086d3d92334590f7dcd922043943a57da06ea8a7bb2a8957",
+    "tools/analyze-client-transport.py": "7754ff393319754fcbca3d14af1ab8d0b89e6a5784416fd934de14fd33dad534"
+  },
+  "runs": [
+    {
+      "name": "smoke",
+      "runId": "4d70b80746bf4952",
+      "players": 8,
+      "waves": 2,
+      "clientTransportProfiling": true,
+      "clientJarSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "transportProfilerSourceSha256": "4d40c00efb7221f9c4f247b615d1f4edc563e3ff1dd74e31dd4eaa60a8007f10"
+    },
+    {
+      "name": "profile-1",
+      "runId": "7dd8cdf7f5924736",
+      "players": 320,
+      "waves": 2,
+      "clientTransportProfiling": true,
+      "clientJarSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "transportProfilerSourceSha256": "9a049341a58de9a81d44a88dce476cf6501c7ff521296d0c0fccadd318e2ceb9"
+    },
+    {
+      "name": "unprofiled-1",
+      "runId": "bdade4ba59964299",
+      "players": 320,
+      "waves": 2,
+      "clientTransportProfiling": false,
+      "clientJarSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "transportProfilerSourceSha256": null
+    },
+    {
+      "name": "profile-2",
+      "runId": "d5f387c5ae974a1d",
+      "players": 320,
+      "waves": 2,
+      "clientTransportProfiling": true,
+      "clientJarSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "transportProfilerSourceSha256": "9a049341a58de9a81d44a88dce476cf6501c7ff521296d0c0fccadd318e2ceb9"
+    }
+  ],
+  "publishedApk": {
+    "url": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha31-stable-invites/Tambola-Internet-Beta-0.31.0.apk",
+    "sha256": "489cef056ac49323aaf9923159bdd01fbcc2f05b53ed4951be9ebf0666b0386a",
+    "bytes": 29142089,
+    "verification": "GitHub asset API digest; no new APK download in this checkpoint"
+  },
+  "serverDeploymentChanged": false,
+  "publicBridgeRestarted": false,
+  "caveat": "Smoke predates the extra test-synchronization counter; the two full profiled runs use the final profiler source. The counter stores no request content."
+}

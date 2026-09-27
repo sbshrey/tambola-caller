@@ -1,0 +1,6 @@
+2026-09-27 18:37:00.627 IST [22076] LOG:  starting PostgreSQL 16.9, compiled by Visual C++ build 1943, 64-bit
+2026-09-27 18:37:00.632 IST [22076] LOG:  could not bind IPv6 address "::1": Permission denied
+2026-09-27 18:37:00.632 IST [22076] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2026-09-27 18:37:00.632 IST [22076] WARNING:  could not create listen socket for "localhost"
+2026-09-27 18:37:00.632 IST [22076] FATAL:  could not create any TCP/IP sockets
+2026-09-27 18:37:00.634 IST [22076] LOG:  database system is shut down
