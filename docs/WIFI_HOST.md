@@ -2,9 +2,11 @@
 
 Installed 26 September 2026 at `C:\Users\sbshr\AppData\Local\TambolaTogetherHost`.
 
-Upgraded on 27 September to alpha17 service source `9fe335d47b5b76688c0a148f64e074af4630fbdf` (primary schema 006, journal schema 003, room protocol 4). The protected `upgrades` directory retains the previous configuration, service hashes and a fresh verified primary/journal backup pair. After restricted-role startup, verified TLS checks passed for purchases/refunds, device enrollment, exact session rotation/retry and retention of the same wallet/purchase receipt. Android HTTPS/WSS transport also passed. See [alpha17 acceptance](../full-game/reviews/session-wifi-alpha17-2026-09-27/README.md).
+Current installed source is `b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0`, upgraded on 27 September (primary schema **007**, journal schema **003**, room protocol **4**). It includes indexed open lobbies, shorter matchmaking transactions, fresh recovery-journal authorization and skipped redundant live snapshots. The 51-JAR runtime is `f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10`. The upgrade verified an idle host, retained both database archives and old libraries, applied owner migrations/grants and started a fresh restricted service. Verified HTTPS purchase/refund/session checks passed. [Current deployment evidence](../full-game/reviews/server-wifi-2026-09-27/README.md) records acceptance and limits; alpha21 is the current compatible APK. Its complete 87-call emulator journey passed payout, process recovery and purchase/refund after fixing a client cancellation race.
 
-The alpha18 APK passed a complete native round against this unchanged service. Its personal-results and timer changes required no host upgrade or interruption; see [alpha18 acceptance](../full-game/reviews/coin-ui-2026-09-27/README.md).
+The previous alpha17 service was source `9fe335d47b5b76688c0a148f64e074af4630fbdf` (primary schema 006). Its earlier session migration and Android HTTPS/WSS acceptance remain in [alpha17 evidence](../full-game/reviews/session-wifi-alpha17-2026-09-27/README.md).
+
+The alpha18 APK previously passed a complete native round against alpha17. Its personal-results and timer changes required no host upgrade or interruption; see [alpha18 acceptance](../full-game/reviews/coin-ui-2026-09-27/README.md).
 
 - Game endpoint: `https://192.168.1.4:8443` (PC Ethernet address, same LAN as Wi-Fi).
 - Backend binds only `127.0.0.1:18080`; PostgreSQL binds only `127.0.0.1:55433`.

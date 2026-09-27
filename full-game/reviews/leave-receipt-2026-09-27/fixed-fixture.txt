@@ -1,0 +1,47 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:compileTestKotlin UP-TO-DATE
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:coinRefillAndroid
+2026-09-27 05:26:02,622 INFO  io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+2026-09-27 05:26:02,826 INFO  io.ktor.server.Application - Application started in 0.463 seconds.
+2026-09-27 05:26:03,053 INFO  io.ktor.server.Application - Responding at http://127.0.0.1:8081
+
+io.github.sbshrey.tambola.game.CoinLeaveTest:.
+
+Time: 11.775
+
+OK (1 test)
+
+
+Instrumentation passed; original system animation settings restored.
+Native coin fixture passed; isolated profile removed; installed host untouched.
+
+BUILD SUCCESSFUL in 22s
+11 actionable tasks: 1 executed, 10 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

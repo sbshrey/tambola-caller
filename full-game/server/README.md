@@ -1,6 +1,6 @@
 # Private room service: local development candidate
 
-Ktor/JDK 17 service backed by PostgreSQL. This is a tested local development implementation, **not a hosted production deployment**. The current alpha12 APK connects through an explicitly configured endpoint; its packaged debug default is loopback for emulator testing. See [alpha12 validation](../ALPHA12_VALIDATION.md), [runtime dependency review](../DEPENDENCY_REVIEW.md) and [service recovery validation](RECOVERY_VALIDATION.md). Use the current source build or `releases/service-security-2026-09-26/Tambola-service.zip` under `full-game/` for the updated Netty/Logback runtime.
+Ktor/JDK 17 service backed by PostgreSQL. The current private Wi-Fi host serves the [optimized alpha21 APK](../ALPHA_INSTALL.md) using source `b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0`, primary schema 007, journal schema 003 and room protocol 4. It is **not a public production deployment**. [Host operation](../../docs/WIFI_HOST.md), [deployment evidence](../reviews/server-wifi-2026-09-27/README.md), [runtime dependency review](../DEPENDENCY_REVIEW.md) and [recovery validation](RECOVERY_VALIDATION.md) record the applicable boundaries. Build current source for further deployments; the older `releases/service-security-2026-09-26/Tambola-service.zip` is an archived security snapshot, not this installed candidate.
 
 ## Run and test
 

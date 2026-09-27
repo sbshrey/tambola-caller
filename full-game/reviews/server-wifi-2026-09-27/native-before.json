@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-09-26T23:42:47.677513+00:00",
+  "installedApkSha256": {
+    "io.github.sbshrey.tambola.game": "97601ca8d68c32260bf39b4e5909c7348dc9070b89de4241ffad06bb2fd1357f",
+    "io.github.sbshrey.tambola.benchmark": "d23aab9f5ed31c9af8ae52716f9015b671b85d0a41e1f6e9de151197c70bd88b"
+  },
+  "animationScales": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "adbReverseMappings": "",
+  "avd": "tambola_full_game_alpha12_api30"
+}

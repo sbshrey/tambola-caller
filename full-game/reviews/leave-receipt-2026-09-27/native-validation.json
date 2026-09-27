@@ -1,0 +1,69 @@
+{
+  "checkedAt": "2026-09-27T00:07:57.698520+00:00",
+  "serverSourceCommit": "b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0",
+  "serviceRuntimeSha256": "f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10",
+  "installedApksUnchanged": {
+    "io.github.sbshrey.tambola.game": "0ad8d86287ae91902847475a7ac09ec104abf78db6303b5fa5975040cfd08716",
+    "io.github.sbshrey.tambola.benchmark": "d23aab9f5ed31c9af8ae52716f9015b671b85d0a41e1f6e9de151197c70bd88b"
+  },
+  "packagedApp": {
+    "sha256": "0ad8d86287ae91902847475a7ac09ec104abf78db6303b5fa5975040cfd08716",
+    "bytes": 29126773
+  },
+  "journey": {
+    "completed": true,
+    "scope": "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; three passive HTTP QA peers",
+    "stage": "passed",
+    "elapsedMs": 514247,
+    "ownedTickets": 6,
+    "distinctOwnNumbers": 90,
+    "calls": 87,
+    "claims": 8,
+    "coldProcessRestoredMarks": 20,
+    "finishedCalls": 87,
+    "settledWinnings": 2400,
+    "finalBalance": 3300,
+    "rememberedSixTickets": true,
+    "newRoundPurchasedAndRefunded": true,
+    "nativeProfileDeleted": true,
+    "deletedQaPeers": 3
+  },
+  "frameDurationCpuMs": {
+    "P50": 17.0244,
+    "P90": 41.63249999999999,
+    "P95": 55.032259999999994,
+    "P99": 144.62558000000078
+  },
+  "frameCount": {
+    "minimum": 2615.0,
+    "maximum": 2615.0,
+    "median": 2615.0,
+    "coefficientOfVariation": 0.0,
+    "runs": [
+      2615.0
+    ]
+  },
+  "animationScalesRestored": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "noAdbReverseMappings": true,
+  "privateFirewallRulePresent": false,
+  "localTraces": [
+    {
+      "path": ".test-workspace/alpha21-gameplay-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace",
+      "sha256": "b2c297f7993076dc8e447d9e7f6deb493db23068611793aa605f3ba58a475994",
+      "bytes": 53358858
+    }
+  ],
+  "collectorSha256": "0b5fabefa4291c5dd1675a43f9e3e12fa21b0d22262139afb2c5834665c84cd3",
+  "limits": [
+    "API30 software emulator, not physical phone reachability or performance",
+    "Retained compilation and a different random round do not prove a frame-speed improvement",
+    "No new APK, production signing, public endpoint or reboot validation",
+    "Installed archives hash/list checked; actual restore remains separate"
+  ],
+  "appSourceCommit": "72b73b7cdd5f3b82ec0dbeebcab6356667af9872",
+  "versionCode": 21
+}

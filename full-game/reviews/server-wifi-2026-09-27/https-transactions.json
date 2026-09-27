@@ -1,0 +1,152 @@
+{
+  "result": "passed",
+  "observedAt": "2026-09-26T23:41:49.238Z",
+  "sourceCommit": "b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0",
+  "origin": "https://192.168.1.4:8443",
+  "checks": [
+    "verified TLS; untrusted certificate rejected; internal routes hidden; unauthenticated purchase refused",
+    "device enrollment; exact session rotation retry; old access rejected; same wallet and purchase receipt retained",
+    "two authenticated purchases; one shared lobby; 6 and 2 tickets; 1400 pool; seven prizes; computer seats explicit",
+    "both cancellations refunded once; exact receipt retries including the closed final lobby",
+    "temporary QA profiles deleted",
+    "deleted device credential cannot renew"
+  ],
+  "timings": [
+    {
+      "operation": "/health/ready",
+      "milliseconds": 17,
+      "status": 200
+    },
+    {
+      "operation": "/internal/metrics",
+      "milliseconds": 2,
+      "status": 404
+    },
+    {
+      "operation": "/v1/matches",
+      "milliseconds": 32,
+      "status": 401
+    },
+    {
+      "operation": "/v1/guests",
+      "milliseconds": 22,
+      "status": 201
+    },
+    {
+      "operation": "/v1/guests",
+      "milliseconds": 6,
+      "status": 201
+    },
+    {
+      "operation": "/v1/wallet",
+      "milliseconds": 12,
+      "status": 200
+    },
+    {
+      "operation": "/v1/wallet",
+      "milliseconds": 6,
+      "status": 200
+    },
+    {
+      "operation": "/v1/matches",
+      "milliseconds": 38,
+      "status": 200
+    },
+    {
+      "operation": "/v1/matches",
+      "milliseconds": 7,
+      "status": 200
+    },
+    {
+      "operation": "/v1/guests/me/device",
+      "milliseconds": 11,
+      "status": 200
+    },
+    {
+      "operation": "/v1/guests/me/session",
+      "milliseconds": 11,
+      "status": 200
+    },
+    {
+      "operation": "/v1/guests/me/session",
+      "milliseconds": 7,
+      "status": 200
+    },
+    {
+      "operation": "/v1/wallet",
+      "milliseconds": 5,
+      "status": 401
+    },
+    {
+      "operation": "/v1/matches",
+      "milliseconds": 7,
+      "status": 200
+    },
+    {
+      "operation": "/v1/wallet",
+      "milliseconds": 6,
+      "status": 200
+    },
+    {
+      "operation": "/v1/matches",
+      "milliseconds": 10,
+      "status": 200
+    },
+    {
+      "operation": "/v1/rooms/ROOM",
+      "milliseconds": 9,
+      "status": 200
+    },
+    {
+      "operation": "/v1/rooms/ROOM/commands",
+      "milliseconds": 30,
+      "status": 200
+    },
+    {
+      "operation": "/v1/rooms/ROOM/commands",
+      "milliseconds": 6,
+      "status": 200
+    },
+    {
+      "operation": "/v1/wallet",
+      "milliseconds": 5,
+      "status": 200
+    },
+    {
+      "operation": "/v1/rooms/ROOM",
+      "milliseconds": 5,
+      "status": 200
+    },
+    {
+      "operation": "/v1/rooms/ROOM/commands",
+      "milliseconds": 8,
+      "status": 200
+    },
+    {
+      "operation": "/v1/rooms/ROOM/commands",
+      "milliseconds": 6,
+      "status": 200
+    },
+    {
+      "operation": "/v1/wallet",
+      "milliseconds": 5,
+      "status": 200
+    },
+    {
+      "operation": "/v1/guests/me/delete",
+      "milliseconds": 32,
+      "status": 200
+    },
+    {
+      "operation": "/v1/guests/me/delete",
+      "milliseconds": 11,
+      "status": 200
+    },
+    {
+      "operation": "/v1/guests/me/session",
+      "milliseconds": 8,
+      "status": 401
+    }
+  ],
+  "scope": "PC HTTPS transactions against installed restricted-role service; not physical phone Wi-Fi"
+}

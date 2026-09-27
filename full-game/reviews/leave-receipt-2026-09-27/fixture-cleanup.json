@@ -1,0 +1,6 @@
+{
+  "scope": "Read-only check after original and fixed native cancellation regressions",
+  "checkedAt": "2026-09-27T00:01:42.2732647+00:00",
+  "remainingRandomTestSchemas": 0,
+  "fixturePortListeners": 0
+}

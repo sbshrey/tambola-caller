@@ -1,0 +1,22 @@
+{
+  "baseline-fixture.txt": "4894b37c4ab308704c337e39818ed1c9418460c0acbe2a2bfaf35e3478001b91",
+  "benchmark.json": "7105c4caa4d0f3058bb886de1ed4fd433406a1074e2a28e1c0e92a2b2aa07a35",
+  "candidate-build-tests.txt": "740f8f315a6b1ad0d170a030b58a19989f081842c151a3d8ad3ac2764a75b3f6",
+  "coin-release-journey.json": "dd56ea0aa9060e613feae71a6d1c9871a29ac0e8517196e5d45814f4c372e47e",
+  "coin-release-results.png": "075d97041022075050838d43c9aceaac2eef6a88e548e3e11a5b4f477cd38648",
+  "fixed-fixture.txt": "f4e4da2586d067d6d67d1ab7ffa7aa6a961ea2e5bac2450ca8f2250d241a02a4",
+  "fixture-cleanup.json": "dca4ffe9d2b3dfcb6cf0b71d6239908e3e161987bbe70755983c494472d6533c",
+  "game-table.png": "2ce46dae7e736b046fd35146e1b8d6207c3416d0b03cda4a594cb3f98c960fb1",
+  "host-health-after.json": "00b0ef791720133d2747b9e1dd687ef65a3c29e1ae0e103486c8b9f07fa02758",
+  "manifest.xml": "451cce52d16613df6db7065d0c73a8f65b0e2187d10abf34e084d71adb13e81c",
+  "native-before.json": "0fb383c26fdfa354705481ad053787ee393a9d20a46b3668e45d5ee888d3b2d9",
+  "native-transcript.txt": "212b717b50d55120fd1cf05279cf55fb393d4e0c86c4dd0da7b434e1e7a7e2e0",
+  "native-validation.json": "7358ed50c91fecbeba1715daff0a819b18b46d4999db58b2e79df73bc95c9229",
+  "optimized-build-lint.txt": "cf1e9cc77ccbc0bc723a7a84388171d7b07bc50cc108acf1af327b8b7e641665",
+  "README.md": "b1002cd7b65677b4c8a2dca3c3dd9a30657b5f75db5e12d2fc83be7bd39ee55e",
+  "regression-baseline.txt": "079f958a53b97bc35aeaf043f08253cef1886c7a2fcd6852a2faa7e1809285b0",
+  "regression-build.txt": "78850e7d74664d196fed380a4d7fef78c52e5cf6ce54338faeb9d2c5569b3ff5",
+  "regression-fixed.txt": "5ccfe0ac6e4c0963d6e0a027488e2c08f4441556348eb8de1346d2fed35faa3d",
+  "regression-validation.json": "e194d8598e79c23fa992cae129647acb54e8643088e65b0c9fd6858958188d42",
+  "signature.txt": "ac175ec1777974def2dc0c4f34f186c039266f56d60059370e18c7076fca8f95"
+}

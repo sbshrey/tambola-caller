@@ -8,7 +8,7 @@ Built from the [shared V1 discussion and design reference](https://chatgpt.com/s
 
 ## Full Android game in development
 
-Tambola Together adds digital tickets, solo/computer practice, same-device family games and native private rooms, with free points/badges, English/Hindi UI, three caller voices, avatars and win animations. The development work is on `shrey/full-tambola-game`. See the [full-game guide](full-game/README.md), [detailed production plan](docs/FULL_GAME_PLAN.md), [internal alpha installation](full-game/ALPHA_INSTALL.md) and [validation](full-game/ALPHA09_VALIDATION.md). Public online hosting and production release gates remain unfinished.
+Tambola Together is developing online multiplayer with free virtual coins, 1–6 disjoint tickets, manual marking, per-ticket prize claims, paged landscape play, caller audio and win animations. Empty seats use labelled computers. The development work is on `shrey/full-tambola-game`, with this PC hosting private Wi-Fi testing. See the [full-game guide](full-game/README.md), [current online plan](docs/ONLINE_COIN_GAME_PLAN.md), [alpha installation](full-game/ALPHA_INSTALL.md) and [host operation](docs/WIFI_HOST.md). Public hosting and production release gates remain unfinished.
 
 ## Android keyboard for WhatsApp hosts
 

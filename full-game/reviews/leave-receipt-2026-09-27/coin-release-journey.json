@@ -1,0 +1,18 @@
+{
+  "completed": true,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; three passive HTTP QA peers",
+  "stage": "passed",
+  "elapsedMs": 514247,
+  "ownedTickets": 6,
+  "distinctOwnNumbers": 90,
+  "calls": 87,
+  "claims": 8,
+  "coldProcessRestoredMarks": 20,
+  "finishedCalls": 87,
+  "settledWinnings": 2400,
+  "finalBalance": 3300,
+  "rememberedSixTickets": true,
+  "newRoundPurchasedAndRefunded": true,
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 3
+}

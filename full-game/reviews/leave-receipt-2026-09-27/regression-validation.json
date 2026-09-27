@@ -1,0 +1,49 @@
+{
+  "androidJvmSuites": [
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.CoinResultsTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "freshAndroidJvmTests": 15,
+  "baselineAppSha256": "17ac4a6f043083ea5ac814c26d48e07ba4c256ec4a2f3a3681a8bcff18838e4f",
+  "fixedDebugAppSha256": "7c658fa8e07183115b9b051bf1e068e62dac8321f3f0b78c6d05551de9e3e8b4",
+  "sameRegressionTestApkSha256": "3e3a7d718baff3d4e5d9aa59a5cd4242164c83b72f41ce128932bdf06f70fae2",
+  "baselineResult": "Expected failure: committed leave lost its saved exact receipt",
+  "fixedResult": "Passed dropped response, saved retry, refund, three normal cancellations and genuine external room removal",
+  "sourceSha256": {
+    "app/src/main/java/io/github/sbshrey/tambola/game/online/OnlineViewModel.kt": "09ec221fbd4160a3ef5ede8fa9e701cce6953c6556949b78e4f73437c3145979",
+    "app/src/androidTest/java/io/github/sbshrey/tambola/game/CoinLeaveTest.kt": "7c00066279ba81de0beeb6bbc0902343bfb5756f3e18d6cb9fb2911350b54c9b"
+  }
+}

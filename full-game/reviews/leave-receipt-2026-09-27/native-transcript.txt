@@ -1,0 +1,81 @@
+
+io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark:INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_max=2615.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_median=2615.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_min=2615.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_stddev=0.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p50=17.0244
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p90=41.63249999999999
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p95=55.032259999999994
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p99=144.62558000000078
+INSTRUMENTATION_STATUS: android.studio.display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_realCoinRound
+  frameCount           [min 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace),   [median 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace),   [max 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace)
+  frameDurationCpuMs   P50     17.0,   P90     41.6,   P95     55.0,   P99    144.6
+    Traces: Iteration [0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_realCoinRound
+  frameCount           [min 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace),   [median 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace),   [max 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace)
+  frameDurationCpuMs   P50     17.0,   P90     41.6,   P95     55.0,   P99    144.6
+    Traces: Iteration [0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_realCoinRound
+  frameCount           [min 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace),   [median 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace),   [max 2,615.0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace)
+  frameDurationCpuMs   P50     17.0,   P90     41.6,   P95     55.0,   P99    144.6
+    Traces: Iteration [0](file://CoinReleaseBenchmark_realCoinRound_iter000_2026-09-27-00-07-04.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark
+INSTRUMENTATION_STATUS_CODE: 2
+.
+
+Time: 514.485
+
+OK (1 test)
+
+
