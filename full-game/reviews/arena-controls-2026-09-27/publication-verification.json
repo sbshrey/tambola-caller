@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-27T16:50:22.303Z",
+  "passed": true,
+  "pagesBuild": "https://api.github.com/repos/sbshrey/tambola-caller/pages/builds/1243373589",
+  "mainCommit": "565e54ab3de4b14190812d9c8d3ea6ca914608ba",
+  "sourceCommit": "f56922968ad018a30a790a8ac1298d4cc2f722b3",
+  "site": "https://sbshrey.github.io/tambola-caller/",
+  "publicAssetsMatch": [
+    "friends/index.html",
+    "friends/invite.js",
+    "friends/styles.css",
+    "sw.js",
+    "index.html"
+  ],
+  "mainChangedFiles": [
+    "friends/index.html",
+    "friends/invite.js"
+  ],
+  "release": "https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha35-arena-controls",
+  "asset": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha35-arena-controls/Tambola-Internet-Beta-0.35.0.apk",
+  "sha256": "2c8b9cbded702cbc22178f0f5f479a41968669753824fe80af58237b6a0e4636",
+  "bytes": 29192677,
+  "anonymousDownloadStatus": 200,
+  "publicBrowserEnglishHindi": true,
+  "scope": "Actual public website and APK bytes without cache-busting. Headless Chromium; no physical-phone intent or cellular acceptance."
+}
