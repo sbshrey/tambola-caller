@@ -8,6 +8,8 @@ Updated 27 September 2026. This supersedes the earlier offline-first release pla
 
 ## Player experience
 
+**Readable results (alpha27):** the prize cards adapt to available width and system font size, wrap full names and shared-win labels, and keep payout values visible. [Native layout checks and exact-package evidence](../full-game/reviews/readable-results-2026-09-27/README.md) distinguish this presentation change from the unchanged alpha26 PC service. Larger text can require scrolling; physical-phone and performance acceptance remain open.
+
 - **Landscape design (27 September):** the [editable Figma board](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696) and [browser preview](../designs/landscape-lobby-v1/README.md) remain the feedback path without reinstalling. Game night welcome/lobby, landscape table, actual roster arrivals, five-second ring, minimal Settings and selected-ticket prize picker are now packaged in alpha23. [Native layout checks](../full-game/reviews/game-night-arena-2026-09-27/README.md) passed at normal and 150% text. The [exact optimized APK](../full-game/reviews/game-night-alpha23-2026-09-27/README.md) passed a full 78-call multiplayer round, payouts, process recovery and replay/refund. Physical-device and production acceptance remain open.
 
 - Online multiplayer is the only primary play flow. Ticket choice and Play create a saved guest identity automatically; profile controls remain secondary. Retain legacy save compatibility internally; do not advertise practice, solo, family, badges or tutorials in the main flow.

@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -179,10 +180,10 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                 }
               }
             }
-            if (wide) Row(Modifier.weight(1f).verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (wide) Row(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.weight(if (waiting) 2f else .85f)) { hero() }
                 if (!waiting || state.pending || state.connection != Connection.LIVE) Box(Modifier.weight(1.15f)) { controls() }
-            } else Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) { hero(); controls() }
+            } else Column(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()).padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) { hero(); controls() }
         }
       }
     }
@@ -216,20 +217,26 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
 @Composable
 internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifier, awarded: Set<Prize> = emptySet(), shared: Set<Prize> = emptySet(), onDark: Boolean = true) {
     val words = gameText()
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        prizes.chunked(3).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    val fontScale = LocalDensity.current.fontScale
+    BoxWithConstraints(modifier) {
+      // Preserve the user's text size: use fewer cards per row before wrapping labels.
+      val columns = ((maxWidth.value + 6f) / (84f * fontScale + 6f)).toInt().coerceIn(1, 3)
+      Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        prizes.chunked(columns).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             row.forEach { entry ->
-                Column(Modifier.weight(1f).background(Color.White.copy(alpha = .07f), RoundedCornerShape(12.dp)).padding(9.dp)
+                Column(Modifier.weight(1f).background(Color.White.copy(alpha = .07f), RoundedCornerShape(12.dp)).padding(horizontal = 9.dp, vertical = 6.dp)
                     .testTag("coin-prize-${entry.prize.name}"), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text((if (entry.prize in awarded) "✓ " else "") + words.prizeTitle(entry.prize), fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("${entry.coins}", color = if (onDark) CoinGold else MaterialTheme.colorScheme.primary, fontSize = 18.sp, fontWeight = FontWeight.Bold,
-                        modifier = Modifier.testTag("coin-prize-value-${entry.prize.name}"))
-                    if (shared.isNotEmpty()) Text(if (entry.prize in shared) words(R.string.coin_shared) else "", fontSize = 10.sp, maxLines = 1,
-                        modifier = Modifier.testTag("coin-prize-share-${entry.prize.name}"))
+                    Text((if (entry.prize in awarded) "✓ " else "") + words.prizeTitle(entry.prize), fontSize = 12.sp, lineHeight = 16.sp,
+                        minLines = 2, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("coin-prize-title-${entry.prize.name}"))
+                    Text("${entry.coins}", color = if (onDark) CoinGold else MaterialTheme.colorScheme.primary, fontSize = 18.sp, lineHeight = 22.sp, fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("coin-prize-value-${entry.prize.name}"))
+                    if (shared.isNotEmpty()) Text(if (entry.prize in shared) words(R.string.coin_shared) else "", fontSize = 11.sp, lineHeight = 15.sp, textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().testTag("coin-prize-share-${entry.prize.name}"))
                 }
             }
-            repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
+            repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
         } }
+      }
     }
 }
 

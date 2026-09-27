@@ -4,13 +4,20 @@ import android.content.res.Configuration
 import android.content.pm.ActivityInfo
 import android.os.SystemClock
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.client.ServerTime
@@ -113,6 +120,91 @@ class CoinLobbyTest {
 
     @Test fun friendsResultsOfferExplicitSameGroupPurchase() = friendsResults("en", 1f)
     @Test fun friendsResultsKeepReplayAndAlternativesReachableInLargeHindi() = friendsResults("hi", 1.5f)
+
+    @Test fun allEightResultsKeepFullNamesAndAmounts() = completeResults("en", 1f)
+    @Test fun allEightResultsAndReplayStayReachableInLargeHindi() = completeResults("hi", 1.5f)
+
+    private fun completeResults(language: String, scale: Float) {
+        val config = Configuration(compose.activity.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag(language)); fontScale = scale
+        }
+        val context = compose.activity.createConfigurationContext(config)
+        val words = GameText(context.resources)
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        val plan = CoinPool(24)
+        val previous = finished()
+        val ticketId = previous.round!!.ownTickets.first().id
+        // Presentation fixture: all eight paid slots, including the longest English/Hindi titles.
+        val result = previous.copy(round = previous.round!!.copy(awards = plan.prizes.map {
+            Award(it.prize, 90, listOf(ticketId), listOf("a"))
+        }), coins = previous.coins!!.copy(prizes = plan.prizes, pool = 2400, settledWinnings = 2400, returnedCoins = 0, friendTable = true))
+        var purchased = 0
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+                LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
+                TambolaTheme { CoinLobby(OnlineUiState(loading = false, available = true, name = "You", playerId = "a",
+                    room = result, preferredTickets = 6, wallet = WalletView(3300, 1, 0)), model, {}, {}, {}, replayFriends = { purchased = it }) }
+            }
+        }
+        if (scale == 1f) {
+            val viewport = compose.onNodeWithTag("lobby-scroll").getUnclippedBoundsInRoot()
+            plan.prizes.forEach { slot ->
+                val amount = compose.onNodeWithTag("coin-prize-value-${slot.prize.name}").getUnclippedBoundsInRoot()
+                assertTrue("${slot.prize} payout must fit in the initial normal-text viewport",
+                    amount.top >= viewport.top && amount.bottom <= viewport.bottom)
+            }
+        }
+        plan.prizes.forEach { slot ->
+            assertFullText("coin-prize-title-${slot.prize.name}", "✓ " + words.prizeTitle(slot.prize))
+            assertFullText("coin-prize-value-${slot.prize.name}", slot.coins.toString())
+        }
+        compose.onNodeWithTag("coin-winnings").performScrollTo().assertTextEquals(words(R.string.coin_won, 2400L))
+        captureTestScreen("complete-results-$language")
+        compose.onNodeWithTag("friend-replay").performScrollTo().assertIsDisplayed().performClick()
+        assertEquals(6, purchased)
+        compose.onNodeWithTag("coin-play").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("play-friends").performScrollTo().assertIsEnabled()
+        captureTestScreen("complete-results-actions-$language")
+    }
+
+    @Test fun prizeCardsWrapAtNarrowWidthsAndDoubleSizeText() {
+        val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag("hi")); fontScale = 2f }
+        val context = compose.activity.createConfigurationContext(config)
+        val words = GameText(context.resources)
+        val prizes = CoinPool(192).prizes
+        var width by mutableStateOf(144.dp)
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+                LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
+                TambolaTheme {
+                    Column(Modifier.width(width).verticalScroll(rememberScrollState())) {
+                        CoinPrizeGrid(prizes, Modifier.fillMaxWidth(), awarded = prizes.map { it.prize }.toSet(), shared = setOf(Prize.CORNERS))
+                    }
+                }
+            }
+        }
+        listOf(144.dp, 260.dp, 380.dp).forEach { candidateWidth ->
+            compose.runOnIdle { width = candidateWidth }
+            prizes.forEach { slot ->
+                assertFullText("coin-prize-title-${slot.prize.name}", "✓ " + words.prizeTitle(slot.prize))
+                assertFullText("coin-prize-value-${slot.prize.name}", slot.coins.toString())
+            }
+            assertFullText("coin-prize-share-CORNERS", words(R.string.coin_shared))
+        }
+    }
+
+    private fun assertFullText(tag: String, expected: String) {
+        val node = compose.onNodeWithTag(tag).performScrollTo().assertIsDisplayed().assertTextEquals(expected)
+        val layouts = mutableListOf<TextLayoutResult>()
+        node.performSemanticsAction(SemanticsActions.GetTextLayoutResult) { assertTrue(it(layouts)) }
+        assertEquals(1, layouts.size)
+        val layout = layouts.single()
+        if (layout.hasVisualOverflow) captureTestScreen("results-overflow")
+        assertFalse("$tag overflows: size=${layout.size}, paragraph=${layout.multiParagraph.width}x${layout.multiParagraph.height}, " +
+            "lines=${layout.lineCount}, constraints=${layout.layoutInput.constraints}", layout.hasVisualOverflow)
+        assertTrue("$tag is ellipsized", (0 until layout.lineCount).none { layout.isLineEllipsized(it) })
+        assertEquals("$tag hides the end of its label", expected.length, layout.getLineEnd(layout.lineCount - 1))
+    }
 
     private fun friendsResults(language: String, scale: Float) {
         val result = finished().let { it.copy(coins = it.coins!!.copy(friendTable = true)) }

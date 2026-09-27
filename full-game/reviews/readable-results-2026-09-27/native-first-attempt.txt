@@ -1,0 +1,59 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:
+Error in allEightResultsKeepFullNamesAndAmounts(io.github.sbshrey.tambola.game.CoinLobbyTest):
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows its measured area
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:194)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:150)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+...
+Error in allEightResultsAndReplayStayReachableInLargeHindi(io.github.sbshrey.tambola.game.CoinLobbyTest):
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows its measured area
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:194)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:150)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsAndReplayStayReachableInLargeHindi(CoinLobbyTest.kt:125)
+
+Error in prizeCardsWrapAtNarrowWidthsAndDoubleSizeText(io.github.sbshrey.tambola.game.CoinLobbyTest):
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows its measured area
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:194)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.prizeCardsWrapAtNarrowWidthsAndDoubleSizeText(CoinLobbyTest.kt:181)
+.......
+
+Time: 48.625
+There were 3 failures:
+1) allEightResultsKeepFullNamesAndAmounts(io.github.sbshrey.tambola.game.CoinLobbyTest)
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows its measured area
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:194)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:150)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+2) allEightResultsAndReplayStayReachableInLargeHindi(io.github.sbshrey.tambola.game.CoinLobbyTest)
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows its measured area
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:194)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:150)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsAndReplayStayReachableInLargeHindi(CoinLobbyTest.kt:125)
+3) prizeCardsWrapAtNarrowWidthsAndDoubleSizeText(io.github.sbshrey.tambola.game.CoinLobbyTest)
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows its measured area
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:194)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.prizeCardsWrapAtNarrowWidthsAndDoubleSizeText(CoinLobbyTest.kt:181)
+
+FAILURES!!!
+Tests run: 13,  Failures: 3
+
+

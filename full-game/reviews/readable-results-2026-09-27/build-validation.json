@@ -1,0 +1,56 @@
+{
+  "observedAt": "2026-09-27T09:47:30.6235113+00:00",
+  "apkSha256": "4b376998ef917f2d15f247e3bf4cc45524b3ebd0fad33db7a6dc1896d1501ac2",
+  "apkBytes": 29122389,
+  "apkMetadata": {
+    "version": 3,
+    "artifactType": {
+      "type": "APK",
+      "kind": "Directory"
+    },
+    "applicationId": "io.github.sbshrey.tambola.game.beta",
+    "variantName": "publicBeta",
+    "elements": [
+      {
+        "type": "SINGLE",
+        "filters": [],
+        "attributes": [],
+        "versionCode": 27,
+        "versionName": "0.27.0-alpha27-internet-beta",
+        "outputFile": "app-publicBeta.apk"
+      }
+    ],
+    "elementType": "File",
+    "baselineProfiles": [
+      {
+        "minApi": 28,
+        "maxApi": 30,
+        "baselineProfiles": [
+          "baselineProfiles/1/app-publicBeta.dm"
+        ]
+      },
+      {
+        "minApi": 31,
+        "maxApi": 2147483647,
+        "baselineProfiles": [
+          "baselineProfiles/0/app-publicBeta.dm"
+        ]
+      }
+    ],
+    "minSdkVersionForDexing": 26
+  },
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "androidJvm": {
+    "skipped": 0,
+    "tests": 15,
+    "failures": 0,
+    "errors": 0
+  },
+  "nativeChecks": 13,
+  "nativeSeconds": 61.783,
+  "nativeScope": "Final alpha27 debug emulator: initial viewport includes all eight payouts at 100% English; complete text and reachable replay at 150% Hindi; 200% narrow Hindi cards",
+  "lintErrors": 0,
+  "lintWarnings": 121,
+  "serverSource": "bf03af542183a8d4e39a596dad9d21449a1100b8",
+  "serviceChanged": false
+}

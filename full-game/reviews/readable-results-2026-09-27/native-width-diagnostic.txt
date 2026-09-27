@@ -1,0 +1,27 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:
+Error in allEightResultsKeepFullNamesAndAmounts(io.github.sbshrey.tambola.game.CoinLobbyTest):
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows: size=159 x 84, paragraph=177.0x42.0, lines=1, constraints=Constraints(minWidth = 0, maxWidth = 177, minHeight = 0, maxHeight = Infinity)
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:195)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:150)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+
+
+Time: 4.399
+There was 1 failure:
+1) allEightResultsKeepFullNamesAndAmounts(io.github.sbshrey.tambola.game.CoinLobbyTest)
+java.lang.AssertionError: coin-prize-title-EARLY_FIVE overflows: size=159 x 84, paragraph=177.0x42.0, lines=1, constraints=Constraints(minWidth = 0, maxWidth = 177, minHeight = 0, maxHeight = Infinity)
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.assertFullText(CoinLobbyTest.kt:195)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:150)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
