@@ -1,0 +1,140 @@
+npm notice run tambola-caller@1.6.0 test
+npm notice run node --test
+file:///D:/Github/App%20Ideas/tambola-caller/full-game/client/build/reports/tests/test/js/report.js:285
+} (window, window.document));
+   ^
+
+ReferenceError: window is not defined
+    at file:///D:/Github/App%20Ideas/tambola-caller/full-game/client/build/reports/tests/test/js/report.js:285:4
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
+✖ full-game\client\build\reports\tests\test\js\report.js (146.9565ms)
+file:///D:/Github/App%20Ideas/tambola-caller/full-game/domain/build/reports/tests/test/js/report.js:285
+} (window, window.document));
+   ^
+
+ReferenceError: window is not defined
+    at file:///D:/Github/App%20Ideas/tambola-caller/full-game/domain/build/reports/tests/test/js/report.js:285:4
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
+✖ full-game\domain\build\reports\tests\test\js\report.js (130.3802ms)
+✔ library-only updates change the runtime identity even with identical service bytes (2.4939ms)
+✔ missing, duplicate, path-bearing or malformed artifacts cannot attest a runtime (5.9374ms)
+file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/build/reports/tests/test/js/report.js:285
+} (window, window.document));
+   ^
+
+ReferenceError: window is not defined
+    at file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/build/reports/tests/test/js/report.js:285:4
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
+✖ full-game\server\build\reports\tests\test\js\report.js (80.4691ms)
+✔ library-only updates change the runtime identity even with identical service bytes (2.44ms)
+✔ missing, duplicate, path-bearing or malformed artifacts cannot attest a runtime (5.8673ms)
+✔ friend landing is local, bounded, bilingual and launches only after a user gesture (82.2305ms)
+✔ public ingress bounds routes and bodies, strips forwarded headers and carries a WebSocket (31.0503ms)
+✔ binary request and response counts preserve all bytes across a half-close (38.4496ms)
+✔ bounds live connections and closes owned sockets without counting cleanup as failure (23.6579ms)
+✔ a refused upstream closes the client and releases its slot (15.901ms)
+✔ clip paths cover the valid numbers and reject invalid paths (1.388ms)
+✔ clip preparation reuses the current file and changes it for a new number (30.4641ms)
+✔ missing, HTML and failed audio responses do not produce shareable files (0.8906ms)
+✔ file sharing preserves the tap activation and does not include private game details (0.9863ms)
+✔ file sharing distinguishes cancellation from unsupported or failed handoff (0.3476ms)
+✔ separate PNGs contain only the requested numbers and use distinct sizes and filenames (5.0238ms)
+✔ number PNG follows the language and recent PNG handles fewer than ten calls (1.5218ms)
+✔ each separate format discards stale images after undo, language change and reset (4.0025ms)
+✔ image data includes the latest number, last ten calls and full board without player names (0.3167ms)
+✔ first, final, undo and new-game images reflect exactly the current board (0.3291ms)
+✔ image preparation ignores stale encodes and reuses an unchanged board (1.2371ms)
+✔ failed PNG encoding reports an error and never leaves a stale file enabled (0.7326ms)
+✔ PNG sharing hands off the exact prepared file immediately and handles cancellation/fallback (0.5226ms)
+✔ stable invitation accepts only a code fragment and a known language (1.6248ms)
+✔ explicit app handoff has a fixed package and publisher download destination (0.3428ms)
+✔ a fresh game has voice on and an empty board (1.7644ms)
+✔ each of 90 numbers is called exactly once and the game then stops (71.2026ms)
+✔ draw takes both edges of the remaining pool and rejects invalid indexes (0.6702ms)
+✔ undo restores the only remaining number and cannot go below zero (1.4156ms)
+✔ claim validation enforces the earliest possible call (1.9594ms)
+✔ undo removes claims on the undone call while retaining earlier claims (0.5247ms)
+✔ a saved game round-trips numbers, claims and the voice preference (1.0396ms)
+✔ corrupt and incompatible saves are rejected instead of introducing bad calls (0.8552ms)
+✔ storage failures preserve a usable game and signal unsaved progress (0.7854ms)
+✔ storage uses only the app key and resumes a complete game (1.6304ms)
+✔ number words handle units, teens, tens, and compound numbers (0.55ms)
+✔ generation requires an explicit bounded selection (4.6997ms)
+✔ generation resumes without rebilling unchanged clips and does not store the key (76.1413ms)
+✔ en pack has all 90 clips, correct scripts and matching hashes (990.6499ms)
+✔ hi pack has all 90 clips, correct scripts and matching hashes (1084.4946ms)
+✔ hinglish pack has all 90 clips, correct scripts and matching hashes (1102.8789ms)
+✔ all 90 numbers have a saying and an explicit full-number ending in all three languages (1.9468ms)
+✔ Hindi number names distinguish adjacent and easily confused numbers (0.3953ms)
+✔ language survives saves and new rounds while old saves default to English (1.8819ms)
+✔ clip URLs, filenames and preparation distinguish the same number in different languages (25.8765ms)
+✔ Hindi fallback uses a Hindi voice and old English failures cannot interrupt it (0.7348ms)
+✔ Hindi and Hinglish text shares follow the selection and exclude player details (0.3142ms)
+✔ changing language rebuilds a board image without changing calls or exposing players (5.5581ms)
+✔ generator language selection is explicit and produces language-specific requests (0.7017ms)
+✔ transcription number checks tolerate punctuation and repeated digits without substring matches (2.3943ms)
+✔ offline install precaches every asset and each asset exists (71.5343ms)
+✔ offline media supports byte, open-ended and suffix ranges; invalid ranges return 416 (10.9044ms)
+✔ worker reports the installed pack so an older worker cannot claim audio is cached (4.2845ms)
+✔ activation only removes this app scope’s older caches (3.2289ms)
+✔ offline navigations with a query and module requests return cached assets (2.4557ms)
+✔ worker leaves unrelated origins, paths and mutations alone (2.8518ms)
+✔ tracking stays optional and every starting scheme has a ₹10 total prize (1.9887ms)
+✔ one winner gets ₹10 and two winners get ₹5 each; odd rupees split to exact paise (20.9751ms)
+✔ at most two unique, existing players can win and prizes must be whole rupees (0.6377ms)
+✔ setup can change midgame without redrawing numbers or repricing recorded awards (0.8675ms)
+✔ editing a claim preserves its original call position and undo removes only affected awards (0.3535ms)
+✔ assigned players and schemes cannot be removed or disabled until their claim is removed (0.8171ms)
+✔ custom schemes and disabled schemes obey the host-configured availability (0.2885ms)
+✔ new round retains players, schemes and voice setting but clears calls and awards (0.2464ms)
+✔ results include per-scheme splits and correct combined totals without unrelated players (1.2148ms)
+✔ legacy games migrate without losing calls or free-text winners and retain a backup key (1.3446ms)
+✔ untrusted saves reject invalid prize setup and winner assignments (1.8079ms)
+✔ number message includes the latest call, its words, count and five recent calls (2.6292ms)
+✔ messages handle the first and last call, undo and a fresh game (0.3556ms)
+✔ WhatsApp fallback safely encodes the full message without selecting a recipient (0.3147ms)
+✔ native sharing is called immediately with only text and the correct receiver (0.3132ms)
+✔ native sharing works when canShare is absent (0.1952ms)
+✔ cancelling native sharing stays cancelled instead of opening another share UI (0.2175ms)
+✔ missing, unsupported, denied and failed native sharing use the fallback (0.3315ms)
+✔ copy writes the exact message and reports unavailable or denied clipboard access (0.3807ms)
+✔ speech prefers an installed Indian English voice and cancels stale announcements (1.8762ms)
+✔ number clips play immediately; repeat, stop and speech cancel the previous clip (0.6667ms)
+✔ a failed clip falls back once; stale failures cannot interrupt a newer number (0.9688ms)
+✔ audio works without device speech, and a failed current clip reports the error (0.2336ms)
+✔ local English is preferred to a network-only Indian voice for offline use (0.3551ms)
+✔ unsupported speech is harmless and current errors reach the UI (0.2857ms)
+ℹ tests 83
+ℹ suites 0
+ℹ pass 80
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21273.5757
+
+✖ failing tests:
+
+test at full-game\client\build\reports\tests\test\js\report.js:1:1
+✖ full-game\client\build\reports\tests\test\js\report.js (146.9565ms)
+  'test failed'
+
+test at full-game\domain\build\reports\tests\test\js\report.js:1:1
+✖ full-game\domain\build\reports\tests\test\js\report.js (130.3802ms)
+  'test failed'
+
+test at full-game\server\build\reports\tests\test\js\report.js:1:1
+✖ full-game\server\build\reports\tests\test\js\report.js (80.4691ms)
+  'test failed'

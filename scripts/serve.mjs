@@ -11,10 +11,11 @@ const host = process.env.HOST || '127.0.0.1';
 createServer(async (req, res) => {
   try {
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405); res.end(); return; }
-    const path = decodeURIComponent(new URL(req.url, 'http://localhost').pathname).replace(/^\/+/, '') || 'index.html';
+    let path = decodeURIComponent(new URL(req.url, 'http://localhost').pathname).replace(/^\/+/, '') || 'index.html';
+    if (path === 'friends/') path = 'friends/index.html';
     const target = resolve(root, path);
     if (!target.startsWith(root.endsWith(sep) ? root : root + sep)
-      || !(allowed.has(path) || /^(src|icons)\/[\w.-]+$/.test(path) || /^audio\/numbers\/(0[1-9]|[1-8][0-9]|90)\.mp3$/.test(path))) {
+      || !(allowed.has(path) || /^friends\/(index\.html|invite\.js|styles\.css)$/.test(path) || /^(src|icons)\/[\w.-]+$/.test(path) || /^audio\/(?:hi\/|hinglish\/)?numbers\/(0[1-9]|[1-8][0-9]|90)\.mp3$/.test(path))) {
       res.writeHead(404); res.end('Not found'); return;
     }
     const data = await readFile(target);

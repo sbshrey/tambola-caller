@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "checks": [
+    "Legacy v1.6.0 worker reproduced serving caller HTML for an invitation"
+  ],
+  "scope": "Headless Chromium, owned local fixtures. No Android browser-to-app or physical-phone acceptance.",
+  "observedAt": "2026-09-27T12:53:50.072Z"
+}

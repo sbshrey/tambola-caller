@@ -10,7 +10,7 @@ import org.junit.Test
 import java.util.UUID
 
 class PublicEndpointDirectoryTest {
-    @Test fun `sharing resolves only the trusted directory without a room or wallet request`() = runBlocking {
+    @Test fun `sharing uses a stable publisher page without requiring an online directory or room`() = runBlocking {
         var requests = 0
         val api = HttpRoomApi("https://sbshrey.github.io", client = HttpClient(MockEngine { call ->
             requests++
@@ -19,11 +19,13 @@ class PublicEndpointDirectoryTest {
             respond(entry(expires = System.currentTimeMillis() + 600_000))
         }), discoveryUrl = PublicEndpointDirectory.DIRECTORY_URL)
         try {
-            assertEquals("https://one-table.trycloudflare.com/friends/ABCDEFG2", api.friendInvitation("ABCDEFG2"))
-            assertEquals(1, requests)
+            assertEquals("https://sbshrey.github.io/tambola-caller/friends/#ABCDEFG2", api.friendInvitation("ABCDEFG2"))
+            assertEquals(0, requests)
             try { api.friendInvitation("ABCDEFG2?token=x"); fail() } catch (_: IllegalArgumentException) { }
-            assertEquals(1, requests)
+            assertEquals(0, requests)
         } finally { api.close() }
+        val privateApi = HttpRoomApi("https://private.example")
+        try { assertNull(privateApi.friendInvitation("ABCDEFG2")) } finally { privateApi.close() }
     }
     private fun entry(origin: String = "https://one-table.trycloudflare.com", expires: Long = 100_000) =
         """{"version":1,"service":"${PublicEndpointDirectory.SERVICE}","origin":"$origin","expiresAt":$expires}"""

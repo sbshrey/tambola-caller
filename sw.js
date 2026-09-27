@@ -6,8 +6,10 @@ const ASSETS = ['./', './index.html', './styles.css', './src/app.js', './src/gam
   ...['', 'hi/', 'hinglish/'].flatMap((folder) => Array.from({ length: 90 }, (_, index) => `./audio/${folder}numbers/${String(index + 1).padStart(2, '0')}.mp3`))];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
-  // An update waits until the old app closes, keeping an active game consistent.
+  // Routing-only update: the caller assets and v1.6.0 cache are unchanged.
+  // Activate this fix even with a caller open so old workers stop swallowing invitations.
+  // Future caller asset updates must restore the normal waiting lifecycle.
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
@@ -15,6 +17,15 @@ self.addEventListener('activate', (event) => {
     await Promise.all(keys.filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE)
       .map((key) => caches.delete(key)));
     await self.clients.claim();
+    for (const client of await self.clients.matchAll({ type: 'window' })) {
+      const url = new URL(client.url);
+      const invitation = new URL('friends/', self.registration.scope);
+      // An old worker may have served the caller into an invitation tab. Reload only that tab.
+      if (url.origin === invitation.origin && url.pathname.startsWith(invitation.pathname)) {
+        // Navigation waits for activation to finish; awaiting it here would deadlock activation.
+        client.navigate(client.url).catch(() => {});
+      }
+    }
   })());
 });
 self.addEventListener('message', (event) => {
@@ -41,10 +52,13 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const scope = new URL(self.registration.scope);
   if (event.request.method !== 'GET' || url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
+  if (url.pathname.startsWith(new URL('friends/', scope).pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     // Ignore query parameters on navigation so a shared app link also works offline.
-    const cached = event.request.mode === 'navigate' && !url.pathname.endsWith('.mp3')
+    const callerNavigation = event.request.mode === 'navigate' &&
+      [scope.pathname, new URL('index.html', scope).pathname].includes(url.pathname);
+    const cached = callerNavigation
       ? await cache.match('./index.html') : await cache.match(event.request);
     const range = event.request.headers?.get('range');
     if (cached && range && url.pathname.endsWith('.mp3')) return audioRange(cached, range);

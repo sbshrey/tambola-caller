@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('#open[href^="intent:"]') to be visible
+    - waiting for "http://127.0.0.1:60222/tambola-caller/friends/" navigation to finish...
+
+    at D:\Github\App Ideas\tambola-caller\scripts\verify-friend-invites.mjs:50:50 {
+  log: [
+    `  - waiting for locator('#open[href^="intent:"]') to be visible`,
+    '    - waiting for "http://127.0.0.1:60222/tambola-caller/friends/" navigation to finish...'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.21.0

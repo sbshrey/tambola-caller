@@ -62,7 +62,7 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     private suspend fun origin() = directory?.origin() ?: base
     override suspend fun friendInvitation(code: String): String? {
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
-        return directory?.origin()?.let { "$it/friends/$code" }
+        return if (directory != null) "https://sbshrey.github.io/tambola-caller/friends/#$code" else null
     }
     @Volatile override var serverTime: ServerTime? = null
         private set
