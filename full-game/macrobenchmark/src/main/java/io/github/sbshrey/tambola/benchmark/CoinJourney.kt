@@ -82,6 +82,16 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private fun balance() = Regex("(\\d+) coins").find(textOf(node("coin-wallet")))!!.groupValues[1].toLong()
     private fun snapshot() = runBlocking { api.read(peers.first().token, requireNotNull(code)).snapshot }
 
+    private fun verifyEmptyProfile() {
+        node("lobby-welcome-heading")
+        tap("coin-wallet")
+        node("lobby-player-name")
+        assertFalse("Existing wallets must never be used by this fixture", device.hasObject(By.text("Delete online profile")))
+        textButton("Keep playing").click()
+        node("lobby-welcome-heading")
+        assertEquals(1500L, balance())
+    }
+
     fun prepare() = captureFailure {
         Configurator.getInstance().waitForIdleTimeout = 100
         roundStarted = SystemClock.elapsedRealtime()
@@ -92,11 +102,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         checkpoint(if (createdMain) "next-round-wallet-check" else "fresh-profile-check")
         node("coin-play")
         if (!createdMain) {
-            tap("coin-wallet")
-            assertTrue("Use an empty dedicated emulator profile; existing wallets are never reset", device.wait(Until.hasObject(By.text("Your profile")), 5000))
-            assertFalse(device.hasObject(By.text("Delete online profile")))
-            textButton("Got it").click()
-            assertEquals(1500L, balance())
+            verifyEmptyProfile()
             // Create peers before the 12-second lobby begins; their credentials stay only in memory.
             runBlocking { repeat(if (computerOpponents) 1 else 3) { peers += api.guest(GuestRequest("Release QA ${it + 1}", it + 1)) } }
         } else {
@@ -424,10 +430,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                 textButton("Delete online profile").click()
                 node("coin-play")
                 until { balance() == 1500L }
-                tap("coin-wallet")
-                assertTrue(device.wait(Until.hasObject(By.text("Your profile")), 10_000))
-                assertFalse(device.hasObject(By.text("Delete online profile")))
-                textButton("Got it").click()
+                verifyEmptyProfile()
                 report.put("nativeProfileDeleted", true)
             }
         } finally {
