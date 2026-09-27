@@ -15,7 +15,7 @@ The alpha18 APK previously passed a complete native round against alpha17. Its p
 - Pinned Java 17 and PowerShell 7.6 runtimes, service libraries and configuration live outside the checkout. User/SYSTEM ACLs and Windows DPAPI protect configuration. Never copy `.secrets`, database files, private TLS keys or raw backups into Git/APKs.
 - Hidden watcher restarts the worker; the worker restarts Java/Caddy and recovers the dedicated database. PID, executable and start-time checks protect unrelated processes.
 - Current-user login startup is installed. It runs after this user signs in, **not before Windows login**. Do not describe it as a SYSTEM service or a reboot-tested deployment. Existing AC sleep timeout is already disabled; no power settings were changed.
-- Backups run every 24 hours while the worker is active, retaining seven complete pairs. Primary is dumped before the journal. Archive-list validation passed; actual restoration of these installed-host backups has not yet been rehearsed. Keep the live recovery journal and replay newer deletion/logout intents during any future restore.
+- Backups run every 24 hours while the worker is active, retaining seven complete pairs. Primary is dumped before the journal. A copied installed-backup restoration, migration and newer-journal replay passed in isolated databases on 27 September; see the [recovery drill](../full-game/reviews/installed-recovery-2026-09-27/README.md). This was not a live cutover. Keep the live recovery journal and replay newer deletion/logout intents during any future restore.
 
 ## One administrator action for phone testing
 
