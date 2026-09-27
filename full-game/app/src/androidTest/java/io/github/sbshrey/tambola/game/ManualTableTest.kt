@@ -5,18 +5,94 @@ import android.content.res.Configuration
 import androidx.activity.ComponentActivity
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.unit.Density
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.data.Preferences
 import io.github.sbshrey.tambola.game.ui.*
+import io.github.sbshrey.tambola.protocol.CoinTableView
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import java.util.Locale
 import java.util.Random
 
 class ManualTableTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+
+    @Test fun completePlayerListOpensDirectlyAndPreservesTheSelectedTicketPage() = playerList("en", 1f)
+    @Test fun playerListRemainsAccessibleInHindiWithLargerText() = playerList("hi", 1.5f)
+
+    private fun playerList(language: String, scale: Float) {
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+        val config = Configuration(compose.activity.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag(language)); fontScale = scale
+        }
+        val context = compose.activity.createConfigurationContext(config)
+        val words = GameText(context.resources)
+        val players = (0 until 8).map { index -> Player(if (index == 0) "me" else "qa-$index",
+            if (index == 7) "Computer with a long display name" else "Roster QA $index", computer = index >= 6, avatar = index) }
+        val pool = CoinPool(48)
+        var round by mutableStateOf(Round.create(players, RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6,
+            manualClaims = true, playAllNumbers = true, prizes = pool.prizes.map { it.prize }), Random(81)).start())
+        repeat(90) { round = round.draw() }
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+                LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
+                TambolaTheme {
+                    PlayArena(round.toTable().copy(coins = CoinTableView(48, 48 * COIN_TICKET_PRICE, pool.prizes, 6, null)),
+                        "me", Preferences(reducedMotion = true), "Live", {}, {}, {}, null, {},
+                        markNumber = { ticket, number -> round = round.toggleMark(ticket, number) }, claim = {}, footer = { Text("Live") })
+                }
+            }
+        }
+        compose.onNodeWithTag("tickets-down").performClick()
+        val shown = (1..6).first { compose.onAllNodesWithTag("hand-ticket-$it").fetchSemanticsNodes().isNotEmpty() }
+        val ticket = round.tickets.filter { it.playerId == "me" }[shown - 1]
+        val number = ticket.numbers.first()
+        compose.onNodeWithTag("dab-$number").performClick()
+        val marks = round.marks
+        val bounds = compose.onNodeWithTag("hand-ticket-$shown").getUnclippedBoundsInRoot()
+        val rosterButton = compose.onNodeWithTag("table-players").assertIsDisplayed().assertHasClickAction()
+        rosterButton.assertContentDescriptionEquals(words(R.string.coin_players, 8, 2))
+        val target = rosterButton.getUnclippedBoundsInRoot()
+        val rounding = 1f / compose.activity.resources.displayMetrics.density
+        assertTrue((target.right - target.left).value >= 48 - rounding &&
+            (target.bottom - target.top).value >= 48 - rounding)
+        val prizeRail = compose.onNodeWithTag("prize-rail").getUnclippedBoundsInRoot()
+        pool.prizes.forEach { slot ->
+            val prize = compose.onNodeWithTag("sidebar-prize-${slot.prize.name}", useUnmergedTree = true)
+                .assertIsDisplayed().getUnclippedBoundsInRoot()
+            assertTrue("${slot.prize} clipped at font scale $scale", prize.top >= prizeRail.top && prize.bottom <= prizeRail.bottom)
+        }
+        compose.onNodeWithTag("table-player-qa-7").assertDoesNotExist()
+        rosterButton.performClick()
+        players.forEach { player ->
+            val row = compose.onNodeWithTag("table-player-${player.id}").performScrollTo().assertIsDisplayed().assert(hasText(player.name))
+            if (player.computer) row.assert(hasText(words(R.string.play_computer_short)))
+        }
+        captureTestScreen("manual-complete-player-list-$language")
+        compose.onNodeWithText(words(R.string.ui_back_to_game)).performClick()
+        compose.onNodeWithTag("table-player-qa-7").assertDoesNotExist()
+        assertEquals(marks, round.marks)
+        assertEquals(bounds, compose.onNodeWithTag("hand-ticket-$shown").getUnclippedBoundsInRoot())
+        compose.onNodeWithTag("claim-ticket-$shown").performClick()
+        compose.onNodeWithTag("claim-prize-HOUSE_ONE").assertIsDisplayed()
+        compose.onNodeWithTag("dismiss-claim").performClick()
+        compose.onNodeWithTag("game-options").performClick()
+        compose.onNodeWithTag("table-players-menu").performClick()
+        compose.onNodeWithTag("table-player-me").assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.ui_back_to_game)).performClick()
+        compose.onNodeWithTag("table-player-me").assertDoesNotExist()
+        compose.waitForIdle()
+        assertEquals(marks, round.marks)
+        captureTestScreen("manual-table-player-access-$language")
+    }
 
     @Test fun readablePagesPreserveMarksAndClaimsSelectOnlyOneTicketAndPrize() {
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }

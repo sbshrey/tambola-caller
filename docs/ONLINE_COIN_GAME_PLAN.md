@@ -46,6 +46,8 @@ The current Wi-Fi server now runs source `b6d5eb6f7cc9c6c70006e4d9c422c2abe75187
 
 ## Next acceptance work
 
+The [player-access UI checks](../full-game/reviews/player-access-2026-09-27/README.md) pass for a directly accessible full roster, retained ticket page/marks, and English/Hindi layouts. Actual 150% system text exposed clipped prize rows; compact line heights now keep all eight visible. This is debug emulator evidence; the next optimized APK still needs native acceptance.
+
 The [first continuous native coin attempt](../full-game/reviews/coin-endurance-attempt1-2026-09-27/README.md) completed seven rounds (53.88 measured minutes) before the external UI driver held a stale prize-picker element in round eight. It is not an hour/nine-round pass. All four test profiles were deleted and installed app/server identities stayed unchanged. A focused regression reproduced the stale read across a real call boundary and passed with the repaired driver; a complete endurance rerun remains required after the pending app checks.
 
 The [installed-backup drill](../full-game/reviews/installed-recovery-2026-09-27/README.md) passed on 27 September. It restored the retained pre-upgrade primary into isolated databases, migrated schema 006 to 007 and replayed the newer installed journal from cursor 58 to 68 while preserving the existing wallet ledger. Additional isolated players proved older bearer/device credentials stay blocked after logout/deletion, original purchase/refund receipts replay exactly and new purchases/refunds survive another restart. The live host and retained original archives were unchanged; temporary copies, databases, roles and processes were removed. This closes the copied-installed-backup rehearsal, not provider recovery or live cutover.

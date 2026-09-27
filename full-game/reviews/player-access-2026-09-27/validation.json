@@ -1,0 +1,40 @@
+{
+  "scope": "Debug emulator UI with fictional round; no network, physical phone or optimized frame acceptance",
+  "sourceHashes": {
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/ClaimArena.kt": "2e33af86f9df6851bfd8b2d5d1b23125ab20803919d79d1423e2b8b1b4e3e9f6",
+    "app/src/androidTest/java/io/github/sbshrey/tambola/game/ManualTableTest.kt": "27223325c9011bb67fa6025ecdd230fdfa544992a6e3ca0b119361fec9876ea0"
+  },
+  "apks": {
+    "app/build/outputs/apk/debug/app-debug.apk": "bf5066496a6b8503f3f0a49b05ba1a2866a5d8e9eede799361c7e2790bac62b8",
+    "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk": "e70c60ac8c390bffe3a8385204c9ad724b8138e4c9fd486e2bd92172a420c8df"
+  },
+  "unit": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Error": 0,
+    "Warning": 87
+  },
+  "native": {
+    "tests": 3,
+    "actualSystemFont150PercentTests": 1,
+    "allPassed": true,
+    "fontScaleRestored": {
+      "original": "1.0",
+      "tested": [
+        "1.0",
+        "1.5"
+      ],
+      "restored": "1.0"
+    }
+  },
+  "visualReview": "Verified complete roster labels and long computer name at actual 150% system text. Fixed clipped prize rows; all eight now fit. Ticket geometry and marks survive dialogs.",
+  "stagedSourceHashes": {
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/ClaimArena.kt": "395bf345ef945be730d00134de26b39481ed107a12c47f262e2eadf0b9cb0bb3",
+    "app/src/androidTest/java/io/github/sbshrey/tambola/game/ManualTableTest.kt": "27223325c9011bb67fa6025ecdd230fdfa544992a6e3ca0b119361fec9876ea0"
+  },
+  "sourceHashNote": "sourceHashes describe build workspace bytes; stagedSourceHashes include Git LF normalization only"
+}

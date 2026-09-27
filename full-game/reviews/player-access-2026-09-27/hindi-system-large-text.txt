@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.ManualTableTest:.
+
+Time: 9.341
+
+OK (1 test)
+
+

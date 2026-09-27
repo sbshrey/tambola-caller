@@ -53,6 +53,7 @@ internal fun ClaimArena(
     var menu by remember { mutableStateOf(false) }
     var details by remember { mutableStateOf(false) }
     var board by remember { mutableStateOf(false) }
+    var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
     LaunchedEffect(table.called.size, table.finished) { claimTicketId = null }
     LaunchedEffect(win?.id) { if (win != null) { delay(3400); dismissWin() } }
@@ -77,6 +78,7 @@ internal fun ClaimArena(
                             DropdownMenuItem(text = { Text(words(R.string.ui_home)) }, onClick = { menu = false; back() }, modifier = Modifier.testTag("home"))
                             DropdownMenuItem(text = { Text(words(R.string.ui_number_board)) }, onClick = { menu = false; board = true })
                             DropdownMenuItem(text = { Text(words(R.string.play_prizes)) }, onClick = { menu = false; details = true })
+                            DropdownMenuItem(text = { Text(words(R.string.play_players_short, table.players.size)) }, onClick = { menu = false; players = true }, modifier = Modifier.testTag("table-players-menu"))
                             DropdownMenuItem(text = { Text(words(R.string.ui_hear_again)) }, enabled = table.latest != null, onClick = { menu = false; repeatCall() })
                             extraMenu { menu = false }
                         }
@@ -119,7 +121,9 @@ internal fun ClaimArena(
                     if (landscape && !table.finished) Box(Modifier.width(110.dp)) { footer() }
                 }
                 Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    if (landscape) TableSidebar(table, ownerId, ink, muted, Modifier.width(if (largeText) 94.dp else if (table.coins != null) 142.dp else 114.dp).fillMaxHeight()) { details = true }
+                    if (landscape) TableSidebar(table, ownerId, ink, muted,
+                        Modifier.width(if (largeText) 94.dp else if (table.coins != null) 142.dp else 114.dp).fillMaxHeight(),
+                        details = { details = true }, openPlayers = { players = true })
                     Column(Modifier.weight(1f).fillMaxHeight()) {
                         if (!landscape) Text("$status · ${words(R.string.play_prizes_left, remaining)}", fontSize = 11.sp, color = muted, maxLines = 1,
                             modifier = Modifier.height(22.dp))
@@ -185,11 +189,22 @@ internal fun ClaimArena(
             Text(words(R.string.coin_pool, table.coins.pool))
             CoinPrizeGrid(table.coins.prizes, awarded = table.awards.map { it.prize }.toSet(), onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
             Text(words(R.string.coin_ties), style = MaterialTheme.typography.bodySmall)
-            table.players.forEach { Text(words.playerLabel(it)) }
         } else {
             Text(words(R.string.play_claim_rules))
             RuleList(hand)
             table.players.forEach { player -> Text("${words.playerLabel(player)} · ${table.score(player.id)}") }
+        }
+    }
+    if (players) ArenaDialog(words(R.string.play_players_short, table.players.size), { players = false }) {
+        table.players.sortedBy { it.id != ownerId }.forEach { player ->
+            Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("table-player-${player.id}").semantics(mergeDescendants = true) {},
+                horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                AvatarBadge(player.avatar, size = 32.dp, modifier = Modifier.clearAndSetSemantics {})
+                Column(Modifier.weight(1f)) {
+                    Text(player.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    if (player.computer) Text(words(R.string.play_computer_short), style = MaterialTheme.typography.bodySmall)
+                }
+            }
         }
     }
     if (board) ArenaDialog(words(R.string.ui_the_number_board), { board = false }) {
@@ -239,7 +254,7 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
 }
 
 @Composable
-private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: Color, modifier: Modifier, details: () -> Unit) {
+private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: Color, modifier: Modifier, details: () -> Unit, openPlayers: () -> Unit) {
     val words = gameText()
     val large = LocalDensity.current.fontScale > 1.3f
     Column(modifier, verticalArrangement = Arrangement.spacedBy(3.dp)) {
@@ -252,7 +267,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                     Prize.TOP_LINE -> R.string.play_top; Prize.MIDDLE_LINE -> R.string.play_middle
                     Prize.BOTTOM_LINE -> R.string.play_bottom; else -> R.string.play_house
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(Modifier.testTag("sidebar-prize-${prize.name}"), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Canvas(Modifier.size(25.dp, 16.dp)) {
                         if (won) {
                             drawLine(ink, Offset(2f, size.height / 2), Offset(size.width * .4f, size.height - 2f), 2.dp.toPx())
@@ -267,25 +282,37 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                         }
                     }
                     Text(if (large) if (prize == Prize.EARLY_FIVE) "5" else if (prize == Prize.EARLY_TEN) "10" else "" else
-                        if (prize == Prize.EARLY_TEN || prize.isRankedHouse) words.prizeTitle(prize) else words(short), fontSize = 11.sp, color = if (won) muted else ink, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        if (prize == Prize.EARLY_TEN || prize.isRankedHouse) words.prizeTitle(prize) else words(short), fontSize = 11.sp, lineHeight = 12.sp, color = if (won) muted else ink, maxLines = 1, overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f).semantics { contentDescription = words.prizeTitle(prize) })
                     table.coins?.prizes?.firstOrNull { it.prize == prize }?.let { slot ->
-                        Text("${slot.coins}", color = if (won) muted else ink, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Text("${slot.coins}", color = if (won) muted else ink, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
             val extra = (table.settings.prizes.size - if (table.coins != null) 8 else 6).coerceAtLeast(0) + table.settings.customPrizes.size
             if (extra > 0) Text("+$extra", fontSize = 11.sp, color = muted)
         }
-        Text(if (table.coins != null) words(R.string.coin_players, table.players.size, table.players.count { it.computer }) else words(R.string.play_players_short, table.players.size), color = muted, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        val players = table.players.sortedBy { it.id != ownerId }.take(if (table.settings.prizes.size > 6) 2 else 3)
-        players.forEach { player ->
-            Row(Modifier.height(if (large) 28.dp else 34.dp).fillMaxWidth().semantics(mergeDescendants = true) { contentDescription = words.playerLabel(player) },
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                AvatarBadge(player.avatar, size = 26.dp)
-                Column(Modifier.weight(1f)) {
-                    if (!large) Text(player.name, fontSize = 11.sp, lineHeight = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    if (player.computer) Text(words(R.string.play_computer_short), fontSize = if (large) 8.sp else 9.sp, lineHeight = 10.sp, color = muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        val playerSummary = if (table.coins != null) words(R.string.coin_players, table.players.size, table.players.count { it.computer })
+            else words(R.string.play_players_short, table.players.size)
+        Column(Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
+            .clickable(role = Role.Button, onClick = openPlayers).testTag("table-players")
+            .semantics(mergeDescendants = true) { contentDescription = playerSummary }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(playerSummary, modifier = Modifier.weight(1f).clearAndSetSemantics {}, color = muted, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Canvas(Modifier.size(8.dp, 12.dp).clearAndSetSemantics {}) {
+                    drawLine(muted, Offset(size.width * .25f, size.height * .2f), Offset(size.width * .75f, size.height * .5f), 1.5.dp.toPx())
+                    drawLine(muted, Offset(size.width * .75f, size.height * .5f), Offset(size.width * .25f, size.height * .8f), 1.5.dp.toPx())
+                }
+            }
+            val preview = table.players.sortedBy { it.id != ownerId }.take(if (table.settings.prizes.size > 6) 2 else 3)
+            preview.forEach { player ->
+                Row(Modifier.height(if (large) 28.dp else 34.dp).fillMaxWidth().clearAndSetSemantics {},
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                    AvatarBadge(player.avatar, size = 26.dp)
+                    Column(Modifier.weight(1f)) {
+                        if (!large) Text(player.name, fontSize = 11.sp, lineHeight = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        if (player.computer) Text(words(R.string.play_computer_short), fontSize = if (large) 8.sp else 9.sp, lineHeight = 10.sp, color = muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
                 }
             }
         }
