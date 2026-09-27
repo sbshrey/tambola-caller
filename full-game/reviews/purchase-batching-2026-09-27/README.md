@@ -1,0 +1,46 @@
+# Bounded purchase batching experiment — 27 September 2026
+
+**Rejected:** grouping up to four quick purchases per database transaction consistently increased purchase p95 in this comparison. The candidate passed the scoped correctness checks, but initial purchase p95 was **4,061–4,077 ms**, versus **3,223–3,443 ms** on the baseline. Repeated purchase p95 was **1,887–2,439 ms**, versus **1,373–1,385 ms**. The production draft was removed; the exact experiment is retained as an unapplied [patch](prototype.patch). No APK, live PC service or public bridge was changed.
+
+## Candidate and safety boundaries
+
+The [previous measurements](../allocation-windows-2026-09-27/README.md) showed substantial elapsed time in the serialized allocation/commit path. This prototype tested amortizing commits across independent players. It retained the four-request admission limit and eight-connection pool. After each request separately committed its authentication/rate-limit transaction, an application-scoped worker collected at most four entries with one one-millisecond coalescing delay. Friends purchases retained the existing direct path.
+
+Each group locked its guest rows in stable ID order before acquiring any room/wallet locks. Individual purchases used savepoints; business failures and recoverable statement errors rolled back only their entry. Connection/transaction failures aborted the group. Results were delivered only after commit. Existing-room resumptions ran separately after the group released its locks, retaining the already-recorded attempt. Exact receipt replays and changed-ID checks still used the original transaction logic. Cancelled queued entries were skipped; an executing purchase could commit after its caller disconnected and be recovered using its original command ID. Worker shutdown cancelled pending replies.
+
+[PostgreSQL savepoint rollback](https://www.postgresql.org/docs/16/sql-rollback-to.html) permits transaction-local recovery; it does not make successful entries durable before the outer commit. The implementation therefore never acknowledged a purchase before that commit. The bounded queue used [Kotlin channels](https://kotlinlang.org/docs/channels.html). Neither mechanism by itself guarantees better throughput.
+
+The prototype deliberately did not emit the old per-request quick-purchase JFR events: its thread-local synchronous scope cannot truthfully describe an asynchronous group. The existing allocation-window profiler also assumes one allocation per transaction. All load comparisons below were **unprofiled**. Group-aware diagnostics would be required before reconsidering this design for production. This experiment did not weaken commit durability or turn off failure handling to reduce timings.
+
+## Correctness and load evidence
+
+The initial **14 targeted tests** passed. After adding a permanent HTTP regression, all **15 targeted tests** passed: eight prototype-specific database/worker tests, three HTTP admission/failure tests and four existing quota/atomicity tests. [Initial summary](targeted-tests.json), [final candidate summary](candidate-tests.json), [candidate transcript](candidate-tests.txt). This was a scoped test run, not the complete server suite.
+
+The prototype tests verify one actual top-level PostgreSQL transaction for four successful purchases using a test-only trigger; entry-level business and SQL failure isolation; exact duplicate and changed-command behavior; existing-room resumption; an injected deferred commit failure; independent journal revocation after preparation; overlapping reverse-order groups; cancellation before and during execution; and worker shutdown/failure handling. The transaction probe is confined to that test and is absent from the burst benchmark. No histogram of actual group sizes was recorded in the HTTP load runs, so the experiment does not attribute the regression to a particular group size or timing phase.
+
+The retained [HTTP regression](../../server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseAdmissionTest.kt) launches four requests concurrently: two successful purchases, one insufficient balance and one injected receipt-storage failure. It verifies independent HTTP responses, committed quotas, no leaked purchase artifacts, exact successful receipt replays and a successful same-command retry after removing the fault. It passes on both the candidate and restored implementation. The candidate-only tests remain in the unapplied patch.
+
+An eight-player/two-wave HTTP smoke passed before the comparison. The large-run order was baseline → candidate → candidate → baseline; each used a fresh service, primary database and journal, with two waves reusing its clients/server. Heap (512 MiB), service processors (four), 320 players, forty transports shared by eight players, immediate subscriptions and unchanged fixture/client binaries were held constant. Baseline 1's Gradle completion preceded candidate 1's first purchase window by 16.35 seconds; the next wrapper had been launched while the earlier invocation was finishing cleanup, with no overlap between measured purchase windows. These runs did not involve an Android emulator or live-host deployment.
+
+| Run | Initial purchase p95 | Repeated purchase p95 |
+| --- | ---: | ---: |
+| Baseline 1 | 3,222.633 ms | 1,385.390 ms |
+| Candidate 1 | 4,060.528 ms | 1,886.757 ms |
+| Candidate 2 | 4,076.692 ms | 2,439.191 ms |
+| Baseline 2 | 3,442.699 ms | 1,372.990 ms |
+
+[Comparison and identities](comparison.json). Each of the eight large waves formed forty full eight-seat tables and observed all 320 subscriptions. All **2,560 primary purchases**, exact purchase/leave retries, refunds and wallet conservation checks passed; the smoke adds 16 primary purchases. These were cancelled loopback lobbies, not full games, external TLS/mobile performance, competitive human play or capacity acceptance. Neither baseline nor candidate meets the one-second target. The result rejects this configuration; it does not establish that every batching strategy would be slower, nor identify whether coalescing, savepoints, guest prelocks, scheduling or another phase caused the difference.
+
+## Preservation and reproduction
+
+The patch applies to baseline commit `735c3ca2bf96d2fb8573be74ceb4e36f5cce5eb2`; its normalized source hashes and patch digest are in [prototype identity](prototype-identity.json). Full canonical JAR manifests are retained for the [baseline](baseline-runtime.json) and [candidate](candidate-runtime.json). A verified baseline runtime copy supplied the comparison; no live installation files were swapped. The fixture verified each runtime identity again at completion.
+
+To reproduce, build the baseline with Java 17 and `:server:installDist -PserverOnly=true`, retain its library directory and canonical runtime hash, then apply the patch in an isolated checkout. Configure the explicitly named loopback test PostgreSQL database as described in [COIN_LOAD](../../server/COIN_LOAD.md). Run `:server:test` filtered to `QuickPurchaseBatchTest`, `PurchaseAdmissionTest` and `MatchRateAtomicityTest`; set `TAMBOLA_PG_BIN` for any broader backup tests. The new permanent HTTP case is included in the final repository version, not the prototype patch's baseline.
+
+For each `:server:coinPurchaseBurst` invocation use 320 players, two waves, immediate streams and eight players per transport. Set SQL, allocation-window, client, request, pool and diagnostic profiling to false. For baseline runs supply `TAMBOLA_COIN_LOAD_RUNTIME_LIB` and `TAMBOLA_COIN_LOAD_RUNTIME_SHA256` for the verified copy; remove those overrides for the candidate. Keep the ABBA order, preserve failed runs, and verify all receipt/refund/stream assertions before comparing latency. The retained patch is an experiment, not a deployment artifact.
+
+After restoration, **24 focused tests pass**, with zero failures, errors or skips: [summary](restored-tests.json), [transcript](restored-tests.txt). They cover coin matching, quota/atomicity, HTTP admission/failure behavior and the original request timing. A summary-collector variable error was corrected without rerunning tests; [collection note](collection-note.txt). Production source matches the baseline, the preserved patch passes `git apply --check`, and the rebuilt full runtime hash exactly matches the original baseline.
+
+[Identity and public-entry checks](identities-and-public-entry.json) pass at 14:37 UTC: the configured installed runtime, alpha32 asset digest and size are unchanged, the public directory is current, and HTTPS readiness and the invitation page return 200. This did not redownload the APK or repeat native acceptance. [Independent cleanup](cleanup.json) confirms all five owned server PIDs, ten fixture databases and temporary test schemas are gone. Test PostgreSQL on port 55432 is stopped; the serving database on 55433 remains running. No live game service or bridge restart occurred.
+
+The overall UI/UX goal remains active. Physical-phone/mobile-data/TalkBack acceptance, frame performance, production signing, native-rival gameplay and the quota-blocked editable Figma work remain open. Further latency work needs a new measured hypothesis; repeating this grouping configuration is not supported by these results.

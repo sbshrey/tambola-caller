@@ -1,0 +1,10 @@
+{
+  "baseCommit": "735c3ca2bf96d2fb8573be74ceb4e36f5cce5eb2",
+  "patchSha256": "f26093c4888446f4c2bcb00fbe283b0e76c9295ec4c02cba1fd3d98231fd08c4",
+  "sourceSha256": {
+    "full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt": "29499c006a274b8aa6ed06b6fd21e80eeddcda8d417eebb590b38517397ed1d5",
+    "full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt": "f3216a917b4841faa44151564bb189dfbcaad7af3c40c169c345090d8d6fb6ce",
+    "full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatcher.kt": "e06ab7e1c3eca48ce5e1e71fc740e9af2384a3a763a2716f4c263c30f1aae7b1",
+    "full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatchTest.kt": "91d2df8ae5714b73664df0d721f374192bd10a31f416450cf199f26430801f69"
+  }
+}

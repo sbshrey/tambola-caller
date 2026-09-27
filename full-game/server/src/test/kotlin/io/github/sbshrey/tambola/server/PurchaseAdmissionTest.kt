@@ -15,6 +15,51 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 class PurchaseAdmissionTest : PostgresTest() {
+    @Test fun `concurrent HTTP failures preserve other purchases and exact retries`() = testApplication {
+        application { roomsModule(database, service, runWorker = false) }
+        val actors = List(4) { service.register(GuestRequest("Mixed purchase QA $it"), "mixed-$it") }
+        val requests = List(4) { MatchRequest(UUID.randomUUID().toString(), 3) }
+        database.transaction {
+            CoinLedger.change(it, actors[1].playerId, "test:spend", -1500, now.get())
+            it.execute("CREATE FUNCTION reject_one_purchase() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN IF NEW.actor = ''${actors[2].playerId}'' THEN RAISE EXCEPTION ''injected receipt failure''; END IF; RETURN NEW; END;'")
+            it.execute("CREATE TRIGGER reject_one_purchase BEFORE INSERT ON match_receipts FOR EACH ROW EXECUTE FUNCTION reject_one_purchase()")
+        }
+        assertEquals(HttpStatusCode.OK, client.get("/health/ready").status)
+        suspend fun buy(index: Int) = client.post("/v1/matches") {
+            bearerAuth(actors[index].token); contentType(ContentType.Application.Json)
+            setBody(WireJson.encodeToString(requests[index]))
+        }
+        val replies = withTimeout(10_000) {
+            coroutineScope {
+                val start = CompletableDeferred<Unit>()
+                val pending = actors.indices.map { index -> async(Dispatchers.IO) { start.await(); buy(index) } }
+                start.complete(Unit); pending.awaitAll()
+            }
+        }
+        assertEquals(listOf(HttpStatusCode.OK, HttpStatusCode.Conflict, HttpStatusCode.ServiceUnavailable, HttpStatusCode.OK), replies.map { it.status })
+        assertEquals("coins_low", WireJson.decodeFromString<ApiError>(replies[1].bodyAsText()).code)
+        assertEquals("database_unavailable", WireJson.decodeFromString<ApiError>(replies[2].bodyAsText()).code)
+        assertEquals(listOf(1200L, 0L, 1500L, 1200L), actors.map { service.wallet(it.token).balance })
+        database.transaction { connection ->
+            assertEquals(2, connection.query("SELECT count(*) FROM match_receipts") { it.getInt(1) }.single())
+            assertEquals(2, connection.query("SELECT count(*) FROM room_participants") { it.getInt(1) }.single())
+            actors.forEach { actor ->
+                assertEquals(1, connection.query("SELECT requests FROM rate_limits WHERE bucket = ?", "match:${actor.playerId}") { it.getInt(1) }.single())
+            }
+            connection.execute("DROP TRIGGER reject_one_purchase ON match_receipts")
+        }
+        for (index in listOf(0, 3)) assertEquals(replies[index].bodyAsText(), buy(index).bodyAsText())
+        val retried = buy(2)
+        assertEquals(HttpStatusCode.OK, retried.status)
+        assertEquals(retried.bodyAsText(), buy(2).bodyAsText())
+        assertEquals(1200L, service.wallet(actors[2].token).balance)
+        database.transaction { connection ->
+            assertEquals(3, connection.query("SELECT count(*) FROM match_receipts") { it.getInt(1) }.single())
+            assertEquals(3, connection.query("SELECT count(*) FROM room_participants") { it.getInt(1) }.single())
+            assertEquals(3, connection.query("SELECT requests FROM rate_limits WHERE bucket = ?", "match:${actors[2].playerId}") { it.getInt(1) }.single())
+        }
+    }
+
     @Test fun `queued quick purchases leave wallets and friend tables available`() = testApplication {
         val arrived = AtomicInteger()
         val arrivals = createApplicationPlugin("PurchaseArrivalCounter") {

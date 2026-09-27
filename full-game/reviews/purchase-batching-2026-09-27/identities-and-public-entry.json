@@ -1,0 +1,28 @@
+{
+  "observedAt": "2026-09-27T14:37:45.794Z",
+  "passed": true,
+  "configuredInstalledRuntime": {
+    "serviceJarSha256": "3f49a9add7a603f8dbefcbc48cb978c8c1d456dc1b887ee949c957edabf51fbd",
+    "serviceRuntimeSha256": "f26bc71a48b349ad77fa722a7ebe7938ef1d94981859af1f4ac78aa03e95e372"
+  },
+  "restoredLocalRuntime": {
+    "serviceJarSha256": "2135b43b2bd7c75dc5a713031f92fc4c5757c39324e2c7a56e74fdd285b20e1b",
+    "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7"
+  },
+  "rejectedCandidateRuntime": "471c10ebd8612fb5934d09625f887340fbcdbb63a6bae47567b3b7c99d75d1a7",
+  "publishedApk": {
+    "url": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha32-call-history/Tambola-Internet-Beta-0.32.0.apk",
+    "sha256": "a6767986b21dd987fc6c9e15b6bd6552be30f58ce6aed5af4fc26eebdb33d7fa",
+    "bytes": 29192205,
+    "verification": "GitHub asset digest; no new APK build or download"
+  },
+  "publicEntry": {
+    "directoryUrl": "https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json",
+    "origin": "https://suspension-word-derived-loving.trycloudflare.com",
+    "expiresAt": 1790599580243,
+    "healthStatus": 200,
+    "invitationStatus": 200
+  },
+  "serverDeploymentChanged": false,
+  "publicBridgeRestarted": false
+}

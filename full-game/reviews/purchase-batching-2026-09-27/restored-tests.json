@@ -1,0 +1,34 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+    "tests": "14",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "33.9"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.MatchRateAtomicityTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "12.272"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.PurchaseAdmissionTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "7.641"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "0.321"
+  }
+]

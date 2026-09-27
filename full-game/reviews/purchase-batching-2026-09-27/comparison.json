@@ -1,0 +1,178 @@
+{
+  "completedRuns": 5,
+  "expectedRuns": 5,
+  "allRunsCollected": true,
+  "capacityAcceptance": false,
+  "runs": [
+    {
+      "name": "smoke",
+      "condition": "candidate",
+      "passed": true,
+      "runId": "561a758b25314950",
+      "serverPid": 21300,
+      "players": 8,
+      "runtimeSha256": "471c10ebd8612fb5934d09625f887340fbcdbb63a6bae47567b3b7c99d75d1a7",
+      "clientSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "fixtureSha256": "04953625e14192710ebdcd3d36a5da828db0f7fba66ce5804fb9714016bc242a",
+      "profilerSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+      "waves": [
+        {
+          "wave": 1,
+          "purchaseRoundTripMs": {
+            "count": 8,
+            "p50": 452.759,
+            "p95": 467.0172,
+            "p99": 467.0172,
+            "max": 467.0172
+          }
+        },
+        {
+          "wave": 2,
+          "purchaseRoundTripMs": {
+            "count": 8,
+            "p50": 72.4015,
+            "p95": 118.9766,
+            "p99": 118.9766,
+            "max": 118.9766
+          }
+        }
+      ]
+    },
+    {
+      "name": "baseline-1",
+      "condition": "baseline",
+      "passed": true,
+      "runId": "255449e5d9ad4a82",
+      "serverPid": 21428,
+      "players": 320,
+      "runtimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+      "clientSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "fixtureSha256": "04953625e14192710ebdcd3d36a5da828db0f7fba66ce5804fb9714016bc242a",
+      "profilerSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+      "waves": [
+        {
+          "wave": 1,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 2193.1294,
+            "p95": 3222.6325,
+            "p99": 3246.3792,
+            "max": 3387.1084
+          }
+        },
+        {
+          "wave": 2,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 815.4942,
+            "p95": 1385.3902,
+            "p99": 1445.3496,
+            "max": 1459.7847
+          }
+        }
+      ]
+    },
+    {
+      "name": "candidate-1",
+      "condition": "candidate",
+      "passed": true,
+      "runId": "9492f77a91f0454b",
+      "serverPid": 5000,
+      "players": 320,
+      "runtimeSha256": "471c10ebd8612fb5934d09625f887340fbcdbb63a6bae47567b3b7c99d75d1a7",
+      "clientSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "fixtureSha256": "04953625e14192710ebdcd3d36a5da828db0f7fba66ce5804fb9714016bc242a",
+      "profilerSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+      "waves": [
+        {
+          "wave": 1,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 2596.8517,
+            "p95": 4060.528,
+            "p99": 4174.5559,
+            "max": 4231.2039
+          }
+        },
+        {
+          "wave": 2,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 1063.4092,
+            "p95": 1886.7574,
+            "p99": 1937.4008,
+            "max": 1947.2757
+          }
+        }
+      ]
+    },
+    {
+      "name": "candidate-2",
+      "condition": "candidate",
+      "passed": true,
+      "runId": "baeee798bb574e3d",
+      "serverPid": 23008,
+      "players": 320,
+      "runtimeSha256": "471c10ebd8612fb5934d09625f887340fbcdbb63a6bae47567b3b7c99d75d1a7",
+      "clientSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "fixtureSha256": "04953625e14192710ebdcd3d36a5da828db0f7fba66ce5804fb9714016bc242a",
+      "profilerSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+      "waves": [
+        {
+          "wave": 1,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 2614.4952,
+            "p95": 4076.6915,
+            "p99": 4245.1358,
+            "max": 4378.5757
+          }
+        },
+        {
+          "wave": 2,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 1250.7532,
+            "p95": 2439.191,
+            "p99": 2552.2003,
+            "max": 2583.063
+          }
+        }
+      ]
+    },
+    {
+      "name": "baseline-2",
+      "condition": "baseline",
+      "passed": true,
+      "runId": "9c1886659ad24d40",
+      "serverPid": 9796,
+      "players": 320,
+      "runtimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+      "clientSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+      "fixtureSha256": "04953625e14192710ebdcd3d36a5da828db0f7fba66ce5804fb9714016bc242a",
+      "profilerSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+      "waves": [
+        {
+          "wave": 1,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 2330.3577,
+            "p95": 3442.6986,
+            "p99": 3519.2102,
+            "max": 3558.8086
+          }
+        },
+        {
+          "wave": 2,
+          "purchaseRoundTripMs": {
+            "count": 320,
+            "p50": 751.2851,
+            "p95": 1372.9896,
+            "p99": 1428.3376,
+            "max": 1450.6953
+          }
+        }
+      ]
+    }
+  ]
+}

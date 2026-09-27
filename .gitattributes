@@ -1,6 +1,9 @@
 * text=auto eol=lf
 # Unified-diff context lines are part of this retained rejected experiment.
 full-game/reviews/purchase-authentication-2026-09-27/candidate.patch -text -whitespace
+# Preserve this rejected patch's checksum and the original Gradle transcripts.
+full-game/reviews/purchase-batching-2026-09-27/prototype.patch -text -whitespace
+full-game/reviews/purchase-batching-2026-09-27/**/*.txt -text -whitespace
 *.png binary
 *.mp3 binary
 # Keep hashed raw diagnostic transcripts byte-identical across checkouts.

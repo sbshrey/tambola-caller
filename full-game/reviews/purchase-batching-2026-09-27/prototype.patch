@@ -1,0 +1,421 @@
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
+index dbbdd44..271746d 100644
+--- a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
+@@ -106,68 +106,114 @@ class RoomService(
+         validId(request.id)
+         request.previousFriendRound?.let(::validId)
+         authenticatedRate(token, "match", 20)
+-        return database.transaction { connection ->
+-            val guest = authenticate(connection, token, lock = true)
+-            val hash = digest(WireJson.encodeToString(request))
+-            val receipt = connection.query("SELECT request_hash, response FROM match_receipts WHERE actor = ? AND command_id = ?", guest.id, request.id) {
+-                Receipt(it.getString(1), it.getString(2))
+-            }.singleOrNull()
+-            if (receipt != null) {
+-                demand(receipt.hash == hash, 409, "id_reused", "This purchase ID already has different ticket choices.")
+-                return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
+-            }
+-            val now = clock()
+-            val existing = connection.query("""SELECT payload FROM rooms WHERE (payload::jsonb->'options'->>'coinGame')::boolean AND phase IN ('LOBBY','ACTIVE')
+-                AND expires_at > ? AND id IN (SELECT room_id FROM room_participants WHERE player_id = ?)
+-                AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
+-                ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
+-            val saved = if (existing != null) {
+-                // Re-entering an owned game never buys a second entry.
+-                touch(connection, existing, guest.id, now)
+-            } else {
+-                // The guest lock already serializes this player's entry. Prepare their
+-                // wallet before serializing shared lobby selection; all writes still
+-                // roll back together if the purchase cannot complete.
+-                CoinLedger.ensure(connection, guest.id, now)
+-                if (!request.friendTable) PurchaseTiming.allocation {
+-                    connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+-                }
+-                val purchaseAt = clock()
+-                val previous = request.previousFriendRound?.let { roundId ->
+-                    load(connection, requireNotNull(request.friendCode)).also {
+-                        member(it, guest.id)
+-                        demand(it.friendTable && it.phase == RoomPhase.FINISHED && it.round?.id == roundId,
+-                            409, "friend_round_changed", "Choose a completed friends round to play together again.")
+-                    }
++        return database.transaction { matchInTransaction(it, token, request) }
++    }
++
++    // Credentials must never appear in generated data-class text.
++    internal class PreparedQuickPurchase internal constructor(internal val token: String, internal val request: MatchRequest)
++    private class ResumeIndividually : RuntimeException()
++
++    internal fun prepareQuickPurchase(token: String, request: MatchRequest): PreparedQuickPurchase {
++        require(!request.friendTable && request.friendCode == null && request.previousFriendRound == null)
++        validId(request.id)
++        // Attempts stay committed even when the later purchase/savepoint/commit fails.
++        authenticatedRate(token, "match", 20)
++        return PreparedQuickPurchase(token, request)
++    }
++
++    internal fun matchPreparedBatch(entries: List<PreparedQuickPurchase>): List<Result<RoomUpdate>> {
++        require(entries.size in 1..4)
++        val results = database.transaction { connection ->
++            // Lock every actor in stable order before acquiring any room/wallet locks.
++            // Otherwise another request can hold a later guest while waiting for our room.
++            val hashes = connection.createArrayOf("text", entries.map { digest(it.token) }.distinct().toTypedArray())
++            try { connection.query("SELECT id FROM guests WHERE token_hash = ANY(?) ORDER BY id FOR UPDATE", hashes) { true } }
++            finally { hashes.free() }
++            entries.map { entry ->
++                val savepoint = connection.setSavepoint()
++                try { Result.success(matchInTransaction(connection, entry.token, entry.request, allowExisting = false)) }
++                catch (error: Exception) {
++                    if (error !is ApiFailure && error !is ResumeIndividually && error !is SQLException) throw error
++                    if (error is SQLException && (error.sqlState?.take(2) in setOf("08", "40") || connection.isClosed)) throw error
++                    connection.rollback(savepoint)
++                    Result.failure(error)
+                 }
+-                val joinCode = if (previous != null) previous.nextFriendCode else request.friendCode
+-                val waiting = when {
+-                    joinCode != null -> load(connection, joinCode).also {
+-                        demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
+-                        demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
+-                    }
+-                    request.friendTable -> null
+-                    else -> connection.query(OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
++                // At most four savepoints; commit releases them without extra round trips.
++            }
++        }
++        // Existing games can have arbitrary room order. Re-enter them independently,
++        // after the batch releases its locks, without consuming the attempt a second time.
++        return results.mapIndexed { index, result ->
++            if (result.exceptionOrNull() !is ResumeIndividually) result
++            else try {
++                val entry = entries[index]
++                Result.success(database.transaction { matchInTransaction(it, entry.token, entry.request) })
++            } catch (error: Exception) { Result.failure(error) }
++        }
++    }
++
++    private fun matchInTransaction(connection: Connection, token: String, request: MatchRequest, allowExisting: Boolean = true): RoomUpdate {
++        val guest = authenticate(connection, token, lock = true)
++        val hash = digest(WireJson.encodeToString(request))
++        val receipt = connection.query("SELECT request_hash, response FROM match_receipts WHERE actor = ? AND command_id = ?", guest.id, request.id) {
++            Receipt(it.getString(1), it.getString(2))
++        }.singleOrNull()
++        if (receipt != null) {
++            demand(receipt.hash == hash, 409, "id_reused", "This purchase ID already has different ticket choices.")
++            return WireJson.decodeFromString<RoomUpdate>(receipt.response)
++        }
++        val now = clock()
++        val existing = connection.query("""SELECT payload FROM rooms WHERE (payload::jsonb->'options'->>'coinGame')::boolean AND phase IN ('LOBBY','ACTIVE')
++            AND expires_at > ? AND id IN (SELECT room_id FROM room_participants WHERE player_id = ?)
++            AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
++            ORDER BY id LIMIT 1""" + if (allowExisting) " FOR UPDATE" else "", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
++        val saved = if (existing != null) {
++            if (!allowExisting) throw ResumeIndividually()
++            // Re-entering an owned game never buys a second entry.
++            touch(connection, existing, guest.id, now)
++        } else {
++            // The guest lock already serializes this player's entry. Prepare their
++            // wallet before serializing shared lobby selection; all writes still
++            // roll back together if the purchase cannot complete.
++            CoinLedger.ensure(connection, guest.id, now)
++            if (!request.friendTable) PurchaseTiming.allocation {
++                connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
++            }
++            val purchaseAt = clock()
++            val previous = request.previousFriendRound?.let { roundId ->
++                load(connection, requireNotNull(request.friendCode)).also {
++                    member(it, guest.id)
++                    demand(it.friendTable && it.phase == RoomPhase.FINISHED && it.round?.id == roundId,
++                        409, "friend_round_changed", "Choose a completed friends round to play together again.")
+                 }
+-                val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
+-                    coinOptions().let { if (request.friendTable) it.copy(computerPlayers = 0) else it }, emptyList(),
+-                    purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
+-                    startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
+-                    connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
+-                        it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it), !request.friendTable)
++            }
++            val joinCode = if (previous != null) previous.nextFriendCode else request.friendCode
++            val waiting = when {
++                joinCode != null -> load(connection, joinCode).also {
++                    demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
++                    demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
+                 }
+-                // The previous-room lock serializes simultaneous replay clicks. Linking and
+-                // the first debit commit together, so a failed purchase cannot strand the group.
+-                if (previous != null && previous.nextFriendCode == null) save(connection, previous.copy(nextFriendCode = room.code))
+-                demand(room.expiresAt > clock() && (room.friendTable || requireNotNull(room.startsAt) > clock()), 409, "sales_closed", "That round is starting. Try Play again.")
+-                changed(connection, room.copy(
+-                    members = room.members + Member(guest.id, guest.name, guest.avatar, purchaseAt, ready = true, lastSeen = purchaseAt),
+-                    purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", purchaseAt, before = room)
++                request.friendTable -> null
++                else -> connection.query(OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
+             }
+-            val response = update(connection, saved, guest.id, null)
+-            connection.execute("INSERT INTO match_receipts VALUES (?, ?, ?, ?, ?)", guest.id, request.id, hash, saved.id, WireJson.encodeToString(response))
+-            response
++            val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
++                coinOptions().let { if (request.friendTable) it.copy(computerPlayers = 0) else it }, emptyList(),
++                purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
++                startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
++                connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
++                    it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it), !request.friendTable)
++            }
++            // The previous-room lock serializes simultaneous replay clicks. Linking and
++            // the first debit commit together, so a failed purchase cannot strand the group.
++            if (previous != null && previous.nextFriendCode == null) save(connection, previous.copy(nextFriendCode = room.code))
++            demand(room.expiresAt > clock() && (room.friendTable || requireNotNull(room.startsAt) > clock()), 409, "sales_closed", "That round is starting. Try Play again.")
++            changed(connection, room.copy(
++                members = room.members + Member(guest.id, guest.name, guest.avatar, purchaseAt, ready = true, lastSeen = purchaseAt),
++                purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", purchaseAt, before = room)
+         }
++        val response = update(connection, saved, guest.id, null)
++        connection.execute("INSERT INTO match_receipts VALUES (?, ?, ?, ?, ?)", guest.id, request.id, hash, saved.id, WireJson.encodeToString(response))
++        return response
+     }
+ 
+     fun revoke(token: String) = database.transaction { connection ->
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt
+index 6f6f4df..d0a49ce 100644
+--- a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt
+@@ -97,6 +97,8 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
+     // Quick allocation is serialized in PostgreSQL. Bound its waiting borrowers
+     // to half the eight-connection pool, leaving room for active games and friends.
+     val quickPurchases = Semaphore(4)
++    val quickBatcher = QuickPurchaseBatcher(this, service::matchPreparedBatch)
++    monitor.subscribe(ApplicationStopped) { quickBatcher.close() }
+     install(OperationsPlugin) { this.operations = operations }
+     install(ContentNegotiation) { json(WireJson) }
+     install(WebSockets) { pingPeriod = 15.seconds; timeout = 30.seconds; maxFrameSize = 1_024; masking = false }
+@@ -143,7 +145,9 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
+             post("/matches") {
+                 val body = call.body<MatchRequest>()
+                 val token = call.bearer()
+-                val timing = PurchaseTiming.start(body.friendTable)
++                // The experimental async grouping path has no truthful per-request SQL scope.
++                // Keep legacy timing on friends only until group-aware diagnostics exist.
++                val timing = if (body.friendTable) PurchaseTiming.start(true) else null
+                 var success = false
+                 try {
+                     suspend fun purchase(): RoomUpdate {
+@@ -152,7 +156,10 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
+                             timing?.service { service.match(token, body) } ?: service.match(token, body)
+                         }
+                     }
+-                    val result = if (body.friendTable) purchase() else quickPurchases.withPermit { purchase() }
++                    val result = if (body.friendTable) purchase() else quickPurchases.withPermit {
++                        val prepared = withContext(Dispatchers.IO) { service.prepareQuickPurchase(token, body) }
++                        quickBatcher.submit(prepared)
++                    }
+                     call.respond(result)
+                     success = true
+                 } finally { timing?.finish(success) }
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatcher.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatcher.kt
+new file mode 100644
+index 0000000..778da86
+--- /dev/null
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatcher.kt
+@@ -0,0 +1,49 @@
++package io.github.sbshrey.tambola.server
++
++import io.github.sbshrey.tambola.protocol.RoomUpdate
++import kotlinx.coroutines.*
++import kotlinx.coroutines.channels.Channel
++
++/** Experimental bounded grouping; the route retains its four admission permits. */
++internal class QuickPurchaseBatcher(
++    scope: CoroutineScope,
++    private val purchase: (List<RoomService.PreparedQuickPurchase>) -> List<Result<RoomUpdate>>,
++) : AutoCloseable {
++    private class Pending(val purchase: RoomService.PreparedQuickPurchase, val reply: CompletableDeferred<RoomUpdate>)
++    private val queue = Channel<Pending>(4, onUndeliveredElement = { it.reply.cancel() })
++    private val worker = scope.launch {
++        val current = mutableListOf<Pending>()
++        try {
++            for (first in queue) {
++                current += first
++                // One bounded coalescing interval, never a wait for a full batch.
++                delay(1)
++                while (current.size < 4) current += queue.tryReceive().getOrNull() ?: break
++                current.removeAll { !it.reply.isActive }
++                if (current.isNotEmpty()) {
++                    try {
++                        val results = withContext(Dispatchers.IO) { purchase(current.map { it.purchase }) }
++                        check(results.size == current.size)
++                        current.zip(results).forEach { (pending, result) ->
++                            result.fold(pending.reply::complete, pending.reply::completeExceptionally)
++                        }
++                    } catch (error: CancellationException) { throw error }
++                    catch (error: Exception) { current.forEach { it.reply.completeExceptionally(error) } }
++                }
++                current.clear()
++            }
++        } finally {
++            val stopped = CancellationException("Purchase worker stopped")
++            current.forEach { it.reply.cancel(stopped) }
++            queue.cancel(stopped)
++        }
++    }
++
++    suspend fun submit(purchase: RoomService.PreparedQuickPurchase): RoomUpdate {
++        val reply = CompletableDeferred<RoomUpdate>()
++        try { queue.send(Pending(purchase, reply)); return reply.await() }
++        finally { reply.cancel() }
++    }
++
++    override fun close() { queue.cancel(); worker.cancel() }
++}
+diff --git a/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatchTest.kt b/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatchTest.kt
+new file mode 100644
+index 0000000..2202c55
+--- /dev/null
++++ b/full-game/server/src/test/kotlin/io/github/sbshrey/tambola/server/QuickPurchaseBatchTest.kt
+@@ -0,0 +1,148 @@
++package io.github.sbshrey.tambola.server
++
++import io.github.sbshrey.tambola.protocol.*
++import kotlinx.coroutines.*
++import org.junit.Assert.*
++import org.junit.Test
++import java.sql.SQLException
++import java.util.UUID
++import java.util.concurrent.CountDownLatch
++import java.util.concurrent.Executors
++import java.util.concurrent.TimeUnit
++import java.util.concurrent.Callable
++
++class QuickPurchaseBatchTest : PostgresTest() {
++    private fun id() = UUID.randomUUID().toString()
++    private fun guest() = service.register(GuestRequest("Batch QA"), id())
++    private fun prepare(actor: GuestCredentials, request: MatchRequest = MatchRequest(id(), 3)) = service.prepareQuickPurchase(actor.token, request)
++    private fun count(table: String) = database.transaction { it.query("SELECT count(*) FROM $table") { r -> r.getInt(1) }.single() }
++    private fun attempts(actor: GuestCredentials) = database.transaction { it.query("SELECT requests FROM rate_limits WHERE bucket = ?", "match:${actor.playerId}") { r -> r.getInt(1) }.single() }
++
++    @Test fun `four purchases share one top level transaction with independent exact receipts`() {
++        val actors = List(4) { guest() }; val requests = List(4) { MatchRequest(id(), it + 1) }
++        database.transaction {
++            it.execute("CREATE TABLE transaction_probe (transaction_id text)")
++            it.execute("CREATE FUNCTION probe_transaction() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN INSERT INTO transaction_probe VALUES (pg_current_xact_id()::text); RETURN NEW; END;'")
++            it.execute("CREATE TRIGGER probe_transaction AFTER INSERT ON match_receipts FOR EACH ROW EXECUTE FUNCTION probe_transaction()")
++        }
++        val results = service.matchPreparedBatch(actors.mapIndexed { i, actor -> prepare(actor, requests[i]) }).map { it.getOrThrow() }
++        assertEquals(1, results.map { it.snapshot.roomId }.distinct().size)
++        assertEquals(4, count("transaction_probe"))
++        assertEquals(1, database.transaction { it.query("SELECT count(DISTINCT transaction_id) FROM transaction_probe") { r -> r.getInt(1) }.single() })
++        actors.forEachIndexed { i, actor ->
++            assertEquals(results[i], service.match(actor.token, requests[i]))
++            assertEquals(1500L - 100L * (i + 1), service.wallet(actor.token).balance)
++        }
++        assertEquals(4, count("match_receipts")); assertEquals(8, count("coin_ledger"))
++    }
++
++    @Test fun `business and SQL failures roll back only their entry including room ledger and receipt`() {
++        val actors = List(4) { guest() }; val requests = List(4) { MatchRequest(id(), 3) }
++        database.transaction {
++            CoinLedger.change(it, actors[1].playerId, "test:spend", -1500, now.get())
++            it.execute("CREATE FUNCTION reject_one() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN IF NEW.actor = ''${actors[2].playerId}'' THEN RAISE EXCEPTION ''injected''; END IF; RETURN NEW; END;'")
++            it.execute("CREATE TRIGGER reject_one BEFORE INSERT ON match_receipts FOR EACH ROW EXECUTE FUNCTION reject_one()")
++        }
++        val results = service.matchPreparedBatch(actors.mapIndexed { i, actor -> prepare(actor, requests[i]) })
++        assertTrue(results[0].isSuccess); assertTrue(results[3].isSuccess)
++        assertEquals("coins_low", (results[1].exceptionOrNull() as ApiFailure).code)
++        assertTrue(results[2].exceptionOrNull() is SQLException)
++        assertEquals(1, count("rooms")); assertEquals(2, count("match_receipts")); assertEquals(2, count("room_participants"))
++        assertEquals(listOf(1200L, 0L, 1500L, 1200L), actors.map { service.wallet(it.token).balance })
++        actors.forEach { assertEquals(1, attempts(it)) }
++        database.transaction { it.execute("DROP TRIGGER reject_one ON match_receipts") }
++        val retry = service.match(actors[2].token, requests[2])
++        assertEquals(retry, service.match(actors[2].token, requests[2]))
++        assertEquals(3, count("match_receipts")); assertEquals(1200L, service.wallet(actors[2].token).balance)
++    }
++
++    @Test fun `duplicate and changed commands do not double debit and owned games resume independently`() {
++        val actor = guest(); val request = MatchRequest(id(), 3)
++        val commands = listOf(request, request, request.copy(tickets = 4), MatchRequest(id(), 6))
++        val results = service.matchPreparedBatch(commands.map { prepare(actor, it) })
++        assertEquals(results[0].getOrThrow(), results[1].getOrThrow())
++        assertEquals("id_reused", (results[2].exceptionOrNull() as ApiFailure).code)
++        assertEquals(results[0].getOrThrow().snapshot.roomId, results[3].getOrThrow().snapshot.roomId)
++        assertEquals(1200L, service.wallet(actor.token).balance)
++        assertEquals(2, count("match_receipts")); assertEquals(2, count("coin_ledger")); assertEquals(4, attempts(actor))
++    }
++
++    @Test fun `a commit failure acknowledges nobody and preserves quota for exact retries`() {
++        val actors = List(4) { guest() }; val requests = List(4) { MatchRequest(id(), 3) }
++        database.transaction {
++            it.execute("CREATE FUNCTION reject_commit() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN RAISE EXCEPTION ''injected commit failure''; END;'")
++            it.execute("CREATE CONSTRAINT TRIGGER reject_commit AFTER INSERT ON match_receipts DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION reject_commit()")
++        }
++        assertThrows(SQLException::class.java) { service.matchPreparedBatch(actors.mapIndexed { i, actor -> prepare(actor, requests[i]) }) }
++        assertEquals(0, count("rooms")); assertEquals(0, count("match_receipts")); assertEquals(0, count("room_participants"))
++        actors.forEach { assertEquals(1, attempts(it)); assertEquals(1500L, service.wallet(it.token).balance) }
++        database.transaction { it.execute("DROP TRIGGER reject_commit ON match_receipts") }
++        val results = service.matchPreparedBatch(actors.mapIndexed { i, actor -> prepare(actor, requests[i]) })
++        actors.forEachIndexed { i, actor -> assertEquals(results[i].getOrThrow(), service.match(actor.token, requests[i])) }
++        assertEquals(4, count("match_receipts"))
++    }
++
++    @Test fun `revocation between preparation and allocation is checked against the independent journal`() {
++        val journal = DeletionJournal(additionalDatabase()).also { it.migrate() }
++        service = RoomService(database, now::get, journal); service.replayDeletions()
++        val revoked = guest(); val valid = guest()
++        val entries = listOf(prepare(revoked), prepare(valid))
++        journal.revoke(revoked.playerId, now.get())
++        val results = service.matchPreparedBatch(entries)
++        assertEquals("unauthorized", (results[0].exceptionOrNull() as ApiFailure).code)
++        assertTrue(results[1].isSuccess); assertEquals(1, count("match_receipts")); assertEquals(1, attempts(revoked))
++        assertEquals(1500L, database.transaction { CoinLedger.open(it, revoked.playerId, now.get()).balance })
++    }
++
++    @Test fun `overlapping reversed batches serialize guests and replay instead of double spending`() {
++        val actors = List(4) { guest() }; val requests = List(4) { MatchRequest(id(), 3) }
++        val forward = actors.mapIndexed { i, actor -> prepare(actor, requests[i]) }
++        val reverse = actors.mapIndexed { i, actor -> prepare(actor, requests[i]) }.reversed()
++        val executor = Executors.newFixedThreadPool(2)
++        try {
++            val start = CountDownLatch(1)
++            val futures = listOf(forward, reverse).map { batch -> executor.submit(Callable { start.await(); service.matchPreparedBatch(batch).map { it.getOrThrow() } }) }
++            start.countDown()
++            assertEquals(futures[0].get(10, TimeUnit.SECONDS), futures[1].get(10, TimeUnit.SECONDS).reversed())
++            assertEquals(4, count("match_receipts")); assertEquals(8, count("coin_ledger"))
++            actors.forEach { assertEquals(1200L, service.wallet(it.token).balance) }
++        } finally { executor.shutdownNow(); executor.awaitTermination(10, TimeUnit.SECONDS) }
++    }
++
++    @Test fun `cancelled queued player is skipped while an executing purchase keeps its exact receipt`() = runBlocking {
++        val first = guest(); val queued = guest()
++        val request = MatchRequest(id(), 3)
++        val entered = CompletableDeferred<Unit>(); val release = CountDownLatch(1)
++        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
++        val batcher = QuickPurchaseBatcher(scope) { batch -> entered.complete(Unit); check(release.await(5, TimeUnit.SECONDS)); service.matchPreparedBatch(batch) }
++        try {
++            val active = async { batcher.submit(prepare(first, request)) }
++            entered.await()
++            val waiting = async(start = CoroutineStart.UNDISPATCHED) { batcher.submit(prepare(queued)) }
++            waiting.cancelAndJoin(); active.cancelAndJoin()
++            release.countDown()
++            withTimeout(5_000) { while (count("match_receipts") != 1) delay(10) }
++            assertEquals(1200L, service.match(first.token, request).snapshot.wallet!!.balance)
++            assertEquals(1500L, service.wallet(queued.token).balance); assertEquals(1, count("match_receipts"))
++        } finally { release.countDown(); batcher.close(); scope.cancel(); scope.coroutineContext[Job]!!.join() }
++    }
++
++    @Test fun `worker close releases queued callers and independent failures do not kill worker`() = runBlocking {
++        val actor = guest(); val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
++        val entered = CompletableDeferred<Unit>(); val release = CountDownLatch(1)
++        var calls = 0
++        val batcher = QuickPurchaseBatcher(scope) { batch ->
++            if (++calls == 1) batch.map { Result.failure(ApiFailure(409, "injected", "injected")) }
++            else { entered.complete(Unit); check(release.await(5, TimeUnit.SECONDS)); service.matchPreparedBatch(batch) }
++        }
++        try {
++            try { batcher.submit(prepare(actor)); fail("Expected independent failure") } catch (error: ApiFailure) { assertEquals("injected", error.code) }
++            val active = async { batcher.submit(prepare(actor)) }
++            entered.await()
++            val queued = async(start = CoroutineStart.UNDISPATCHED) { batcher.submit(prepare(guest())) }
++            batcher.close(); release.countDown()
++            withTimeout(5_000) { active.join(); queued.join() }
++            assertTrue(active.isCancelled); assertTrue(queued.isCancelled)
++        } finally { release.countDown(); batcher.close(); scope.cancel(); scope.coroutineContext[Job]!!.join() }
++    }
++}

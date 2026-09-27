@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-27T14:38:13.2179851Z",
+  "passed": true,
+  "ownedServerPids": [
+    21300,
+    21428,
+    5000,
+    23008,
+    9796
+  ],
+  "ownedServerProcessesRemaining": 0,
+  "ownedDatabasesChecked": 10,
+  "counts": {
+    "ownedDatabasesRemaining": 0,
+    "otherTestConnections": 0,
+    "remainingLoadDatabases": 0,
+    "testSchemasRemaining": 0
+  },
+  "testDatabasePort": 55432,
+  "testDatabaseStopped": true,
+  "servingDatabasePort": 55433,
+  "servingDatabasePid": 14100
+}

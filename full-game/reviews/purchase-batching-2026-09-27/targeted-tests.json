@@ -1,0 +1,26 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.server.MatchRateAtomicityTest",
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "13.334"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.PurchaseAdmissionTest",
+    "tests": "2",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "6.361"
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.QuickPurchaseBatchTest",
+    "tests": "8",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "18.058"
+  }
+]
