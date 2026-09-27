@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-27T08:09:18.722Z",
+  "origin": "https://sleep-equilibrium-cooler-marking.trycloudflare.com",
+  "checks": [
+    "public system-trusted HTTPS",
+    "directory agrees with protocol 4 service",
+    "internal and non-game paths blocked",
+    "unauthenticated purchase rejected"
+  ],
+  "scope": "Public endpoint requests from this PC; no physical-phone or cellular-network acceptance"
+}

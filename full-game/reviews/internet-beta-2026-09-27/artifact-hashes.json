@@ -1,0 +1,22 @@
+{
+  "build-validation.json": "78195a5f827ceebd61813fcdcf3be5f50acbb3ff6505c5d30eac224ae4657add",
+  "final-public-entry.json": "6819a121f04413472eea3c8dcd6b49cd9cd4e485553c1e61dc2e6673c1fa49b6",
+  "full-round/coin-release-failure.png": "45ca83aefd1a7aecf3829fb83b2aefff2bc94174f89b3192c350c4bae8f1d8d9",
+  "full-round/coin-release-failure.xml": "459ad2e352ee364efcd1513ab417e76b67e8fa56e2d70f4750af613343c536e4",
+  "full-round/coin-release-journey.json": "671f0f3710131e8c31fa9c25262ec2ffb79207562c0509eed070a9d6ef02a1cd",
+  "full-round/coin-release-results.png": "4b830ea837f52029c1b2867f1376684c239db8e9eac7c131653a2b00d3737bff",
+  "full-round/instrumentation.txt": "14d52bfbbb97561a51df17d377fb34b414e7c946a41ec9ac70632e2955ea9897",
+  "full-round/public-entry.json": "b250041e38729e94e88242e359b156ffecce2ac0374243d743fea1c6f6893a89",
+  "full-round/validation.json": "589749f685276ec96210b74e4d34d63fd8823af9ac6199939947685e8f412221",
+  "initial-driver-failure/cleanup-welcome.xml": "896e2b1e17b17a652640ae284574889594e03295afcebc4bbc8f42bb7c3e5be5",
+  "initial-driver-failure/coin-release-failure.png": "f314b53b0457298fbba883a1b629f4ade43d25649737c94b925fd10ba528614a",
+  "initial-driver-failure/coin-release-failure.xml": "37d310c4c83bc45734289ebe41e8bb0cc693469a0447c2c889a562f46f09dece",
+  "initial-driver-failure/coin-release-journey.json": "056d46b7436ecafd509fbf1596817f234d97b6b7980757f4bb8e769e09c797ef",
+  "initial-driver-failure/instrumentation.txt": "bb5d55ef7c916af729d6b9a063ba8f0190678d1536a25109cb194b3946b2635f",
+  "initial-driver-failure/validation.json": "83e89463e653c38b0ce0ea57112f13f643a5823ce203fe0175b89a8e8d111397",
+  "purchase-refund/coin-release-journey.json": "62b17e1d48c39c35a39741f779620d4272cddd8cedadfc77b1a0233b308b8585",
+  "purchase-refund/instrumentation.txt": "71c4affa513e5302826790b37f5e374efb8a04e942551d8c14397899eb79cd64",
+  "purchase-refund/validation.json": "c506f7ae11a8ea5a9cff4bce1037283a613103c09666d7669f6c9fc3ecb05d12",
+  "README.md": "fac64c14fd687b760497cb08ad0516518318aadbf24ae14502d33dad8d800cd2",
+  "RELEASE_NOTES.md": "06292a9909a887c081533cf199c5ee96dc62aece06ff46f94efec3689d8662e2"
+}

@@ -1,0 +1,83 @@
+{
+  "completed": false,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; one passive HTTP QA peer and two labelled computer opponents",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 78,
+  "claims": 6,
+  "stage": "failed",
+  "elapsedMs": 435273,
+  "peerTicketQuantities": [
+    6
+  ],
+  "expectedPool": 1800,
+  "balanceBefore": 1500,
+  "labelledComputers": 2,
+  "computerFundedCoins": 600,
+  "ownedTickets": 6,
+  "distinctOwnNumbers": 90,
+  "coldProcessRestoredMarks": 20,
+  "publicWinnerSharesVerified": true,
+  "prizeWinners": [
+    {
+      "prize": "EARLY_FIVE",
+      "coins": 180,
+      "winningTickets": 1,
+      "computerTickets": 1,
+      "ownTickets": 0
+    },
+    {
+      "prize": "CORNERS",
+      "coins": 180,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "TOP_LINE",
+      "coins": 180,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "MIDDLE_LINE",
+      "coins": 180,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "BOTTOM_LINE",
+      "coins": 180,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "HOUSE_ONE",
+      "coins": 630,
+      "winningTickets": 1,
+      "computerTickets": 0,
+      "ownTickets": 1
+    },
+    {
+      "prize": "HOUSE_TWO",
+      "coins": 270,
+      "winningTickets": 1,
+      "computerTickets": 1,
+      "ownTickets": 0
+    }
+  ],
+  "computerWinnings": 450,
+  "humanWinnings": 1350,
+  "finishedCalls": 78,
+  "settledWinnings": 1350,
+  "finalBalance": 2250,
+  "rememberedSixTickets": true,
+  "failureType": "IllegalStateException",
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 1
+}

@@ -64,7 +64,12 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     }
     private fun find(tag: String) = device.findObject(By.res(tag))
     private fun node(tag: String, timeout: Long = 10_000): UiObject2 = checkNotNull(device.wait(Until.findObject(By.res(tag)), timeout)) { "Missing UI control $tag" }
-    private fun tap(tag: String) { val control = node(tag); check(control.isEnabled) { "$tag is disabled" }; control.click() }
+    private fun tap(tag: String) {
+        until { find(tag)?.isEnabled == true }
+        val control = node(tag)
+        check(control.isEnabled) { "$tag is disabled" }
+        control.click()
+    }
     private fun textButton(text: String): UiObject2 {
         val labels = checkNotNull(device.wait(Until.findObjects(By.text(text)), 10_000))
         for (label in labels.asReversed()) {
@@ -163,6 +168,31 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             report.put("labelledComputers", 2).put("computerFundedCoins", 600)
         }
         checkpoint("playing")
+    }
+
+    /** Focused acceptance of a purchase, enabled cancellation, exact refund and cold wallet recovery. */
+    fun verifyPurchaseRefund() = captureFailure {
+        report.put("scope", "External native UI purchase/cancellation/refund and cold wallet recovery over public HTTPS; no full round in this focused test")
+        checkpoint("fresh-purchase-refund-profile")
+        node("coin-play")
+        verifyEmptyProfile()
+        assertEquals(1500L, balance())
+        tap("buy-tickets-3")
+        createdMain = true
+        tap("coin-play")
+        until { find("cancel-match")?.isEnabled == true }
+        assertEquals(1200L, balance())
+        tap("cancel-match")
+        until { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        assertTrue(node("buy-tickets-3").isChecked)
+        device.executeShellCommand("am force-stop $target")
+        device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        assertTrue(node("buy-tickets-3").isChecked)
+        assertNull(find("lobby-welcome-heading"))
+        report.put("purchaseCoins", 300).put("walletAfterPurchase", 1200).put("walletAfterRefund", 1500)
+            .put("walletAfterColdRestart", 1500).put("rememberedThreeTickets", true).put("completed", true)
+        checkpoint("purchase-refund-verified")
     }
 
     private fun showTicket(ordinal: Int) {

@@ -1,0 +1,27 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in fullRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: cancel-match is disabled
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.tap(CoinJourney.kt:67)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:353)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda6.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:430)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:244)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:22)
+
+
+Time: 435.761
+There was 1 failure:
+1) fullRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: cancel-match is disabled
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.tap(CoinJourney.kt:67)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:353)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda6.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:430)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:244)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.fullRound(InternetBetaTest.kt:22)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

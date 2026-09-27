@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([string]$Serial = 'emulator-5554')
+param([string]$Serial = 'emulator-5554', [ValidateSet('fullRound','purchaseRefund')][string]$Test = 'fullRound')
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $adb = Join-Path $env:ANDROID_SDK_ROOT 'platform-tools/adb.exe'
@@ -18,7 +18,7 @@ if ((Invoke-Adb @('shell','getprop','sys.boot_completed')).Trim() -ne '1') { thr
 if (Invoke-Adb @('reverse','--list')) { throw 'Remove fixture adb forwarding before public acceptance' }
 Invoke-Adb @('install','-r',$app)
 Invoke-Adb @('install','-r',$driver)
-$testArgs = @('-s',$Serial,'shell','am','instrument','-w','-e','class','io.github.sbshrey.tambola.benchmark.InternetBetaTest#fullRound','-e','tambolaInternetBeta','true','io.github.sbshrey.tambola.benchmark/androidx.test.runner.AndroidJUnitRunner')
+$testArgs = @('-s',$Serial,'shell','am','instrument','-w','-e','class',"io.github.sbshrey.tambola.benchmark.InternetBetaTest#$Test",'-e','tambolaInternetBeta','true','io.github.sbshrey.tambola.benchmark/androidx.test.runner.AndroidJUnitRunner')
 $runner = Start-Process -FilePath $adb -ArgumentList $testArgs -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $evidence 'instrumentation.txt') -RedirectStandardError (Join-Path $evidence 'instrumentation-error.txt')
 if (!$runner.WaitForExit(900000)) { $runner.Kill($true); throw 'Internet beta test exceeded fifteen minutes; inspect and clean QA profiles' }
 $transcript = Get-Content -LiteralPath (Join-Path $evidence 'instrumentation.txt') -Raw

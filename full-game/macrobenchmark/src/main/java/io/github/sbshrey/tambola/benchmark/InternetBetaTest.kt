@@ -9,6 +9,16 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class InternetBetaTest {
+    @Test fun purchaseRefund() {
+        assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaInternetBeta") == "true")
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+        val target = "io.github.sbshrey.tambola.game.beta"
+        device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+        CoinJourney(instrumentation.context, device, computerOpponents = true, target = target,
+            discoveryUrl = PublicEndpointDirectory.DIRECTORY_URL).use { it.verifyPurchaseRefund() }
+    }
+
     @Test fun fullRound() {
         assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaInternetBeta") == "true")
         val instrumentation = InstrumentationRegistry.getInstrumentation()

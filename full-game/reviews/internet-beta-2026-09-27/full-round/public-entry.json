@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-27T07:53:32.839Z",
+  "origin": "https://receptors-screens-albums-enzyme.trycloudflare.com",
+  "checks": [
+    "public system-trusted HTTPS",
+    "directory agrees with protocol 4 service",
+    "internal and non-game paths blocked",
+    "unauthenticated purchase rejected"
+  ],
+  "scope": "Public endpoint requests from this PC; no physical-phone or cellular-network acceptance"
+}
