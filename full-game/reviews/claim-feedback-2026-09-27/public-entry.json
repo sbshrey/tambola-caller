@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-27T11:43:59.274Z",
+  "origin": "https://enquiries-location-compile-hottest.trycloudflare.com",
+  "checks": [
+    "public system-trusted HTTPS",
+    "directory agrees with protocol 4 service",
+    "code-only friend landing available",
+    "internal and non-game paths blocked",
+    "unauthenticated purchase rejected"
+  ],
+  "scope": "Public endpoint requests from this PC; no physical-phone or cellular-network acceptance"
+}

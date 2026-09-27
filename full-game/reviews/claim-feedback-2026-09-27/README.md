@@ -29,3 +29,9 @@ The exact final APK passed `InternetBetaTest#friendsRound`: **JUnit OK (1 test),
 APK SHA-256: `e2c7211e076bc24020c8dd8770d845b56f8eb8f222e1fe820bc940399d06b14f`, 29,141,285 bytes, version 29 / `0.29.0-alpha29-internet-beta`. The PC game service remains on the previously deployed purchase-admission build; this release changes app presentation and the invitation page's download destination.
 
 Physical-phone cellular connectivity, touch/audio/frame performance, production signing and the remaining editable design update are not established by emulator evidence. Hosting still depends on the PC staying powered, signed in and connected. Login startup and disabled AC idle sleep were confirmed without changing power settings.
+
+## Publication and PC hosting
+
+[Alpha29 is published](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha29-claim-feedback) from `4ae6d6d3e38a6c35792d7fd7754feb3fdbf526fc`. GitHub's asset digest and an anonymous HTTP 200 download match the tested APK's checksum and byte count. [Publication verification](published-release.json).
+
+A read-only database check found zero unfinished unexpired games before updating the public invitation page's download destination. Its previous file is retained under the protected host's upgrades folder. The game service, databases and schemas kept running unchanged. Restarting the public bridge rotated its Quick Tunnel hostname; the directory branch was updated, while GitHub's raw-content cache initially continued returning the previous address. [Deployment record](gateway-update.json), [public landing check](deployed-landing.json). At 11:43 UTC, the normal minute-keyed directory request resolved the new address. The final [public-entry check](public-entry.json) passed through that directory, including health, invitation availability, internal-route blocking and unauthorized-purchase rejection. The owned emulator was stopped after QA cleanup, while the PC host remained online.
