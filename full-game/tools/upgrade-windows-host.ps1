@@ -65,6 +65,8 @@ try {
     if ($LASTEXITCODE -ne 0 -or $head -ne $SourceCommit) { throw 'Build commit does not match the checkout' }
     if ((& git -C $gameRoot status --porcelain | Out-String).Trim()) { throw 'Commit the reviewed candidate before deployment' }
     foreach ($path in @($config.java,$config.postgresBin,$config.postgresData,$config.serviceLib,$config.caddy,$config.caddyFile)) { Within-Host $path | Out-Null }
+    $modules = Run-Child $config.java @('--list-modules') @{} 'java-modules'
+    if ($modules -notmatch '(?m)^jdk\.jfr@') { throw 'The installed Java runtime needs jdk.jfr for purchase timing. Rebuild the host runtime before stopping the service.' }
     if ($config.postgresPort -ne 55433 -or $config.serverPort -ne 18080) { throw 'Unexpected installed host ports' }
     $runtime = Read-Protected (Join-Path $hostRoot 'runtime.secrets')
     if ($runtime.TAMBOLA_DATABASE_URL -ne 'jdbc:postgresql://127.0.0.1:55433/tambola_local' -or

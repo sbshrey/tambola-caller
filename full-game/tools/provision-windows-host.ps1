@@ -89,7 +89,7 @@ try {
     }
 } finally { Remove-Item Env:PGPASSWORD; if (Test-Path -LiteralPath $sqlPath) { Remove-Item -LiteralPath $sqlPath } }
 $jre = Join-Path $hostDirectory 'runtime/java'
-if (!(Test-Path -LiteralPath $jre)) { Invoke-Checked (Join-Path $JavaHome 'bin/jlink.exe') @('--add-modules','java.se,jdk.crypto.ec,jdk.unsupported,jdk.management,jdk.zipfs','--strip-debug','--no-header-files','--no-man-pages','--output',$jre) 'java-runtime' }
+if (!(Test-Path -LiteralPath $jre)) { Invoke-Checked (Join-Path $JavaHome 'bin/jlink.exe') @('--add-modules','java.se,jdk.crypto.ec,jdk.unsupported,jdk.management,jdk.zipfs,jdk.jfr','--strip-debug','--no-header-files','--no-man-pages','--output',$jre) 'java-runtime' }
 $serviceLib = Join-Path $hostDirectory 'service/lib'
 if (!(Test-Path -LiteralPath $serviceLib)) { Copy-Item -LiteralPath (Join-Path $gameDirectory 'server/build/install/server/lib') -Destination (Join-Path $hostDirectory 'service') -Recurse }
 $java = Join-Path $jre 'bin/java.exe'
