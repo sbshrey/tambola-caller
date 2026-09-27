@@ -15,7 +15,8 @@ import java.util.UUID
 import java.util.regex.Pattern
 
 /** All actions for the measured player go through the visible app; peers supply only public calls/awards. */
-internal class CoinJourney(private val context: Context, private val device: UiDevice, private val expectedRounds: Int = 1) : AutoCloseable {
+internal class CoinJourney(private val context: Context, private val device: UiDevice, private val expectedRounds: Int = 1,
+    private val computerOpponents: Boolean = false) : AutoCloseable {
     private val api = HttpRoomApi("https://192.168.1.4:8443")
     private val peers = mutableListOf<GuestCredentials>()
     private var code: String? = null
@@ -25,7 +26,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private val marks = mutableSetOf<Int>()
     private val usedHouses = mutableSetOf<Int>()
     private val report = JSONObject().put("completed", false)
-        .put("scope", "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; three passive HTTP QA peers")
+        .put("scope", "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; " +
+            if (computerOpponents) "one passive HTTP QA peer and two labelled computer opponents" else "three passive HTTP QA peers")
     private val started = SystemClock.elapsedRealtime()
     private var roundStarted = started
     private var roundNumber = 0
@@ -40,6 +42,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
 
     init {
         require(expectedRounds in listOf(1, 9))
+        require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
         listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml")
             .forEach { File(context.filesDir, it).delete() }
@@ -95,7 +98,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             textButton("Got it").click()
             assertEquals(1500L, balance())
             // Create peers before the 12-second lobby begins; their credentials stay only in memory.
-            runBlocking { repeat(3) { peers += api.guest(GuestRequest("Release QA ${it + 1}", it + 1)) } }
+            runBlocking { repeat(if (computerOpponents) 1 else 3) { peers += api.guest(GuestRequest("Release QA ${it + 1}", it + 1)) } }
         } else {
             assertEquals(previousBalance, balance())
             (1..6).forEach { assertEquals("Remembered replay choice $it", it == 3, node("buy-tickets-$it").isChecked) }
@@ -112,7 +115,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             } else wallet
         } }
         val quantities = peerWallets.map { (it.balance / 100).coerceAtMost(6).toInt().also { count -> check(count in 1..6) } }
-        expectedPool = 600 + quantities.sum() * 100L
+        if (computerOpponents) assertEquals(1500L, peerWallets.single().balance)
+        expectedPool = 600 + quantities.sum() * 100L + if (computerOpponents) 600 else 0
         expectedAggregate = balanceBefore + peerWallets.sumOf { it.balance }
         report.put("peerTicketQuantities", JSONArray(quantities)).put("expectedPool", expectedPool).put("balanceBefore", balanceBefore)
         if (expectedRounds > 1) recordMemory("entry")
@@ -131,13 +135,22 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             }
         }
         val lobby = snapshot()
-        assertEquals(4, lobby.members.size)
+        assertEquals(if (computerOpponents) 2 else 4, lobby.members.size)
+        assertEquals(if (computerOpponents) 2 else 0, lobby.options.computerPlayers)
         val currentMain = lobby.members.single { member -> peers.none { it.playerId == member.playerId } }.playerId
         if (mainId == null) mainId = currentMain else assertEquals("Same identity across rounds", mainId, currentMain)
         assertEquals(expectedPool, lobby.coins!!.pool)
         expectedPrizeCount = lobby.coins!!.prizes.size
         assertTrue(expectedPrizeCount in 6..8)
         node("play-arena", 20_000)
+        if (computerOpponents) {
+            val round = snapshot().round!!
+            assertEquals(4, round.players.size)
+            assertEquals(2, round.players.count { it.computer })
+            assertTrue(round.players.filter { it.computer }.all { round.ticketCounts[it.id] == 3 })
+            assertTrue(description(node("table-players")).contains("2 computer"))
+            report.put("labelledComputers", 2).put("computerFundedCoins", 600)
+        }
         checkpoint("playing")
     }
 
@@ -260,8 +273,11 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     }
                     val award = room.round!!.awards.firstOrNull { it.prize == prize }
                     if (award != null) {
-                        assertEquals(listOf(mainId), award.playerIds)
-                        if (prize.isRankedHouse) usedHouses += entry.key
+                        if (!computerOpponents) assertEquals(listOf(mainId), award.playerIds)
+                        val selectedWon = room.round!!.winningTickets.any {
+                            it.id in award.ticketIds && it.playerId == mainId && it.ordinal == entry.key
+                        }
+                        if (prize.isRankedHouse && selectedWon) usedHouses += entry.key
                     }
                 }
                 if (!reopened && seen >= 20) {
@@ -287,13 +303,21 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             }
             val result = snapshot()
             assertEquals(expectedPrizeCount, result.round!!.awards.size)
-            assertTrue(result.round!!.awards.all { it.playerIds == listOf(mainId) })
+            if (!computerOpponents) assertTrue(result.round!!.awards.all { it.playerIds == listOf(mainId) })
+            val winnings = verifiedWinnings(result)
+            val ownWinnings = winnings.getOrDefault(requireNotNull(mainId), 0L)
+            val computerWinnings = result.round!!.players.filter { it.computer }.sumOf { winnings.getOrDefault(it.id, 0L) }
+            if (computerOpponents) {
+                report.put("computerWinnings", computerWinnings).put("humanWinnings", expectedPool - computerWinnings)
+                // Computers fund their virtual tickets, then retain their own winnings; no human wallet owns those coins.
+                expectedAggregate += 600 - computerWinnings
+            }
             node("coin-winnings")
-            assertEquals("$expectedPool coins won", textOf(node("coin-winnings")))
-            val finalBalance = balanceBefore - 600 + expectedPool
+            assertEquals("$ownWinnings coins won", textOf(node("coin-winnings")))
+            val finalBalance = balanceBefore - 600 + ownWinnings
             assertEquals(finalBalance, balance())
             assertEquals(expectedAggregate, balance() + runBlocking { peers.sumOf { api.wallet(it.token).balance } })
-            report.put("finishedCalls", result.round!!.called.size).put("settledWinnings", expectedPool).put("finalBalance", finalBalance)
+            report.put("finishedCalls", result.round!!.called.size).put("settledWinnings", ownWinnings).put("finalBalance", finalBalance)
             // Compose exposes a selected non-tab choice as Android's checked state.
             (1..6).forEach { assertEquals("Ticket choice $it", it == 6, node("buy-tickets-$it").isChecked) }
             assertTrue(textOf(node("coin-play")).contains("600"))
@@ -316,6 +340,44 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             report.put("newRoundPurchasedAndRefunded", true).put("roundsCompleted", roundReports.length())
                 .put("completed", expectedRounds == 1)
             checkpoint(if (expectedRounds == 1) "passed" else "round-passed")
+    }
+
+    /** Independent integer split using public winner identities; never reads opponents' ticket numbers. */
+    private fun verifiedWinnings(result: RoomView): Map<String, Long> {
+        assertEquals(RoomPhase.FINISHED, result.phase)
+        val round = requireNotNull(result.round)
+        val pool = requireNotNull(result.coins)
+        assertEquals(expectedPool, pool.pool)
+        assertEquals(expectedPool, pool.prizes.sumOf { it.coins })
+        val tickets = round.winningTickets.associateBy { it.id }
+        val totals = mutableMapOf<String, Long>()
+        val prizes = JSONArray()
+        for (slot in pool.prizes) {
+            val award = round.awards.single { it.prize == slot.prize }
+            val ordered = award.ticketIds.sorted()
+            assertTrue(ordered.isNotEmpty())
+            assertEquals(ordered.size, ordered.distinct().size)
+            ordered.forEachIndexed { index, id ->
+                val winner = tickets.getValue(id).playerId
+                assertTrue(winner in award.playerIds)
+                val share = slot.coins / ordered.size + if (index < slot.coins % ordered.size) 1 else 0
+                totals[winner] = totals.getOrDefault(winner, 0L) + share
+            }
+            prizes.put(JSONObject().put("prize", slot.prize.name).put("coins", slot.coins)
+                .put("winningTickets", ordered.size).put("computerTickets", ordered.count { id ->
+                    round.players.single { it.id == tickets.getValue(id).playerId }.computer
+                }).put("ownTickets", ordered.count { tickets.getValue(it).playerId == mainId }))
+        }
+        assertEquals(expectedPool, totals.values.sum())
+        assertEquals(0L, pool.returnedCoins)
+        peers.forEach { peer ->
+            val view = runBlocking { api.read(peer.token, requireNotNull(code)).snapshot }
+            assertEquals(totals.getOrDefault(peer.playerId, 0L), view.coins!!.settledWinnings)
+            assertEquals(0L, view.coins!!.returnedCoins)
+            if (computerOpponents) assertEquals(900L + totals.getOrDefault(peer.playerId, 0L), view.wallet!!.balance)
+        }
+        report.put("publicWinnerSharesVerified", true).put("prizeWinners", prizes)
+        return totals
     }
 
     fun finishEndurance() = captureFailure {

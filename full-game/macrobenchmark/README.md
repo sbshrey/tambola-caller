@@ -1,5 +1,12 @@
 # Optimized Wi-Fi app checks
 
+`CoinReleaseBenchmark#realComputerRound` runs the same visible-app journey with one passive QA peer and two computer opponents. The fixture verifies the computer count/labels, the announced pool, every published winning-ticket share, the human result/wallet, aggregate human balances after computer funding/winnings, process recovery and a subsequent purchase/refund. It does not predetermine who wins or change server clocks/balances. The prize report records human/computer ticket counts without player identifiers. Cleanup deletes the native profile and the one QA peer. Run with a distinct label:
+
+```powershell
+node tools/android-smoke.mjs --benchmark --animations --label optimized-computer-round `
+  --class 'io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark#realComputerRound'
+```
+
 This opt-in external driver measures the non-debuggable `lanRelease` APK. It uses public UI controls for the measured player and never links app implementation classes, calls ViewModels, or reads the app's private files. The driver APK is separate and debuggable so its own safe diagnostic reports can be collected.
 
 Use a dedicated `tambola_full_game_*` emulator with an empty online profile. The full journey refuses an existing wallet. Do not uninstall the game or clear its data to prepare a user's device. The driver creates three fictional passive peers through the public HTTPS API, buys six tickets through the app, marks the revealed numbers, selects each prize, force-stops and reopens the app, checks settlement and a new purchase/refund, then deletes its four profiles. It validates real five-second calls; allow approximately eight minutes. Computer-player behavior and genuine human competition are outside this fixture.

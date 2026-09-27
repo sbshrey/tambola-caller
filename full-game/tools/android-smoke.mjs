@@ -93,7 +93,7 @@ try {
       { encoding: 'utf8', windowsHide: true, timeout: 60_000 });
     await writeFile(resolve(destination, 'collection.txt'), `${copied.stdout || ''}${copied.stderr || ''}`);
     assert.equal(copied.status, 0, 'Collect benchmark reports before another invocation');
-    if (selectedClass?.endsWith('#realCoinRound') || selectedClass?.endsWith('#claimPickerCallBoundary') || endurance) {
+    if (selectedClass?.endsWith('#realCoinRound') || selectedClass?.endsWith('#realComputerRound') || selectedClass?.endsWith('#claimPickerCallBoundary') || endurance) {
       for (const name of ['coin-release-journey.json', 'coin-release-results.png', 'coin-release-failure.png', 'coin-release-failure.xml']) {
         // exec-out does not reliably propagate a missing remote file's exit status.
         const exists = spawnSync(adb, ['-s', serial, 'shell', 'run-as', 'io.github.sbshrey.tambola.benchmark', 'test', '-f', `files/${name}`],
