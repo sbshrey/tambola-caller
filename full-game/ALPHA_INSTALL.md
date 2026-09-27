@@ -8,6 +8,8 @@ Alpha22 lets you tap the player area to see everyone at the table and keeps all 
 
 The optimized build is 29.1 MB, uses code/resource shrinking and disables debugging. It passed a 75-call online round against two labelled computers, all seven prizes, a correctly shared prize, a forced app restart with 20 retained marks, remembered ticket quantity and a replay refund. English/Hindi UI checks include actual 150% system text. The earlier alpha21 native regression verifies lost cancellation response recovery. Emulator timing still misses the smoothness target; physical-phone performance remains unverified.
 
+The same APK also passed [nine continuous native coin rounds](reviews/coin-endurance-alpha22-2026-09-27/README.md), totaling 68.96 measured minutes, with 758 calls, 65 prize slots, reconnects, process recovery, repeated purchases/refunds and cleanup of all QA profiles. This closes the native endurance correctness check. The report preserves the limits of software-emulator timing and concurrent browser work.
+
 ## Connect and play
 
 1. On this PC, run the [firewall setup](../docs/WIFI_HOST.md#one-administrator-action-for-phone-testing) once in Administrator PowerShell. Keep the PC signed in, awake and connected.

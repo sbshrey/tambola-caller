@@ -1,0 +1,289 @@
+{
+  "checkedAt": "2026-09-27T03:14:19.891419+00:00",
+  "appSourceCommit": "998b8a8ae36c0feffeb73da8104f1beefedcf5e0",
+  "driverSourceCommit": "998b8a8ae36c0feffeb73da8104f1beefedcf5e0",
+  "installedApksUnchanged": {
+    "io.github.sbshrey.tambola.game": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+    "io.github.sbshrey.tambola.benchmark": "93803ae35cece132857567dd3414b0c34b4250a8c7c290c966a7d622a4dfab91"
+  },
+  "packagedApp": {
+    "sha256": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+    "bytes": 29126773
+  },
+  "serverSourceCommit": "b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0",
+  "serviceRuntimeSha256": "f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10",
+  "animationScalesObservedAfter": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "runnerExitCode": 0,
+  "animationRestorationBasis": "Runner exit 0 confirms restoration; independent preflight animation and font settings are also compared after the run.",
+  "noAdbReverseMappings": true,
+  "enduranceAnalysis": {
+    "accepted": true,
+    "scope": "Native endurance correctness and fixture cleanup; not smoothness or release readiness",
+    "mode": "final",
+    "roundsCompleted": 9,
+    "measuredRoundDurationMs": 4137515,
+    "nativeBalance": 15000,
+    "refillCoins": 9000,
+    "rounds": [
+      {
+        "round": 1,
+        "calls": 85,
+        "prizes": 8,
+        "pool": 2400,
+        "nativeBalance": 3300,
+        "aggregateBalance": 6000,
+        "roundDurationMs": 466393,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2599,
+        "frameDurationCpuMs": {
+          "p50": 17.4121,
+          "p95": 56.36344,
+          "p99": 120.34972399999994
+        }
+      },
+      {
+        "round": 2,
+        "calls": 87,
+        "prizes": 8,
+        "pool": 2400,
+        "nativeBalance": 5100,
+        "aggregateBalance": 6000,
+        "roundDurationMs": 474398,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2651,
+        "frameDurationCpuMs": {
+          "p50": 17.3773,
+          "p95": 52.22625,
+          "p99": 113.13655
+        }
+      },
+      {
+        "round": 3,
+        "calls": 86,
+        "prizes": 7,
+        "pool": 1500,
+        "nativeBalance": 6000,
+        "aggregateBalance": 6000,
+        "roundDurationMs": 468922,
+        "reconnect": "process-death",
+        "retainedMarks": 20,
+        "frameCount": 2589,
+        "frameDurationCpuMs": {
+          "p50": 18.1699,
+          "p95": 56.62427999999999,
+          "p99": 129.6244119999997
+        }
+      },
+      {
+        "round": 4,
+        "calls": 85,
+        "prizes": 7,
+        "pool": 2100,
+        "nativeBalance": 7500,
+        "aggregateBalance": 7500,
+        "roundDurationMs": 463423,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2612,
+        "frameDurationCpuMs": {
+          "p50": 16.35325,
+          "p95": 52.69148499999998,
+          "p99": 100.89354899999971
+        }
+      },
+      {
+        "round": 5,
+        "calls": 80,
+        "prizes": 7,
+        "pool": 2100,
+        "nativeBalance": 9000,
+        "aggregateBalance": 9000,
+        "roundDurationMs": 433903,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2391,
+        "frameDurationCpuMs": {
+          "p50": 19.5737,
+          "p95": 66.57849999999999,
+          "p99": 172.96682999999936
+        }
+      },
+      {
+        "round": 6,
+        "calls": 86,
+        "prizes": 7,
+        "pool": 2100,
+        "nativeBalance": 10500,
+        "aggregateBalance": 10500,
+        "roundDurationMs": 468731,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2589,
+        "frameDurationCpuMs": {
+          "p50": 17.7445,
+          "p95": 57.214579999999984,
+          "p99": 118.4977439999999
+        }
+      },
+      {
+        "round": 7,
+        "calls": 84,
+        "prizes": 7,
+        "pool": 2100,
+        "nativeBalance": 12000,
+        "aggregateBalance": 12000,
+        "roundDurationMs": 459097,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2541,
+        "frameDurationCpuMs": {
+          "p50": 19.2032,
+          "p95": 63.5,
+          "p99": 121.60027999999966
+        }
+      },
+      {
+        "round": 8,
+        "calls": 82,
+        "prizes": 7,
+        "pool": 2100,
+        "nativeBalance": 13500,
+        "aggregateBalance": 13500,
+        "roundDurationMs": 447205,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2499,
+        "frameDurationCpuMs": {
+          "p50": 18.2566,
+          "p95": 61.373039999999996,
+          "p99": 128.54889199999997
+        }
+      },
+      {
+        "round": 9,
+        "calls": 83,
+        "prizes": 7,
+        "pool": 2100,
+        "nativeBalance": 15000,
+        "aggregateBalance": 15000,
+        "roundDurationMs": 455443,
+        "reconnect": "foreground",
+        "retainedMarks": 20,
+        "frameCount": 2532,
+        "frameDurationCpuMs": {
+          "p50": 18.266849999999998,
+          "p95": 56.46111499999997,
+          "p99": 117.85287600000002
+        }
+      }
+    ],
+    "memoryByProcess": [
+      {
+        "pid": 7967,
+        "samples": 7,
+        "firstRound": 1,
+        "lastRound": 3,
+        "firstPssKb": 45676,
+        "lastPssKb": 46375,
+        "peakPssKb": 57718,
+        "peakJavaHeapPssKb": 8636,
+        "peakNativeHeapPssKb": 21044,
+        "peakActivityObjectCount": 1
+      },
+      {
+        "pid": 12338,
+        "samples": 20,
+        "firstRound": 3,
+        "lastRound": 9,
+        "firstPssKb": 63578,
+        "lastPssKb": 52785,
+        "peakPssKb": 68836,
+        "peakJavaHeapPssKb": 11524,
+        "peakNativeHeapPssKb": 21640,
+        "peakActivityObjectCount": 2
+      }
+    ],
+    "limits": [
+      "One software emulator with three passive API peers; not physical phone or capacity acceptance",
+      "Memory snapshots and Activity object counts do not prove a leak or leak freedom",
+      "No controlled response loss in this endurance scenario",
+      "APK identities, runtime health and device-setting restoration require separate verification"
+    ],
+    "frameCount": 23003.0,
+    "reportedAggregateFrameCpuMs": {
+      "P50": 18.0682,
+      "P90": 45.97293999999999,
+      "P95": 58.0213499999999,
+      "P99": 126.18348799999998
+    },
+    "percentileDefinition": "Per-round linear interpolation at (n-1)*p; aggregate values preserved from Macrobenchmark",
+    "inputSha256": {
+      "journey": "85dc8b11f4e312fd6d181c2b7045b8bffd83d2ef4705536843c717e51f4036eb",
+      "benchmark": "c0e89c6065f6aa58f29b7eb1e5419313f78ec181c27a01390ea77773ab831a10",
+      "transcript": "d28679d507caa7ae832b547de06e848afeb5f440781282c2db3b4ae94b0fcad7"
+    },
+    "analyzerSha256": "26bc877daca725c201c767fbede4739aa5224e382070604cf23a053ab86a6a54"
+  },
+  "localTraces": [
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter000_2026-09-27-02-08-38.perfetto-trace",
+      "sha256": "8bec86199b4440e6ef7f032c64294b8867c1d2509719357c0757cc3d651c31bd",
+      "bytes": 51864348
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter001_2026-09-27-02-16-59.perfetto-trace",
+      "sha256": "27c306045f5fe88fb452a9224f90cca709a2f1bedf5f592867458d9af39cd4d5",
+      "bytes": 53002451
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter002_2026-09-27-02-25-15.perfetto-trace",
+      "sha256": "94e1c26c525c53a4b2007fc3004f1b0aa612682b7ecf070422bdc5658d4e98a3",
+      "bytes": 52102904
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter003_2026-09-27-02-33-25.perfetto-trace",
+      "sha256": "523fc364bdbc3e4b681980bcb5e9488bdc89e40bd06d0b8a59737d6e38afa68a",
+      "bytes": 51992632
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter004_2026-09-27-02-41-06.perfetto-trace",
+      "sha256": "26f2761d50799993a47da67795b00fc64a9ab96fabde98d8a272db2dda9a9392",
+      "bytes": 47077330
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter005_2026-09-27-02-49-20.perfetto-trace",
+      "sha256": "4019641ffa7963111f54c65a50aa040ed6fd916903deaf747511d734e88ee827",
+      "bytes": 52730357
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter006_2026-09-27-02-57-29.perfetto-trace",
+      "sha256": "e5c7c25de93852bf35ad11946e71ae5067ad1e48b07407187d10c9eefbf9bd08",
+      "bytes": 50195455
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter007_2026-09-27-03-05-26.perfetto-trace",
+      "sha256": "d0a6adf8ecbd091559a49c8299ac5919e8ea5a9ab3201881f1d37af945ab87ad",
+      "bytes": 49450746
+    },
+    {
+      "path": ".test-workspace/alpha22-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter008_2026-09-27-03-13-28.perfetto-trace",
+      "sha256": "9df74b7d94e1ef1715d59604ee24d2de5eeec369e640dc1b443a60215cb8a26b",
+      "bytes": 50019218
+    }
+  ],
+  "collectorSha256": "c649c2195861c29f0e738b684c12f5643275f1c35b25c62c2e6d53111ad139b3",
+  "limits": [
+    "API30 software emulator and passive peers; not physical ARM64/Wi-Fi acceptance or human competition",
+    "No injected HTTP-response loss in these nine rounds; separate alpha21 regression covers a lost leave response",
+    "Memory samples do not establish leak freedom and emulator CPU frames do not establish smoothness",
+    "Browser/Figma design work and a lightweight local design preview ran concurrently from round 5 onward; frame diagnostics are not an isolated performance comparison",
+    "Current-user login startup only; no actual reboot or public endpoint proof",
+    "Development-signed app; physical firewall, device checks, production signing and store release remain open"
+  ]
+}

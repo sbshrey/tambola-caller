@@ -1,0 +1,210 @@
+{
+  "accepted": true,
+  "scope": "Native endurance correctness and fixture cleanup; not smoothness or release readiness",
+  "mode": "final",
+  "roundsCompleted": 9,
+  "measuredRoundDurationMs": 4137515,
+  "nativeBalance": 15000,
+  "refillCoins": 9000,
+  "rounds": [
+    {
+      "round": 1,
+      "calls": 85,
+      "prizes": 8,
+      "pool": 2400,
+      "nativeBalance": 3300,
+      "aggregateBalance": 6000,
+      "roundDurationMs": 466393,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2599,
+      "frameDurationCpuMs": {
+        "p50": 17.4121,
+        "p95": 56.36344,
+        "p99": 120.34972399999994
+      }
+    },
+    {
+      "round": 2,
+      "calls": 87,
+      "prizes": 8,
+      "pool": 2400,
+      "nativeBalance": 5100,
+      "aggregateBalance": 6000,
+      "roundDurationMs": 474398,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2651,
+      "frameDurationCpuMs": {
+        "p50": 17.3773,
+        "p95": 52.22625,
+        "p99": 113.13655
+      }
+    },
+    {
+      "round": 3,
+      "calls": 86,
+      "prizes": 7,
+      "pool": 1500,
+      "nativeBalance": 6000,
+      "aggregateBalance": 6000,
+      "roundDurationMs": 468922,
+      "reconnect": "process-death",
+      "retainedMarks": 20,
+      "frameCount": 2589,
+      "frameDurationCpuMs": {
+        "p50": 18.1699,
+        "p95": 56.62427999999999,
+        "p99": 129.6244119999997
+      }
+    },
+    {
+      "round": 4,
+      "calls": 85,
+      "prizes": 7,
+      "pool": 2100,
+      "nativeBalance": 7500,
+      "aggregateBalance": 7500,
+      "roundDurationMs": 463423,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2612,
+      "frameDurationCpuMs": {
+        "p50": 16.35325,
+        "p95": 52.69148499999998,
+        "p99": 100.89354899999971
+      }
+    },
+    {
+      "round": 5,
+      "calls": 80,
+      "prizes": 7,
+      "pool": 2100,
+      "nativeBalance": 9000,
+      "aggregateBalance": 9000,
+      "roundDurationMs": 433903,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2391,
+      "frameDurationCpuMs": {
+        "p50": 19.5737,
+        "p95": 66.57849999999999,
+        "p99": 172.96682999999936
+      }
+    },
+    {
+      "round": 6,
+      "calls": 86,
+      "prizes": 7,
+      "pool": 2100,
+      "nativeBalance": 10500,
+      "aggregateBalance": 10500,
+      "roundDurationMs": 468731,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2589,
+      "frameDurationCpuMs": {
+        "p50": 17.7445,
+        "p95": 57.214579999999984,
+        "p99": 118.4977439999999
+      }
+    },
+    {
+      "round": 7,
+      "calls": 84,
+      "prizes": 7,
+      "pool": 2100,
+      "nativeBalance": 12000,
+      "aggregateBalance": 12000,
+      "roundDurationMs": 459097,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2541,
+      "frameDurationCpuMs": {
+        "p50": 19.2032,
+        "p95": 63.5,
+        "p99": 121.60027999999966
+      }
+    },
+    {
+      "round": 8,
+      "calls": 82,
+      "prizes": 7,
+      "pool": 2100,
+      "nativeBalance": 13500,
+      "aggregateBalance": 13500,
+      "roundDurationMs": 447205,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2499,
+      "frameDurationCpuMs": {
+        "p50": 18.2566,
+        "p95": 61.373039999999996,
+        "p99": 128.54889199999997
+      }
+    },
+    {
+      "round": 9,
+      "calls": 83,
+      "prizes": 7,
+      "pool": 2100,
+      "nativeBalance": 15000,
+      "aggregateBalance": 15000,
+      "roundDurationMs": 455443,
+      "reconnect": "foreground",
+      "retainedMarks": 20,
+      "frameCount": 2532,
+      "frameDurationCpuMs": {
+        "p50": 18.266849999999998,
+        "p95": 56.46111499999997,
+        "p99": 117.85287600000002
+      }
+    }
+  ],
+  "memoryByProcess": [
+    {
+      "pid": 7967,
+      "samples": 7,
+      "firstRound": 1,
+      "lastRound": 3,
+      "firstPssKb": 45676,
+      "lastPssKb": 46375,
+      "peakPssKb": 57718,
+      "peakJavaHeapPssKb": 8636,
+      "peakNativeHeapPssKb": 21044,
+      "peakActivityObjectCount": 1
+    },
+    {
+      "pid": 12338,
+      "samples": 20,
+      "firstRound": 3,
+      "lastRound": 9,
+      "firstPssKb": 63578,
+      "lastPssKb": 52785,
+      "peakPssKb": 68836,
+      "peakJavaHeapPssKb": 11524,
+      "peakNativeHeapPssKb": 21640,
+      "peakActivityObjectCount": 2
+    }
+  ],
+  "limits": [
+    "One software emulator with three passive API peers; not physical phone or capacity acceptance",
+    "Memory snapshots and Activity object counts do not prove a leak or leak freedom",
+    "No controlled response loss in this endurance scenario",
+    "APK identities, runtime health and device-setting restoration require separate verification"
+  ],
+  "frameCount": 23003.0,
+  "reportedAggregateFrameCpuMs": {
+    "P50": 18.0682,
+    "P90": 45.97293999999999,
+    "P95": 58.0213499999999,
+    "P99": 126.18348799999998
+  },
+  "percentileDefinition": "Per-round linear interpolation at (n-1)*p; aggregate values preserved from Macrobenchmark",
+  "inputSha256": {
+    "journey": "85dc8b11f4e312fd6d181c2b7045b8bffd83d2ef4705536843c717e51f4036eb",
+    "benchmark": "c0e89c6065f6aa58f29b7eb1e5419313f78ec181c27a01390ea77773ab831a10",
+    "transcript": "d28679d507caa7ae832b547de06e848afeb5f440781282c2db3b4ae94b0fcad7"
+  },
+  "analyzerSha256": "26bc877daca725c201c767fbede4739aa5224e382070604cf23a053ab86a6a54"
+}
