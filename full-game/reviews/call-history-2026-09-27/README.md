@@ -39,4 +39,10 @@ Same friends replay placed the native player and one peer together with three/tw
 
 The public endpoint remained healthy at 13:48 UTC. The configured installed server/runtime hashes are unchanged, and no service or bridge restart was performed. [Public entry](public-entry.json), [host identity](host-verification.json).
 
+## Publication
+
+The [alpha32 prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha32-call-history) targets source commit `fb5bd24597eeb3f2db73ba1e18f433367b0b44d3`. Its [APK download](https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha32-call-history/Tambola-Internet-Beta-0.32.0.apk) was fetched anonymously and matched the tested SHA-256 and 29,192,205-byte size.
+
+The guarded website update produced main commit `551921ccaf2a993bf5d87a5b38dc7ee87716122e`; its actual changes are limited to `friends/index.html` and `friends/invite.js`. Pages build `1243076787` completed successfully. At 13:52 UTC, normal public URLs for both invitation files, the stylesheet, service worker and caller homepage matched the reviewed files. A fresh Chromium session verified the code display, English/Hindi switch and alpha32 download/intent fallback without page errors. [Publication record](pages-publication.json), [verification](publication-verification.json), [public invitation screenshot](published-invitation.png). These browser checks do not establish physical Android intent handoff.
+
 Production signing, physical-phone and TalkBack usability, native-rival gameplay, frame performance, editable-Figma updates and high-load latency remain open. The broader goal remains active.

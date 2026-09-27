@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-27T13:52:50.111Z",
+  "passed": true,
+  "pagesBuild": "https://api.github.com/repos/sbshrey/tambola-caller/pages/builds/1243076787",
+  "mainCommit": "551921ccaf2a993bf5d87a5b38dc7ee87716122e",
+  "sourceCommit": "fb5bd24597eeb3f2db73ba1e18f433367b0b44d3",
+  "site": "https://sbshrey.github.io/tambola-caller/",
+  "publicAssetsMatch": [
+    "friends/index.html",
+    "friends/invite.js",
+    "friends/styles.css",
+    "sw.js",
+    "index.html"
+  ],
+  "mainChangedFiles": [
+    "friends/index.html",
+    "friends/invite.js"
+  ],
+  "release": "https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha32-call-history",
+  "asset": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha32-call-history/Tambola-Internet-Beta-0.32.0.apk",
+  "sha256": "a6767986b21dd987fc6c9e15b6bd6552be30f58ce6aed5af4fc26eebdb33d7fa",
+  "bytes": 29192205,
+  "anonymousDownloadStatus": 200,
+  "publicBrowserEnglishHindi": true,
+  "scope": "Actual public website and APK bytes without cache-busting. Headless Chromium; no physical-phone intent or cellular acceptance."
+}
