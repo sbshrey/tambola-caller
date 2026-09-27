@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-09-27T14:39:34.64703+05:30",
+  "apkSha256": "f3cc69e943a4b0e3e68469aba9bc2419960eb1b287f10275e6405b60b6ca1ca1",
+  "tests": [
+    {
+      "errors": 0.0,
+      "tests": 156.0,
+      "failures": 0.0,
+      "module": "server",
+      "skipped": 0.0
+    },
+    {
+      "errors": 0.0,
+      "tests": 37.0,
+      "failures": 0.0,
+      "module": "client",
+      "skipped": 0.0
+    },
+    {
+      "errors": 0.0,
+      "tests": 15.0,
+      "failures": 0.0,
+      "module": "app",
+      "skipped": 0.0
+    }
+  ],
+  "lintErrors": 0,
+  "apkMetadata": {
+    "version": 3,
+    "artifactType": {
+      "type": "APK",
+      "kind": "Directory"
+    },
+    "applicationId": "io.github.sbshrey.tambola.game.beta",
+    "variantName": "publicBeta",
+    "elements": [
+      {
+        "type": "SINGLE",
+        "filters": [],
+        "attributes": [],
+        "versionCode": 26,
+        "versionName": "0.26.0-alpha26-internet-beta",
+        "outputFile": "app-publicBeta.apk"
+      }
+    ],
+    "elementType": "File",
+    "baselineProfiles": [
+      {
+        "minApi": 28,
+        "maxApi": 30,
+        "baselineProfiles": [
+          "baselineProfiles/1/app-publicBeta.dm"
+        ]
+      },
+      {
+        "minApi": 31,
+        "maxApi": 2147483647,
+        "baselineProfiles": [
+          "baselineProfiles/0/app-publicBeta.dm"
+        ]
+      }
+    ],
+    "minSdkVersionForDexing": 26
+  },
+  "lintWarnings": 121,
+  "apkBytes": 29122377,
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c"
+}

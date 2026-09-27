@@ -104,6 +104,7 @@ class RoomService(
     /** Joining, buying tickets and the durable receipt are one transaction. */
     fun match(token: String, request: MatchRequest): RoomUpdate {
         validId(request.id)
+        request.previousFriendRound?.let(::validId)
         authenticatedRate(token, "match", 20)
         return database.transaction { connection ->
             val guest = authenticate(connection, token, lock = true)
@@ -130,8 +131,16 @@ class RoomService(
                 CoinLedger.ensure(connection, guest.id, now)
                 if (!request.friendTable) connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
                 val purchaseAt = clock()
+                val previous = request.previousFriendRound?.let { roundId ->
+                    load(connection, requireNotNull(request.friendCode)).also {
+                        member(it, guest.id)
+                        demand(it.friendTable && it.phase == RoomPhase.FINISHED && it.round?.id == roundId,
+                            409, "friend_round_changed", "Choose a completed friends round to play together again.")
+                    }
+                }
+                val joinCode = if (previous != null) previous.nextFriendCode else request.friendCode
                 val waiting = when {
-                    request.friendCode != null -> load(connection, requireNotNull(request.friendCode)).also {
+                    joinCode != null -> load(connection, joinCode).also {
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
                         demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
                     }
@@ -145,6 +154,9 @@ class RoomService(
                     connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
                         it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it), !request.friendTable)
                 }
+                // The previous-room lock serializes simultaneous replay clicks. Linking and
+                // the first debit commit together, so a failed purchase cannot strand the group.
+                if (previous != null && previous.nextFriendCode == null) save(connection, previous.copy(nextFriendCode = room.code))
                 demand(room.expiresAt > clock() && (room.friendTable || requireNotNull(room.startsAt) > clock()), 409, "sales_closed", "That round is starting. Try Play again.")
                 changed(connection, room.copy(
                     members = room.members + Member(guest.id, guest.name, guest.avatar, purchaseAt, ready = true, lastSeen = purchaseAt),

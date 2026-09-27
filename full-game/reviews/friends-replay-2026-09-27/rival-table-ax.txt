@@ -1,0 +1,93 @@
+Browser tab: 5, Title: "Multiplayer Tambola Game Online | Play Housie/Bingo with Friends Online", URL: "https://tambolaonline.com/play/GG2XVM".
+0 AXWebArea Multiplayer Tambola Game Online | Play Housie/Bingo with Friends Online, URL: tambolaonline.com/play/GG2XVM
+	1 container
+		180 link Description: Tambola Online, Value: tambolaonline.com/
+		181 menu bar
+			182 (collapsed) Game Modes, ID: radix-«R35dbH1», Secondary Actions: Expand
+			183 (collapsed) Tools, ID: radix-«R55dbH1», Secondary Actions: Expand
+			184 (collapsed) Help, ID: radix-«R75dbH1», Secondary Actions: Expand
+		185 button Sign In / Sign Up
+		186 container Breadcrumb
+			187 content list
+				188 link Description: Home, Value: tambolaonline.com/
+				189 container
+					190 image
+					191 text Play with Friends
+		277 text Tambola Party Room
+		278 text Invite friends with this Party Code!
+		279 text PARTY CODE GG2XVM
+		280 button Copy Party Code
+			281 image
+		282 button Lobby
+			283 image
+			284 text Lobby
+		285 button Locked
+			286 image
+			287 text Locked
+		288 pop up button (collapsed) End Game, Secondary Actions: Expand
+			289 image
+			290 text End Game
+		291 text Game Controls
+		292 text Status: in-progress
+		293 button Call Next Number
+		294 text Current Number
+		295 text 38
+		296 image
+		297 text Players ( 1 )
+		298 content list
+			299 container
+				300 text Guest QA
+				301 image
+				302 text Host
+		303 text Winners Board
+		304 text No prizes have been claimed yet.
+		305 text Your Ticket
+		306 heading Ticket #1, Value: 3
+			307 text Ticket # 1
+		308 table
+			309 row
+				310 cell
+					311 text 4
+				312 cell
+					313 text 41
+				314 cell
+					315 text 53
+				316 cell
+					317 text 64
+				318 cell
+					319 text 75
+			320 row
+				321 cell
+					322 text 7
+				323 cell
+					324 text 26
+				325 cell
+					326 text 37
+				327 cell
+					328 text 49
+				329 cell
+					330 text 57
+			331 row
+				332 cell
+					333 text 18
+				334 cell
+					335 text 27
+				336 cell
+					337 text 67
+				338 cell
+					339 text 78
+				340 cell
+					341 text 83
+		342 text Claim a Prize
+		343 text When you get a winning combination, claim it here!
+		344 button Claim Early Five
+		345 button Claim Four Corners
+		346 button Claim First Line
+		347 button Claim Second Line
+		348 button Claim Third Line
+		349 button (disabled) Claim Sent
+		350 container
+			351 text Game Board & Called Numbers ( 1 /90)
+		352 text 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90
+		353 text 38
+		262 

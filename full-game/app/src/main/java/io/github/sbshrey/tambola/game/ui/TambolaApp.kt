@@ -56,6 +56,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
             (onlineState.room == null || onlineState.room.options.coinGame)) {
             CoinLobby(onlineState, online, play = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets) },
                 friends = { tickets, code -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets, friendTable = true, friendCode = code) },
+                replayFriends = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.replayFriends(tickets) },
                 resume = { roomDetails = false; model.navigate(Screen.ONLINE) }, settings = { model.navigate(Screen.SETTINGS) }, reducedMotion = state.preferences.reducedMotion)
         } else BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
             // A fixed action panel must not consume the reading area at large text sizes or

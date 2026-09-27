@@ -48,7 +48,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         require(expectedRounds in listOf(1, 9))
         require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
-        listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml")
+        listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png")
             .forEach { File(context.filesDir, it).delete() }
     }
 
@@ -390,9 +390,10 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             report.put("finishedCalls", result.round!!.called.size).put("settledWinnings", ownWinnings).put("finalBalance", finalBalance)
             // Compose exposes a selected non-tab choice as Android's checked state.
             (1..6).forEach { assertEquals("Ticket choice $it", it == 6, node("buy-tickets-$it").isChecked) }
-            assertTrue(textOf(node("coin-play")).contains("600"))
+            assertTrue(textOf(node(if (friendTable) "friend-replay" else "coin-play")).contains("600"))
             report.put("rememberedSixTickets", true)
             device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
+            if (friendTable) verifyFriendsReplay(result, finalBalance)
             tap("buy-tickets-3"); tap("coin-play"); node("cancel-match")
             assertEquals(finalBalance - 300, balance())
             tap("cancel-match"); node("coin-play")
@@ -410,6 +411,43 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             report.put("newRoundPurchasedAndRefunded", true).put("roundsCompleted", roundReports.length())
                 .put("completed", expectedRounds == 1)
             checkpoint(if (expectedRounds == 1) "passed" else "round-passed")
+    }
+
+    private fun verifyFriendsReplay(previous: RoomView, finalBalance: Long) {
+        checkpoint("friends-replay")
+        tap("buy-tickets-3")
+        assertTrue(textOf(node("friend-replay")).contains("300"))
+        tap("friend-replay"); node("cancel-match")
+        until { balance() == finalBalance - 300 }
+        val peer = peers.first()
+        val before = runBlocking { api.wallet(peer.token).balance }
+        val request = MatchRequest(UUID.randomUUID().toString(), 2, true, previous.code, previous.round!!.id)
+        val receipt = runBlocking { api.match(peer.token, request) }
+        val next = receipt.snapshot
+        assertEquals(receipt, runBlocking { api.match(peer.token, request) })
+        assertNotEquals(previous.roomId, next.roomId)
+        assertEquals(setOf(requireNotNull(mainId), peer.playerId), next.members.map { it.playerId }.toSet())
+        assertEquals(500L, next.coins!!.pool)
+        assertEquals(2, next.coins!!.ownTickets)
+        assertEquals(0, next.options.computerPlayers)
+        assertEquals(before - 200, runBlocking { api.wallet(peer.token).balance })
+        until { find("friend-start")?.isEnabled == true }
+        device.takeScreenshot(File(context.filesDir, "friends-replay-ready.png"))
+        // A fresh process must resume these paid tickets, not submit another replay.
+        device.executeShellCommand("am force-stop $target")
+        device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
+        until(25_000) { find("friend-start")?.isEnabled == true }
+        assertEquals(finalBalance - 300, balance())
+        tap("cancel-match"); node("coin-play")
+        until { balance() == finalBalance }
+        val remaining = runBlocking { api.read(peer.token, next.code).snapshot }
+        assertEquals(peer.playerId, remaining.hostId)
+        runBlocking { api.command(peer.token, next.code, CommandRequest(UUID.randomUUID().toString(), remaining.revision, RoomAction.Leave)) }
+        assertEquals(before, runBlocking { api.wallet(peer.token).balance })
+        assertEquals(previous.round!!.id, runBlocking { api.read(peer.token, previous.code).snapshot.round!!.id })
+        report.put("sameFriendsReplay", JSONObject().put("players", 2).put("pool", 500)
+            .put("ownTickets", 3).put("peerTickets", 2).put("exactPeerReceipt", true)
+            .put("processRecovery", true).put("bothPurchasesRefunded", true))
     }
 
     /** Independent integer split using public winner identities; never reads opponents' ticket numbers. */

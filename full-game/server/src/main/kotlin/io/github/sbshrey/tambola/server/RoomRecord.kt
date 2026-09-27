@@ -46,6 +46,8 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
     val startsAt: Long? = null,
     val coinPool: CoinPool? = null,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val friendTable: Boolean = false,
+    // Internal only: old results and receipts stay immutable; a replay gets its own purchases.
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val nextFriendCode: String? = null,
 ) {
     fun coinView(actor: String): CoinTableView? {
         if (!options.coinGame) return null

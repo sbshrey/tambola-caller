@@ -70,6 +70,7 @@ class OnlineStateTest {
 
     @Test fun `purchase and refill IDs survive saving before the first response`() {
         listOf(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), 6)),
+            PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), 3, true, "ABCD2345", UUID.randomUUID().toString())),
             PendingOperation.Refill(RefillRequest(UUID.randomUUID().toString()))).forEach { pending ->
             val session = saved().copy(pending = pending, wallet = WalletView(1500, 1, 0))
             val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(session))

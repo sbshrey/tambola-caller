@@ -1,0 +1,198 @@
+[
+  {
+    "Suite": "io.github.sbshrey.tambola.server.AvatarTest",
+    "Tests": 3,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+    "Tests": 1,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+    "Tests": 4,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+    "Tests": 9,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+    "Tests": 4,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.CoinMatchTest",
+    "Tests": 14,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+    "Tests": 1,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+    "Tests": 10,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+    "Tests": 9,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.EventChangesTest",
+    "Tests": 5,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.EventPollingTest",
+    "Tests": 6,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.EventStreamsTest",
+    "Tests": 2,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.FriendReplayTest",
+    "Tests": 5,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.FriendTableTest",
+    "Tests": 7,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+    "Tests": 2,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.HttpTest",
+    "Tests": 8,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+    "Tests": 2,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.InviteSiteTest",
+    "Tests": 4,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+    "Tests": 5,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+    "Tests": 8,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.NativeClientTest",
+    "Tests": 2,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+    "Tests": 3,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+    "Tests": 7,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.RoomServiceTest",
+    "Tests": 15,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+    "Tests": 9,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+    "Tests": 3,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+    "Tests": 6,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  },
+  {
+    "Suite": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+    "Tests": 2,
+    "Failures": 0,
+    "Errors": 0,
+    "Skipped": 0
+  }
+]

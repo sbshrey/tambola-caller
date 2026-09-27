@@ -30,12 +30,14 @@ private val CoinGold = Color(0xFFF4C879)
 
 @Composable
 fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit,
-    reducedMotion: Boolean = false, friends: (Int, String?) -> Unit = { tickets, code -> model.play(tickets, true, code) }) {
+    reducedMotion: Boolean = false, friends: (Int, String?) -> Unit = { tickets, code -> model.play(tickets, true, code) },
+    replayFriends: (Int) -> Unit = model::replayFriends) {
     val words = gameText()
     val room = state.room
     val coins = room?.coins
     val waiting = room?.phase == RoomPhase.LOBBY
     val finished = room?.phase == RoomPhase.FINISHED
+    val friendsFinished = finished && coins?.friendTable == true
     val active = room?.phase == RoomPhase.ACTIVE
     val enabled = !state.loading && !state.busy && !state.pending && !state.storageFailure && !state.sessionExpired && state.available
     var chosenTickets by rememberSaveable(state.preferredTickets) { mutableIntStateOf(state.preferredTickets) }
@@ -145,17 +147,27 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         if (balance != null && balance < COIN_TICKET_PRICE) {
                             CoinRefill(state.serverTime, state.wallet?.refillAfter, enabled, model::refill)
                         } else {
+                          if (friendsFinished) {
+                            Text(words(R.string.friend_replay_hint), fontSize = 12.sp, color = GameNightPalette.muted)
+                            Button(onClick = { replayFriends(tickets) }, enabled = enabled && balance != null && balance >= cost,
+                                colors = ButtonDefaults.buttonColors(containerColor = GameNightPalette.coral, contentColor = GameNightPalette.background),
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("friend-replay"), shape = RoundedCornerShape(16.dp)) {
+                                Text(words(R.string.friend_replay, cost), fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            }
+                          }
                           Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Button(onClick = { play(tickets) }, enabled = enabled && (balance == null || balance >= cost),
-                                colors = ButtonDefaults.buttonColors(containerColor = GameNightPalette.coral, contentColor = GameNightPalette.background,
+                                colors = ButtonDefaults.buttonColors(containerColor = if (friendsFinished) GameNightPalette.raised else GameNightPalette.coral,
+                                    contentColor = if (friendsFinished) GameNightPalette.cream else GameNightPalette.background,
                                     disabledContainerColor = GameNightPalette.raised, disabledContentColor = GameNightPalette.muted),
                                 modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("coin-play"), shape = RoundedCornerShape(16.dp)) {
                                 if (state.busy) CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp, color = GameNightPalette.cream)
-                                else Text(words(if (finished) R.string.coin_play_again else R.string.coin_play, cost), fontSize = 19.sp, fontWeight = FontWeight.Black)
+                                else Text(words(if (friendsFinished) R.string.friend_quick_play else if (finished) R.string.coin_play_again else R.string.coin_play, cost),
+                                    fontSize = if (friendsFinished) 14.sp else 19.sp, fontWeight = FontWeight.Black)
                             }
                             OutlinedButton(onClick = { friendDialog = true }, enabled = enabled && (balance == null || balance >= cost),
                                 modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("play-friends"), shape = RoundedCornerShape(16.dp)) {
-                                Text(words(R.string.friend_play), fontWeight = FontWeight.Bold)
+                                Text(words(if (friendsFinished) R.string.friend_other_table else R.string.friend_play), fontWeight = FontWeight.Bold)
                             }
                           }
                         }

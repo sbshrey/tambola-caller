@@ -111,6 +111,42 @@ class CoinLobbyTest {
     @Test fun sharedResultsShowOnlyOwnShareAndPlayAgainRemainsOneTap() = results("en", 1f)
     @Test fun sharedResultsStayReadableInHindiAtLargerTextSize() = results("hi", 1.3f)
 
+    @Test fun friendsResultsOfferExplicitSameGroupPurchase() = friendsResults("en", 1f)
+    @Test fun friendsResultsKeepReplayAndAlternativesReachableInLargeHindi() = friendsResults("hi", 1.5f)
+
+    private fun friendsResults(language: String, scale: Float) {
+        val result = finished().let { it.copy(coins = it.coins!!.copy(friendTable = true)) }
+        val config = Configuration(compose.activity.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag(language)); fontScale = scale
+        }
+        val context = compose.activity.createConfigurationContext(config)
+        val words = GameText(context.resources)
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        var state by mutableStateOf(OnlineUiState(loading = false, available = true, name = "You", playerId = "a",
+            room = result, preferredTickets = 6, wallet = WalletView(350, 1, 0)))
+        var replayTickets = 0; var quickTickets = 0
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+                LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
+                TambolaTheme { CoinLobby(state, model, { quickTickets = it }, {}, {}, replayFriends = { replayTickets = it }) }
+            }
+        }
+        compose.onNodeWithTag("buy-tickets-3").performScrollTo().assertIsSelected()
+        compose.onNodeWithTag("buy-tickets-4").assertIsNotEnabled()
+        compose.onNodeWithTag("friend-replay").performScrollTo().assertIsDisplayed()
+            .assertTextEquals(words(R.string.friend_replay, 300L)).performClick()
+        assertEquals(3, replayTickets); assertEquals(0, quickTickets)
+        captureTestScreen("friends-results-$language")
+        compose.onNodeWithTag("coin-play").performScrollTo().assertIsEnabled().performClick()
+        assertEquals(3, quickTickets)
+        compose.onNodeWithTag("play-friends").performScrollTo().assertIsDisplayed().assertIsEnabled()
+            .assertTextEquals(words(R.string.friend_other_table))
+        compose.runOnIdle { state = state.copy(pending = true) }
+        compose.onNodeWithTag("friend-replay").assertDoesNotExist()
+        compose.onNodeWithTag("coin-play").assertDoesNotExist()
+        compose.onNodeWithTag("coin-retry").performScrollTo().assertIsDisplayed()
+    }
+
     private fun results(language: String, scale: Float) {
         val room = finished()
         val config = Configuration(compose.activity.resources.configuration).apply {

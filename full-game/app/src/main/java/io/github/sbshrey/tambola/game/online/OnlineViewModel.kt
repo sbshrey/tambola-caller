@@ -187,6 +187,12 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     fun refill() = begin(PendingOperation.Refill(RefillRequest(UUID.randomUUID().toString())))
+    fun replayFriends(tickets: Int) {
+        val room = saved?.room ?: return
+        if (tickets !in 1..6 || room.phase != RoomPhase.FINISHED || room.coins?.friendTable != true) return
+        val round = room.round ?: return
+        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id)))
+    }
     fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = false, manualClaims = true,
         prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 5, computerPlayers = 2)) =
         begin(PendingOperation.Create(CreateRoomRequest(UUID.randomUUID().toString(), options)))

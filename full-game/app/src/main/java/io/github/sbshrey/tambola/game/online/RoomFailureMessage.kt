@@ -10,6 +10,7 @@ internal fun roomFailureMessage(error: RoomApiFailure): UiMessage = UiMessage(wh
     "room_closed" -> R.string.error_room_closed
     "room_locked" -> R.string.error_room_locked
     "friend_table_closed" -> R.string.friend_closed
+    "friend_round_changed" -> R.string.friend_round_changed
     "room_full" -> R.string.error_room_full
     "room_limit" -> R.string.error_room_limit
     "host_only" -> R.string.error_host_only

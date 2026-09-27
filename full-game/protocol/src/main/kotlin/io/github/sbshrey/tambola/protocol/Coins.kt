@@ -19,10 +19,13 @@ import kotlinx.serialization.EncodeDefault
     val id: String, val tickets: Int,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val friendTable: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val friendCode: String? = null,
+    /** Explicit consent to purchase into the successor of this completed friends round. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val previousFriendRound: String? = null,
 ) {
     init {
         require(tickets in 1..6)
         require(friendCode == null || (friendTable && friendCode.matches(Regex("[A-HJ-NP-Z2-9]{8}"))))
+        require(previousFriendRound == null || (friendTable && friendCode != null && previousFriendRound.isNotBlank()))
     }
 }
 @Serializable data class CoinTableView(
