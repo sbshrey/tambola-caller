@@ -1,6 +1,7 @@
 <resources>
     <string name="play_claim">दावा करें</string>
     <string name="play_claim_confirmed">दावा सही है!</string>
+    <string name="play_claim_confirmed_for">टिकट %1$d · %2$s का दावा सही है</string>
     <string name="play_claim_none">अभी कोई नया इनाम नहीं — अपने निशान जाँचें।</string>
     <string name="play_claim_late">वह कॉल समाप्त हो गई। टिकट जाँचकर फिर दावा करें।</string>
     <string name="play_claim_marks">दावे में केवल आपके बुलाए गए अंक गिने जाते हैं।</string>

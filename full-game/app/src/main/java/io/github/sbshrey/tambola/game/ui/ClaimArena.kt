@@ -24,6 +24,7 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.domain.*
@@ -130,16 +131,18 @@ internal fun ClaimArena(
                         details = { details = true }, openPlayers = { players = true })
                     Column(Modifier.weight(1f).fillMaxHeight()) {
                         if (!landscape) Text("$status · ${words(R.string.play_prizes_left, remaining)}", fontSize = 11.sp, color = muted, maxLines = 1,
-                            modifier = Modifier.height(22.dp))
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 22.dp).testTag("portrait-prizes-status"))
                         Box(Modifier.weight(1f).fillMaxWidth()) {
                             TicketPages(hand, ownerId, preferences.reducedMotion, markNumber, markEnabled,
                                 claimEnabled && table.called.isNotEmpty() && !table.finished) { claimTicketId = it }
                             win?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
                         }
-                        Box(Modifier.fillMaxWidth().height(if (largeText) 30.dp else 24.dp).testTag("win-slot"), contentAlignment = Alignment.Center) {
+                        // Reserve two scaled lines even when quiet, so feedback never moves a ticket.
+                        Box(Modifier.fillMaxWidth().padding(vertical = 2.dp).testTag("win-slot"), contentAlignment = Alignment.Center) {
                             Text(claimMessage ?: winText ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else "",
-                                fontSize = 11.sp, lineHeight = 14.sp, color = if (win != null && dark) gold else muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.semantics { if (winText != null || claimMessage != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
+                                fontSize = 12.sp, lineHeight = 16.sp, textAlign = TextAlign.Center,
+                                color = if (win != null && dark) gold else muted, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
                         }
                         if (!landscape || table.finished) Box(Modifier.fillMaxWidth().heightIn(min = 48.dp)) { footer() }
                     }

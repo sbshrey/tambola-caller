@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-09-27T11:32:55.882Z",
+  "status": "online",
+  "origin": "https://oral-assume-paintings-dvds.trycloudflare.com",
+  "renewalPending": false,
+  "loginStartupPresent": true,
+  "acIdleSleepSeconds": 0,
+  "batteryIdleSleepSeconds": 900,
+  "scope": "Read-only Windows power and startup inspection; PC must remain signed in, powered and connected"
+}

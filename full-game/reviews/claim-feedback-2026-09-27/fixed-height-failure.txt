@@ -1,0 +1,23 @@
+
+io.github.sbshrey.tambola.game.ClaimFeedbackUiTest:
+Error in largeEnglishFeedbackInPortrait(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest):
+java.lang.AssertionError: Claim feedback overflows 1028 x 63, paragraph 1028.0 x 63.0, 1 lines, constraints Constraints(minWidth = 0, maxWidth = 1028, minHeight = 0, maxHeight = 95), slot DpRect(left=9.904762.dp, top=571.0476.dp, right=401.5238.dp, bottom=607.2381.dp), density androidx.compose.ui.node.LayoutModifierNodeCoordinator@8dae049: That call has ended. Check your tickets and claim again.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:73)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeEnglishFeedbackInPortrait(ClaimFeedbackUiTest.kt:32)
+
+
+Time: 3.928
+There was 1 failure:
+1) largeEnglishFeedbackInPortrait(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest)
+java.lang.AssertionError: Claim feedback overflows 1028 x 63, paragraph 1028.0 x 63.0, 1 lines, constraints Constraints(minWidth = 0, maxWidth = 1028, minHeight = 0, maxHeight = 95), slot DpRect(left=9.904762.dp, top=571.0476.dp, right=401.5238.dp, bottom=607.2381.dp), density androidx.compose.ui.node.LayoutModifierNodeCoordinator@8dae049: That call has ended. Check your tickets and claim again.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:73)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeEnglishFeedbackInPortrait(ClaimFeedbackUiTest.kt:32)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

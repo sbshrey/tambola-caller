@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-09-27T11:28:37.268Z",
+  "appSha256": "e2c7211e076bc24020c8dd8770d845b56f8eb8f222e1fe820bc940399d06b14f",
+  "appBytes": 29141285,
+  "versionCode": 29,
+  "versionName": "0.29.0-alpha29-internet-beta",
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "driverSha256": "e093934092a09abcf1578ace676e66b21605d18a7bd493f25cdd595e181ceff8",
+  "debugSha256": "2d223bcd7c63f01ff11f2699a3c0e82618c2751c901f2b7838fb23544bd1d632",
+  "nativeTestSha256": "7daa300cff9309f03a941fb03d51bb8e1f0a593a80be96e3638669f6f4aa56e2",
+  "unit": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "native": {
+    "tests": 7,
+    "failures": 0,
+    "seconds": 53.365
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 122
+  },
+  "localizationResources": 786,
+  "driverUpdatedAt": "2026-09-27T11:31:15.069Z"
+}

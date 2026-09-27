@@ -1,0 +1,68 @@
+
+io.github.sbshrey.tambola.game.ClaimFeedbackUiTest:
+Error in largeHindiFeedbackInLandscape(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest):
+java.lang.AssertionError: Claim feedback is clipped: वह कॉल समाप्त हो गई। टिकट जाँचकर फिर दावा करें।
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeHindiFeedbackInLandscape(ClaimFeedbackUiTest.kt:32)
+
+Error in largeEnglishFeedbackInPortrait(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest):
+java.lang.AssertionError: Claim feedback is clipped: That call has ended. Check your tickets and claim again.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeEnglishFeedbackInPortrait(ClaimFeedbackUiTest.kt:31)
+
+Error in englishFeedbackInLandscape(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest):
+java.lang.AssertionError: Claim feedback is clipped: That call has ended. Check your tickets and claim again.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.englishFeedbackInLandscape(ClaimFeedbackUiTest.kt:30)
+
+Error in largeHindiFeedbackInPortrait(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest):
+java.lang.AssertionError: Claim feedback is clipped: वह कॉल समाप्त हो गई। टिकट जाँचकर फिर दावा करें।
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeHindiFeedbackInPortrait(ClaimFeedbackUiTest.kt:33)
+
+
+Time: 16.749
+There were 4 failures:
+1) largeHindiFeedbackInLandscape(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest)
+java.lang.AssertionError: Claim feedback is clipped: वह कॉल समाप्त हो गई। टिकट जाँचकर फिर दावा करें।
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeHindiFeedbackInLandscape(ClaimFeedbackUiTest.kt:32)
+2) largeEnglishFeedbackInPortrait(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest)
+java.lang.AssertionError: Claim feedback is clipped: That call has ended. Check your tickets and claim again.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeEnglishFeedbackInPortrait(ClaimFeedbackUiTest.kt:31)
+3) englishFeedbackInLandscape(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest)
+java.lang.AssertionError: Claim feedback is clipped: That call has ended. Check your tickets and claim again.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.englishFeedbackInLandscape(ClaimFeedbackUiTest.kt:30)
+4) largeHindiFeedbackInPortrait(io.github.sbshrey.tambola.game.ClaimFeedbackUiTest)
+java.lang.AssertionError: Claim feedback is clipped: वह कॉल समाप्त हो गई। टिकट जाँचकर फिर दावा करें।
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.feedback(ClaimFeedbackUiTest.kt:68)
+	at io.github.sbshrey.tambola.game.ClaimFeedbackUiTest.largeHindiFeedbackInPortrait(ClaimFeedbackUiTest.kt:33)
+
+FAILURES!!!
+Tests run: 4,  Failures: 4

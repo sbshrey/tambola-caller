@@ -1,0 +1,1 @@
+PASS: 786 resources; English/Hindi key, plural, placeholder and Unicode parity

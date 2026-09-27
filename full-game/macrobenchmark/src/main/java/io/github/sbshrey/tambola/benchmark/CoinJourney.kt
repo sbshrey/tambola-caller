@@ -48,7 +48,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         require(expectedRounds in listOf(1, 9))
         require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
-        listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png")
+        listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png", "claim-confirmed-public.png")
             .forEach { File(context.filesDir, it).delete() }
     }
 
@@ -384,6 +384,16 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     tap("claim-ticket-${entry.key}")
                     val choice = device.wait(Until.findObject(By.res("claim-prize-${prize.name}")), 1500)
                     val advanced = clickPrizeChoice(choice, room)
+                    // Feedback lasts until the next five-second call. Observe it before the
+                    // independent HTTP award read, which can outlast that display window.
+                    val expectedFeedback = "Ticket ${entry.key} · ${prize.title} verified"
+                    val sawFeedback = advanced == null && !report.optBoolean("contextualClaimVerified") &&
+                        device.wait(Until.hasObject(By.res("claim-feedback").text(expectedFeedback)), 2000)
+                    if (sawFeedback) device.takeScreenshot(File(context.filesDir, "claim-confirmed-public.png"))
+                    else if (!report.optBoolean("contextualClaimVerified")) {
+                        report.put("feedbackObservationsMissed", report.optInt("feedbackObservationsMissed") + 1)
+                        report.put("lastObservedClaimFeedback", find("claim-feedback")?.let(::textOf).orEmpty())
+                    }
                     if (advanced != null) room = advanced else until(interval = 250) {
                         room = snapshot()
                         val after = room.round!!
@@ -396,6 +406,9 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                             it.id in award.ticketIds && it.playerId == mainId && it.ordinal == entry.key
                         }
                         if (prize.isRankedHouse && selectedWon) usedHouses += entry.key
+                        if (selectedWon && sawFeedback) {
+                            report.put("contextualClaimVerified", true).put("confirmedClaimText", expectedFeedback)
+                        }
                     }
                 }
                 if (!reopened && seen >= 20) {
@@ -429,6 +442,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             }
             val result = snapshot()
             assertEquals(expectedPrizeCount, result.round!!.awards.size)
+            assertTrue("A server-confirmed claim must identify its ticket and prize", report.optBoolean("contextualClaimVerified"))
             if (!computerOpponents) assertTrue(result.round!!.awards.all { it.playerIds == listOf(mainId) })
             val winnings = verifiedWinnings(result)
             val ownWinnings = winnings.getOrDefault(requireNotNull(mainId), 0L)

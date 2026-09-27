@@ -1,0 +1,213 @@
+- banner:
+  - link "Tambola Online":
+    - /url: /
+    - generic: Tambola Online
+  - navigation:
+    - menubar:
+      - menuitem "Game Modes"
+      - menuitem "Tools"
+      - menuitem "Help"
+  - button "Sign In / Sign Up"
+- main:
+  - navigation "Breadcrumb":
+    - list:
+      - link "Home":
+        - /url: /
+      - generic: Play with Friends
+  - generic: Tambola Party Room
+  - generic: Invite friends with this Party Code!
+  - generic: PARTY CODE
+  - generic: GG2XVM
+  - button "Copy Party Code":
+  - button "Lobby":
+    - text: Lobby
+  - button "Locked":
+    - text: Locked
+  - button "End Game":
+    - text: End Game
+  - generic: Game Controls
+  - text: "Status:"
+  - generic: in-progress
+  - button "Call Next Number"
+  - paragraph: Current Number
+  - paragraph: "13"
+  - text: Players (1)
+  - list:
+    - generic: Guest QA
+    - text: Host
+  - generic: Winners Board
+  - list:
+    - generic: "Early Five:"
+    - generic: Guest QA
+  - generic: Your Ticket
+  - 'heading "Ticket #1" [level=3]'
+  - table:
+    - rowgroup:
+      - row "2 13 34 40 54":
+        - cell "2"
+        - cell "13"
+        - cell
+        - cell "34"
+        - cell "40"
+        - cell "54"
+        - cell
+        - cell
+        - cell
+      - row "7 49 59 77 84":
+        - cell "7"
+        - cell
+        - cell
+        - cell
+        - cell "49"
+        - cell "59"
+        - cell
+        - cell "77"
+        - cell "84"
+      - row "18 21 38 68 87":
+        - cell
+        - cell "18"
+        - cell "21"
+        - cell "38"
+        - cell
+        - cell
+        - cell "68"
+        - cell
+        - cell "87"
+  - generic: Claim a Prize
+  - generic: When you get a winning combination, claim it here!
+  - button "Early Five Claimed" [disabled]
+  - button "Claim Four Corners"
+  - button "Claim First Line"
+  - button "Claim Second Line"
+  - button "Claim Third Line"
+  - button "Claim Full House"
+  - generic: Game Board & Called Numbers (39/90)
+  - generic: "1"
+  - generic: "2"
+  - generic: "3"
+  - generic: "4"
+  - generic: "5"
+  - generic: "6"
+  - generic: "7"
+  - generic: "8"
+  - generic: "9"
+  - generic: "10"
+  - generic: "11"
+  - generic: "12"
+  - generic: "13"
+  - generic: "14"
+  - generic: "15"
+  - generic: "16"
+  - generic: "17"
+  - generic: "18"
+  - generic: "19"
+  - generic: "20"
+  - generic: "21"
+  - generic: "22"
+  - generic: "23"
+  - generic: "24"
+  - generic: "25"
+  - generic: "26"
+  - generic: "27"
+  - generic: "28"
+  - generic: "29"
+  - generic: "30"
+  - generic: "31"
+  - generic: "32"
+  - generic: "33"
+  - generic: "34"
+  - generic: "35"
+  - generic: "36"
+  - generic: "37"
+  - generic: "38"
+  - generic: "39"
+  - generic: "40"
+  - generic: "41"
+  - generic: "42"
+  - generic: "43"
+  - generic: "44"
+  - generic: "45"
+  - generic: "46"
+  - generic: "47"
+  - generic: "48"
+  - generic: "49"
+  - generic: "50"
+  - generic: "51"
+  - generic: "52"
+  - generic: "53"
+  - generic: "54"
+  - generic: "55"
+  - generic: "56"
+  - generic: "57"
+  - generic: "58"
+  - generic: "59"
+  - generic: "60"
+  - generic: "61"
+  - generic: "62"
+  - generic: "63"
+  - generic: "64"
+  - generic: "65"
+  - generic: "66"
+  - generic: "67"
+  - generic: "68"
+  - generic: "69"
+  - generic: "70"
+  - generic: "71"
+  - generic: "72"
+  - generic: "73"
+  - generic: "74"
+  - generic: "75"
+  - generic: "76"
+  - generic: "77"
+  - generic: "78"
+  - generic: "79"
+  - generic: "80"
+  - generic: "81"
+  - generic: "82"
+  - generic: "83"
+  - generic: "84"
+  - generic: "85"
+  - generic: "86"
+  - generic: "87"
+  - generic: "88"
+  - generic: "89"
+  - generic: "90"
+  - generic: "13"
+  - generic: "83"
+  - generic: "19"
+  - generic: "31"
+  - generic: "26"
+  - generic: "18"
+  - generic: "51"
+  - generic: "85"
+  - generic: "74"
+  - generic: "62"
+  - generic: "27"
+  - generic: "28"
+  - generic: "80"
+  - generic: "72"
+  - generic: "61"
+  - generic: "64"
+  - generic: "48"
+  - generic: "41"
+  - generic: "89"
+  - generic: "8"
+  - generic: "45"
+  - generic: "56"
+  - generic: "90"
+  - generic: "50"
+  - generic: "65"
+  - generic: "38"
+  - generic: "55"
+  - generic: "42"
+  - generic: "20"
+  - generic: "87"
+  - generic: "5"
+  - generic: "25"
+  - generic: "29"
+  - generic: "23"
+  - generic: "77"
+  - generic: "43"
+  - generic: "37"
+  - generic: "76"
+  - generic: "30"

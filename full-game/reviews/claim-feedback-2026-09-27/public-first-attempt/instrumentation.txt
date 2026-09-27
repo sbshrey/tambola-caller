@@ -1,0 +1,27 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in friendsRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: UI condition timed out at playing
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:62)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:59)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:401)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda17.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:576)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:345)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRound(InternetBetaTest.kt:30)
+
+
+Time: 89.792
+There was 1 failure:
+1) friendsRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: UI condition timed out at playing
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:62)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:59)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:401)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda17.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:576)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:345)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRound(InternetBetaTest.kt:30)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

@@ -1,6 +1,7 @@
 <resources>
     <string name="play_claim">Claim</string>
     <string name="play_claim_confirmed">Claim verified!</string>
+    <string name="play_claim_confirmed_for">Ticket %1$d · %2$s verified</string>
     <string name="play_claim_none">No new prize yet — check your marked numbers.</string>
     <string name="play_claim_late">That call has ended. Check your tickets and claim again.</string>
     <string name="play_claim_marks">Only your called numbers can count toward a claim.</string>

@@ -20,7 +20,8 @@ import androidx.compose.ui.platform.LocalResources
 class GameText(private val resources: Resources) {
     operator fun invoke(@StringRes id: Int, vararg args: Any?): String =
         if (args.isEmpty()) resources.getString(id) else resources.getString(id, *args)
-    fun message(value: UiMessage): String = invoke(value.resource, *value.arguments.toTypedArray())
+    fun message(value: UiMessage): String = invoke(value.resource,
+        *value.arguments.map { if (it is Prize) prizeTitle(it) else it }.toTypedArray())
     val locale get() = resources.configuration.locales[0]
     fun date(time: Long): String = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale).format(Date(time))
     fun screen(value: Screen): String = invoke(when (value) {

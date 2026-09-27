@@ -279,8 +279,12 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         allowRoomChange = pending is PendingOperation.Create || pending is PendingOperation.Join || pending is PendingOperation.Match)
                     persist(accepted.saved.copy(pending = null))
                     announceAccepted(latest, accepted)
-                    if (pending is PendingOperation.Command && pending.request.action is RoomAction.Claim)
-                        mutable.update { it.copy(claimMessage = UiMessage(R.string.play_claim_confirmed)) }
+                    val claim = (pending as? PendingOperation.Command)?.request?.action as? RoomAction.Claim
+                    if (claim != null) {
+                        val message = verifiedClaimFeedback(claim.selection,
+                            result.snapshot.round?.ownTickets.orEmpty(), result.snapshot.options.game)
+                        mutable.update { it.copy(claimMessage = message) }
+                    }
                 }
             }
         } catch (error: RoomApiFailure) {

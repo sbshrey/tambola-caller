@@ -1,0 +1,8 @@
+{
+  "tests": 4,
+  "appSha256": "28c80265600489005a447c43547c03d77c821c28407f4781653ce1eb03761084",
+  "testSha256": "f128c9a2a17c2e0d7fb17636381bd9648a3db59576a981f7f93f8b52479477c6",
+  "description": "New feedback layout regression on unchanged alpha28 production source",
+  "sourceCommit": "a6d8d3b68688a18de12bef6d8384035e92a96b57",
+  "failures": 4
+}

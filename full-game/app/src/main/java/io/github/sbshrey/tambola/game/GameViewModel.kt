@@ -206,7 +206,9 @@ class GameViewModel(application: Application, private val savedState: SavedState
     }
     fun toggleMark(ticketId: String, number: Int) = mutate(markSound = true) { it.toggleMark(ticketId, number) }
     fun claim(playerId: String, selection: ClaimSelection) = mutate(
-        afterSave = { mutable.update { it.copy(claimMessage = UiMessage(R.string.play_claim_confirmed)) } },
+        afterSave = { mutable.update { state -> state.copy(claimMessage = state.round?.let { round ->
+            verifiedClaimFeedback(selection, round.tickets.filter { it.playerId == playerId }, round.settings)
+        } ?: UiMessage(R.string.play_claim_confirmed)) } },
         afterUnchanged = { mutable.update { it.copy(claimMessage = UiMessage(R.string.play_claim_none)) } },
     ) { round -> if (round.settings.manualClaims && !round.finished && round.called.isNotEmpty()) round.claim(playerId, selection = selection) else round }
     fun dabCalled(playerId: String) = mutate(markSound = true) { round ->

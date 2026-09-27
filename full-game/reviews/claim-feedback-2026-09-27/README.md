@@ -1,0 +1,31 @@
+# Clear claim feedback — 27 September 2026
+
+The previous app showed only “Claim verified!” after a successful receipt. This change identifies the selected ticket and prize, for example “Ticket 3 · Early five verified”. The message is produced after the existing server receipt or local save succeeds. Standard prize names remain localizable when displayed; custom titles remain verbatim. Unavailable receipt details retain the generic confirmation.
+
+The claim-feedback strip reserves two lines through native text measurement, uses the full available width and centers its text. Its space stays reserved when quiet, so a response cannot move the ticket or claim button. The portrait prize-count label can also grow vertically with text size. This follows the game UI skill's guidance to keep contextual information readable without covering the playable ticket.
+
+## Rival observation
+
+A private, free, single-player browser room on [Tambola Online](https://tambolaonline.com/play) was exercised manually. After 39 calls, five ticket numbers had been called: 13, 77, 18, 38 and 87. Claim Early Five displayed a verification state and then a disabled claimed button. The winners board correctly identified Guest QA. [Observed calls](rival-observed-calls.json), [winner board](rival-winner-board.png).
+
+A sticky advertisement covered the lower ticket area. Returning to Lobby opened a full-screen advertisement; the attempted visible close did not dismiss it during this check. [Interruption](rival-lobby-interruption.png). The owned browser tab was then closed; the manually called room was not ended or deleted. This is a scoped observation, not a finding that every rival claim or navigation fails. No real-money play, account signup, native competitor APK, independent remote players or completed rival round was tested.
+
+## Verification record
+
+The new native geometry checks failed on unchanged alpha28 source in all four configurations: normal English landscape, 150% English portrait, and 150% Hindi in both orientations. TextLayoutResult reported visual overflow; this flag alone does not prove every baseline screenshot visibly lost characters. [Baseline identity](baseline-validation.json), [baseline transcript](baseline-ui.txt).
+
+The candidate adds real layout checks for complete, non-ellipsized standard responses and the contextual confirmation. Ticket bounds and the visible, enabled claim target must remain unchanged after each response. Presentation unit tests cover the player's own ticket ordinal, a custom title and missing receipt details. Existing manual-table checks retain page/mark/claim selection coverage.
+
+The first implementation used a calculated fixed height. The 150% English portrait check and screenshot demonstrated that it still forced a long response into one ellipsized line. It was replaced by `minLines = maxLines = 2`, allowing the text engine to reserve both lines using its measured font metrics. [Failure diagnostics](fixed-height-failure.txt), [rejected layout](fixed-height-english-failure.png). Two earlier test-fixture attempts selected prizes absent from the 12-ticket pool; the fixture now selects an enabled prize. The initial compilation also required capturing the cross-module claim action before accessing its selection.
+
+All seven final native checks pass (53.365 seconds), including the portrait label's measured bounds. [Transcript](native-feedback-final.txt), [landscape confirmation](confirmed_for-en-landscape.png), [English large-text response](late-en-portrait.png), [Hindi large-text response](late-hi-portrait.png). These are deterministic component fixtures; the confirmation fixture illustrates text and layout without claiming a real prize.
+
+The final optimized APK builds successfully, retains the existing development certificate and passes all 18 Android JVM tests. Lint reports zero errors and 122 warnings. English/Hindi parity passes for 786 resources, and both gateway tests pass. [Build identity](build-validation.json), [build log](build-final.txt), [gateway tests](gateway-tests.txt).
+
+The first public attempt confirmed a prize but timed out while checking its transient text after a separate HTTP award read. The failure screenshot showed a later call with the feedback already cleared, and all four QA profiles were deleted. [First attempt](public-first-attempt/coin-release-journey.json). The external driver now observes the exact text immediately after the click, then independently checks the server's selected-ticket award. Missed display windows may be observed at a later prize; the completed-round assertion still requires a matching confirmation. The same unchanged APK passed this check on the next run, showing “Ticket 2 · Early five verified”, and recovered 21 marks after process death. [Actual public confirmation](claim-confirmed-public.png).
+
+The exact final APK passed `InternetBetaTest#friendsRound`: **JUnit OK (1 test), 458.237 seconds**. The optimized native player and three passive HTTP QA peers played 82 calls over the public directory's HTTPS/WSS endpoint, with no adb reverse. All eight prizes and the complete 2400-coin pool settled correctly; the native balance changed from 1500 to 3300 after its 600-coin ticket purchase, while aggregate balances remained 6000. Same friends replay created a two-player 500-coin table, recovered across process death and refunded both purchases. The native profile and three QA peers were deleted. [Journey](public-round/coin-release-journey.json), [test output](public-round/instrumentation.txt), [exact-package validation](public-round/validation.json).
+
+APK SHA-256: `e2c7211e076bc24020c8dd8770d845b56f8eb8f222e1fe820bc940399d06b14f`, 29,141,285 bytes, version 29 / `0.29.0-alpha29-internet-beta`. The PC game service remains on the previously deployed purchase-admission build; this release changes app presentation and the invitation page's download destination.
+
+Physical-phone cellular connectivity, touch/audio/frame performance, production signing and the remaining editable design update are not established by emulator evidence. Hosting still depends on the PC staying powered, signed in and connected. Login startup and disabled AC idle sleep were confirmed without changing power settings.
