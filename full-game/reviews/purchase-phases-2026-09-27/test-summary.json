@@ -1,0 +1,6 @@
+{
+  "uniqueTests": 161,
+  "failed": 0,
+  "skipped": 0,
+  "scope": "161-test suite initially had four missing-TAMBOLA_PG_BIN setup failures; corrected 23-test rerun covers all four affected classes plus strengthened timing tests."
+}

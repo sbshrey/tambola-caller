@@ -129,7 +129,9 @@ class RoomService(
                 // wallet before serializing shared lobby selection; all writes still
                 // roll back together if the purchase cannot complete.
                 CoinLedger.ensure(connection, guest.id, now)
-                if (!request.friendTable) connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+                if (!request.friendTable) PurchaseTiming.allocation {
+                    connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+                }
                 val purchaseAt = clock()
                 val previous = request.previousFriendRound?.let { roundId ->
                     load(connection, requireNotNull(request.friendCode)).also {

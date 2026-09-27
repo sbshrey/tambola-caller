@@ -55,6 +55,9 @@ object CoinPurchaseBurst {
                 record("fixtureSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinPurchaseBurst.kt"))))
                 record("profilerSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/ProfiledCoinServer.kt"))))
                 record("sqlProfiling", env.sqlProfiling); record("poolProfiling", System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true")
+                val requestProfiling = System.getenv("TAMBOLA_COIN_LOAD_REQUEST_PROFILE") == "true"
+                check(!requestProfiling || env.sqlProfiling)
+                record("requestProfiling", requestProfiling)
                 env.runtimeIdentity.forEach(::record)
                 checkpoint("starting")
                 env.start(); record("serverPid", env.pid)
@@ -137,7 +140,7 @@ object CoinPurchaseBurst {
                     checkpoint("wave-${wave + 1}-verified")
                 }
                 // Allow the diagnostic recording stream to flush before the owned process is stopped.
-                if (System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true") delay(2500)
+                if (System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true" || requestProfiling) delay(2500)
                 env.alive(); check(serviceRuntimeIdentity(env.root, env.runtimeLib) == env.runtimeIdentity)
                 passed = true
             }

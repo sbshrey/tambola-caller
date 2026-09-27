@@ -1,0 +1,145 @@
+{
+  "tests": 23,
+  "failed": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "class": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "name": "actual primary backup restore cannot resurrect deleted access or shared profile fields after replay",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "a real backup restores generated lobby metadata and remains purchasable",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "payload only changes retain HOT eligibility unlike an expression index",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "full lobbies are skipped and a freed older seat becomes available again",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "migration backfills existing lobbies and verifies idempotently",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "restoring an enrolled profile cannot bypass the live deletion journal",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "wallet purchase receipt belongs to the identity across session rotation",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "logout revokes durable proof and allows retention cleanup",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "expired session renews same earned wallet after cleanup without a new starter grant",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "lost renewal response retries exactly and stale requests cannot rotate back",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "renewal rollback leaves original session and retry intent usable",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "enrollment cannot be changed or stolen by sharing keys between profiles",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "session endpoints authenticate strictly use no-store and never echo device proof",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "concurrent retries issue one exact session while competing replacements conflict",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+      "name": "timing is disabled by default and does not change returned values",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+      "name": "recorded fields partition route time and identify nested waits without request data",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+      "name": "failed service removes thread context and cancelled admission is accounted for",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "mixed concurrent journal writes share contiguous commit order and stable duplicate revocations",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "failed independent write cannot confirm logout or discard a usable device credential",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "journal upgrade from version two retains identity history and primary cursor",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "missing revocation cannot be skipped and duplicate intent kinds cannot advance head",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "journal revocation survives primary rollback and retry keeps original expiry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "restoring a pre-rotation backup never revives signed-out access and preserves shared play",
+      "failed": false,
+      "skipped": false
+    }
+  ]
+}

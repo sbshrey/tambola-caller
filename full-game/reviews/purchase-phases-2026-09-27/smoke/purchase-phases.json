@@ -1,0 +1,113 @@
+{
+  "runId": "e5637634945848a4",
+  "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+  "scope": "Profiled loopback purchase bursts. Route timing begins after parsing and ends after respond returns; it is not socket-flush or mobile latency. Pool and allocator waits are nested inside service time. No request identities retained.",
+  "capacityAcceptance": false,
+  "totalEvents": 16,
+  "waves": [
+    {
+      "wave": 1,
+      "clientRoundTripMs": {
+        "count": 8,
+        "p50": 548.2363,
+        "p95": 549.0124,
+        "p99": 549.0124,
+        "max": 549.0124
+      },
+      "routePhaseMs": {
+        "admission": {
+          "count": 8,
+          "mean": 15.1886375,
+          "p50": 0.005,
+          "p95": 121.4285,
+          "p99": 121.4285,
+          "max": 121.4285
+        },
+        "dispatch": {
+          "count": 8,
+          "mean": 1.6304750000000001,
+          "p50": 1.8277,
+          "p95": 3.3338,
+          "p99": 3.3338,
+          "max": 3.3338
+        },
+        "service": {
+          "count": 8,
+          "mean": 99.378325,
+          "p50": 57.8038,
+          "p95": 214.1944,
+          "p99": 214.1944,
+          "max": 214.1944
+        },
+        "pool": {
+          "count": 8,
+          "mean": 30.782175,
+          "p50": 0.495,
+          "p95": 112.5028,
+          "p99": 112.5028,
+          "max": 112.5028
+        },
+        "allocation": {
+          "count": 8,
+          "mean": 13.35225,
+          "p50": 4.9288,
+          "p95": 57.151,
+          "p99": 57.151,
+          "max": 57.151
+        },
+        "remainder": {
+          "count": 8,
+          "mean": 2.75495,
+          "p50": 0.9228,
+          "p95": 11.5879,
+          "p99": 11.5879,
+          "max": 11.5879
+        },
+        "total": {
+          "count": 8,
+          "mean": 118.9523875,
+          "p50": 131.8431,
+          "p95": 220.9367,
+          "p99": 220.9367,
+          "max": 220.9367
+        },
+        "service_other": {
+          "count": 8,
+          "mean": 55.243900000000004,
+          "p50": 35.309,
+          "p95": 112.2303,
+          "p99": 112.2303,
+          "max": 112.2303
+        }
+      },
+      "poolAcquisitions": {
+        "count": 8,
+        "mean": 4.0,
+        "p50": 4,
+        "p95": 4,
+        "p99": 4,
+        "max": 4
+      },
+      "summedRouteTimeShare": {
+        "admission": 0.1276866973350997,
+        "dispatch": 0.013706954809965458,
+        "service": 0.8354462410432913,
+        "remainder": 0.02316010681164344
+      },
+      "slowestFivePercentMeanMs": {
+        "admission": 0.0294,
+        "dispatch": 2.4029,
+        "service": 214.1944,
+        "pool": 110.2636,
+        "allocation": 8.967,
+        "remainder": 4.31,
+        "total": 220.9367,
+        "service_other": 94.9638
+      }
+    }
+  ],
+  "evidenceSha256": "f625d6f5f9112013f30fc9e6299496d501590921a12a7d449793f6f1b9bc9c9d",
+  "analyzerSha256": "1df36a4487dbd7856aef26f267b357fe977c00d30e2303035995b38ed344b769",
+  "timingsSha256": "2f1c7eb58ba5d6129729a3e167dce841a5c30316b3e6ef98f415929ed43b2f9b",
+  "timingsFile": "purchase-phases.timings.txt"
+}

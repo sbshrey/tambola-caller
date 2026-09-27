@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checks": [
+    "complete 640 primary purchases plus 640 receipt retries accepted",
+    "missing primary event rejected",
+    "invalid boolean rejected",
+    "inconsistent phase total rejected",
+    "retained input, filtered events and analyzer hashes match"
+  ]
+}

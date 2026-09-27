@@ -1,0 +1,58 @@
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:compileTestKotlin UP-TO-DATE
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:test
+
+BackupRestoreTest > actual primary backup restore cannot resurrect deleted access or shared profile fields after replay FAILED
+    java.lang.IllegalArgumentException at BackupRestoreTest.kt:28
+
+CoinLobbyIndexTest > a real backup restores generated lobby metadata and remains purchasable FAILED
+    java.lang.IllegalArgumentException at CoinLobbyIndexTest.kt:69
+
+DeviceSessionTest > restoring an enrolled profile cannot bypass the live deletion journal FAILED
+    java.lang.IllegalArgumentException at DeviceSessionTest.kt:126
+
+SessionRevocationTest > restoring a pre-rotation backup never revives signed-out access and preserves shared play FAILED
+    java.lang.IllegalArgumentException at SessionRevocationTest.kt:36
+
+161 tests completed, 4 failed
+
+> Task :server:test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:test'.
+> There were failing tests. See the report at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/server/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 8m 58s
+11 actionable tasks: 1 executed, 10 up-to-date

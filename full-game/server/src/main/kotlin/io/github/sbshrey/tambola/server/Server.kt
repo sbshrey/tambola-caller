@@ -143,12 +143,19 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             post("/matches") {
                 val body = call.body<MatchRequest>()
                 val token = call.bearer()
-                val result = if (body.friendTable) {
-                    withContext(Dispatchers.IO) { service.match(token, body) }
-                } else quickPurchases.withPermit {
-                    withContext(Dispatchers.IO) { service.match(token, body) }
-                }
-                call.respond(result)
+                val timing = PurchaseTiming.start(body.friendTable)
+                var success = false
+                try {
+                    suspend fun purchase(): RoomUpdate {
+                        timing?.admitted()
+                        return withContext(Dispatchers.IO) {
+                            timing?.service { service.match(token, body) } ?: service.match(token, body)
+                        }
+                    }
+                    val result = if (body.friendTable) purchase() else quickPurchases.withPermit { purchase() }
+                    call.respond(result)
+                    success = true
+                } finally { timing?.finish(success) }
             }
             post("/guests") {
                 val body = call.body<GuestRequest>()

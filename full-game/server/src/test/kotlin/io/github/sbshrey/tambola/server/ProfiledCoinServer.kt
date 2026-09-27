@@ -21,20 +21,32 @@ object ProfiledCoinServer {
         DriverManager.registerDriver(object : Driver by original {
             override fun connect(url: String?, info: Properties?): Connection? = original.connect(url, info)?.let(::instrument)
         })
-        if (System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true") {
+        val poolProfile = System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true"
+        val requestProfile = System.getenv("TAMBOLA_COIN_LOAD_REQUEST_PROFILE") == "true"
+        if (poolProfile || requestProfile) {
             val recording = RecordingStream()
-            recording.enable("jdk.ThreadPark").withThreshold(Duration.ofMillis(1)).withStackTrace()
-            recording.onEvent("jdk.ThreadPark") { event ->
-                val frames = event.stackTrace?.frames.orEmpty()
-                if (frames.any { it.method.type.name == "io.github.sbshrey.tambola.server.RoomService" && it.method.name == "match" } &&
-                    frames.any { it.method.type.name == "com.zaxxer.hikari.util.ConcurrentBag" && it.method.name == "borrow" }) {
-                    val rate = frames.any { it.method.name == "authenticatedRate" }
-                    val journal = frames.any { it.method.type.name.startsWith("io.github.sbshrey.tambola.server.DeletionJournal") }
-                    val label = (if (rate) "rate" else "match") + (if (journal) "_journal" else "_primary")
-                    println("COIN_POOL_PARK|$label|${event.startTime.toEpochMilli()}|${event.duration.toNanos()}")
+            if (requestProfile) {
+                recording.enable("tambola.PurchaseTiming").withThreshold(Duration.ZERO).withoutStackTrace()
+                recording.onEvent("tambola.PurchaseTiming") { event ->
+                    val fields = listOf("admissionNanos", "dispatchNanos", "serviceNanos", "poolNanos", "allocationNanos", "remainderNanos", "totalNanos")
+                    println("COIN_REQUEST_TIMING|${event.startTime.toEpochMilli()}|${event.getBoolean("friendTable")}|${event.getBoolean("success")}|${event.getInt("poolAcquisitions")}|" +
+                        fields.joinToString("|") { event.getLong(it).toString() })
                 }
             }
-            recording.onFlush { println("COIN_POOL_FLUSH|${System.currentTimeMillis()}") }
+            if (poolProfile) {
+                recording.enable("jdk.ThreadPark").withThreshold(Duration.ofMillis(1)).withStackTrace()
+                recording.onEvent("jdk.ThreadPark") { event ->
+                    val frames = event.stackTrace?.frames.orEmpty()
+                    if (frames.any { it.method.type.name == "io.github.sbshrey.tambola.server.RoomService" && it.method.name == "match" } &&
+                        frames.any { it.method.type.name == "com.zaxxer.hikari.util.ConcurrentBag" && it.method.name == "borrow" }) {
+                        val rate = frames.any { it.method.name == "authenticatedRate" }
+                        val journal = frames.any { it.method.type.name.startsWith("io.github.sbshrey.tambola.server.DeletionJournal") }
+                        val label = (if (rate) "rate" else "match") + (if (journal) "_journal" else "_primary")
+                        println("COIN_POOL_PARK|$label|${event.startTime.toEpochMilli()}|${event.duration.toNanos()}")
+                    }
+                }
+                recording.onFlush { println("COIN_POOL_FLUSH|${System.currentTimeMillis()}") }
+            }
             recording.startAsync()
         }
         io.github.sbshrey.tambola.server.main(args)

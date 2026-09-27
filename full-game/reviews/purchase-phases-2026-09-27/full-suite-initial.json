@@ -1,0 +1,973 @@
+{
+  "tests": 161,
+  "failed": 4,
+  "skipped": 0,
+  "cases": [
+    {
+      "class": "io.github.sbshrey.tambola.server.AvatarTest",
+      "name": "concurrent duplicate avatar commands have one receipt and no shared-lock upgrade deadlock",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.AvatarTest",
+      "name": "failure saving room rolls back profile avatar and retry uses original intent",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.AvatarTest",
+      "name": "own lobby avatar is durable locked in a round and original receipts cannot roll it back",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "name": "actual primary backup restore cannot resurrect deleted access or shared profile fields after replay",
+      "failed": true,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "name": "busy profile defers replay without advancing the cursor or blocking an unrelated room",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "name": "busy logout defers both intent kinds in sequence without blocking other players",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "name": "a missing recovery cursor fails both strict startup replay and background replay",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "name": "busy cursor cannot clear a prior genuine recovery failure",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "simultaneous debits serialize across rooms and cannot overspend",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "aborted room transaction rolls back its debit and the same request can safely retry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "a debit waiting on another transaction checks the newly committed balance",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "profile deletion removes wallet history and delayed credits cannot recreate it",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "retried purchase has one debit and changed amount cannot reuse its identity",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "settlement is immutable idempotent and remains spendable after service restart",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "registration and concurrent wallet reads grant starter coins once and old profiles initialize lazily",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "broke refill is bounded and retryable without duplicate grants",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "name": "two rooms can credit the same wallets in opposite order without locking each other",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "a real backup restores generated lobby metadata and remains purchasable",
+      "failed": true,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "payload only changes retain HOT eligibility unlike an expression index",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "full lobbies are skipped and a freed older seat becomes available again",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "name": "migration backfills existing lobbies and verifies idempotently",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "a three house game settles every slot exactly once and conserves all human coins",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "event write failure rolls back the room participants debit and receipt before an exact retry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "same-call claims stay provisional then split once and return the remaining pool",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "simultaneous real players fill one lobby without duplicate debits then spill at eight seats",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "purchase quantity changes and leave commit once with exact retry receipts",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "deleting a queued profile removes its purchase and redacts others stored match receipts",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "computer payouts consume only their allocations and active expiry returns the unawarded pool",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "simultaneous retries of one match have one receipt one seat and one charge",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "computer fill is explicit and its quantities and prize pool remain fixed after start",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "six independent quantities freeze the exact pool and only owned disjoint tickets are exposed",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "insufficient balance rolls back the room membership purchase and receipt together",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "leaving an old lobby cannot hide an already purchased newer game",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "returning to an owned table does not wait for unrelated lobby allocation",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "name": "an interrupted countdown refunds reservations once and leaves no spent ghost room",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+      "name": "timeouts apply to reads and writes and do not leak after commit or rollback",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "database inspection rejects shared storage even when URL spellings differ",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "journal failure cannot confirm deletion or mutate primary state",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "a missing journal entry fails replay and readiness without advancing the cursor",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "concurrent journal writers produce contiguous committed sequence and duplicate intent is stable",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "different journal and rollback behind applied cursor fail closed",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "journal is mandatory except for explicit isolated local development",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "durable intent survives primary rollback denies access and replay completes redaction",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "two replay workers and two retries redact shared rooms without skipping intents or deadlocking",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "expired confirmation still suppresses identity and journal contains only recovery fields",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "name": "journal outage makes real HTTP readiness unavailable while liveness remains available",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "restoring an enrolled profile cannot bypass the live deletion journal",
+      "failed": true,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "wallet purchase receipt belongs to the identity across session rotation",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "logout revokes durable proof and allows retention cleanup",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "expired session renews same earned wallet after cleanup without a new starter grant",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "lost renewal response retries exactly and stale requests cannot rotate back",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "renewal rollback leaves original session and retry intent usable",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "enrollment cannot be changed or stolen by sharing keys between profiles",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "session endpoints authenticate strictly use no-store and never echo device proof",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "name": "concurrent retries issue one exact session while competing replacements conflict",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "name": "initial snapshots deltas resync and invalid cursors retain their semantics",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "name": "matching revisions cannot bypass membership room lifetime or credential expiry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "name": "unchanged coin poll does not wait for event history or wallet relation locks",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "name": "matching revisions still check fresh journal suppression recovery state and availability",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "name": "quiet presence renewals still persist and a reconnect still emits its revision",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "name": "polls renew presence and reconnect with a durable revision",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "name": "an event committed after reading the room is deferred to the next snapshot",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "name": "quiet authenticated polls leave database tuples unchanged and do not consume HTTP quota",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "name": "every poll rechecks revocation expiry membership and room lifetime",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "name": "quiet poll checks independent deletion suppression before primary replay",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "name": "admission quota is persisted across workers and expires at the next minute",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventStreamsTest",
+      "name": "simultaneous acquisitions cannot exceed limits and concurrent release is idempotent",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventStreamsTest",
+      "name": "credential and total limits reject excess connections and released slots can be reused",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendReplayTest",
+      "name": "replay needs the original membership and completed round and never charges an unconsenting friend",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendReplayTest",
+      "name": "late replay cannot buy into a successor that has already started",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendReplayTest",
+      "name": "expired successor refunds and stale replay cannot silently open a different round",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendReplayTest",
+      "name": "simultaneous replay clicks buy one shared successor and preserve old results and exact receipts",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendReplayTest",
+      "name": "failed first replay purchase rolls back its link and another friend can host",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "offline host transfers to a connected friend and all members must reconnect before start",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "host starts purchased tickets with no computers and late purchases cannot enter",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "join racing start either enters the frozen pool or receives a refund free rejection",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "leaving transfers host and refunds exactly once while expiry refunds remaining friends",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "eight friends fill the table and a ninth is not charged",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "duplicate friend entry receipts preserve purchase once and reject reused ids",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.FriendTableTest",
+      "name": "one ticket host waits for friends and quick play cannot enter the private table",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+      "name": "all retained rooms archives and peer responses redact across cursor pages",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+      "name": "failure on the final response rolls back earlier pages and durable replay succeeds",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "HTTP validates requests authentication and health without exposing secrets",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "profile deletion authenticates validates and confirms the same request after access is removed",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "wallet endpoints authenticate reject forged amounts and return only spendable balance",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "two authenticated websocket clients receive private snapshots and durable draw replay",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "match HTTP rejects forged prices and returns a private retryable purchase",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "an open event stream closes after session revocation",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "websocket rejects spectators without room membership",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "name": "a quiet authenticated websocket closes after independent logout before primary replay",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+      "name": "configuration is optional but rejects incomplete insecure or malformed metadata",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+      "name": "association uses only configured package and normalized public fingerprints",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.InviteSiteTest",
+      "name": "landing page is bilingual canonical private and does not inspect or create rooms",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.InviteSiteTest",
+      "name": "public routes stay absent when no origin is configured",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.InviteSiteTest",
+      "name": "association endpoint returns configured metadata as JSON without redirect",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.InviteSiteTest",
+      "name": "malformed encoded or tracking links do not render an invitation",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "name": "journal outage rejects live and missing credentials without cached stream authorization",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "name": "journal rollback during authentication cannot pass a previously checked head",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "name": "uninitialized mismatched and ahead recovery cursors fail authenticated access closed",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "name": "changing both stored identities cannot bypass the running journal identity guard",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "name": "independent logout denies a previously admitted stream and purchases before primary replay",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "mixed rematch creates fresh private tickets and preserves agreed bot seats",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "claim identity and marks cannot target another call round or player",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "last human leaving by profile deletion closes computer room and cancels pending reactions",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "computer seats are explicit do not register guests and count toward capacity",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "pause cancels reactions and resume reschedules without duplicate awards",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "computer claim reactions survive service restart and never reveal private cards",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "one command claims only chosen ticket and scheme and same-call claimant shares it despite old revision",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "name": "concurrent retries produce one claim proof and one receipt",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.NativeClientTest",
+      "name": "native room stream retains numeric close code without remote reason text",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.NativeClientTest",
+      "name": "production client exchanges live snapshots with real Netty websocket",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "name": "metrics are disabled without operator configuration",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "name": "readiness reports a failed or stalled worker even when database health succeeds and recovers after a pass",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "name": "protected scrape counts HTTP outcomes without exposing request data or creating dynamic labels",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "failure while scrubbing an audit rolls back profile room receipts and confirmation together",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "concurrent duplicate deletion returns one confirmation and racing joins cannot restore the name",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "deleting the final member closes the room and an unrelated profile remains intact",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "deleting an active host redacts all stored profile copies and transfers control without changing the game",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "redaction is tied to identity rather than replacing another player's matching display name",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "expired unrevoked sessions may delete but signed out sessions cannot and confirmations expire",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "name": "migration backfills former members from archived rounds and verifies immutable checksums",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseAdmissionTest",
+      "name": "a rejected purchase releases admission for the next player",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseAdmissionTest",
+      "name": "queued quick purchases leave wallets and friend tables available",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+      "name": "timing is disabled by default and does not change returned values",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+      "name": "recorded fields partition route time and identify nested waits without request data",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.PurchaseTimingTest",
+      "name": "failed service removes thread context and cancelled admission is accounted for",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "leaving and removing lobby members revoke access and select another host",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "complete online round custom prizes audit and rematch share domain rules",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "concurrent retries draw exactly once and different commands reject a stale revision",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "two schedulers and a replacement service preserve one durable draw per interval",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "finished roster and winner labels survive a player leaving without disclosing other cards",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "guest rate limits are durable across service instances and room expiry is enforced",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "durable event replay detects stale and future cursors",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "event write failure rolls back room state and receipt before retry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "authentication stores only token hash and supports revocation and expiry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "room creation is idempotent and changing reused request is rejected",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "lobby enforces membership capacity readiness host controls and configuration freeze",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "snapshots never disclose future draws nonce or another player's ticket",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "disconnected host transfers controls while a connected guest keeps the round alive",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "ranked houses require enough actual tickets when starting",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "name": "32 players with six tickets complete 90 automatic draws with 192 unique tickets",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "runtime cannot erase or rewrite suppression migration or journal identity",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "database connect privileges separate the primary and journal identities",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "restricted roles play archive redact retry replay and clean retained records",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "verification rejects missing modified and newer migrations without repairing them",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "startup detects column grants delegation membership and missing required privileges",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "restricted roles enroll renew retain and delete the same wallet",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "journal migration preserves existing intents identity and sequence",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "restricted roles journal logout and replay its original revocation without erasing wallet",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "name": "runtime has no schema temp registry or permission delegation authority",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+      "name": "histograms are cumulative concurrent and bounded independently of arbitrary paths",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+      "name": "metrics authorization needs a separate strong secret and never accepts guest-shaped missing credentials",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+      "name": "worker readiness requires recent success and cleanup failures remain due",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "mixed concurrent journal writes share contiguous commit order and stable duplicate revocations",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "failed independent write cannot confirm logout or discard a usable device credential",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "journal upgrade from version two retains identity history and primary cursor",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "missing revocation cannot be skipped and duplicate intent kinds cannot advance head",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "journal revocation survives primary rollback and retry keeps original expiry",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "name": "restoring a pre-rotation backup never revives signed-out access and preserves shared play",
+      "failed": true,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+      "name": "local migration and privilege exception requires two explicit loopback fixtures",
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+      "name": "ordinary serving never opts into fixture permissions implicitly",
+      "failed": false,
+      "skipped": false
+    }
+  ]
+}

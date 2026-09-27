@@ -1,0 +1,44 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:compileTestKotlin UP-TO-DATE
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:startScripts UP-TO-DATE
+> Task :server:installDist UP-TO-DATE
+> Task :server:processTestResources NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:coinPurchaseBurst
+coin-burst[9fde31c1ea8545f8]: starting
+coin-burst[9fde31c1ea8545f8]: wave-1-buy
+coin-burst[9fde31c1ea8545f8]: wave-1-cancel
+coin-burst[9fde31c1ea8545f8]: wave-1-verified
+coin-burst[9fde31c1ea8545f8]: wave-2-buy
+coin-burst[9fde31c1ea8545f8]: wave-2-cancel
+coin-burst[9fde31c1ea8545f8]: wave-2-verified
+coin-burst[9fde31c1ea8545f8]: completed
+
+BUILD SUCCESSFUL in 36s
+13 actionable tasks: 1 executed, 12 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

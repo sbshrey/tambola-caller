@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-09-27T12:05:33.2554362Z",
+  "runs": [
+    {
+      "runId": "e5637634945848a4",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 23124,
+      "serverStillRunning": false
+    },
+    {
+      "runId": "6edebf480b2d409d",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 23992,
+      "serverStillRunning": false
+    },
+    {
+      "runId": "9fde31c1ea8545f8",
+      "passed": true,
+      "cleanupComplete": true,
+      "serverPid": 19600,
+      "serverStillRunning": false
+    }
+  ],
+  "remainingOwnedDatabases": 0,
+  "remainingTestSchemas": 0,
+  "remainingTestStoreConnections": 0,
+  "testPostgresStopped": true,
+  "testPostgresPort": 55432,
+  "testPostgresStoppedAt": "2026-09-27T12:07:28.8832676Z"
+}

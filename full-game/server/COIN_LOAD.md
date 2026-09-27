@@ -48,6 +48,21 @@ These events are **not** complete acquisition timings or request counts: one req
 
 By default the task uses the local `installDist` runtime. To test an existing candidate, set `TAMBOLA_COIN_LOAD_RUNTIME_LIB` to its JAR directory and `TAMBOLA_COIN_LOAD_RUNTIME_SHA256` to its previously verified canonical runtime hash. The fixture hashes the source, copies only regular JARs into its new run directory, and verifies the complete copied manifest before launch. It verifies that manifest again after play. It does not overwrite either runtime. The manifest algorithm matches `tools/service-runtime.mjs`.
 
+### Per-request purchase phases
+
+For complete request timing in the isolated burst fixture, set both `TAMBOLA_COIN_LOAD_SQL_PROFILE=true` and `TAMBOLA_COIN_LOAD_REQUEST_PROFILE=true`. The `tambola.PurchaseTiming` JFR event is disabled by default, including during an ordinary recording. The test launcher explicitly enables it and exports only booleans, counts, start timestamps and durations. It includes no request, player or room identifiers, credentials, SQL, exception messages or stack text.
+
+Each event partitions route time into admission waiting, dispatch to the synchronous service, service work and the remaining response handling. Pool acquisition and allocation-lock query times are nested inside service time; adding them to service time would double-count them. Pool acquisition includes both primary and journal connections. The route measurement begins after body/token parsing and ends when `respond` returns or the operation fails. It does not measure socket flush, gateway/TLS transport or mobile latency.
+
+```powershell
+$env:TAMBOLA_COIN_LOAD_SQL_PROFILE='true'
+$env:TAMBOLA_COIN_LOAD_REQUEST_PROFILE='true'
+.\gradlew.bat :server:coinPurchaseBurst '-PserverOnly=true' --console=plain
+python tools/analyze-purchase-phases.py .test-workspace/coin-load-<run-id>/burst-evidence.json .test-workspace/coin-load-<run-id>/service-diagnostic.log .test-workspace/coin-load-<run-id>/purchase-phases.json
+```
+
+The analyzer requires a complete successful event for every primary purchase in each wave, verifies phase arithmetic and emits an aggregate JSON plus a validated `.timings.txt` file. It records input, analyzer and timing hashes. Receipt retries outside purchase windows remain in the filtered evidence but are excluded from wave statistics. Keep raw service logs private. Profiling adds overhead; these results diagnose waits and cannot establish latency or capacity acceptance.
+
 ## Coverage and limits
 
 - Profiles are seeded directly into the isolated database. Wallet opening, ticket purchases, claims, receipts and wallet reads use public APIs. Registration, abuse limits and restricted database-role grants are separate tests.
