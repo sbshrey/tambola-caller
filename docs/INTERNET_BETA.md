@@ -8,13 +8,15 @@ The APK reads only the publisher-controlled [server directory](https://raw.githu
 
 The hidden host supervisor renews the directory every twelve hours and republishes it after a tunnel process restart. A reconnect can take a few minutes during tunnel creation and GitHub cache propagation. Existing connections are not redirected mid-request. The public directory's GitHub account is part of the transport trust boundary; protect that account and keep the original database/journal together with their existing recovery rules.
 
-## Play with friends (alpha25)
+## Play with friends (alpha26)
 
 Choose 1–6 tickets, then **Play with friends**. One player chooses **Create table** and shares its eight-character code using **Invite friends** or **Copy code**. Others choose **Join with code** with their own ticket quantities. Only the code holders can buy into that table; quick matchmaking never fills it. The group can include 2–8 people, with no computer seats. Codes are bearer invitations, so share them only with the intended group.
 
-The host chooses **Start game** after everyone arrives. Each member must still be connected; the server freezes the actual ticket pool and starts five-second calls. There is no automatic 12-second start for friends. A table waiting for more than 15 minutes closes and returns its purchases; leaving before the start refunds the leaving player. A host who leaves hands over to a remaining member; an offline host hands over to the oldest connected member. Disconnected members must return before a start. Once started, reconnect to the same purchased tickets and saved marks. A completed group currently creates a new code for another friends round.
+The host chooses **Start game** after everyone arrives. Each member must still be connected; the server freezes the actual ticket pool and starts five-second calls. There is no automatic 12-second start for friends. A table waiting for more than 15 minutes closes and returns its purchases; leaving before the start refunds the leaving player. A host who leaves hands over to a remaining member; an offline host hands over to the oldest connected member. Disconnected members must return before a start. Once started, reconnect to the same purchased tickets and saved marks.
 
-Install the alpha25 Internet Beta over alpha24 to retain its profile. Code sharing is supported; tapping an invitation to open the app directly is not yet supported. The share sheet prepares a message for the user to send and never sends it automatically.
+After a friends round, choose tickets and **Same friends** to join the group's next lobby without entering another code. Each person confirms their own purchase; the first person to opt in hosts the next round. Everyone who chooses this from the same completed round reaches the same next lobby. Its new code can invite additional friends. An expired or already-started next lobby cannot be joined; use **Other table** for a new group. Finished results and tickets are preserved separately.
+
+Install the alpha26 Internet Beta over alpha24/alpha25 to retain its profile. Code sharing is supported; tapping an invitation to open the app directly is not yet supported. The share sheet prepares a message for the user to send and never sends it automatically.
 
 ## PC operation
 

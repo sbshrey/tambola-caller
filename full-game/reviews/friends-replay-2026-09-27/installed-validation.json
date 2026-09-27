@@ -1,0 +1,9 @@
+{
+  "installedSha256": "f3cc69e943a4b0e3e68469aba9bc2419960eb1b287f10275e6405b60b6ca1ca1",
+  "checkedAt": "2026-09-27T09:15:14.5084021+00:00",
+  "emulator": "tambola_full_game_alpha23_api30",
+  "exactMatch": true,
+  "testTransport": "Public HTTPS/WSS with no adb reverse",
+  "packagedSha256": "f3cc69e943a4b0e3e68469aba9bc2419960eb1b287f10275e6405b60b6ca1ca1",
+  "package": "io.github.sbshrey.tambola.game.beta"
+}
