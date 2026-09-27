@@ -500,7 +500,7 @@ class RoomService(
                 demand(count * room.options.game.ticketsPerPlayer >= houses,
                     409, "insufficient_tickets", "$houses houses need at least $houses tickets at the table. Add players or increase tickets per player.")
                 val computers = (1..room.options.computerPlayers).map { index ->
-                    Player("computer-${room.id}-$index", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[index - 1], computer = true, avatar = index)
+                    computerPlayer(room.id, index)
                 }
                 val game = Round.create(room.members.map { Player(it.id, it.name, avatar = it.avatar) } + computers, room.options.game, now = now).start()
                 val nonce = secret()

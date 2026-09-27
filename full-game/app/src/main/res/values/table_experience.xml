@@ -1,0 +1,16 @@
+<resources>
+    <string name="settings_sound">Sound</string>
+    <string name="settings_play">Play</string>
+    <string name="settings_music">Music</string>
+    <string name="settings_vibration">Vibration</string>
+    <string name="settings_language">Language</string>
+    <string name="table_filling">Your table is filling up</string>
+    <string name="table_joining">Joining…</string>
+    <string name="table_you">You</string>
+    <string name="table_joined">%1$s joined</string>
+    <string name="table_tickets_ready">Your tickets are ready</string>
+    <plurals name="table_prize_count">
+        <item quantity="one">%d prize</item>
+        <item quantity="other">%d prizes</item>
+    </plurals>
+</resources>

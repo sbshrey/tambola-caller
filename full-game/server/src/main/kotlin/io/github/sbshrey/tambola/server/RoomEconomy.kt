@@ -7,6 +7,11 @@ import java.sql.Connection
 internal const val MATCH_COUNTDOWN = 12_000L
 internal const val COMPUTER_TICKETS = 3
 
+// Fictional game handles; computer identity stays explicit in the public player record.
+private val computerHandles = listOf("ChaiChamp", "NeonNinja", "LuckyMango", "PixelRaja", "DiceDiva", "MoonMaverick", "TurboTikka", "LotusLegend")
+internal fun computerPlayer(roomId: String, index: Int): Player = Player("computer-$roomId-$index",
+    computerHandles[Math.floorMod(roomId.hashCode() + index - 1, computerHandles.size)], computer = true, avatar = index)
+
 internal fun coinOptions(humans: Int = 1) = RoomOptions(
     game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6, manualClaims = true,
         prizes = CoinPool(2).prizes.map { it.prize }),
@@ -27,7 +32,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
     check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty())
     val lobby = coinLobby()
     val computers = (1..lobby.options.computerPlayers).map { index ->
-        Player("computer-$id-$index", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[index - 1], computer = true, avatar = index)
+        computerPlayer(id, index)
     }
     val counts = purchases + computers.associate { it.id to COMPUTER_TICKETS }
     val pool = CoinPool(counts.values.sum())

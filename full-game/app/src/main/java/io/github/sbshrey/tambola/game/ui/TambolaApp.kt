@@ -43,7 +43,9 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
         invitation.revision.takeIf { state.screen == Screen.ONLINE },
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
     Surface(Modifier.fillMaxSize().testTag("app-background").semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
-        if (!state.loading && state.screen == Screen.GAME && state.round != null) {
+        if (!state.loading && state.screen == Screen.SETTINGS) {
+            GameSettings(state.preferences, model::updatePreferences) { model.navigate(Screen.HOME) }
+        } else if (!state.loading && state.screen == Screen.GAME && state.round != null) {
             OfflineArena(state.round, state, model)
         } else if (!state.loading && state.screen == Screen.ONLINE && onlineState.room?.round != null &&
             (onlineState.room.phase == io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE ||
@@ -74,7 +76,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
                         Screen.GAME -> Unit // Live games use the bounded arena above.
                         Screen.RESULTS -> (state.viewedResult ?: state.round)?.let { Results(it, model) }
                         Screen.HISTORY -> History(state.history, model)
-                        Screen.SETTINGS -> Settings(state, model)
+                        Screen.SETTINGS -> Unit // Bounded landscape controls above.
                         Screen.ONLINE -> {
                             if (roomDetails && onlineState.room?.round != null) TextButton(onClick = { roomDetails = false }) { Text(words(R.string.ui_back_to_game)) }
                             OnlineScreen(onlineState, online, state.preferences, invitation, dismissInvitation, inlineOnlineControls)
@@ -140,56 +142,6 @@ private fun History(history: List<SavedRound>, model: GameViewModel) {
             if (saved.completed) TextButton(onClick = { model.openHistory(saved) }, enabled = round != null) { Text(words(R.string.ui_view_results)) }
         }
     }
-}
-
-@Composable
-private fun Settings(state: GameUiState, model: GameViewModel) {
-    val words = gameText()
-    val prefs = state.preferences
-    var delete by remember { mutableStateOf(false) }
-    var gameData by rememberSaveable { mutableStateOf(false) }
-    Eyebrow(words(R.string.ui_make_yourself_comfortable_2))
-    Text(words(R.string.ui_just_your_style), style = MaterialTheme.typography.headlineLarge)
-    GameCard {
-        Text(words(R.string.ui_your_table_day_or_night), style = MaterialTheme.typography.titleLarge)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Appearance.entries.forEach { choice ->
-                FilterChip(selected = prefs.appearance == choice, onClick = { model.updatePreferences(prefs.copy(appearance = choice)) }, label = { Text(words.appearance(choice)) })
-            }
-        }
-        Text(words(R.string.ui_system_follows_your_device_s_light_or_dark), color = Muted)
-    }
-    InterfaceLanguagePicker()
-    GameCard {
-        Text(words(R.string.ui_the_voice_of_your_game), style = MaterialTheme.typography.titleLarge)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("en" to "English", "hi" to "हिन्दी", "hinglish" to "Hinglish").forEach { (id, label) -> FilterChip(selected = prefs.language == id, onClick = { model.updatePreferences(prefs.copy(language = id)) }, label = { Text(label) }) } }
-        SettingSwitch(words(R.string.ui_number_voice), words(R.string.ui_automatically_speak_each_new_call_ai_generated_recordings), prefs.voice) { model.updatePreferences(prefs.copy(voice = it)) }
-        SoundVolume(words(R.string.ui_voice_volume), prefs.voiceVolume) { model.updatePreferences(prefs.copy(voiceVolume = it)) }
-        Text(words(R.string.ui_hear_again_plays_a_number_on_request_even), color = Muted, style = MaterialTheme.typography.bodySmall)
-    }
-    SoundSettings(prefs, model::updatePreferences)
-    GameCard {
-        Text(words(R.string.ui_your_pace_your_comfort), style = MaterialTheme.typography.titleLarge)
-        SettingSwitch(words(R.string.ui_gentle_haptics), words(R.string.ui_a_little_feedback_when_you_mark_a_number), prefs.haptics) { model.updatePreferences(prefs.copy(haptics = it)) }
-        SettingSwitch(words(R.string.ui_reduced_motion), words(R.string.ui_keep_number_and_badge_reveals_still_device_animation), prefs.reducedMotion) { model.updatePreferences(prefs.copy(reducedMotion = it)) }
-        Text(words(R.string.ui_automatic_calling_pace), style = MaterialTheme.typography.titleMedium)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf(5, 10, 15, 20, 30).forEach { seconds -> FilterChip(selected = prefs.interval == seconds, onClick = { model.updatePreferences(prefs.copy(interval = seconds)) }, label = { Text(words(R.string.seconds_short, seconds)) }) } }
-        Text(words(R.string.ui_calls_wait_for_the_recording_to_finish_leaving), color = Muted, style = MaterialTheme.typography.bodyMedium)
-    }
-    GameCard {
-        Text(words(R.string.ui_your_first_game_made_easy), style = MaterialTheme.typography.titleLarge)
-        OutlinedButton(onClick = { model.navigate(Screen.TUTORIAL) }) { Text(words(R.string.ui_try_the_interactive_tutorial)) }
-        listOf(words(R.string.ui_1_choose_players_tickets_and_prizes_everyone_can), words(R.string.ui_2_call_numbers_yourself_or_turn_on_automatic), words(R.string.ui_3_tap_mark_ticket_and_dab_the_called), words(R.string.ui_4_check_claims_to_inspect_the_required_numbers), words(R.string.ui_5_finish_at_the_chosen_house_or_play)).forEach { Text(it, color = Muted) }
-    }
-    GameCard {
-        Text(words(R.string.ui_your_games_and_privacy), style = MaterialTheme.typography.titleLarge)
-        Text(words(R.string.ui_solo_and_family_rounds_stay_on_this_device), color = Muted)
-        TextButton(onClick = { gameData = true }, modifier = Modifier.testTag("open-game-data")) { Text(words(R.string.privacy_open)) }
-        OutlinedButton(onClick = { delete = true }, modifier = Modifier.fillMaxWidth()) { Text(words(R.string.ui_delete_all_saved_rounds)) }
-        Text(words(R.string.ui_build_status, BuildConfig.VERSION_NAME), color = Muted, style = MaterialTheme.typography.bodySmall)
-    }
-    if (gameData) GameDataDialog { gameData = false }
-    if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text(words(R.string.ui_delete_saved_rounds)) }, text = { Text(words(R.string.ui_this_removes_your_offline_current_game_player_names)) }, confirmButton = { TextButton(onClick = { delete = false; model.deleteHistory() }) { Text(words(R.string.ui_delete_rounds)) } }, dismissButton = { TextButton(onClick = { delete = false }) { Text(words(R.string.ui_keep_rounds)) } })
 }
 
 @Composable

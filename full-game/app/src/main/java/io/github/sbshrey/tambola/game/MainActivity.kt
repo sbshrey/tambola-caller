@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 Appearance.LIGHT -> false
                 Appearance.DARK -> true
             }
-            val gameLobby = state.screen in setOf(Screen.HOME, Screen.ONLINE) &&
+            val gameLobby = state.screen == Screen.SETTINGS || state.screen in setOf(Screen.HOME, Screen.ONLINE) &&
                 (onlineState.room == null || onlineState.room?.options?.coinGame == true) &&
                 (state.screen == Screen.HOME || onlineState.room?.phase != io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE)
             LaunchedEffect(dark, gameLobby) {

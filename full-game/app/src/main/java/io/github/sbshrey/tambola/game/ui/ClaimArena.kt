@@ -89,7 +89,10 @@ internal fun ClaimArena(
                         else { reveal.snapTo(0f); reveal.animateTo(1f, tween(430)) }
                     }
                     val target = hand.tickets.firstOrNull { table.latest in it.numbers && table.latest !in table.marks[it.id].orEmpty() }
-                    Box(Modifier.size(56.dp).graphicsLayer {
+                    Box(Modifier.size(62.dp), contentAlignment = Alignment.Center) {
+                    if (table.coins != null) DeadlineRing(table.nextDrawAt, table.serverTime, table.id, 5_000,
+                        preferences.reducedMotion, Modifier.matchParentSize())
+                    Box(Modifier.size(52.dp).graphicsLayer {
                         val p = reveal.value
                         translationY = (1 - p) * -12.dp.toPx()
                         scaleX = .82f + .18f * p + sin(p * Math.PI).toFloat() * .16f; scaleY = scaleX
@@ -103,6 +106,7 @@ internal fun ClaimArena(
                         }, contentAlignment = Alignment.Center) {
                         Text(table.latest?.toString() ?: "?", color = Ink, fontWeight = FontWeight.Black,
                             fontSize = (30 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
+                    }
                     }
                     Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
                         table.called.dropLast(1).takeLast(if (landscape) 5 else 2).reversed().forEach { number ->

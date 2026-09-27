@@ -1,0 +1,26 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:........
+io.github.sbshrey.tambola.game.LandingActivityTest:
+Error in launchSettingsAndReturnStayLandscape(io.github.sbshrey.tambola.game.LandingActivityTest):
+java.lang.AssertionError: expected:<2> but was:<1>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.LandingActivityTest.launchSettingsAndReturnStayLandscape(LandingActivityTest.kt:45)
+.
+io.github.sbshrey.tambola.game.ManualTableTest:...
+io.github.sbshrey.tambola.game.TableExperienceTest:....
+
+Time: 89.704
+There was 1 failure:
+1) launchSettingsAndReturnStayLandscape(io.github.sbshrey.tambola.game.LandingActivityTest)
+java.lang.AssertionError: expected:<2> but was:<1>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.LandingActivityTest.launchSettingsAndReturnStayLandscape(LandingActivityTest.kt:45)
+
+FAILURES!!!
+Tests run: 17,  Failures: 1

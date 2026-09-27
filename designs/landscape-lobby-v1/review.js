@@ -6,22 +6,28 @@ const marks = new Set([...called].filter(n => n !== 46));
 const captions = {
   welcome:'One-screen welcome. Play immediately, or optionally choose your look.',
   lobby:'One quick-play destination. Pick 1–6 tickets; the cost stays beside Play.',
-  ready:'Simulated countdown. Computer players stay visibly labelled.',
+  ready:'Seats fill with short arrival animations. Remaining computer seats appear as dealing starts.',
   game:'Manual dabs, up to two readable tickets, ticket-level Claim and explicit page arrows.',
   game2:'A second ticket page, with marks preserved when you return.',
-  claim:'Prize selection stays tied to the ticket you chose. Try Early 5 on ticket 1.',
+  claim:'Prize selection stays tied to this ticket. Only marked, called numbers count.',
   results:'Your settled win, then a quick route into the next round.',
   daylight:'Alternate direction: warm daylight, cream tickets, mint and coral.',
+  settings:'Just sound, vibration, motion and language. These preview controls change local demo state only.',
 };
 let screens={},cards=[],defs='',screen='welcome',quantity=3,page=1,claimTicket=1;
 let history=[],timer,toastTimer,win={name:'Full house',coins:420},name='Player 07';
+let lobbyStarted=0,callDeadline=0,frame=0,language=0;
+const settings={voice:true,music:false,effects:true,haptics:true,motion:false};
+const demoOrder=Array.from({length:90},(_,i)=>(i*37+45)%90+1);
+const reduced=()=>settings.motion||matchMedia('(prefers-reduced-motion: reduce)').matches;
 const pool=()=>100*(quantity+9); // One example human and two labelled computers, three tickets each.
 const house=()=>Math.floor(pool()*(quantity+9<12?.5:.35));
 function toast(message){
   const element=document.querySelector('#toast');element.textContent=message;element.style.display='block';
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>element.style.display='none',2500);
 }
-function amount(selector,value){const element=stage.querySelector(selector);if(element)element.textContent=value}
+function amount(selector,value){const element=stage.querySelector(selector);if(element&&element.textContent!==String(value))element.textContent=value}
+function arc(x,y,r,fraction){const angle=Math.min(Math.max(fraction,0),.9999)*Math.PI*2;return fraction<=0?`M ${x} ${y-r}`:`M ${x} ${y-r} A ${r} ${r} 0 ${fraction>.5?1:0} 1 ${x+r*Math.sin(angle)} ${y-r*Math.cos(angle)}`}
 function updateHand(){
   stage.querySelectorAll('[id^="ticket-"]').forEach(el=>{el.style.display=Number(el.id.slice(7))>quantity?'none':''});
   stage.querySelectorAll('[data-action^="dab-"]').forEach(el=>{
@@ -51,7 +57,7 @@ function economy(){
 }
 function show(next,record=true){
   const previous=screen;
-  clearInterval(timer);if(record&&next!==screen)history.push(screen);screen=next;chooser.value=next;
+  cancelAnimationFrame(frame);if(record&&next!==screen)history.push(screen);screen=next;chooser.value=next;
   if(next==='claim')page=Math.floor((claimTicket-1)/2)+1;
   let body=screens[next];
   if(next==='game'||next==='game2')body=screens[`play${page}`];
@@ -72,9 +78,59 @@ function show(next,record=true){
     choose(quantity);for(const el of stage.querySelectorAll('text'))if(el.textContent==='Hey, Player 07')el.textContent='Hey, '+name;
   }
   if(next==='ready'){
-    let seconds=9;timer=setInterval(()=>{seconds--;amount('#countdown-value',String(seconds).padStart(2,'0'));if(seconds===0){page=1;show('game')}},1000);
+    lobbyStarted=performance.now();callDeadline=0;animateReview();
   }
+  if(['game','game2','claim'].includes(next)){if(!callDeadline&&called.size<90)callDeadline=performance.now()+5000;paintCalls();if(callDeadline)animateReview()}
+  else if(next!=='ready')callDeadline=0;
+  if(next==='settings')paintSettings();
 }
+function paintCalls(){
+  const latest=[...called].at(-1);amount('#live-call text',latest??'·');
+  stage.querySelector('#live-call .float-ball')?.classList.remove('float-ball');
+  const remaining=Math.max(0,callDeadline-performance.now());
+  const ring=stage.querySelector('#call-ring');
+  if(ring){ring.setAttribute('d',arc(136,57,46,(reduced()?Math.ceil(remaining/1000)*1000:remaining)/5000));ring.setAttribute('aria-label',`Next call in ${Math.ceil(remaining/1000)} seconds`)}
+  const recent=[...called].slice(-5,-1).reverse();
+  for(let i=0;i<4;i++){amount(`#recent-${i}`,recent[i]??'·');const slot=stage.querySelector(`#recent-slot-${i}`);if(slot)slot.style.opacity=recent[i]?'1':'.25'}
+  const text=[...stage.querySelectorAll('text')];
+  for(const el of text){if(/^Next call|^Final claims/.test(el.textContent))el.textContent=called.size===90?'Final claims':`Next call  ${Math.ceil(remaining/1000)}`;if(/^\d+ \/ 90$/.test(el.textContent))el.textContent=`${called.size} / 90`}
+}
+function animateReview(){
+  if(screen==='ready'){
+    const elapsed=performance.now()-lobbyStarted,seconds=Math.max(0,Math.ceil((12000-elapsed)/1000));
+    amount('#countdown-value',String(seconds).padStart(2,'0'));
+    stage.querySelector('#lobby-ring').setAttribute('d',arc(640,317,101,reduced()?seconds/12:1-elapsed/12000));
+    for(let i=0;i<4;i++){
+      const joined=elapsed>=[0,2200,12000,12250][i],arrival=stage.querySelector(`#arrival-${i}`);
+      stage.querySelector(`#seat-${i}`).style.visibility=joined?'hidden':'visible';
+      arrival.style.visibility=joined?'visible':'hidden';
+      if(joined&&!arrival.dataset.entered){arrival.dataset.entered='true';if(!reduced())arrival.animate([{opacity:0,translate:'0 20px'},{opacity:1,translate:'0 0'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'})}
+    }
+    amount('#join-status',elapsed>=12000?'Tickets dealt. Let’s play.':elapsed>=2200?'ChaiChamp joined your table':'You’re in. Finding your table…');
+    if(elapsed>=12900){page=1;called.clear();marks.clear();show('game');return}
+  }else if(['game','game2','claim'].includes(screen)){
+    if(performance.now()>=callDeadline){
+      const next=demoOrder.find(n=>!called.has(n));
+      if(next===undefined){callDeadline=0;paintCalls();return}
+      called.add(next);
+      callDeadline+=5000;
+      if(screen==='claim'){show('game',false);toast('New number called');return}
+    }
+    paintCalls();
+  }else return;
+  frame=requestAnimationFrame(animateReview);
+}
+function paintSettings(){
+  for(const [key,on] of Object.entries(settings)){
+    const control=stage.querySelector(`#setting-${key}`);if(!control)continue;
+    control.setAttribute('role','switch');control.setAttribute('aria-checked',String(on));
+    control.setAttribute('aria-label',control.querySelector('text').textContent);
+    stage.querySelector(`#setting-track-${key}`).setAttribute('fill',on?'#9FE2CB':'#383253');
+    stage.querySelector(`#setting-thumb-${key}`).setAttribute('cx',(key==='haptics'||key==='motion'?680:90)+(on?467:433));
+  }
+  stage.querySelectorAll('[data-action^="language-"]').forEach((el,index)=>{el.setAttribute('aria-label',el.querySelector('text').textContent);el.setAttribute('aria-pressed',String(index===language));el.querySelector('rect').setAttribute('stroke',index===language?'#FF8665':'none')});
+}
+function applyMotion(){document.body.classList.toggle('reduce',settings.motion);document.querySelector('#motion').textContent=settings.motion?'Motion off':'Motion on'}
 function choose(n){
   quantity=n;claimTicket=Math.min(claimTicket,n);page=Math.min(page,Math.ceil(n/2));
   amount('#ticket-count-label',`${n} ticket${n===1?'':'s'}`);amount('#ticket-cost-label',`${n*100} coins`);
@@ -104,9 +160,12 @@ function act(el){
   else if(action==='page-up'||action==='page-down'){
     const next=page+(action==='page-down'?1:-1);if(next<1||next>Math.ceil(quantity/2))return;page=next;show('game',false);
   }else if(action==='profile')document.querySelector('#profile').style.display='flex';
-  else if(action==='players')toast('You · Mira · Computer · Computer');
-  else if(action==='settings')toast('Sound, language and reduced motion stay in Settings');
-  else if(action==='sound')toast('Sound toggle preview');
+  else if(action==='players')toast('You · ChaiChamp · NeonNinja (computer) · LuckyMango (computer)');
+  else if(action==='settings')show('settings');
+  else if(action.startsWith('toggle-')){const key=action.slice(7);settings[key]=!settings[key];applyMotion();paintSettings()}
+  else if(action.startsWith('language-')){language=Number(action.slice(9));paintSettings()}
+  else if(action==='privacy')toast('Your game data stays available here. Full policy is in the app.');
+  else if(action==='sound'){settings.effects=!settings.effects;toast(settings.effects?'Game sounds on':'Game sounds off')}
   else if(screens[action])show(action);
 }
 stage.addEventListener('click',event=>{const el=event.target.closest('[data-action]');if(el)act(el)});
@@ -121,7 +180,7 @@ stage.addEventListener('keydown',event=>{
 });
 chooser.onchange=()=>{if(chooser.value==='game2'){quantity=Math.max(quantity,3);page=2}else if(chooser.value==='game')page=1;show(chooser.value)};
 document.querySelector('#back').onclick=()=>show(history.pop()||'welcome',false);
-document.querySelector('#motion').onclick=event=>{document.body.classList.toggle('reduce');event.target.textContent=document.body.classList.contains('reduce')?'Motion off':'Motion on'};
+document.querySelector('#motion').onclick=()=>{settings.motion=!settings.motion;applyMotion();if(screen==='settings')paintSettings()};
 document.querySelector('#feedback').onclick=()=>{const el=document.querySelector('.notes');el.style.display=el.style.display==='block'?'none':'block'};
 document.querySelectorAll('.avatar').forEach(el=>el.onclick=()=>{document.querySelectorAll('.avatar').forEach(x=>x.classList.remove('selected'));el.classList.add('selected')});
 document.querySelector('#profile-done').onclick=()=>{name=document.querySelector('#profile input').value.trim()||'Player 07';document.querySelector('#profile').style.display='none';show(screen,false)};

@@ -1,0 +1,16 @@
+<resources>
+    <string name="settings_sound">आवाज़</string>
+    <string name="settings_play">खेल</string>
+    <string name="settings_music">संगीत</string>
+    <string name="settings_vibration">वाइब्रेशन</string>
+    <string name="settings_language">भाषा</string>
+    <string name="table_filling">आपकी मेज़ भर रही है</string>
+    <string name="table_joining">जुड़ रहे हैं…</string>
+    <string name="table_you">आप</string>
+    <string name="table_joined">%1$s जुड़ गए</string>
+    <string name="table_tickets_ready">आपके टिकट तैयार हैं</string>
+    <plurals name="table_prize_count">
+        <item quantity="one">%d इनाम</item>
+        <item quantity="other">%d इनाम</item>
+    </plurals>
+</resources>

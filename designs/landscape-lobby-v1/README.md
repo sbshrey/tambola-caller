@@ -1,8 +1,8 @@
-# Tambola Together — landscape design review v1
+# Tambola Together — landscape design review
 
 Created 27 September 2026. Review the design before another APK installation.
 
-- [Editable Figma design](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/): eight screens imported as vector and text layers. The previous board is hidden and preserved. This is a design board, not a wired Figma prototype or production component library.
+- [Editable Figma design](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696): the **Joining, timer & settings · v2** page has nine screens imported as vector and text layers. Page 1 is preserved. This is a design board, not a wired Figma prototype or production component library.
 - [Clickable browser review on this computer](http://127.0.0.1:8877/review.html): simulated interactions and motion, with screen selection and a feedback download. The loopback preview must be running; it is not a public link or a multiplayer server.
 - `Tambola-Landscape-Review.svg` is the portable vector board. `frames/` holds each 1280×720 screen. `build_design.py` regenerates these originals and the prototype's demo data.
 
@@ -16,12 +16,13 @@ The welcome has one primary Play action and optional personalization. Returning 
 | --- | --- |
 | 01 Welcome | Play immediately; optional name/avatar; no tutorial carousel |
 | 02 Landing | One obvious destination; 1–6 tickets and visible coin cost |
-| 03 Table countdown | Players, clearly labelled computers, pool and prize count |
+| 03 Table countdown | Staggered arrivals, a draining timer, pool and prize count |
 | 04 Playing | Manual dabs, two readable tickets, a Claim button per ticket |
 | 05 Claim | Ticket-specific prize picker; short invalid-claim feedback |
 | 06 Your win | Personal settled reward and a prominent next-round action |
 | 07 Daylight direction | Compare the lighter visual treatment |
 | 08 Ticket page 2 | Explicit up/down navigation; no forced scrolling or automatic page switch |
+| 09 Settings | Five personal switches and one language choice |
 
 ## Interaction and implementation handoff
 
@@ -39,11 +40,13 @@ Welcome → lobby → simulated countdown → tickets; 1–6 quantity selection;
 
 The default example has your three tickets plus three each for an example human and two computers: a 1,200-coin pool, five 120-coin small prizes, and houses of 420 and 180. Selecting one or two tickets reduces this example to six prizes. This example table cannot reach the 24-ticket threshold for eight prizes.
 
-It is not connected to the game server. Calls are a fixed demo snapshot, coins reset across illustrative flows, sound/settings are placeholders, and duplicate claim/purchase/settlement behavior is not modelled. Avatar selection is a visual picker only. Use the actual app/server for functional acceptance.
+The 12-second joining preview introduces the fictional handle ChaiChamp, then labelled computer seats NeonNinja and LuckyMango at dealing time. New rounds begin without called numbers and reveal one every five seconds. The circular timer drains smoothly, recent numbers update, and ticket-page changes preserve the running deadline. Reduced motion uses stepped progress. Opening Playing directly retains an initial example snapshot for quicker design review.
+
+It is not connected to the game server. Coins reset across illustrative flows, and duplicate claim/purchase/settlement behavior is not modelled. Settings switches and language selection change local demo state; they do not produce audio/haptics or translate the entire preview. Avatar selection and the data-disclosure link remain illustrative. Use the actual app/server for functional acceptance.
 
 ## Validation performed
 
-- Generated eight SVG screens and checked the demo strip has exactly 1–90 once, five numbers in each ticket row and fifteen per ticket.
+- Generated nine SVG screens and checked the demo strip has exactly 1–90 once, five numbers in each ticket row and fifteen per ticket.
 - Verified native Figma vector/text layer import, reopened the saved file in a fresh tab, and visually inspected the full board and selected 1280×720 lobby group. Saved `figma-board.png` and `figma-lobby.png` as direct browser evidence. [Open the lobby selection](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=3-1215).
 - In the browser, exercised welcome/landing, six-ticket purchase selection, countdown, paging to tickets 5–6, preserved a manual dab after leaving/returning to its page, and selected a prize from ticket 1.
 - An incomplete full-house claim returned “Not complete yet”; the example Early 5 accepted 120 coins and showed a 1,320-coin illustrative balance after the default purchase. No browser console errors were reported during these checks.
@@ -57,6 +60,10 @@ It is not connected to the game server. Calls are a fixed demo snapshot, coins r
 Game night is the working direction while the optional visual preference remains open. The welcome and returning-player lobby now use the design's palette, original ticket/ball artwork, finite entrance animation, six ticket choices, explicit cost and one Play action. Optional player setup preserves the ticket choice; the form keeps its input and actions above the landscape keyboard. Pending purchases show receipt recovery instead of a second purchase action.
 
 [Native evidence and screenshots](../../full-game/reviews/game-night-lobby-2026-09-27/README.md) record nine UI tests at each of two system text sizes, English/Hindi fixtures, 15 JVM tests and lint with no errors. A separate `.uireview` package coexists with alpha22; it is not a release candidate or a new multiplayer acceptance run. The live ticket/claim arena still needs the new visual treatment. Continue reviewing in Figma and the browser without reinstalling the main app.
+
+The [joining, timer and Settings checkpoint](../../full-game/reviews/table-experience-2026-09-27/README.md) adds actual roster arrival animation, a server-deadline call ring and the minimal Settings screen. Seventeen native tests pass at each of normal and 150% system text, including manual tickets/claims and preference persistence across Activity recreation. The original alpha22 APK and installed server are unchanged. The server's new fictional gaming handles compile but are not deployed.
+
+The v2 Figma [countdown](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696) and [Settings](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-3653) were visually inspected and the saved page was verified after reload. `figma-countdown-v2.png` and `figma-settings-v2.png` record these views. The browser's arrivals, advancing calls and keyboard Settings controls were checked; `preview-joining-evidence.json` retains observations and console errors. Pointer mapping was inconsistent in the narrow Codex panel, so browser pointer acceptance is not claimed. Native full-row Settings controls passed independently.
 
 ## Inspiration
 

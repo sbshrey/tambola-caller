@@ -2,7 +2,7 @@
 
 For onboarding, lobby and layout feedback, use the [new landscape Figma design](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=3-1215) or [clickable browser preview](../designs/landscape-lobby-v1/README.md). These review screens do not require an APK installation and are not yet included in alpha22.
 
-The welcome/lobby now also has an [isolated native implementation and screenshot evidence](reviews/game-night-lobby-2026-09-27/README.md), tested at normal and 150% text. Its separate emulator-only review package preserves the installed Wi-Fi APK and wallet. It is not the downloadable candidate below.
+The welcome/lobby, animated roster arrivals, five-second call ring and minimal Settings now have an [isolated native implementation and screenshot evidence](reviews/table-experience-2026-09-27/README.md), tested at normal and 150% text. The [v2 Figma countdown](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696) is available for feedback. The separate emulator-only review package preserves the installed Wi-Fi APK and wallet. It is not the downloadable candidate below; the new server handles are not deployed.
 
 Install [the optimized alpha22 Wi-Fi APK](releases/0.22.0-alpha22-wifi-optimized/Tambola-Together-0.22.0-alpha22-wifi-optimized.apk) on Android 8 or newer. This is a private-network development build with the existing development signing certificate. Install over the previous full-game alpha and keep its data; uninstalling or resetting can lose access to the saved wallet. Tambola Keyboard is a separate app and is not required.
 

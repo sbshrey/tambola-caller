@@ -3,6 +3,7 @@ from pathlib import Path
 from html import escape
 import json
 import re
+import math
 from itertools import product, combinations
 
 ROOT = Path(__file__).resolve().parent
@@ -17,6 +18,9 @@ def rect(x,y,w,h,fill,rx=20,stroke='none',sw=1,extra=''):
     return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}" {extra}/>'
 def circle(x,y,r,fill,extra=''):
     return f'<circle cx="{x}" cy="{y}" r="{r}" fill="{fill}" {extra}/>'
+def timer_arc(x,y,r,fraction,color,name,width):
+    angle=min(fraction,.9999)*2*math.pi
+    return f'<path id="{name}" d="M {x} {y-r} A {r} {r} 0 {int(fraction>.5)} 1 {x+r*math.sin(angle):.3f} {y-r*math.cos(angle):.3f}" fill="none" stroke="{color}" stroke-width="{width}" stroke-linecap="round"/>'
 def group(name,body,hot=None):
     return f'<g id="{name}"'+(f' data-action="{hot}" role="button" tabindex="0" aria-label="{name.replace("-"," ")}"' if hot else '')+'>'+body+'</g>'
 def pill(x,y,w,label,color=None):
@@ -77,10 +81,26 @@ def lobby():
 def ready():
     out=background()+header(1200)+text(640,143,'Your table is filling up',40,T['ink'],900,'middle')
     out+=text(640,187,'3 tickets in hand',22,T['muted'],600,'middle')
-    out+=circle(640,317,101,T['soft'])+circle(640,317,83,T['panel'])+text(640,336,'09',69,T['gold'],900,'middle',extra='id="countdown-value"')+text(640,372,'STARTS IN',13,T['muted'],700,'middle')
-    for x,c,n in [(332,T['mint'],'YOU'),(480,T['accent'],'MIRA'),(800,'#BCADF5','COMPUTER'),(948,T['gold'],'COMPUTER')]: out+=avatar(x,321,c,n,38)
+    out+=circle(640,317,101,T['soft'])+timer_arc(640,317,101,10/12,T['accent'],'lobby-ring',7)+circle(640,317,83,T['panel'])+text(640,336,'10',69,T['gold'],900,'middle',extra='id="countdown-value"')+text(640,372,'STARTS IN',13,T['muted'],700,'middle')
+    for index,(x,c,n) in enumerate([(278,T['mint'],'YOU'),(422,T['accent'],'ChaiChamp'),(858,'#BCADF5','NeonNinja'),(1002,T['gold'],'LuckyMango')]):
+        out+=f'<g id="seat-{index}" visibility="{"hidden" if index<2 else "visible"}">'+circle(x,321,40,'none',f'stroke="{T["soft"]}" stroke-width="3" stroke-dasharray="7 6"')+text(x,330,'+',29,T['muted'],600,'middle')+text(x,383,'Joining…',14,T['muted'],600,'middle')+'</g>'
+        out+=f'<g id="arrival-{index}" class="seat-arrival" visibility="{"visible" if index<2 else "hidden"}">'+avatar(x,321,c,n,38)+(text(x,406,'COMPUTER',11,T['muted'],600,'middle') if index>=2 else '')+'</g>'
     out+=rect(325,466,630,87,T['panel'],25)+text(362,498,'ROUND POOL',13,T['muted'],700)+coin(381,526,16)+text(410,534,'1,200',29,T['gold'],900,extra='id="round-pool"')+text(920,502,'7 prizes',24,T['ink'],800,'end',extra='id="prize-count"')+text(920,533,'Sales close before the first call',16,T['muted'],500,'end')
-    out+=text(640,613,'✓  Tickets ready',23,T['mint'],700,'middle')+group('Leave-table',text(85,641,'← Leave table',17,T['muted'],600),'lobby')
+    out+=text(640,613,'ChaiChamp joined your table',23,T['mint'],700,'middle',extra='id="join-status"')+group('Leave-table',text(85,641,'← Leave table',17,T['muted'],600),'lobby')
+    return out
+
+def settings():
+    out=background()+brand()+text(64,142,'Settings',44,T['ink'],900)+group('Back-to-lobby',rect(1052,101,174,56,T['soft'],18)+text(1139,138,'Back to game',18,T['ink'],700,'middle'),'lobby')
+    out+=rect(58,180,566,375,T['panel'],28)+rect(648,180,576,375,T['panel'],28)
+    out+=text(90,225,'SOUND',15,T['muted'],800)+text(680,225,'PLAY',15,T['muted'],800)
+    for key,label,x,y,on in [('voice','Number voice',90,291,True),('music','Music',90,386,False),('effects','Game sounds',90,481,True),('haptics','Vibration',680,291,True),('motion','Reduced motion',680,386,False)]:
+        body=rect(x-10,y-45,518,72,'transparent',12)+text(x,y,label,25,T['ink'],700)+rect(x+412,y-32,76,42,T['mint'] if on else T['soft'],21,extra=f'id="setting-track-{key}"')+circle(x+467 if on else x+433,y-11,15,T['bg'] if on else T['muted'],extra=f'id="setting-thumb-{key}"')
+        out+=group('setting-'+key,body,'toggle-'+key)
+    out+=text(680,458,'LANGUAGE',13,T['muted'],700)
+    for index,label in enumerate(['English','हिन्दी','Hinglish']):
+        x=680+index*163
+        out+=group('language-'+str(index),rect(x,481,149,48,T['soft'],14)+text(x+74,512,label,18,T['ink'],700,'middle'),'language-'+str(index))
+    out+=group('Your-game-data',text(64,626,'Your game data  ↗',18,T['muted'],600),'privacy')+text(64,677,'Free virtual coins · No cash value',14,T['muted'],500)
     return out
 CARDS=[[[3,0,22,0,44,0,61,0,82],[0,12,0,31,45,0,0,72,88],[5,17,28,0,0,57,69,0,0]],[[8,0,25,0,40,0,62,0,85],[0,13,0,36,46,0,0,74,89],[9,19,29,0,0,58,67,0,0]],[[1,0,23,0,41,0,63,0,80],[0,10,0,34,48,0,0,70,87],[6,16,27,0,0,55,68,0,0]]]
 def complete_demo_strip():
@@ -117,8 +137,8 @@ complete_demo_strip()
 CALLED={3,12,22,44,57,69,72,82,8,13,25,40,58,62,74,85,7,18,23,37,46}
 def gameplay(page=1,quantity=3):
     out=rect(0,0,W,H,T['bg'],0)+rect(0,0,W,112,T['panel'],0)
-    out+=group('Lobby',text(40,57,'‹',48,T['muted'],600),'lobby')+ball(136,57,39,46,'coral')
-    for x,n in zip([245,313,381,449],[7,18,23,37]): out+=circle(x,56,26,T['soft'])+text(x,64,n,22,T['muted'],800,'middle')
+    out+=group('Lobby',text(40,57,'‹',48,T['muted'],600),'lobby')+f'<g id="live-call">'+ball(136,57,39,46,'coral')+'</g>'+timer_arc(136,57,46,1,T['mint'],'call-ring',4)
+    for index,(x,n) in enumerate(zip([245,313,381,449],[37,23,18,7])): out+=group(f'recent-slot-{index}',circle(x,56,26,T['soft'])+text(x,64,n,22,T['muted'],800,'middle',extra=f'id="recent-{index}"'))
     out+=text(532,47,'21 / 90',20,T['ink'],800)+text(532,76,'called',14,T['muted'],500)+text(743,47,'3 tickets',20,T['ink'],800)+text(743,76,'yours',14,T['muted'],500)+coin(964,52,20)+text(1000,60,'1,200',25,T['gold'],900,extra='id="round-pool"')+group('Sound',text(1220,63,'♪',28,T['muted'],600),'sound')
     out+=text(33,165,'PRIZES',15,T['muted'],800)
     for i,(label,amount) in enumerate([('Early 5',120),('Corners',120),('Top line',120),('Middle line',120),('Bottom line',120),('Full house',420),('2nd house',180)]):
@@ -179,12 +199,14 @@ SCREENS['daylight']=lobby()
 T=NIGHT
 SCREENS['game2']=gameplay(2)
 (ROOT/'frames'/'08-game-page2.svg').write_text(svg(SCREENS['game2'],'Ticket page 2'),encoding='utf-8')
-board=rect(0,0,2768,3350,'#E9E7ED',0)+text(64,74,'TAMBOLA TOGETHER — LANDSCAPE DESIGN REVIEW',34,'#292237',900)+text(64,116,'Direction A · Game night / Direction B · Daylight club · Original vector artwork · Demo data',22,'#736A83',500)
+SCREENS['settings']=settings()
+(ROOT/'frames'/'09-settings.svg').write_text(svg(SCREENS['settings'],'Minimal settings'),encoding='utf-8')
+board=rect(0,0,2768,4134,'#E9E7ED',0)+text(64,74,'TAMBOLA TOGETHER — LANDSCAPE DESIGN REVIEW',34,'#292237',900)+text(64,116,'Direction A · Game night / Direction B · Daylight club · Original vector artwork · Demo data',22,'#736A83',500)
 for i,(name,body) in enumerate(SCREENS.items()):
     x,y=64+(i%2)*1340,204+(i//2)*784
     body=re.sub(r'id="([^"]+)"',lambda m:f'id="{name}-{m.group(1)}"',body)
     board+=text(x,y-20,f'{i+1:02} / {name.upper()}',20,'#5D556D',800)+f'<g id="{i+1:02}-{name}" transform="translate({x} {y})">{body}</g>'
-(ROOT/'Tambola-Landscape-Review.svg').write_text(svg(board,'Tambola landscape review',2768,3350),encoding='utf-8')
+(ROOT/'Tambola-Landscape-Review.svg').write_text(svg(board,'Tambola landscape review',2768,4134),encoding='utf-8')
 print(f'Created {len(SCREENS)} editable vector screen sources and review board')
 for page in range(1,4):SCREENS[f'play{page}']=gameplay(page,6)
 SCREENS['claim-overlay']=claim()[len(gameplay()):]

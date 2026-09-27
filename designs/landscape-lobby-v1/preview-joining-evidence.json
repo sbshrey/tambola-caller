@@ -1,0 +1,56 @@
+{
+  "observations": [
+    {
+      "arc": "M 640 216 A 101 101 0 1 1 633.8904022924313 216.18495739299777",
+      "arrivals": [
+        {
+          "name": "YOU",
+          "visible": "visible"
+        },
+        {
+          "name": "ChaiChamp",
+          "visible": "hidden"
+        },
+        {
+          "name": "NeonNinjaCOMPUTER",
+          "visible": "hidden"
+        },
+        {
+          "name": "LuckyMangoCOMPUTER",
+          "visible": "hidden"
+        }
+      ],
+      "seconds": "12",
+      "stage": "start"
+    },
+    {
+      "arc": "M 640 216 A 101 101 0 0 1 667.8529286285049 219.91645676627058",
+      "arrivals": [
+        {
+          "name": "YOU",
+          "visible": "visible"
+        },
+        {
+          "name": "ChaiChamp",
+          "visible": "visible"
+        },
+        {
+          "name": "NeonNinjaCOMPUTER",
+          "visible": "hidden"
+        },
+        {
+          "name": "LuckyMangoCOMPUTER",
+          "visible": "hidden"
+        }
+      ],
+      "seconds": "01",
+      "stage": "during"
+    }
+  ],
+  "notes": [
+    "After restarting the countdown, the preview entered play and reached 4 / 90 calls, replacing the earlier 37-call state.",
+    "Keyboard activation changes Music and Reduced motion independently.",
+    "Browser pointer mapping in the narrow app panel was inconsistent; native full-row interaction is covered separately."
+  ],
+  "consoleErrors": []
+}

@@ -71,13 +71,9 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
             val hero: @Composable () -> Unit = {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (waiting) {
-                        MatchCountdown(room)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            room.members.take(8).forEach { member -> AvatarBadge(member.avatar, size = 40.dp) }
-                        }
-                        if (room.options.computerPlayers > 0) Text("${words(R.string.ui_computer_players)} · ${room.options.computerPlayers}", color = Color(0xFFB7D0C0), fontSize = 12.sp)
-                        Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0), color = CoinGold, fontWeight = FontWeight.Bold)
-                        CoinPrizeGrid(coins?.prizes.orEmpty(), Modifier.fillMaxWidth())
+                        TableCountdown(room, state.playerId, reducedMotion)
+                        Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
+                            " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                         TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
                             modifier = Modifier.testTag("cancel-match")) { Text(words(R.string.coin_cancel), color = Ivory) }
                     } else {

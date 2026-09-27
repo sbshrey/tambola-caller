@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.game.setup.SetupDraftTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-27T04:33:38.251Z" hostname="DESKTOP-SBSHREY" time="0.061">
+  <properties/>
+  <testcase name="house configuration avoids double full house points and invalid players are explained" classname="io.github.sbshrey.tambola.game.setup.SetupDraftTest" time="0.008"/>
+  <testcase name="editor rejects impossible counts invalid ranges and insufficient selected tickets" classname="io.github.sbshrey.tambola.game.setup.SetupDraftTest" time="0.011"/>
+  <testcase name="rematch preserves players computers and exact custom and terminal rules" classname="io.github.sbshrey.tambola.game.setup.SetupDraftTest" time="0.04"/>
+  <testcase name="reducing tickets keeps custom rule intact and explains incompatible setup" classname="io.github.sbshrey.tambola.game.setup.SetupDraftTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
