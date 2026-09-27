@@ -85,7 +85,9 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private fun verifyEmptyProfile() {
         node("lobby-welcome-heading")
         tap("coin-wallet")
-        node("lobby-player-name")
+        // This dialog has its own accessibility root, so use its visible heading.
+        assertTrue("Fresh player setup must be shown",
+            device.wait(Until.hasObject(By.text("Choose your player")), 10_000))
         assertFalse("Existing wallets must never be used by this fixture", device.hasObject(By.text("Delete online profile")))
         textButton("Keep playing").click()
         node("lobby-welcome-heading")
