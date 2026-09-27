@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:....
+
+Time: 15.233
+
+OK (4 tests)

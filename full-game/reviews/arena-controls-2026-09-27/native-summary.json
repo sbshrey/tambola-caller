@@ -1,0 +1,124 @@
+{
+  "acceptedCases": 39,
+  "acceptedRuns": [
+    "amount-normal",
+    "amount-large",
+    "amount-narrow",
+    "amount-narrow-normal",
+    "regressions",
+    "recovery"
+  ],
+  "runs": [
+    {
+      "run": "baseline",
+      "accepted": false,
+      "passed": false,
+      "scale": "2.0",
+      "density": "540",
+      "executions": null
+    },
+    {
+      "run": "candidate",
+      "accepted": false,
+      "passed": true,
+      "scale": "2.0",
+      "density": "540",
+      "executions": 4
+    },
+    {
+      "run": "expanded",
+      "accepted": false,
+      "passed": false,
+      "scale": "2.0",
+      "density": "540",
+      "executions": null
+    },
+    {
+      "run": "diagnostic",
+      "accepted": false,
+      "passed": false,
+      "scale": "2.0",
+      "density": "540",
+      "executions": null
+    },
+    {
+      "run": "locale",
+      "accepted": false,
+      "passed": true,
+      "scale": "2.0",
+      "density": "540",
+      "executions": 7
+    },
+    {
+      "run": "final-normal",
+      "accepted": false,
+      "passed": false,
+      "scale": "1.0",
+      "density": "unchanged",
+      "executions": null
+    },
+    {
+      "run": "amount-normal",
+      "accepted": true,
+      "passed": true,
+      "scale": "1.0",
+      "density": "unchanged",
+      "executions": 7
+    },
+    {
+      "run": "amount-large",
+      "accepted": true,
+      "passed": true,
+      "scale": "2.0",
+      "density": "unchanged",
+      "executions": 7
+    },
+    {
+      "run": "amount-narrow",
+      "accepted": true,
+      "passed": true,
+      "scale": "2.0",
+      "density": "540",
+      "executions": 7
+    },
+    {
+      "run": "amount-narrow-normal",
+      "accepted": true,
+      "passed": true,
+      "scale": "1.0",
+      "density": "540",
+      "executions": 7
+    },
+    {
+      "run": "regressions",
+      "accepted": true,
+      "passed": true,
+      "scale": "1.0",
+      "density": "unchanged",
+      "executions": 7
+    },
+    {
+      "run": "recovery",
+      "accepted": true,
+      "passed": true,
+      "scale": "2.0",
+      "density": "540",
+      "executions": 4
+    }
+  ],
+  "candidateSourceNormalizedSha256": {
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/PlayArena.kt": "25b052ee2644dfa5581b8898656ccf3550107af126a9a1c7a8f1687530570335",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/ClaimArena.kt": "2a5741bb8044d04f3f6688f5d628528f67e980fb1e492fd6d9fa0c775051f647",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/CoinLobby.kt": "c9decac77699efa7bacaccad9285687072b336f52fc68ad33fb23800e2985eeb",
+    "app/src/main/res/values/play.xml": "90cb67dc468316fb3a09d35e9e051b2a525bc14f1e2577288941bab5e6c16fb0",
+    "app/src/main/res/values-hi/play.xml": "dbd27214145f64bb49307c77c83cd7ad4ae038edfa8a6973e670834c73e48d86",
+    "app/src/androidTest/java/io/github/sbshrey/tambola/game/ArenaControlsUiTest.kt": "364143c70612edcad16d5693719834b22068e6b186cb55d15c6d6473b8232652"
+  },
+  "reviewVersionCode": 34,
+  "reviewPackage": "io.github.sbshrey.tambola.game.uireview",
+  "reviewApks": {
+    "io.github.sbshrey.tambola.game.uireview": "bc303876073d3792639ec436d432f8672c4ff460873a1ce29339853b4ae5bfe9",
+    "io.github.sbshrey.tambola.game.uireview.test": "de9da666fe08e0f51b2747bd00c26f69cf06de0467ae889d45cdf4c73e10cb25"
+  },
+  "scope": "Arena controls, all sidebar prizes, ticket-specific first/last claim choices, player dialog and recovery fixtures. Not full TalkBack, physical-device or performance acceptance."
+}

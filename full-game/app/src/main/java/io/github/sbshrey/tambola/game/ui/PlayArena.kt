@@ -213,12 +213,64 @@ internal fun TicketHand(table: TableRound, modifier: Modifier, reducedMotion: Bo
 internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier, reducedMotion: Boolean, markNumber: ((String, Int) -> Unit)? = null, markEnabled: Boolean = true,
     claimTicket: (() -> Unit)? = null, claimEnabled: Boolean = true) {
     val words = gameText()
+    val density = LocalDensity.current
+    val gameNight = table.coins != null
+    val ordinal = table.tickets.indexOf(ticket) + 1
+    val label = words(R.string.play_claim)
+    val labelStyle = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp, lineHeight = 16.sp)
+    val measured = androidx.compose.ui.text.rememberTextMeasurer().measure(label, style = labelStyle)
+    val actionWidth = maxOf(82.dp, with(density) { measured.size.width.toDp() } + 28.dp)
+    BoxWithConstraints(modifier.clip(RoundedCornerShape(if (gameNight) 16.dp else 10.dp))
+        .background(if (gameNight) GameNightPalette.cream else Ivory).testTag("hand-ticket-$ordinal")) {
+        // Keep a useful number-grid width instead of squeezing it around larger text.
+        val stacked = claimTicket != null && density.fontScale > 1.3f && maxWidth - actionWidth < 224.dp
+        if (stacked) Column(Modifier.fillMaxSize()) {
+            TicketBody(ticket, table, Modifier.fillMaxWidth().weight(1f), reducedMotion, markNumber, markEnabled)
+            TicketClaimAction(label, ordinal, gameNight, claimEnabled, requireNotNull(claimTicket),
+                Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp, vertical = 3.dp), horizontal = true)
+        } else Row(Modifier.fillMaxSize()) {
+            TicketBody(ticket, table, Modifier.weight(1f).fillMaxHeight(), reducedMotion, markNumber, markEnabled)
+            if (claimTicket != null) TicketClaimAction(label, ordinal, gameNight, claimEnabled, claimTicket,
+                Modifier.width(actionWidth).fillMaxHeight().padding(horizontal = 6.dp), horizontal = false)
+        }
+    }
+}
+
+@Composable
+private fun TicketClaimAction(label: String, ordinal: Int, gameNight: Boolean, enabled: Boolean, claim: () -> Unit,
+    modifier: Modifier, horizontal: Boolean) {
+    val words = gameText()
+    val scale = LocalDensity.current.fontScale
+    val glyph: @Composable () -> Unit = {
+        // Decorative sparkle has a fixed icon size; the action label respects text scale.
+        Text("✦", fontSize = (18 / scale).sp, lineHeight = (18 / scale).sp, modifier = Modifier.clearAndSetSemantics {})
+    }
+    val caption: @Composable () -> Unit = { Text(label, fontSize = 12.sp, lineHeight = 16.sp, maxLines = 1) }
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Button(onClick = claim, enabled = enabled, contentPadding = PaddingValues(horizontal = 8.dp, vertical = if (horizontal) 0.dp else 6.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
+            modifier = Modifier.fillMaxWidth().heightIn(min = if (horizontal || !gameNight) 48.dp else 68.dp).testTag("claim-ticket-$ordinal")
+                .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = RoundedCornerShape(12.dp)) {
+            if (horizontal) Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                if (gameNight) glyph()
+                caption()
+            } else Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                if (gameNight) glyph()
+                caption()
+            }
+        }
+    }
+}
+
+@Composable
+private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, reducedMotion: Boolean,
+    markNumber: ((String, Int) -> Unit)?, markEnabled: Boolean) {
+    val words = gameText()
     val marked = table.marks[ticket.id].orEmpty()
     val ordinal = table.tickets.indexOf(ticket) + 1
     val gameNight = table.coins != null
-    val paper = if (gameNight) GameNightPalette.cream else Ivory
     val ticketInk = if (gameNight) GameNightPalette.ticketInk else Ink
-    Row(modifier.clip(RoundedCornerShape(if (gameNight) 16.dp else 10.dp)).background(paper).testTag("hand-ticket-$ordinal")) {
+    Row(modifier) {
         Box(Modifier.width(22.dp).fillMaxHeight().background(if (gameNight) GameNightPalette.ticketBlank else BallGold), contentAlignment = Alignment.Center) {
             Text("%02d".format(ordinal), color = ticketInk, fontSize = (10 / LocalDensity.current.fontScale).sp, lineHeight = (12 / LocalDensity.current.fontScale).sp, maxLines = 1, fontWeight = FontWeight.Bold,
                 modifier = Modifier.semantics { contentDescription = words(R.string.play_ticket_label, ordinal, marked.size) })
@@ -273,17 +325,6 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
                             }
                         }
                     }
-                }
-            }
-        }
-        if (claimTicket != null) Box(Modifier.width(82.dp).fillMaxHeight().padding(horizontal = if (gameNight) 6.dp else 3.dp), contentAlignment = Alignment.Center) {
-            Button(onClick = claimTicket, enabled = claimEnabled, contentPadding = PaddingValues(horizontal = 6.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
-                modifier = Modifier.fillMaxWidth().heightIn(min = if (gameNight) 68.dp else 48.dp).testTag("claim-ticket-$ordinal")
-                    .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = RoundedCornerShape(12.dp)) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    if (gameNight) Text("✦", fontSize = 18.sp, lineHeight = 18.sp, modifier = Modifier.clearAndSetSemantics {})
-                    Text(words(R.string.play_claim), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }

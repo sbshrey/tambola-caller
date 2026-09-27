@@ -1,0 +1,55 @@
+{
+  "observedAt": "2026-09-27T16:26:39.549Z",
+  "serial": "emulator-5582",
+  "scale": "2.0",
+  "method": "hindiLandscapeControls",
+  "density": "540",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "bc2ea38878a727fff768bef0191d4b6cfa2d7a8aa86f265cc3b2f0b556584f48",
+    "io.github.sbshrey.tambola.game.uireview.test": "79dd1d3fd32789cdadc31e5f4f5bf7586d7ce85721fa05fc530a90e47b95c7ff"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": false,
+  "screensAndGeometry": [
+    "arena-diagnostic-hi-landscape-200-6-tickets-4-players-dialog-tree.txt",
+    "arena-diagnostic-hi-landscape-200-6-tickets-4-players-live.png",
+    "arena-diagnostic-hi-landscape-200-6-tickets-4-players-prize-details-open.png",
+    "arena-diagnostic-hi-landscape-200-6-tickets-4-players-prizes-end.png"
+  ]
+}

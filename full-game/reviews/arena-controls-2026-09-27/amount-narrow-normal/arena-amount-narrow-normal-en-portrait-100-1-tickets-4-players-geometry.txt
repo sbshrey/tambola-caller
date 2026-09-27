@@ -1,0 +1,7 @@
+Live · 30 / 90 | scale=1.0 | size=212 x 48 | lines(left,right,bottom)=0.0,211.76172,48.0 | clipped=false
+Claim | scale=1.0 | size=103 x 54 | lines(left,right,bottom)=0.0,103.0,54.0 | clipped=false
+1 ticket | scale=1.0 | size=109 x 44 | lines(left,right,bottom)=0.0,108.67578,44.0 | clipped=false
+Next call · 5 | scale=1.0 | size=191 x 44 | lines(left,right,bottom)=0.0,191.0,44.0 | clipped=false
+28 | scale=1.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+72 | scale=1.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+Claim | scale=1.0 | size=103 x 54 | lines(left,right,bottom)=0.0,103.0,54.0 | clipped=false

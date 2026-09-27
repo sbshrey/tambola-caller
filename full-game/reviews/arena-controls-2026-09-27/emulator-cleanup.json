@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-09-27T16:48:10.959Z",
+  "serial": "emulator-5582",
+  "installed": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "2c8b9cbded702cbc22178f0f5f479a41968669753824fe80af58237b6a0e4636"
+  },
+  "settings": {
+    "font_scale": "1.0",
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "density": "Physical density: 420",
+  "qaProfilesDeleted": 4,
+  "networkSettings": {
+    "wifi": "1",
+    "data": "1"
+  },
+  "activeNetwork": "105",
+  "noAdbReverse": true,
+  "ownedEmulatorStopRequested": true,
+  "hostServicesUnchanged": true
+}

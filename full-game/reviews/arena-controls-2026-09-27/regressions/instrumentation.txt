@@ -1,0 +1,7 @@
+
+io.github.sbshrey.tambola.game.ManualTableTest:...
+io.github.sbshrey.tambola.game.ClaimFeedbackUiTest:....
+
+Time: 49.126
+
+OK (7 tests)

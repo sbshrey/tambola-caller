@@ -1,0 +1,61 @@
+{
+  "observedAt": "2026-09-27T16:15:51.649Z",
+  "serial": "emulator-5582",
+  "scale": "2.0",
+  "method": "all",
+  "density": "540",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "6d435043a0e053fb5bdb3331aae747e3dace3313e3a70e1a69574dd5e648e97a",
+    "io.github.sbshrey.tambola.game.uireview.test": "bdafcbc559d561f5481887a950d13d1c5a15fcb028dcb14e75415e849f9e9504"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": true,
+  "screensAndGeometry": [
+    "arena-candidate-en-landscape-200-geometry.txt",
+    "arena-candidate-en-landscape-200-live.png",
+    "arena-candidate-en-landscape-200-prizes-end.png",
+    "arena-candidate-en-portrait-200-geometry.txt",
+    "arena-candidate-en-portrait-200-live.png",
+    "arena-candidate-hi-landscape-200-geometry.txt",
+    "arena-candidate-hi-landscape-200-live.png",
+    "arena-candidate-hi-landscape-200-prizes-end.png",
+    "arena-candidate-hi-portrait-200-geometry.txt",
+    "arena-candidate-hi-portrait-200-live.png"
+  ]
+}

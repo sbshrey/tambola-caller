@@ -1,0 +1,37 @@
+Live · 30 / 90 | scale=1.0 | size=212 x 48 | lines(left,right,bottom)=0.0,211.76172,48.0 | clipped=false
+Claim | scale=1.0 | size=103 x 54 | lines(left,right,bottom)=0.0,103.0,54.0 | clipped=false
+6 tickets | scale=1.0 | size=126 x 44 | lines(left,right,bottom)=0.0,125.67578,44.0 | clipped=false
+Next call · 5 | scale=1.0 | size=191 x 44 | lines(left,right,bottom)=0.0,191.0,44.0 | clipped=false
+28 | scale=1.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+72 | scale=1.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+9 | scale=1.0 | size=27 x 61 | lines(left,right,bottom)=0.0,27.0,61.0 | clipped=false
+20 | scale=1.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+1/6 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
++1 | scale=1.0 | size=38 x 81 | lines(left,right,bottom)=0.0,38.0,81.0 | clipped=false
+sidebar-prize-EARLY_FIVE | bounds=DpRect(left=16.0.dp, top=76.14815.dp, right=146.07408.dp, bottom=100.14815.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+Early 5 | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,111.0,43.0 | clipped=false
+240 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-CORNERS | bounds=DpRect(left=16.0.dp, top=100.14815.dp, right=146.07408.dp, bottom=124.14815.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+Corners | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,130.0,43.0 | clipped=false
+240 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-TOP_LINE | bounds=DpRect(left=16.0.dp, top=124.14815.dp, right=146.07408.dp, bottom=148.14815.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+Top | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,62.210938,43.0 | clipped=false
+240 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-MIDDLE_LINE | bounds=DpRect(left=16.0.dp, top=148.14815.dp, right=146.07408.dp, bottom=172.14815.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+Middle | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,112.0,43.0 | clipped=false
+240 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-BOTTOM_LINE | bounds=DpRect(left=16.0.dp, top=172.14815.dp, right=146.07408.dp, bottom=196.14815.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+Bottom | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,120.63672,43.0 | clipped=false
+240 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-HOUSE_ONE | bounds=DpRect(left=16.0.dp, top=189.03703.dp, right=146.07408.dp, bottom=213.03703.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+House one | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,176.0,43.0 | clipped=false
+720 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-HOUSE_TWO | bounds=DpRect(left=16.0.dp, top=189.03703.dp, right=146.07408.dp, bottom=213.03703.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+House two | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,176.0,43.0 | clipped=false
+360 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+sidebar-prize-HOUSE_THREE | bounds=DpRect(left=16.0.dp, top=189.03703.dp, right=146.07408.dp, bottom=213.03703.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=152.0.dp, bottom=213.03703.dp)
+House three | scale=1.0 | size=258 x 43 | lines(left,right,bottom)=0.0,199.65625,43.0 | clipped=false
+120 | scale=1.0 | size=57 x 48 | lines(left,right,bottom)=0.0,57.0,48.0 | clipped=false
+House three | scale=1.0 | size=233 x 108 | lines(left,right,bottom)=8.0,225.0,54.0 | clipped=false
+Back to game | scale=1.0 | size=290 x 68 | lines(left,right,bottom)=0.0,289.3086,68.0 | clipped=false
+Claim | scale=1.0 | size=103 x 54 | lines(left,right,bottom)=0.0,103.0,54.0 | clipped=false

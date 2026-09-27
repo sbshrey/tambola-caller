@@ -1,0 +1,122 @@
+
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:..
+Error in hindiLandscapeThreeTickets(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: 120
+Clipped text: 120
+Clipped text: 120
+Clipped text: 120
+Clipped text: 120
+Clipped text: 420
+Clipped text: 180
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:48)
+
+Error in englishLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 720
+Clipped text: 360
+Clipped text: 120
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.englishLandscapeControls(ArenaControlsUiTest.kt:42)
+.
+Error in hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 720
+Clipped text: 360
+Clipped text: 120
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:43)
+
+Error in hindiLandscapeEightFriends(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: 480
+Clipped text: 480
+Clipped text: 480
+Clipped text: 480
+Clipped text: 480
+Clipped text: 1440
+Clipped text: 720
+Clipped text: 240
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:49)
+
+
+Time: 49.896
+There were 4 failures:
+1) hindiLandscapeThreeTickets(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: 120
+Clipped text: 120
+Clipped text: 120
+Clipped text: 120
+Clipped text: 120
+Clipped text: 420
+Clipped text: 180
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:48)
+2) englishLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 720
+Clipped text: 360
+Clipped text: 120
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.englishLandscapeControls(ArenaControlsUiTest.kt:42)
+3) hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 240
+Clipped text: 720
+Clipped text: 360
+Clipped text: 120
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:43)
+4) hindiLandscapeEightFriends(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: 480
+Clipped text: 480
+Clipped text: 480
+Clipped text: 480
+Clipped text: 480
+Clipped text: 1440
+Clipped text: 720
+Clipped text: 240
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:172)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:49)
+
+FAILURES!!!
+Tests run: 7,  Failures: 4

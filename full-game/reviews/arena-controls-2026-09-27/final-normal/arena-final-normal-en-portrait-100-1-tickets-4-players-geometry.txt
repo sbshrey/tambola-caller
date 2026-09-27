@@ -1,0 +1,7 @@
+Live · 30 / 90 | scale=1.0 | size=162 x 37 | clipped=false
+Claim | scale=1.0 | size=80 x 42 | clipped=false
+1 ticket | scale=1.0 | size=86 x 35 | clipped=false
+Next call · 5 | scale=1.0 | size=146 x 35 | clipped=false
+28 | scale=1.0 | size=42 x 48 | clipped=false
+72 | scale=1.0 | size=42 x 48 | clipped=false
+Claim | scale=1.0 | size=80 x 42 | clipped=false

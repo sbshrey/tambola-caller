@@ -1,0 +1,63 @@
+{
+  "observedAt": "2026-09-27T16:21:51.800Z",
+  "serial": "emulator-5582",
+  "scale": "2.0",
+  "method": "all",
+  "density": "540",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "96aca362d3306561cdde00972bd4fcf3a216eeb37850ca66a961326ad1502662",
+    "io.github.sbshrey.tambola.game.uireview.test": "b8a3484f9d1322fb42f75d52d21ee95c15d9fe597ed30768fa40d5aa0afb50dc"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": false,
+  "screensAndGeometry": [
+    "arena-expanded-en-landscape-200-6-tickets-4-players-geometry.txt",
+    "arena-expanded-en-landscape-200-6-tickets-4-players-last-ticket.png",
+    "arena-expanded-en-landscape-200-6-tickets-4-players-live.png",
+    "arena-expanded-en-landscape-200-6-tickets-4-players-players.png",
+    "arena-expanded-en-landscape-200-6-tickets-4-players-prize-details.png",
+    "arena-expanded-en-landscape-200-6-tickets-4-players-prizes-end.png",
+    "arena-expanded-en-portrait-200-6-tickets-4-players-live.png",
+    "arena-expanded-hi-landscape-200-6-tickets-4-players-live.png",
+    "arena-expanded-hi-landscape-200-6-tickets-4-players-prizes-end.png",
+    "arena-expanded-hi-landscape-200-6-tickets-8-players-live.png",
+    "arena-expanded-hi-landscape-200-6-tickets-8-players-prizes-end.png",
+    "arena-expanded-hi-portrait-200-6-tickets-4-players-live.png"
+  ]
+}

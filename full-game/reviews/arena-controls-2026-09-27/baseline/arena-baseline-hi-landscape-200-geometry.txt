@@ -1,0 +1,27 @@
+लाइव · 30 / 90 | scale=2.0 | size=436 x 101 | clipped=false
+दावा करें | scale=2.0 | size=197 x 135 | clipped=true
++2 | scale=2.0 | size=76 x 162 | clipped=false
+sidebar-prize-EARLY_FIVE | bounds=DpRect(left=16.0.dp, top=76.14815.dp, right=98.07407.dp, bottom=101.92593.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+5 | scale=2.0 | size=55 x 87 | clipped=false
+240 | scale=2.0 | size=114 x 81 | clipped=false
+sidebar-prize-CORNERS | bounds=DpRect(left=16.0.dp, top=101.92593.dp, right=98.07407.dp, bottom=125.92593.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+ | scale=2.0 | size=55 x 81 | clipped=false
+240 | scale=2.0 | size=114 x 81 | clipped=false
+sidebar-prize-TOP_LINE | bounds=DpRect(left=16.0.dp, top=125.92593.dp, right=98.07407.dp, bottom=149.92592.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+ | scale=2.0 | size=55 x 81 | clipped=false
+240 | scale=2.0 | size=114 x 81 | clipped=false
+sidebar-prize-MIDDLE_LINE | bounds=DpRect(left=16.0.dp, top=149.92592.dp, right=98.07407.dp, bottom=168.88889.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+ | scale=2.0 | size=55 x 64 | clipped=true
+240 | scale=2.0 | size=114 x 64 | clipped=true
+sidebar-prize-BOTTOM_LINE | bounds=DpRect(left=16.0.dp, top=168.88889.dp, right=98.07407.dp, bottom=168.88889.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+ | scale=2.0 | size=55 x 0 | clipped=true
+240 | scale=2.0 | size=114 x 0 | clipped=true
+sidebar-prize-HOUSE_ONE | bounds=DpRect(left=16.0.dp, top=168.88889.dp, right=98.07407.dp, bottom=168.88889.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+1 | scale=2.0 | size=55 x 0 | clipped=true
+720 | scale=2.0 | size=114 x 0 | clipped=true
+sidebar-prize-HOUSE_TWO | bounds=DpRect(left=16.0.dp, top=168.88889.dp, right=98.07407.dp, bottom=168.88889.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+2 | scale=2.0 | size=55 x 0 | clipped=true
+360 | scale=2.0 | size=114 x 0 | clipped=true
+sidebar-prize-HOUSE_THREE | bounds=DpRect(left=16.0.dp, top=168.88889.dp, right=98.07407.dp, bottom=168.88889.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=173.03703.dp)
+3 | scale=2.0 | size=55 x 0 | clipped=true
+120 | scale=2.0 | size=114 x 0 | clipped=true

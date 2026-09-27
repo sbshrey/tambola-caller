@@ -69,7 +69,7 @@ try {
   page.on('request', request => requests.push({ url: request.url(), type: request.resourceType() }));
   await page.goto(base + 'friends/#ABCDEFG2');
   await page.locator('#open[href^="intent:"]').waitFor();
-  assert.equal(await page.locator('#open').getAttribute('href'), 'intent://friends/ABCDEFG2#Intent;scheme=tambola-beta;package=io.github.sbshrey.tambola.game.beta;S.browser_fallback_url=https%3A%2F%2Fgithub.com%2Fsbshrey%2Ftambola-caller%2Freleases%2Ftag%2Ffull-game-alpha34-round-recovery;end');
+  assert.equal(await page.locator('#open').getAttribute('href'), 'intent://friends/ABCDEFG2#Intent;scheme=tambola-beta;package=io.github.sbshrey.tambola.game.beta;S.browser_fallback_url=https%3A%2F%2Fgithub.com%2Fsbshrey%2Ftambola-caller%2Freleases%2Ftag%2Ffull-game-alpha35-arena-controls;end');
   await page.screenshot({ path: resolve(evidence, 'english-desktop.png'), fullPage: true });
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { async writeText(value) { window.copiedCode = value; } } }));
   await page.getByRole('button', { name: 'Copy code', exact: true }).click();

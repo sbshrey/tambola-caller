@@ -1,0 +1,41 @@
+
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:
+Error in hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text:
+Clipped text: 240
+Clipped text:
+Clipped text: 240
+Clipped text: 1
+Clipped text: 720
+Clipped text: 2
+Clipped text: 360
+Clipped text: 3
+Clipped text: 120
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:117)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:34)
+
+
+Time: 7.112
+There was 1 failure:
+1) hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text:
+Clipped text: 240
+Clipped text:
+Clipped text: 240
+Clipped text: 1
+Clipped text: 720
+Clipped text: 2
+Clipped text: 360
+Clipped text: 3
+Clipped text: 120
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:117)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:34)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

@@ -1,0 +1,31 @@
+
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:
+Error in hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + InputText + EditableText contains 'तीसरा हाउस' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:133)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:34)
+
+
+Time: 7.204
+There was 1 failure:
+1) hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + InputText + EditableText contains 'तीसरा हाउस' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:133)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:34)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

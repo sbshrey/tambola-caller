@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-09-27T16:39:38.914Z",
+  "previous": {
+    "wifi": "1",
+    "data": "1"
+  },
+  "before": "101",
+  "passed": true,
+  "disconnected": "none",
+  "settings": {
+    "wifi": "0",
+    "data": "0"
+  },
+  "restored": {
+    "wifi": "1",
+    "data": "1"
+  },
+  "after": "102"
+}

@@ -1,0 +1,118 @@
+
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:
+Error in englishPortraitControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:107)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.englishPortraitControls(ArenaControlsUiTest.kt:35)
+
+Error in hindiPortraitControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:107)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiPortraitControls(ArenaControlsUiTest.kt:36)
+
+Error in hindiLandscapeThreeTickets(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:32)
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:20)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:61)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:39)
+.
+Error in englishPortraitOneTicket(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:32)
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:20)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:61)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.englishPortraitOneTicket(ArenaControlsUiTest.kt:38)
+
+Error in hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + InputText + EditableText contains 'तीसरा हाउस' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:129)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:34)
+
+Error in hindiLandscapeEightFriends(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + InputText + EditableText contains 'तीसरा हाउस' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:129)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:40)
+
+
+Time: 26.881
+There were 6 failures:
+1) englishPortraitControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:107)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.englishPortraitControls(ArenaControlsUiTest.kt:35)
+2) hindiPortraitControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError
+	at org.junit.Assert.fail(Assert.java:87)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertTrue(Assert.java:53)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:107)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiPortraitControls(ArenaControlsUiTest.kt:36)
+3) hindiLandscapeThreeTickets(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:32)
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:20)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:61)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:39)
+4) englishPortraitOneTicket(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:32)
+	at io.github.sbshrey.tambola.protocol.RoomOptions.<init>(Rooms.kt:20)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:61)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.englishPortraitOneTicket(ArenaControlsUiTest.kt:38)
+5) hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + InputText + EditableText contains 'तीसरा हाउस' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:129)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:34)
+6) hindiLandscapeEightFriends(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: ((Text + InputText + EditableText contains 'तीसरा हाउस' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:129)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:40)
+
+FAILURES!!!
+Tests run: 7,  Failures: 6

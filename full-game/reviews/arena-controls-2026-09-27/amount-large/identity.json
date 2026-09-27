@@ -1,0 +1,88 @@
+{
+  "observedAt": "2026-09-27T16:33:13.256Z",
+  "serial": "emulator-5582",
+  "scale": "2.0",
+  "method": "all",
+  "density": "unchanged",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "bc303876073d3792639ec436d432f8672c4ff460873a1ce29339853b4ae5bfe9",
+    "io.github.sbshrey.tambola.game.uireview.test": "de9da666fe08e0f51b2747bd00c26f69cf06de0467ae889d45cdf4c73e10cb25"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": true,
+  "screensAndGeometry": [
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-geometry.txt",
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-last-ticket.png",
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-live.png",
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-players.png",
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-prize-details-open.png",
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-prize-details.png",
+    "arena-amount-large-en-landscape-200-6-tickets-4-players-prizes-end.png",
+    "arena-amount-large-en-portrait-200-1-tickets-4-players-geometry.txt",
+    "arena-amount-large-en-portrait-200-1-tickets-4-players-last-ticket.png",
+    "arena-amount-large-en-portrait-200-1-tickets-4-players-live.png",
+    "arena-amount-large-en-portrait-200-6-tickets-4-players-geometry.txt",
+    "arena-amount-large-en-portrait-200-6-tickets-4-players-last-ticket.png",
+    "arena-amount-large-en-portrait-200-6-tickets-4-players-live.png",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-geometry.txt",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-last-ticket.png",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-live.png",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-players.png",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-prize-details-open.png",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-prize-details.png",
+    "arena-amount-large-hi-landscape-200-3-tickets-4-players-prizes-end.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-geometry.txt",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-last-ticket.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-live.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-players.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-prize-details-open.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-prize-details.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-4-players-prizes-end.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-geometry.txt",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-last-ticket.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-live.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-players.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-prize-details-open.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-prize-details.png",
+    "arena-amount-large-hi-landscape-200-6-tickets-8-players-prizes-end.png",
+    "arena-amount-large-hi-portrait-200-6-tickets-4-players-geometry.txt",
+    "arena-amount-large-hi-portrait-200-6-tickets-4-players-last-ticket.png",
+    "arena-amount-large-hi-portrait-200-6-tickets-4-players-live.png"
+  ]
+}

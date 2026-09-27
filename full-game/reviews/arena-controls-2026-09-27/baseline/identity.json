@@ -1,0 +1,54 @@
+{
+  "observedAt": "2026-09-27T16:11:08.349Z",
+  "serial": "emulator-5582",
+  "scale": "2.0",
+  "method": "hindiLandscapeControls",
+  "density": "540",
+  "originalDensity": "Physical density: 420",
+  "densityRestored": true,
+  "apks": {
+    "io.github.sbshrey.tambola.game.uireview": "5e0a92eaa6426cc3b12743de2bda82d6d391b4fd80b3aac26b7f8c9702baac4d",
+    "io.github.sbshrey.tambola.game.uireview.test": "bdafcbc559d561f5481887a950d13d1c5a15fcb028dcb14e75415e849f9e9504"
+  },
+  "installedBefore": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "installedAfter": {
+    "io.github.sbshrey.tambola.game": "790fc3ebd1c222dc125d0b8361ed88da39aa9aef0ef9364096b55d1c5c870c13",
+    "io.github.sbshrey.tambola.game.beta": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916"
+  },
+  "settingsRestored": [
+    {
+      "namespace": "system",
+      "name": "font_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "window_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "transition_animation_scale",
+      "value": "1.0",
+      "restored": "1.0"
+    },
+    {
+      "namespace": "global",
+      "name": "animator_duration_scale",
+      "value": "null",
+      "restored": "null"
+    }
+  ],
+  "exitCode": 0,
+  "passed": false,
+  "screensAndGeometry": [
+    "arena-baseline-hi-landscape-200-geometry.txt",
+    "arena-baseline-hi-landscape-200-live.png",
+    "arena-baseline-hi-landscape-200-prizes-end.png"
+  ]
+}

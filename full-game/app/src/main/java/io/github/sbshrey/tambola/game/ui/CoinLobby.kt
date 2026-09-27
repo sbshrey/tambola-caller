@@ -252,8 +252,10 @@ internal fun CoinCallClock(room: RoomView, connection: Connection, reconnect: ()
     else Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val remaining = remainingCoinTime(room.nextDrawAt, room.serverTime, room.roomId)
         val seconds by countdownSeconds(remaining)
-        Text(if (seconds > 0) words(R.string.coin_next, seconds) else words(R.string.coin_next_wait),
-            fontSize = 11.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        val largeText = LocalDensity.current.fontScale > 1.3f
+        Text(if (seconds > 0) words(if (largeText) R.string.play_next_call_short else R.string.coin_next, seconds)
+            else words(if (largeText) R.string.play_next_call_wait else R.string.coin_next_wait),
+            fontSize = 11.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("next-call-copy"))
         LinearProgressIndicator(progress = { (remaining.value / 5000f).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = CoinGold)
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -107,32 +108,39 @@ internal fun ClaimArena(
                             liveRegion = LiveRegionMode.Polite
                         }, contentAlignment = Alignment.Center) {
                         Text(table.latest?.toString() ?: "?", color = Ink, fontWeight = FontWeight.Black,
-                            fontSize = (30 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
+                            fontSize = (30 / LocalDensity.current.fontScale).sp, lineHeight = (34 / LocalDensity.current.fontScale).sp,
+                            modifier = Modifier.clearAndSetSemantics {})
                     }
                     }
                     if (landscape && expandedFooter && !table.finished) {
                         // Reuse the header, so recovery never shifts the ticket touch targets.
                         Box(Modifier.weight(1f)) { footer() }
                     } else {
-                    Row(Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                    BoxWithConstraints(Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
                         .clickable(role = Role.Button) { history = true; board = true }
-                        .testTag("open-call-history").semantics(mergeDescendants = true) { contentDescription = words(R.string.board_history) },
-                        horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
-                        table.called.dropLast(1).takeLast(if (landscape) 4 else 2).reversed().forEach { number ->
-                            Box(Modifier.size(if (landscape) 34.dp else 28.dp).graphicsLayer { translationX = (1 - reveal.value) * -14.dp.toPx() }
+                        .testTag("open-call-history").semantics(mergeDescendants = true) { contentDescription = words(R.string.board_history) }, contentAlignment = Alignment.CenterStart) {
+                        val ballSize = if (landscape) 34.dp else 28.dp
+                        val count = ((maxWidth - 15.dp) / (ballSize + 5.dp)).toInt().coerceIn(0, if (landscape) 4 else 2)
+                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                        table.called.dropLast(1).takeLast(count).reversed().forEach { number ->
+                            Box(Modifier.size(ballSize).graphicsLayer { translationX = (1 - reveal.value) * -14.dp.toPx() }
                                 .background(ink.copy(alpha = .09f), CircleShape), contentAlignment = Alignment.Center) {
-                                Text("$number", fontSize = (14 / LocalDensity.current.fontScale).sp, fontWeight = FontWeight.Bold)
+                                Text("$number", fontSize = (14 / LocalDensity.current.fontScale).sp, lineHeight = (18 / LocalDensity.current.fontScale).sp,
+                                    fontWeight = FontWeight.Bold, modifier = Modifier.testTag("recent-call-$number"))
                             }
                         }
                         Canvas(Modifier.size(10.dp).clearAndSetSemantics {}) {
                             drawLine(ink, Offset(size.width * .3f, 0f), Offset(size.width * .8f, size.height / 2), 1.5.dp.toPx())
                             drawLine(ink, Offset(size.width * .8f, size.height / 2), Offset(size.width * .3f, size.height), 1.5.dp.toPx())
                         }
+                        }
                     }
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.widthIn(max = if (landscape) 164.dp else 104.dp)) {
-                        Text("$status · ${words(R.string.play_calls_short, table.called.size)}", color = muted, fontSize = 11.sp, lineHeight = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.testTag("play-status"))
-                        Text(words(R.string.play_tickets_short, hand.tickets.size), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(if (largeText) words(R.string.play_calls_short, table.called.size) else "$status · ${words(R.string.play_calls_short, table.called.size)}",
+                            color = muted, fontSize = 11.sp, lineHeight = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.testTag("play-status").semantics { contentDescription = "$status · ${words(R.string.play_calls_short, table.called.size)}" })
+                        Text(pluralStringResource(R.plurals.ticket_count, hand.tickets.size, hand.tickets.size),
+                            color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("owned-ticket-count"))
                         if (!largeText) Text(table.coins?.let { words(R.string.coin_pool, it.pool) } ?: words(R.string.play_prizes_left, remaining), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
                     }
                     if (landscape && !table.finished) Box(Modifier.width(110.dp)) { footer() }
@@ -217,13 +225,13 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 IconButton(onClick = { firstTicket = (page - 1) * pageSize }, enabled = page > 0,
                     modifier = Modifier.size(48.dp).background(if (page > 0) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp)).testTag("tickets-up").semantics { contentDescription = words(R.string.play_previous_tickets) }) {
-                    Text("↑", fontSize = 28.sp)
+                    Text("↑", fontSize = (28 / LocalDensity.current.fontScale).sp, lineHeight = (32 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
                 }
-                Text("${page + 1}/$pages", fontSize = 11.sp, maxLines = 1, modifier = Modifier.testTag("ticket-page")
+                Text("${page + 1}/$pages", fontSize = 11.sp, lineHeight = 14.sp, maxLines = 1, modifier = Modifier.testTag("ticket-page")
                     .semantics { contentDescription = words(R.string.play_ticket_page, page + 1, pages) })
                 IconButton(onClick = { firstTicket = (page + 1) * pageSize }, enabled = page + 1 < pages,
                     modifier = Modifier.size(48.dp).background(if (page + 1 < pages) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp)).testTag("tickets-down").semantics { contentDescription = words(R.string.play_next_tickets) }) {
-                    Text("↓", fontSize = 28.sp)
+                    Text("↓", fontSize = (28 / LocalDensity.current.fontScale).sp, lineHeight = (32 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
                 }
             }
         }
@@ -234,61 +242,95 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
 private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: Color, modifier: Modifier, details: () -> Unit, openPlayers: () -> Unit) {
     val words = gameText()
     val large = LocalDensity.current.fontScale > 1.3f
+    val prizeScroll = rememberScrollState()
+    val panel = MaterialTheme.colorScheme.surface
+    LaunchedEffect(table.id) { prizeScroll.scrollTo(0) }
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Column(Modifier.weight(1f).fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).clickable(role = Role.Button, onClick = details).padding(horizontal = 6.dp, vertical = 4.dp)
-            .semantics(mergeDescendants = true) { contentDescription = words(R.string.play_prizes) }.testTag("prize-rail"), verticalArrangement = Arrangement.SpaceEvenly) {
-            table.settings.prizes.take(if (table.coins != null) 8 else 6).forEach { prize ->
-                val won = table.awards.any { it.prize == prize }
-                val short = when (prize) {
-                    Prize.EARLY_FIVE -> R.string.play_early; Prize.CORNERS -> R.string.play_corners
-                    Prize.TOP_LINE -> R.string.play_top; Prize.MIDDLE_LINE -> R.string.play_middle
-                    Prize.BOTTOM_LINE -> R.string.play_bottom; else -> R.string.play_house
-                }
-                Row(Modifier.fillMaxWidth().testTag("sidebar-prize-${prize.name}"), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Canvas(Modifier.size(if (large) 20.dp else 25.dp, 16.dp)) {
-                        repeat(15) { cell ->
-                            val on = when (prize) {
-                                Prize.TOP_LINE, Prize.EARLY_FIVE -> cell < 5; Prize.MIDDLE_LINE -> cell in 5..9
-                                Prize.BOTTOM_LINE -> cell >= 10; Prize.CORNERS -> cell in setOf(0, 4, 10, 14)
-                                Prize.EARLY_TEN -> cell < 10; else -> true
-                            }
-                            drawRect((if (won) muted else ink).copy(alpha = if (on) 1f else .18f), Offset(cell % 5 * size.width / 5, cell / 5 * size.height / 3), Size(size.width / 5 - 2f, size.height / 3 - 2f))
-                        }
-                    }
-                    val label = if (large) when (prize) {
+        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface)
+            .clickable(role = Role.Button, onClick = details).semantics(mergeDescendants = true) { contentDescription = words(R.string.play_prizes) }.testTag("prize-rail")) {
+            val viewportHeight = (maxHeight - 8.dp).coerceAtLeast(0.dp)
+            Column(Modifier.fillMaxWidth().height(viewportHeight).testTag("prize-list").verticalScroll(prizeScroll).heightIn(min = viewportHeight)
+                .padding(horizontal = 6.dp, vertical = 4.dp),
+                verticalArrangement = Arrangement.SpaceEvenly) {
+                table.settings.prizes.take(if (table.coins != null) 8 else 6).forEach { prize ->
+                    val won = table.awards.any { it.prize == prize }
+                    val rank = when (prize) {
                         Prize.EARLY_FIVE -> "5"; Prize.EARLY_TEN -> "10"
                         Prize.FULL_HOUSE, Prize.HOUSE_ONE -> "1"; Prize.HOUSE_TWO -> "2"; Prize.HOUSE_THREE -> "3"
-                        else -> ""
-                    } else if (prize == Prize.EARLY_TEN || prize.isRankedHouse) words.prizeTitle(prize) else words(short)
-                    Text(label, fontSize = 11.sp, lineHeight = 12.sp, color = if (won) muted else ink, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        textDecoration = if (won) TextDecoration.LineThrough else null,
-                        modifier = Modifier.weight(1f).semantics { contentDescription = words.prizeTitle(prize) })
-                    table.coins?.prizes?.firstOrNull { it.prize == prize }?.let { slot ->
-                        Text("${slot.coins}", color = if (won) muted else GameNightPalette.gold, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold,
+                        else -> null
+                    }
+                    Row(Modifier.fillMaxWidth().heightIn(min = if (large) 28.dp else 24.dp).testTag("sidebar-prize-${prize.name}"),
+                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (large && rank != null) Text(rank, modifier = Modifier.width(26.dp).semantics { contentDescription = words.prizeTitle(prize) },
+                            fontSize = 11.sp, lineHeight = 12.sp, textAlign = TextAlign.Center, color = if (won) muted else ink,
                             textDecoration = if (won) TextDecoration.LineThrough else null)
+                        else Canvas(Modifier.size(if (large) 26.dp else 25.dp, 16.dp).semantics { contentDescription = words.prizeTitle(prize) }) {
+                            repeat(15) { cell ->
+                                val on = when (prize) {
+                                    Prize.TOP_LINE, Prize.EARLY_FIVE -> cell < 5; Prize.MIDDLE_LINE -> cell in 5..9
+                                    Prize.BOTTOM_LINE -> cell >= 10; Prize.CORNERS -> cell in setOf(0, 4, 10, 14)
+                                    Prize.EARLY_TEN -> cell < 10; else -> true
+                                }
+                                drawRect((if (won) muted else ink).copy(alpha = if (on) 1f else .18f), Offset(cell % 5 * size.width / 5, cell / 5 * size.height / 3),
+                                    Size(size.width / 5 - 2f, size.height / 3 - 2f))
+                            }
+                        }
+                        if (!large) {
+                            val short = when (prize) {
+                                Prize.EARLY_FIVE -> R.string.play_early; Prize.CORNERS -> R.string.play_corners
+                                Prize.TOP_LINE -> R.string.play_top; Prize.MIDDLE_LINE -> R.string.play_middle
+                                Prize.BOTTOM_LINE -> R.string.play_bottom; else -> R.string.play_house
+                            }
+                            Text(if (prize == Prize.EARLY_TEN || prize.isRankedHouse) words.prizeTitle(prize) else words(short),
+                                fontSize = 11.sp, lineHeight = 12.sp, color = if (won) muted else ink, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                textDecoration = if (won) TextDecoration.LineThrough else null, modifier = Modifier.weight(1f))
+                        }
+                        table.coins?.prizes?.firstOrNull { it.prize == prize }?.let { slot ->
+                            Text("${slot.coins}", modifier = if (large) Modifier.weight(1f) else Modifier,
+                                color = if (won) muted else GameNightPalette.gold, fontSize = 10.sp, lineHeight = 14.sp,
+                                textAlign = if (large) TextAlign.End else TextAlign.Start,
+                                fontWeight = FontWeight.Bold, textDecoration = if (won) TextDecoration.LineThrough else null)
+                        }
                     }
                 }
+                val extra = (table.settings.prizes.size - if (table.coins != null) 8 else 6).coerceAtLeast(0) + table.settings.customPrizes.size
+                if (extra > 0) Text("+$extra", fontSize = 11.sp, color = muted)
             }
-            val extra = (table.settings.prizes.size - if (table.coins != null) 8 else 6).coerceAtLeast(0) + table.settings.customPrizes.size
-            if (extra > 0) Text("+$extra", fontSize = 11.sp, color = muted)
+            if (prizeScroll.canScrollForward) Canvas(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(8.dp).clearAndSetSemantics {}) {
+                drawRect(panel)
+                drawLine(muted, Offset(size.width / 2 - 4.dp.toPx(), 2.dp.toPx()), Offset(size.width / 2, 6.dp.toPx()), 1.5.dp.toPx())
+                drawLine(muted, Offset(size.width / 2, 6.dp.toPx()), Offset(size.width / 2 + 4.dp.toPx(), 2.dp.toPx()), 1.5.dp.toPx())
+            }
         }
         val playerSummary = if (table.coins != null) words(R.string.coin_players, table.players.size, table.players.count { it.computer })
             else words(R.string.play_players_short, table.players.size)
-        Column(Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        val playerControl = Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .clickable(role = Role.Button, onClick = openPlayers).testTag("table-players")
-            .semantics(mergeDescendants = true) { contentDescription = playerSummary }.padding(horizontal = 6.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            .semantics(mergeDescendants = true) { contentDescription = playerSummary }
+        if (large) Row(playerControl.padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(Modifier.clearAndSetSemantics {}, horizontalArrangement = Arrangement.spacedBy((-5).dp)) {
+                table.players.sortedBy { it.id != ownerId }.take(2).forEach { AvatarBadge(it.avatar, size = 20.dp) }
+            }
+            Text("${table.players.size}", modifier = Modifier.weight(1f).testTag("player-count"), fontSize = 11.sp, lineHeight = 13.sp, color = muted, textAlign = TextAlign.Center)
+            PlayerChevron(muted)
+        } else Column(playerControl.padding(horizontal = 6.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(playerSummary, modifier = Modifier.weight(1f).clearAndSetSemantics {}, color = muted, fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Canvas(Modifier.size(8.dp, 12.dp).clearAndSetSemantics {}) {
-                    drawLine(muted, Offset(size.width * .25f, size.height * .2f), Offset(size.width * .75f, size.height * .5f), 1.5.dp.toPx())
-                    drawLine(muted, Offset(size.width * .75f, size.height * .5f), Offset(size.width * .25f, size.height * .8f), 1.5.dp.toPx())
-                }
+                PlayerChevron(muted)
             }
             Row(Modifier.fillMaxWidth().clearAndSetSemantics {}, horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                val preview = table.players.sortedBy { it.id != ownerId }.take(if (large) 2 else 3)
+                val preview = table.players.sortedBy { it.id != ownerId }.take(3)
                 preview.forEach { player -> AvatarBadge(player.avatar, size = 24.dp) }
                 if (table.players.size > preview.size) Text("+${table.players.size - preview.size}", fontSize = 10.sp, color = muted)
             }
         }
+    }
+}
+
+@Composable
+private fun PlayerChevron(color: Color) {
+    Canvas(Modifier.size(8.dp, 12.dp).clearAndSetSemantics {}) {
+        drawLine(color, Offset(size.width * .25f, size.height * .2f), Offset(size.width * .75f, size.height * .5f), 1.5.dp.toPx())
+        drawLine(color, Offset(size.width * .75f, size.height * .5f), Offset(size.width * .25f, size.height * .8f), 1.5.dp.toPx())
     }
 }

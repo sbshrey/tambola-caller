@@ -1,0 +1,34 @@
+लाइव · 30 / 90 | scale=1.0 | size=167 x 38 | clipped=false
+दावा करें | scale=1.0 | size=95 x 42 | clipped=false
+3 टिकट | scale=1.0 | size=74 x 36 | clipped=false
+अगला नंबर · 5 | scale=1.0 | size=150 x 39 | clipped=false
+28 | scale=1.0 | size=42 x 48 | clipped=false
+72 | scale=1.0 | size=42 x 48 | clipped=false
+9 | scale=1.0 | size=21 x 48 | clipped=false
+20 | scale=1.0 | size=42 x 48 | clipped=false
+1/2 | scale=1.0 | size=44 x 37 | clipped=false
++1 | scale=1.0 | size=30 x 63 | clipped=false
+sidebar-prize-EARLY_FIVE | bounds=DpRect(left=16.0.dp, top=83.42857.dp, right=145.90475.dp, bottom=107.42857.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+पहले 5 | scale=1.0 | size=198 x 38 | clipped=false
+120 | scale=1.0 | size=45 x 32 | clipped=true
+sidebar-prize-CORNERS | bounds=DpRect(left=16.0.dp, top=114.28571.dp, right=145.90475.dp, bottom=138.28572.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+कोने | scale=1.0 | size=198 x 38 | clipped=false
+120 | scale=1.0 | size=45 x 32 | clipped=true
+sidebar-prize-TOP_LINE | bounds=DpRect(left=16.0.dp, top=145.14285.dp, right=145.90475.dp, bottom=169.14285.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+ऊपर | scale=1.0 | size=198 x 38 | clipped=false
+120 | scale=1.0 | size=45 x 32 | clipped=true
+sidebar-prize-MIDDLE_LINE | bounds=DpRect(left=16.0.dp, top=176.38095.dp, right=145.90475.dp, bottom=200.38095.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+बीच | scale=1.0 | size=198 x 38 | clipped=false
+120 | scale=1.0 | size=45 x 32 | clipped=true
+sidebar-prize-BOTTOM_LINE | bounds=DpRect(left=16.0.dp, top=207.2381.dp, right=145.90475.dp, bottom=231.2381.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+नीचे | scale=1.0 | size=198 x 38 | clipped=false
+120 | scale=1.0 | size=45 x 32 | clipped=true
+sidebar-prize-HOUSE_ONE | bounds=DpRect(left=16.0.dp, top=238.09525.dp, right=145.90475.dp, bottom=262.09525.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+पहला हाउस | scale=1.0 | size=198 x 38 | clipped=false
+420 | scale=1.0 | size=45 x 32 | clipped=true
+sidebar-prize-HOUSE_TWO | bounds=DpRect(left=16.0.dp, top=268.9524.dp, right=145.90475.dp, bottom=292.9524.dp) | rail=DpRect(left=9.904762.dp, top=72.38095.dp, right=152.0.dp, bottom=304.0.dp)
+दूसरा हाउस | scale=1.0 | size=198 x 38 | clipped=false
+180 | scale=1.0 | size=45 x 32 | clipped=true
+दूसरा हाउस | scale=1.0 | size=180 x 84 | clipped=false
+खेल पर वापस | scale=1.0 | size=186 x 53 | clipped=false
+दावा करें | scale=1.0 | size=95 x 42 | clipped=false
