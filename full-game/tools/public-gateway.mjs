@@ -9,8 +9,10 @@ export function createGateway({ upstreamPort = 18080, maxStreams = 80 } = {}) {
   const allowed = (req, websocket = false) => {
     const path = req.url;
     if (websocket) return req.method === 'GET' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/events(?:\?after=\d+)?$/.test(path);
+    if (req.method === 'GET' && path.length <= 4120 && /^\/admob\/reward\?[A-Za-z0-9%_.~=&+\/-]+$/.test(path)) return true;
+    if (req.method === 'GET' && /^\/v1\/wallet\/ad-intents\/[a-f0-9-]{36}$/.test(path)) return true;
     if (req.method === 'GET') return path === '/health/ready' || path === '/v1/wallet' || /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}(?:\?after=\d+)?$/.test(path);
-    return req.method === 'POST' && (/^\/v1\/(guests|matches|wallet\/refill|rooms)$/.test(path) ||
+    return req.method === 'POST' && (/^\/v1\/(guests|matches|wallet\/(refill|login-rewards|ad-intents)|rooms)$/.test(path) ||
       /^\/v1\/guests\/me\/(device|session|logout|delete)$/.test(path) || /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/(join|commands)$/.test(path));
   };
   function admit(req, upgrade = false) {
@@ -21,7 +23,7 @@ export function createGateway({ upstreamPort = 18080, maxStreams = 80 } = {}) {
     if (!buckets.has(ip) && buckets.size >= 4096) return false;
     let bucket = buckets.get(ip);
     if (!bucket || bucket.minute !== minute) { bucket = { minute, requests: 0, guests: 0, upgrades: 0 }; buckets.set(ip, bucket); }
-    return ++bucket.requests <= 600 && (req.url !== '/v1/guests' || ++bucket.guests <= 20) && (!upgrade || ++bucket.upgrades <= 30);
+    return ++bucket.requests <= 600 && (req.url !== '/v1/guests' || ++bucket.guests <= 60) && (!upgrade || ++bucket.upgrades <= 120);
   }
   function headers(req, upgrade = false) {
     const result = { host: `127.0.0.1:${upstreamPort}` };

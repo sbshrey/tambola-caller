@@ -66,10 +66,15 @@ class RoundTest {
         val award = round.awards.first()
         award.ticketIds.forEach { id -> assertTrue(award.prize.matches(round.tickets.first { it.id == id }, round.called.toSet())) }
     }
-    @Test fun `uncalled marks rejected and mark toggles never change calls`() {
+    @Test fun `manual marks do not reveal calls and toggles never change calls`() {
         val round = game().start().draw()
         val ticket = round.tickets.first()
-        assertThrows(IllegalArgumentException::class.java) { round.toggleMark(ticket.id, ticket.numbers.first { it !in round.called }) }
+        val uncalled = ticket.numbers.first { it !in round.called }
+        val mistaken = round.toggleMark(ticket.id, uncalled)
+        assertTrue(uncalled in mistaken.marks.getValue(ticket.id))
+        assertEquals(mistaken, RoundCodec.decode(RoundCodec.encode(mistaken)))
+        assertEquals(round.called, mistaken.called)
+        assertThrows(IllegalArgumentException::class.java) { round.toggleMark(ticket.id, 0) }
         var playable = round
         while (ticket.numbers.none { it in playable.called }) playable = playable.draw()
         val number = ticket.numbers.first { it in playable.called }

@@ -38,7 +38,7 @@ class CoinLobbyIndexTest : PostgresTest() {
         val lobby = buy(guest())
         database.transaction {
             it.execute("ALTER TABLE rooms DROP COLUMN coin_starts_at CASCADE, DROP COLUMN coin_human_seats CASCADE")
-            it.execute("DELETE FROM schema_migrations WHERE version = 7")
+            it.execute("DELETE FROM schema_migrations WHERE version IN (7, 8)")
         }
         database.migrate()
         assertEquals(lobby.coins!!.startsAt to 1, metadata(lobby.roomId))

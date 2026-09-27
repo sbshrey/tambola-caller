@@ -60,7 +60,7 @@ class TableExperienceTest {
         assertTrue(preferences.voice); assertEquals(100, preferences.voiceVolume)
         assertTrue(preferences.music); assertEquals(45, preferences.musicVolume)
         assertFalse(preferences.effects); assertFalse(preferences.haptics); assertTrue(preferences.reducedMotion)
-        assertEquals(5, preferences.interval)
+        assertEquals(10, preferences.interval)
         compose.onNodeWithTag("open-game-data").assertIsDisplayed()
         captureTestScreen("table-settings-$language")
     }

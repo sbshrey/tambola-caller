@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -23,7 +24,7 @@ import io.github.sbshrey.tambola.game.data.Preferences
 @Composable
 internal fun GameSettings(prefs: Preferences, update: (Preferences) -> Unit, back: () -> Unit) {
     val words = gameText()
-    var privacy by remember { mutableStateOf(false) }
+    var privacy by rememberSaveable { mutableStateOf(false) }
     MaterialTheme(colorScheme = GameNightPalette.colors) {
       Surface(Modifier.fillMaxSize().testTag("game-settings"), color = GameNightPalette.background) {
         Column(Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 20.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {

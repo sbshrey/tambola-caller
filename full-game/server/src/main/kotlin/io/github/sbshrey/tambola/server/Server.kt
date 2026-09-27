@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
             if (migrateOnly || localFixture) database.migrate() else { database.verifyMigrations(); RuntimePrivileges.verify(database, journal = false) }
             journal?.verifyRestoreBoundary(database)
             if (migrateOnly) return
-            val service = RoomService(database, journal = journal)
+            val service = RoomService(database, journal = journal, ads = RewardedAds.configured(System.getenv("TAMBOLA_ADMOB_REWARD_UNIT")))
             // No listener exists while restored identities are revoked and deleted profiles/history are redacted.
             while (service.replayDeletions() > 0) { /* bounded transactions, restartable cursor */ }
             val operations = ServiceOperations(workerEnabled = true, metricsToken = System.getenv("TAMBOLA_METRICS_TOKEN"))
@@ -134,7 +134,14 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             demand(operations.authorizes(call.request.headers[HttpHeaders.Authorization]), 401, "unauthorized", "Monitoring credentials are required.")
             call.respondText(operations.render(database.poolStats(), journalDatabase?.poolStats()), ContentType.parse("text/plain; version=0.0.4; charset=utf-8"))
         }
+        get("/admob/reward") {
+            withContext(Dispatchers.IO) { service.verifyAd(call.request.queryString()) }
+            call.respondText("ok")
+        }
         route("/v1") {
+            post("/wallet/ad-intents") { call.respond(withContext(Dispatchers.IO) { service.prepareAd(call.bearer()) }) }
+            get("/wallet/ad-intents/{id}") { call.respond(withContext(Dispatchers.IO) { service.adStatus(call.bearer(), call.parameters["id"].orEmpty()) }) }
+            post("/wallet/login-rewards") { call.respond(withContext(Dispatchers.IO) { service.loginRewards(call.bearer()) }) }
             get("/wallet") { call.respond(withContext(Dispatchers.IO) { service.wallet(call.bearer()) }) }
             post("/wallet/refill") {
                 val body = call.body<RefillRequest>()

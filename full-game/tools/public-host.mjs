@@ -56,7 +56,7 @@ try {
           try {
             const response = await fetch(origin + '/health/ready', { redirect: 'error', signal: AbortSignal.timeout(8000) });
             const body = await response.json();
-            ready = response.ok && body.status === 'ready' && body.protocolVersion === 4;
+            ready = response.ok && body.status === 'ready' && [4, 5].includes(body.protocolVersion);
           } catch { }
           if (ready) break;
         }

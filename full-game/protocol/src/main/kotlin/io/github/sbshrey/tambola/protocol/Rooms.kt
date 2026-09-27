@@ -1,11 +1,14 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package io.github.sbshrey.tambola.protocol
 
 import io.github.sbshrey.tambola.domain.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 4
+const val PROTOCOL_VERSION = 5
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -24,12 +27,14 @@ val WireJson = Json { encodeDefaults = true }
     val automaticCalling: Boolean = true,
     val computerPlayers: Int = 0,
     val coinGame: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val coinRulesVersion: Int = 1,
 ) {
     init {
-        require(game.mode == GameMode.ONLINE && capacity in 2..32 && intervalSeconds in 5..30)
+        require(game.mode == GameMode.ONLINE && capacity in 2..50 && intervalSeconds in 5..30)
+        require(coinRulesVersion in 1..2)
         require(computerPlayers in 0..5 && computerPlayers < capacity)
         require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
-            game.customPrizes.isEmpty() && automaticCalling && intervalSeconds == 5))
+            game.customPrizes.isEmpty() && automaticCalling && intervalSeconds == (if (coinRulesVersion == 1) 5 else 10)))
     }
 }
 @Serializable data class CreateRoomRequest(val id: String, val options: RoomOptions = RoomOptions())

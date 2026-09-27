@@ -252,10 +252,10 @@ private fun TicketClaimAction(label: String, ordinal: Int, gameNight: Boolean, e
             modifier = Modifier.fillMaxWidth().heightIn(min = if (horizontal || !gameNight) 48.dp else 68.dp).testTag("claim-ticket-$ordinal")
                 .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = RoundedCornerShape(12.dp)) {
             if (horizontal) Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (gameNight) glyph()
+                if (gameNight && scale <= 1.3f) glyph()
                 caption()
             } else Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                if (gameNight) glyph()
+                if (gameNight && scale <= 1.3f) glyph()
                 caption()
             }
         }
@@ -288,8 +288,7 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                         (0..8).forEach { col ->
                             val number = ticket.cells[row * 9 + col]
                             val dabbed = number in marked
-                            val latest = number != 0 && number == table.latest
-                            val canMark = markEnabled && markNumber != null && number in table.called && !table.finished && !table.settings.assistedMarking
+                            val canMark = markEnabled && markNumber != null && number != 0 && !table.finished && !table.settings.assistedMarking
                             val stamp = remember(ticket.id, number) { Animatable(if (dabbed) 1f else 0f) }
                             LaunchedEffect(dabbed, reducedMotion) {
                                 if (!dabbed || reducedMotion) stamp.snapTo(if (dabbed) 1f else 0f)
@@ -301,7 +300,6 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                                 animationSpec = tween(if (reducedMotion) 0 else 160), label = "dab")
                             Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(4.dp))
                                 .drawBehind { drawRect(fill.value) }
-                                .then(if (latest) Modifier.border(2.dp, if (gameNight) GameNightPalette.ticketEdge else Color(0xFFAB6500), RoundedCornerShape(4.dp)) else Modifier)
                                 .drawWithContent {
                                     drawContent()
                                     if (dabbed && !reducedMotion && stamp.value < 1f) drawCircle((if (gameNight) GameNightPalette.ticketEdge else BallGold).copy(alpha = 1f - stamp.value),
@@ -311,7 +309,7 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                                     .pointerInput(ticket.id, number, canMark) { detectTapGestures { if (canMark) markNumber(ticket.id, number) } }
                                     .semantics(mergeDescendants = true) {
                                         role = Role.Button
-                                        contentDescription = words(if (number !in table.called) R.string.play_number_uncalled else if (dabbed) R.string.play_unmark_number else R.string.play_mark_number, number)
+                                        contentDescription = words(if (dabbed) R.string.play_unmark_number else R.string.play_mark_number, number)
                                         if (!canMark) disabled()
                                         onClick { if (canMark) { markNumber(ticket.id, number); true } else false }
                                     } else Modifier), contentAlignment = Alignment.Center) {
@@ -338,7 +336,7 @@ private fun PrizeRail(table: TableRound, ink: Color, muted: Color, compact: Bool
     val visible = table.settings.prizes.take(if (overflow) 5 else 6)
     Row(Modifier.fillMaxWidth().testTag("prize-rail"), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
         visible.forEach { prize ->
-            val won = table.awards.any { it.prize == prize }
+            val won = table.awards.any { it.prize == prize && (table.finished || it.isClosed(table.settings, table.called.size)) }
             val short = when (prize) {
                 Prize.EARLY_FIVE -> R.string.play_early
                 Prize.CORNERS -> R.string.play_corners

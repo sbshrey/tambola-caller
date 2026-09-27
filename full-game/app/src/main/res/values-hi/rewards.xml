@@ -1,0 +1,19 @@
+<resources>
+    <string name="diagnostics_title">क्रैश और प्रदर्शन रिपोर्ट भेजें</string>
+    <string name="diagnostics_detail">क्रैश और धीमी कार्रवाइयों को सुधारने के लिए वैकल्पिक रिपोर्ट Google Firebase को भेजी जाती हैं। इनमें ऐप संस्करण, डिवाइस की जानकारी, क्रैश विवरण और समय शामिल हैं। हम नाम, रूम कोड, टिकट या गुप्त कुंजियाँ नहीं जोड़ते। इसे कभी भी बंद करें; अभी तक न भेजी गई क्रैश रिपोर्ट हटा दी जाएंगी।</string>
+    <string name="powerup_title">पावर-अप चुनें</string>
+    <string name="powerup_selected">पावर-अप: %1$s</string>
+    <string name="powerup_beta_free">जुड़ने से पहले एक चुनें। बीटा में मुफ़्त। बोनस से दूसरे खिलाड़ी का इनाम कम नहीं होता।</string>
+    <string name="powerup_none">कोई नहीं</string>
+    <string name="powerup_none_detail">सामान्य इनामों के साथ खेलें।</string>
+    <string name="powerup_insurance">टिकट सुरक्षा</string>
+    <string name="powerup_insurance_detail">पूरा राउंड खेलने पर कोई इनाम नहीं मिला? अनदावे सिक्कों की वापसी के बाद टिकट की बची कीमत वापस पाएं।</string>
+    <string name="powerup_boost">इनाम बोनस</string>
+    <string name="powerup_boost_detail" formatted="false">राउंड पूरा होने पर जीते सिक्कों का 25% अतिरिक्त पाएं। केवल पूरे सिक्के मिलेंगे।</string>
+    <string name="powerup_bonus_coins">पावर-अप बोनस · +%1$d सिक्के</string>
+    <string name="beta_coins_grant">बीटा में शुरुआत के लिए %1$d सिक्के</string>
+    <string name="daily_coins_collected">दिन %1$d का इनाम मिला: +%2$d सिक्के</string>
+    <string name="daily_coins_rules">मुफ़्त सिक्कों के लिए रोज़ गेम खोलें। लगातार सात दिनों तक इनाम बढ़ता है, फिर पहले दिन से शुरू होता है। एक दिन छूटने पर भी पहले दिन से शुरू होगा। नया दिन 00:00 UTC (भारत में सुबह 05:30) पर शुरू होता है।</string>
+    <string name="daily_coins_day">दिन %1$d · %2$d सिक्के</string>
+    <string name="multi_winner_rules">हर श्रेणी में %1$d विजेता। आख़िरी विजेता वाली कॉल पर बराबरी करने वाले भी तय इनाम बाँटेंगे। हर खिलाड़ी एक श्रेणी में एक बार जीत सकता है।</string>
+</resources>

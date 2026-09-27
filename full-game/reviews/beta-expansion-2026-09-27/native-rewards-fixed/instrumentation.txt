@@ -1,0 +1,12 @@
+
+io.github.sbshrey.tambola.game.ExpandedRewardsUiTest:..
+io.github.sbshrey.tambola.game.CoinLobbyTest:.............
+io.github.sbshrey.tambola.game.GameDataTest:..
+io.github.sbshrey.tambola.game.ExpandedArenaUiTest:..
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:.
+
+Time: 120.657
+
+OK (20 tests)
+
+

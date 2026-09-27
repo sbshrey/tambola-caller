@@ -173,7 +173,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         assertFalse("Existing wallets must never be used by this fixture", device.hasObject(By.text("Delete online profile")))
         textButton("Keep playing").click()
         node("lobby-welcome-heading")
-        assertEquals(1500L, balance())
+        assertEquals(if (createdMain) 50500L else 50000L, balance())
     }
 
     fun prepare() = captureFailure {
@@ -193,7 +193,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             assertEquals(previousBalance, balance())
             (1..6).forEach { assertEquals("Remembered replay choice $it", it == 3, node("buy-tickets-$it").isChecked) }
         }
-        balanceBefore = balance()
+        balanceBefore = balance() + if (!createdMain) 500 else 0
         val peerWallets = runBlocking { peers.map { peer ->
             val wallet = api.wallet(peer.token)
             if (wallet.balance < 100) {
@@ -225,7 +225,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         assertEquals(balanceBefore - 600, balance())
         runBlocking {
             for ((index, peer) in peers.withIndex()) {
-                val request = MatchRequest(UUID.randomUUID().toString(), quantities[index], friendTable, code.takeIf { friendTable })
+                val request = MatchRequest(UUID.randomUUID().toString(), quantities[index], friendTable, code.takeIf { friendTable }, rulesVersion = 2)
                 val purchase = api.match(peer.token, request)
                 assertEquals(purchase, api.match(peer.token, request))
                 val room = purchase.snapshot
@@ -239,7 +239,9 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         if (mainId == null) mainId = currentMain else assertEquals("Same identity across rounds", mainId, currentMain)
         assertEquals(expectedPool, lobby.coins!!.pool)
         expectedPrizeCount = lobby.coins!!.prizes.size
-        assertTrue(expectedPrizeCount in 6..8)
+        assertEquals(6, expectedPrizeCount)
+        assertEquals(10, lobby.options.intervalSeconds)
+        assertEquals(2, lobby.options.game.winnersPerPrize)
         if (friendTable) {
             assertTrue(lobby.coins!!.friendTable)
             assertNull(lobby.coins!!.startsAt)
@@ -273,10 +275,10 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         createdMain = true
         create.click(); node("friend-waiting", 30_000)
         code = textOf(node("friend-code")).replace(" ", "").also { check(it.matches(Regex("[A-HJ-NP-Z2-9]{8}"))) }
-        runBlocking { api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 2, true, code)) }
+        runBlocking { api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 2, true, code, rulesVersion = 2)) }
         until(30_000) { find("friend-start")?.isEnabled == true && find("waiting-connection") == null }
         val before = snapshot()
-        assertEquals(2, before.members.size); assertEquals(500L, before.coins!!.pool); assertEquals(1200L, balance())
+        assertEquals(2, before.members.size); assertEquals(500L, before.coins!!.pool); assertEquals(50200L, balance())
         val width = node("friend-waiting").visibleBounds.width()
         device.takeScreenshot(File(context.filesDir, "friend-network-connected.png"))
         checkpoint("disconnecting-owned-emulator")
@@ -288,10 +290,10 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             until(90_000) { find("waiting-connection-copy")?.let(::textOf).orEmpty().contains("last confirmed table") }
             assertFalse(node("friend-start").isEnabled)
             assertEquals(width, node("friend-waiting").visibleBounds.width())
-            assertNull(find("lobby-ticket-panel")); assertEquals(1200L, balance())
+            assertNull(find("lobby-ticket-panel")); assertEquals(50200L, balance())
             device.takeScreenshot(File(context.filesDir, "friend-network-disconnected.png"))
             tap("waiting-reconnect")
-            assertFalse(node("friend-start").isEnabled); assertEquals(1200L, balance())
+            assertFalse(node("friend-start").isEnabled); assertEquals(50200L, balance())
             report.put("savedTableVisibleOffline", true).put("startDisabledOffline", true).put("sameTableWidthOffline", true)
                 .put("explicitReconnectRequested", true)
         } finally {
@@ -308,13 +310,13 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         val after = snapshot()
         assertEquals(before.roomId, after.roomId); assertEquals(before.code, after.code)
         assertEquals(before.members.map { it.playerId }.toSet(), after.members.map { it.playerId }.toSet())
-        assertEquals(500L, after.coins!!.pool); assertEquals(1200L, balance())
+        assertEquals(500L, after.coins!!.pool); assertEquals(50200L, balance())
         device.takeScreenshot(File(context.filesDir, "friend-network-restored.png"))
         tap("cancel-match")
-        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 50500L }
         assertEquals(200L, snapshot().coins!!.pool)
-        report.put("sameRoomAndPurchaseRestored", true).put("walletAfterPurchase", 1200).put("walletAfterReconnect", 1200)
-            .put("walletAfterRefund", 1500).put("completed", true)
+        report.put("sameRoomAndPurchaseRestored", true).put("walletAfterPurchase", 50200).put("walletAfterReconnect", 50200)
+            .put("walletAfterRefund", 50500).put("completed", true)
         checkpoint("friends-connection-passed")
     }
 
@@ -325,7 +327,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         node("coin-play"); verifyEmptyProfile()
         runBlocking {
             peers += api.guest(GuestRequest("Invitation QA host", 2))
-            code = api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 3, true)).snapshot.code
+            code = api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 3, true, rulesVersion = 2)).snapshot.code
         }
         fun open(inviteCode: String) {
             check(inviteCode.matches(Regex("[A-HJ-NP-Z2-9]{8}")))
@@ -348,7 +350,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         createdMain = true
         tap("friend-invitation-join")
         node("friend-waiting", 30_000)
-        until(30_000) { balance() == 1300L && snapshot().members.size == 2 }
+        until(30_000) { balance() == 50300L && snapshot().members.size == 2 }
         assertEquals(500L, snapshot().coins!!.pool)
         device.takeScreenshot(File(context.filesDir, "friend-link-joined.png"))
         checkpoint("same-table-invitation")
@@ -357,19 +359,19 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         node("friend-invitation-resume")
         assertNull(find("friend-invitation-join"))
         tap("friend-invitation-resume"); node("friend-waiting")
-        assertEquals(1300L, balance()); assertEquals(500L, snapshot().coins!!.pool)
+        assertEquals(50300L, balance()); assertEquals(500L, snapshot().coins!!.pool)
         checkpoint("other-table-invitation")
         open(if (code == "ABCDEFG2") "ABCDEFG3" else "ABCDEFG2")
         node("friend-invitation-resume")
         assertNull(find("friend-invitation-join"))
         device.takeScreenshot(File(context.filesDir, "friend-link-occupied.png"))
         tap("friend-invitation-resume"); node("friend-waiting")
-        assertEquals(1300L, balance()); assertEquals(500L, snapshot().coins!!.pool)
+        assertEquals(50300L, balance()); assertEquals(500L, snapshot().coins!!.pool)
         tap("cancel-match")
-        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 50500L }
         assertEquals(300L, snapshot().coins!!.pool)
-        report.put("openingDidNotRegisterOrJoin", true).put("selectedTickets", 2).put("walletAfterPurchase", 1300)
-            .put("duplicateAndOtherInvitationDidNotCharge", true).put("walletAfterRefund", 1500).put("completed", true)
+        report.put("openingDidNotRegisterOrJoin", true).put("selectedTickets", 2).put("walletAfterPurchase", 50300)
+            .put("duplicateAndOtherInvitationDidNotCharge", true).put("walletAfterRefund", 50500).put("completed", true)
         checkpoint("invitation-passed")
     }
 
@@ -379,22 +381,22 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         checkpoint("fresh-purchase-refund-profile")
         node("coin-play")
         verifyEmptyProfile()
-        assertEquals(1500L, balance())
+        assertEquals(if (createdMain) 50500L else 50000L, balance())
         tap("buy-tickets-3")
         createdMain = true
         tap("coin-play")
         until { find("cancel-match")?.isEnabled == true }
-        assertEquals(1200L, balance())
+        assertEquals(50200L, balance())
         tap("cancel-match")
-        until { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        until { find("coin-play")?.isEnabled == true && balance() == 50500L }
         assertTrue(node("buy-tickets-3").isChecked)
         device.executeShellCommand("am force-stop $target")
         device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
-        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 50500L }
         assertTrue(node("buy-tickets-3").isChecked)
         assertNull(find("lobby-welcome-heading"))
-        report.put("purchaseCoins", 300).put("walletAfterPurchase", 1200).put("walletAfterRefund", 1500)
-            .put("walletAfterColdRestart", 1500).put("rememberedThreeTickets", true).put("completed", true)
+        report.put("purchaseCoins", 300).put("walletAfterPurchase", 50200).put("walletAfterRefund", 50500)
+            .put("walletAfterColdRestart", 50500).put("rememberedThreeTickets", true).put("completed", true)
         checkpoint("purchase-refund-verified")
     }
 
@@ -430,7 +432,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         report.put("ownedTickets", 6).put("distinctOwnNumbers", 90)
     }
 
-    /** A new call/finished round deliberately dismisses the picker; never retry a click blindly. */
+    /** Handle a finished round or a category closing without retrying a claim blindly. */
     private fun clickPrizeChoice(choice: UiObject2?, before: RoomView): RoomView? {
         fun dismissedByGame(): RoomView? {
             val after = snapshot()
@@ -448,27 +450,20 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         return null
     }
 
-    /** Deterministically reproduce the original stale read using a real five-second call. */
+    /** A ten-second call must keep the selected ticket's claim menu open. */
     fun verifyPickerCallBoundary() = captureFailure {
         checkpoint("picker-boundary")
         until(15_000, 250) { find("claim-ticket-1")?.isEnabled == true }
         val before = snapshot()
-        showTicket(1)
-        tap("claim-ticket-1")
-        val choice = node("claim-prize-EARLY_FIVE")
-        assertTrue(choice.isEnabled)
-        until(10_000, 250) { snapshot().round!!.called.size != before.round!!.called.size }
-        until { find("claim-prize-EARLY_FIVE") == null }
-        var originalReadFailed = false
-        try { choice.isEnabled } catch (_: StaleObjectException) { originalReadFailed = true }
-        assertTrue("The original enabled-state read must reproduce the stale-node failure", originalReadFailed)
-        val after = checkNotNull(clickPrizeChoice(choice, before))
-        assertTrue(after.round!!.called.size > before.round!!.called.size)
-        assertTrue("A dismissed choice must not submit a claim", after.round!!.awards.isEmpty())
-        tap("claim-ticket-1")
+        showTicket(1); tap("claim-ticket-1")
         assertTrue(node("claim-prize-EARLY_FIVE").isEnabled)
+        until(15_000, 250) { snapshot().round!!.called.size != before.round!!.called.size }
+        assertTrue(node("claim-prize-EARLY_FIVE").isEnabled)
+        node("ticket-prize-picker")
+        val after = snapshot()
+        assertTrue(after.round!!.called.size > before.round!!.called.size)
         tap("dismiss-claim")
-        report.put("originalStaleReadReproduced", true).put("pickerCallBoundaryVerified", true)
+        report.put("pickerStayedOpenAcrossCall", true).put("pickerCallBoundaryVerified", true)
             .put("beforeCall", before.round!!.called.size).put("afterCall", after.round!!.called.size).put("completed", true)
         device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
         checkpoint("picker-boundary-passed")
@@ -495,7 +490,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             var reopened = false
             var restoredMarks = 0
             while (true) {
-                check(SystemClock.elapsedRealtime() - roundStarted < 540_000) { "Round exceeded real-time limit" }
+                check(SystemClock.elapsedRealtime() - roundStarted < 1_050_000) { "Round exceeded real-time limit" }
                 if (find("coin-winnings") != null) break
                 val shownCall = try { description(find("current-call")) } catch (_: StaleObjectException) {
                     // Results can remove this node between the lookup and read. Only
@@ -522,7 +517,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                 if (checkCallHistory && seen >= 3 && !report.optBoolean("callHistoryVerified")) verifyCallHistory(restored = false)
                 for (prize in room.options.game.prizes) {
                     val current = requireNotNull(room.round)
-                    if (room.phase != RoomPhase.ACTIVE || current.awards.any { it.prize == prize }) continue
+                    if (room.phase != RoomPhase.ACTIVE || current.awards.any { it.prize == prize && (mainId in it.playerIds || it.isClosed(room.options.game, current.called.size)) }) continue
                     val closed = current.awards.filter { it.prize.isRankedHouse && it.drawIndex < current.called.size }
                     val nextHouse = room.options.game.prizes.filter { it.isRankedHouse && closed.none { award -> award.prize == it } }.minByOrNull { it.ordinal }
                     if (prize.isRankedHouse && prize != nextHouse) continue
@@ -550,7 +545,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     if (advanced != null) room = advanced else until(interval = 250) {
                         room = snapshot()
                         val after = room.round!!
-                        after.awards.any { it.prize == prize } || after.called.size != current.called.size
+                        after.awards.any { it.prize == prize && mainId in it.playerIds } || after.called.size != current.called.size
                     }
                     val award = room.round!!.awards.firstOrNull { it.prize == prize }
                     if (award != null) {
@@ -647,7 +642,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         until { balance() == finalBalance - 300 }
         val peer = peers.first()
         val before = runBlocking { api.wallet(peer.token).balance }
-        val request = MatchRequest(UUID.randomUUID().toString(), 2, true, previous.code, previous.round!!.id)
+        val request = MatchRequest(UUID.randomUUID().toString(), 2, true, previous.code, previous.round!!.id, rulesVersion = 2)
         val receipt = runBlocking { api.match(peer.token, request) }
         val next = receipt.snapshot
         assertEquals(receipt, runBlocking { api.match(peer.token, request) })
@@ -754,11 +749,15 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                 until(20_000) { find("coin-wallet") != null || find("play-arena") != null }
                 repeat(4) { if (find("coin-wallet") == null) { device.pressBack(); SystemClock.sleep(150) } }
                 tap("coin-wallet")
+                repeat(8) {
+                    if (!device.hasObject(By.text("Delete online profile"))) node("coin-profile-scroll").scroll(Direction.DOWN, .7f)
+                }
                 textButton("Delete online profile").click()
                 assertTrue(device.wait(Until.hasObject(By.text("Keep playing")), 10_000))
                 textButton("Delete online profile").click()
                 node("coin-play")
-                until { balance() == 1500L }
+                until { balance() == 50000L }
+                createdMain = false
                 verifyEmptyProfile()
                 report.put("nativeProfileDeleted", true)
             }

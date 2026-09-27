@@ -19,6 +19,7 @@ data class TableRound(
     val coins: CoinTableView? = null,
     val nextDrawAt: Long? = null,
     val serverTime: Long? = null,
+    val callIntervalSeconds: Int = 10,
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
@@ -33,8 +34,8 @@ fun Round.toTable(): TableRound = TableRound(id, settings, players, tickets, cal
 fun RoomView.toTable(localMarks: Map<String, Set<Int>>): TableRound? = round?.let { game ->
     val marks = game.ownTickets.associate { ticket -> ticket.id to
         (if (options.game.assistedMarking) ticket.numbers.intersect(game.called.toSet())
-        else localMarks[ticket.id].orEmpty().intersect(ticket.numbers.toSet()).intersect(game.called.toSet())) }
+        else localMarks[ticket.id].orEmpty().intersect(ticket.numbers.toSet())) }
     val ownLabels = game.ownTickets.mapIndexed { index, ticket -> WinningTicket(ticket.id, ticket.playerId, index + 1) }
     TableRound(game.id, options.game, game.players, game.ownTickets, game.called, marks, game.awards,
-        game.customAwards, game.status, game.scores, (ownLabels + game.winningTickets).distinctBy { it.id }, coins, nextDrawAt, serverTime)
+        game.customAwards, game.status, game.scores, (ownLabels + game.winningTickets).distinctBy { it.id }, coins, nextDrawAt, serverTime, options.intervalSeconds)
 }

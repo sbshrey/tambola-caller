@@ -35,7 +35,7 @@ class Database(url: String, user: String, password: String, schema: String = "pu
     }
 
     private val migrations = Migrations("schema_migrations", 749023801,
-        listOf("001_rooms.sql", "002_profile_deletion.sql", "003_deletion_recovery.sql", "004_coin_wallets.sql", "005_coin_matches.sql", "006_device_sessions.sql", "007_open_coin_lobbies.sql").map { "/db/$it" })
+        listOf("001_rooms.sql", "002_profile_deletion.sql", "003_deletion_recovery.sql", "004_coin_wallets.sql", "005_coin_matches.sql", "006_device_sessions.sql", "007_open_coin_lobbies.sql", "008_expanded_beta.sql", "009_rewarded_ads.sql").map { "/db/$it" })
     fun migrate() = transaction { migrations.migrate(it) }
     fun verifyMigrations() = transaction { migrations.verify(it) }
 

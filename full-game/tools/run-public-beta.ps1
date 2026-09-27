@@ -20,7 +20,7 @@ Invoke-Adb @('install','-r',$app)
 Invoke-Adb @('install','-r',$driver)
 $testArgs = @('-s',$Serial,'shell','am','instrument','-w','-e','class',"io.github.sbshrey.tambola.benchmark.InternetBetaTest#$Test",'-e','tambolaInternetBeta','true','io.github.sbshrey.tambola.benchmark/androidx.test.runner.AndroidJUnitRunner')
 $runner = Start-Process -FilePath $adb -ArgumentList $testArgs -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $evidence 'instrumentation.txt') -RedirectStandardError (Join-Path $evidence 'instrumentation-error.txt')
-if (!$runner.WaitForExit(900000)) { $runner.Kill($true); throw 'Internet beta test exceeded fifteen minutes; inspect and clean QA profiles' }
+if (!$runner.WaitForExit(1500000)) { $runner.Kill($true); throw 'Internet beta test exceeded twenty-five minutes; inspect and clean QA profiles' }
 $transcript = Get-Content -LiteralPath (Join-Path $evidence 'instrumentation.txt') -Raw
 $passed = $runner.ExitCode -eq 0 -and $transcript -match 'OK \(1 test\)'
 foreach ($name in @('coin-release-journey.json','coin-release-results.png','coin-release-failure.png','coin-release-failure.xml','friends-public-ready.png','friends-replay-ready.png','friend-link-review.png','friend-link-joined.png','friend-link-occupied.png','claim-confirmed-public.png','friend-network-connected.png','friend-network-disconnected.png','friend-network-restored.png','call-history-public.png','call-history-restored.png','round-network-connected.png','round-network-disconnected.png','round-network-restored.png','round-network-failure.png')) {

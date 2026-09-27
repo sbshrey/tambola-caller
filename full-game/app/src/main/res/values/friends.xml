@@ -16,7 +16,7 @@
     <string name="friend_round_changed">That friends’ round is not ready for a replay. Return to its results or create a new table.</string>
     <string name="friend_create">Create table</string>
     <string name="friend_join">Join with code</string>
-    <string name="friend_entry_detail">Your group, your table. Invite up to 7 friends. The host starts when everyone has joined.</string>
+    <string name="friend_entry_detail">Your group, your table. Invite up to 49 friends. The host starts when everyone has joined.</string>
     <string name="friend_entry_cost">%1$d tickets · %2$d coins</string>
     <string name="friend_refund">Leave before the start for a full refund. Free virtual coins only.</string>
     <string name="friend_title">Your friends’ table</string>

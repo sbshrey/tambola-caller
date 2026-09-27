@@ -60,6 +60,19 @@ test('public ingress bounds routes and bodies, strips forwarded headers and carr
     assert.equal((await fetch(origin + '/v1/wallet', { headers: { authorization: 'Bearer test-only', 'x-forwarded-for': '1.2.3.4' } })).status, 200);
     assert.equal(seen[0].headers.authorization, 'Bearer test-only');
     assert.equal(seen[0].headers['x-forwarded-for'], undefined);
+    assert.equal((await fetch(origin + '/v1/wallet/login-rewards', { method: 'POST', headers: { authorization: 'Bearer test-only' } })).status, 200);
+    assert.equal(seen.at(-1).path, '/v1/wallet/login-rewards');
+    assert.equal((await fetch(origin + '/v1/wallet/login-rewards')).status, 404);
+    assert.equal((await fetch(origin + '/v1/wallet/login-rewards?player=someone', { method: 'POST' })).status, 404);
+    const rewardPath = '/admob/reward?ad_unit=123&custom_data=abc%2D123&reward_amount=1000&signature=abc_-&key_id=42';
+    assert.equal((await fetch(origin + rewardPath)).status, 200);
+    assert.equal(seen.at(-1).path, rewardPath); // Preserve signed query bytes exactly.
+    assert.equal((await fetch(origin + rewardPath, { method: 'POST' })).status, 404);
+    assert.equal((await fetch(origin + '/admob/reward?x=' + 'a'.repeat(4200))).status, 404);
+    assert.equal((await fetch(origin + '/v1/wallet/ad-intents', { method: 'POST' })).status, 200);
+    assert.equal((await fetch(origin + '/v1/wallet/ad-intents/01234567-1234-1234-1234-0123456789ab')).status, 200);
+    assert.equal((await fetch(origin + '/v1/wallet/ad-intents/01234567-1234-1234-1234-0123456789ab?player=x')).status, 404);
+    for (let player = 0; player < 50; player++) {
     const socket = createConnection(gateway.address().port, '127.0.0.1');
     await once(socket, 'connect');
     const data = [];
@@ -73,5 +86,10 @@ test('public ingress bounds routes and bodies, strips forwarded headers and carr
       socket.write('GET /v1/rooms/ABCD2345/events?after=0 HTTP/1.1\r\nHost: localhost\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nSec-WebSocket-Version: 13\r\nAuthorization: Bearer test-only\r\nX-Forwarded-For: 1.2.3.4\r\n\r\n');
     });
     assert.match(Buffer.concat(data).toString(), /101 Switching Protocols/);
+    }
+    for (let player = 0; player < 60; player++) {
+      assert.equal((await fetch(origin + '/v1/guests', { method: 'POST', headers: { 'cf-connecting-ip': '198.51.100.23' } })).status, 200);
+    }
+    assert.equal((await fetch(origin + '/v1/guests', { method: 'POST', headers: { 'cf-connecting-ip': '198.51.100.23' } })).status, 429);
   } finally { gateway.closeAllConnections(); gateway.close(); upstream.closeAllConnections(); upstream.close(); }
 });

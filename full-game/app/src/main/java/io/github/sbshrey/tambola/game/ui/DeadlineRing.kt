@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-/** A server deadline, never a new five-second timer on every recomposition. */
+/** A server deadline; recomposition does not restart the countdown. */
 @Composable
 internal fun DeadlineRing(deadline: Long?, reference: Long?, identity: String, duration: Long,
     reducedMotion: Boolean, modifier: Modifier = Modifier, color: Color = GameNightPalette.mint) {

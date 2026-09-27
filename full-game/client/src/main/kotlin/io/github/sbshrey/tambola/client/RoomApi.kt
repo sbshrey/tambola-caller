@@ -44,6 +44,9 @@ interface RoomApi : AutoCloseable {
     suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment
     suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession
     suspend fun wallet(token: String): WalletView
+    suspend fun prepareAd(token: String): RewardAdIntent = throw UnsupportedOperationException("Ads unavailable")
+    suspend fun adStatus(token: String, id: String): RewardAdStatus = throw UnsupportedOperationException("Ads unavailable")
+    suspend fun loginRewards(token: String): LoginRewards = throw UnsupportedOperationException("Login rewards unavailable")
     suspend fun refill(token: String, request: RefillRequest): WalletView
     suspend fun match(token: String, request: MatchRequest): RoomUpdate
     suspend fun create(token: String, request: CreateRoomRequest): RoomUpdate
@@ -98,6 +101,19 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     override suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession =
         WireJson.decodeFromString(text("/v1/guests/me/session", deviceKey, WireJson.encodeToString(request), true))
     override suspend fun wallet(token: String): WalletView = WireJson.decodeFromString(text("/v1/wallet", token))
+    override suspend fun prepareAd(token: String): RewardAdIntent = WireJson.decodeFromString<RewardAdIntent>(text("/v1/wallet/ad-intents", token, post = true)).also {
+        if (!it.id.matches(Regex("[a-f0-9-]{36}")) || !it.adUnit.matches(Regex("ca-app-pub-[0-9]{16}/[0-9]{10}")) ||
+            it.coins != AD_REWARD_COINS || it.expiresAt < 0) throw InvalidRoomResponse()
+    }
+    override suspend fun adStatus(token: String, id: String): RewardAdStatus {
+        require(id.matches(Regex("[a-f0-9-]{36}")))
+        return WireJson.decodeFromString<RewardAdStatus>(text("/v1/wallet/ad-intents/$id", token)).also { it.wallet.validate() }
+    }
+    override suspend fun loginRewards(token: String): LoginRewards = WireJson.decodeFromString<LoginRewards>(text("/v1/wallet/login-rewards", token, post = true)).also {
+        it.wallet.validate()
+        if (it.day !in 1..7 || it.coins != io.github.sbshrey.tambola.domain.DAILY_COIN_REWARDS[it.day - 1] ||
+            it.nextAt < 0 || it.betaBonus != io.github.sbshrey.tambola.domain.COIN_BETA_BALANCE - io.github.sbshrey.tambola.domain.COIN_STARTER_BALANCE) throw InvalidRoomResponse()
+    }
     override suspend fun refill(token: String, request: RefillRequest): WalletView = WireJson.decodeFromString(text("/v1/wallet/refill", token, WireJson.encodeToString(request), true))
     override suspend fun match(token: String, request: MatchRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/matches", token, WireJson.encodeToString(request), true))
     override suspend fun create(token: String, request: CreateRoomRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/rooms", token, WireJson.encodeToString(request), true))

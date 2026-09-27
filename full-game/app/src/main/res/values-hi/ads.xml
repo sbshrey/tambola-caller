@@ -1,0 +1,12 @@
+<resources>
+    <string name="ad_watch">वीडियो देखें · +1,000 सिक्के</string>
+    <string name="ad_test_watch">टेस्ट विज्ञापन देखें · सिक्के नहीं</string>
+    <string name="ad_loading">वैकल्पिक वीडियो लोड हो रहा है…</string>
+    <string name="ad_verifying">इनाम की पुष्टि हो रही है…</string>
+    <string name="ad_confirmed">1,000 सिक्के जुड़े! हर UTC दिन में अधिकतम पाँच इनाम।</string>
+    <string name="ad_pending">पुष्टि में समय लग रहा है। पुष्टि के बाद सिक्के जुड़ेंगे; प्रोफ़ाइल दोबारा खोलकर देखें।</string>
+    <string name="ad_not_completed">इनाम मिलने से पहले वीडियो बंद हुआ। फिर कोशिश कर सकते हैं।</string>
+    <string name="ad_test_complete">टेस्ट वीडियो पूरा हुआ। टेस्ट विज्ञापन से सिक्के नहीं मिलते।</string>
+    <string name="ad_unavailable">वीडियो उपलब्ध नहीं है या आज की सीमा पूरी हुई। बाद में कोशिश करें।</string>
+    <string name="ad_privacy">विज्ञापन गोपनीयता विकल्प</string>
+</resources>

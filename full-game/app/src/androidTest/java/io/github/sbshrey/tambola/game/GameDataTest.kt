@@ -92,17 +92,18 @@ class GameDataTest {
         check(BuildConfig.DEBUG && BuildConfig.ROOM_API_URL == "http://127.0.0.1:8080")
         compose.runOnIdle { online.resetLocalData(); model.navigate(Screen.ONLINE) }
         until { !online.state.value.busy && online.state.value.name == null }
+        compose.onNodeWithTag("coin-wallet").performClick()
         for (tag in listOf("en", "hi")) {
             language(tag)
             val nickname = if (tag == "hi") "आशा" else "Asha"
-            compose.onNodeWithTag("online-name").performScrollTo().performTextReplacement(nickname)
-            compose.onNodeWithTag("online-name").performImeAction()
+            compose.onNodeWithTag("lobby-player-name").performScrollTo().performTextReplacement(nickname)
+            compose.onNodeWithTag("lobby-player-name").performImeAction()
             compose.tapTag("open-game-data")
             compose.onNodeWithText(words()(R.string.privacy_title)).assertIsDisplayed()
             compose.activityRule.scenario.recreate()
             compose.onNodeWithText(words()(R.string.privacy_title)).assertIsDisplayed()
             compose.tapTag("close-game-data")
-            compose.onNodeWithTag("online-name").performScrollTo().assertTextContains(nickname)
+            compose.onNodeWithTag("lobby-player-name").performScrollTo().assertTextContains(nickname)
             assertNull(online.state.value.name)
             assertFalse(online.state.value.busy)
             assertNull(OnlineStore(context).read())

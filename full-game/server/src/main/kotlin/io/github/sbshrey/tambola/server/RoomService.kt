@@ -9,6 +9,12 @@ import java.util.UUID
 
 internal const val OPEN_COIN_LOBBY_SQL = """SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
     AND coin_starts_at > ? AND coin_human_seats < 8
+    AND coalesce((payload::jsonb->'options'->>'coinRulesVersion')::integer, 1) = 1
+    ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
+
+internal const val OPEN_EXPANDED_LOBBY_SQL = """SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
+    AND coin_starts_at > ? AND coin_human_seats < 50
+    AND (payload::jsonb->'options'->>'coinRulesVersion')::integer = 2
     ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
 
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
@@ -16,7 +22,35 @@ class RoomService(
     private val database: Database,
     private val clock: () -> Long = System::currentTimeMillis,
     private val journal: DeletionJournal? = null,
+    private val ads: RewardedAds? = null,
 ) {
+    fun prepareAd(token: String): RewardAdIntent {
+        val rewards = ads ?: fail(503, "ads_disabled", "Rewarded ads are not available yet.")
+        authenticatedRate(token, "ad_prepare", 15)
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token, lock = true)
+            rewards.prepare(connection, guest.id, clock())
+        }
+    }
+    fun adStatus(token: String, id: String): RewardAdStatus {
+        val rewards = ads ?: fail(503, "ads_disabled", "Rewarded ads are not available yet.")
+        authenticatedRate(token, "ad_status", 60)
+        return database.transaction { connection -> rewards.status(connection, authenticate(connection, token).id, id) }
+    }
+    fun verifyAd(query: String) {
+        val rewards = ads ?: fail(503, "ads_disabled", "Rewarded ads are not available yet.")
+        rate("ad_callback", 300)
+        val verified = rewards.verified(query, clock())
+        recoveryHealthy()
+        database.transaction { rewards.credit(it, verified, clock()) }
+    }
+    fun loginRewards(token: String): LoginRewards {
+        authenticatedRate(token, "login_rewards", 30)
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token, lock = true)
+            collectLoginRewards(connection, guest.id, clock())
+        }
+    }
     @Volatile private var replayFailure = false
     fun register(request: GuestRequest, source: String): GuestCredentials {
         val name = request.displayName.trim()
@@ -122,6 +156,7 @@ class RoomService(
                 AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
                 ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
             val saved = if (existing != null) {
+                demand(request.rulesVersion >= existing.options.coinRulesVersion, 409, "update_required", "Update the app to rejoin this table.")
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
             } else {
@@ -143,14 +178,15 @@ class RoomService(
                 val joinCode = if (previous != null) previous.nextFriendCode else request.friendCode
                 val waiting = when {
                     joinCode != null -> load(connection, joinCode).also {
+                        demand(it.options.coinRulesVersion == request.rulesVersion, 409, "update_required", "Everyone at a friends table needs the same game rules. Update the app and create a new table.")
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
                         demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
                     }
                     request.friendTable -> null
-                    else -> connection.query(OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
+                    else -> connection.query(if (request.rulesVersion == 2) OPEN_EXPANDED_LOBBY_SQL else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
-                    coinOptions().let { if (request.friendTable) it.copy(computerPlayers = 0) else it }, emptyList(),
+                    coinOptions(rulesVersion = request.rulesVersion).let { if (request.friendTable) it.copy(computerPlayers = 0) else it }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
                     startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
                     connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
@@ -162,6 +198,7 @@ class RoomService(
                 demand(room.expiresAt > clock() && (room.friendTable || requireNotNull(room.startsAt) > clock()), 409, "sales_closed", "That round is starting. Try Play again.")
                 changed(connection, room.copy(
                     members = room.members + Member(guest.id, guest.name, guest.avatar, purchaseAt, ready = true, lastSeen = purchaseAt),
+                    powerUps = (room.powerUps - guest.id) + if (request.powerUp == PowerUp.NONE) emptyMap() else mapOf(guest.id to request.powerUp),
                     purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", purchaseAt, before = room)
             }
             val response = update(connection, saved, guest.id, null)
@@ -287,6 +324,7 @@ class RoomService(
             val successor = remaining.minWithOrNull(compareBy<Member> { now - it.lastSeen >= PRESENCE_TIMEOUT }.thenBy { it.joinedAt }.thenBy { it.id })
             val next = redacted.copy(members = remaining,
                 purchases = if (redacted.phase == RoomPhase.LOBBY) redacted.purchases - playerId else redacted.purchases,
+                powerUps = if (redacted.phase == RoomPhase.LOBBY) redacted.powerUps - playerId else redacted.powerUps,
                 hostId = if (original.hostId == playerId) successor?.id.orEmpty() else original.hostId,
                 phase = if (remaining.isEmpty()) RoomPhase.CLOSED else original.phase,
                 round = if (remaining.isEmpty()) redacted.round?.cancel() else redacted.round,
@@ -577,6 +615,7 @@ class RoomService(
                 val remaining = room.members.filterNot { it.id == actor }
                 room.copy(members = remaining, phase = if (remaining.isEmpty()) RoomPhase.CLOSED else room.phase,
                     purchases = if (room.phase == RoomPhase.LOBBY) room.purchases - actor else room.purchases,
+                    powerUps = if (room.phase == RoomPhase.LOBBY) room.powerUps - actor else room.powerUps,
                     hostId = if (room.hostId == actor) remaining.firstOrNull()?.id ?: actor else room.hostId)
             }
         }
@@ -674,7 +713,7 @@ class RoomService(
     private fun validToken(token: String) = demand(token.matches(Regex("[A-Za-z0-9_-]{43}")), 401, "unauthorized", "A valid guest session is required.")
     private fun decode(payload: String): RoomRecord = WireJson.decodeFromString<RoomRecord>(payload).let { record ->
         record.copy(round = record.round?.let { game ->
-            require(game.version in 1..5) { "Unsupported stored round format" }
+            require(game.version in 1..6) { "Unsupported stored round format" }
             game.copy(version = maxOf(3, game.version))
         })
     }

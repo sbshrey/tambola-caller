@@ -9,6 +9,7 @@ import io.github.sbshrey.tambola.domain.BadgeProgress
 import io.github.sbshrey.tambola.domain.RoundSettings
 import io.github.sbshrey.tambola.domain.GameMode
 import io.github.sbshrey.tambola.domain.Prize
+import io.github.sbshrey.tambola.domain.PowerUp
 import io.github.sbshrey.tambola.domain.ClaimSelection
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.BuildConfig
@@ -17,6 +18,8 @@ import io.github.sbshrey.tambola.game.audio.SoundCue
 import io.github.sbshrey.tambola.game.data.*
 import io.github.sbshrey.tambola.game.presentation.*
 import io.github.sbshrey.tambola.protocol.*
+import io.github.sbshrey.tambola.game.telemetry.BetaTelemetry
+import io.github.sbshrey.tambola.game.telemetry.TelemetryOperation
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
@@ -33,13 +36,16 @@ data class OnlineUiState(
     val playerId: String? = null,
     val room: RoomView? = null,
     val wallet: WalletView? = null,
+    val loginRewards: LoginRewards? = null,
     val preferredTickets: Int = 3,
+    val chosenPowerUp: PowerUp = PowerUp.NONE,
     val serverTime: ServerTime? = null,
     val marks: Map<String, Set<Int>> = emptyMap(),
     val history: List<RoomView> = emptyList(),
     val badges: BadgeProgress = BadgeProgress(),
     val connection: Connection = Connection.IDLE,
     val busy: Boolean = false,
+    val adActive: Boolean = false,
     val pending: Boolean = false,
     val deletingProfile: Boolean = false,
     val sessionExpired: Boolean = false,
@@ -96,6 +102,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val value = saved
         mutable.update { it.copy(name = value?.displayName, avatar = value?.avatar ?: 0, playerId = value?.credentials?.playerId,
             room = value?.room, wallet = value?.wallet, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
+            loginRewards = it.loginRewards.takeIf { _ -> value?.credentials?.playerId == it.playerId && value != null },
             preferredTickets = value?.ticketPreference() ?: 3, serverTime = api?.serverTime,
             badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null,
             deletingProfile = value?.pending is PendingOperation.DeleteProfile,
@@ -111,10 +118,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         publish()
     }
     /** Reuse the exact game operation after a server-confirmed session rejection. */
-    private suspend fun <T> authorized(action: suspend (String) -> T): T {
+    private suspend fun <T> authorized(operation: TelemetryOperation = TelemetryOperation.REQUEST, action: suspend (String) -> T): T = BetaTelemetry.measure(operation) {
         val manager = requireNotNull(sessions)
         val credentials = manager.credentials()
-        return try { action(credentials.token) }
+        try { action(credentials.token) }
         catch (error: RoomApiFailure) {
             if (error.status != 401) throw error
             val renewed = manager.credentials(rejectedToken = credentials.token)
@@ -147,32 +154,41 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 val credentials = api.guest(GuestRequest(trimmed, avatar))
                 mutex.withLock { persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, trimmed, avatar)) }
-                val wallet = authorized { api.wallet(it) }
-                mutex.withLock { saved?.let { persist(it.acceptWallet(wallet)) } }
+                collectDailyRewards()
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
             finally { mutable.update { it.copy(busy = false) } }
         }
     }
     fun refreshWallet() {
-        val current = saved ?: return
+        if (saved == null) return
         val api = api ?: return
         if (!active || mutable.value.storageFailure || mutable.value.sessionExpired || mutable.value.deletingProfile ||
             saved?.pending == PendingOperation.Logout || walletJob?.isActive == true) return
         walletJob = viewModelScope.launch {
             try {
-                val wallet = authorized { api.wallet(it) }
-                mutex.withLock { saved?.takeIf { it.credentials.playerId == current.credentials.playerId }?.let { persist(it.acceptWallet(wallet)) } }
+                collectDailyRewards()
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
         }
     }
     /** Save a device profile and a retryable purchase before entering the first table. */
+    private suspend fun collectDailyRewards() {
+        val player = saved?.credentials?.playerId ?: return
+        val reward = authorized(TelemetryOperation.LOGIN) { requireNotNull(api).loginRewards(it) }
+        mutex.withLock {
+            saved?.takeIf { it.credentials.playerId == player }?.let {
+                persist(it.acceptWallet(reward.wallet))
+                mutable.update { state -> state.copy(loginRewards = reward) }
+            }
+        }
+    }
+
     fun play(tickets: Int, friendTable: Boolean = false, friendCode: String? = null) {
-        if (tickets !in 1..6 || api == null || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
+        if (tickets !in 1..6 || api == null || mutable.value.adActive || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
-        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code)
+        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2, powerUp = mutable.value.chosenPowerUp)
         if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {
@@ -184,21 +200,48 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                     persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, name, avatar)
                         .withPending(PendingOperation.Match(request)))
                 }
+                collectDailyRewards()
                 performPending()
             } catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
             finally { mutable.update { it.copy(busy = false) }; connect() }
         }
     }
+    fun beginAd(): Boolean {
+        val state = mutable.value
+        if (state.adActive || state.busy || state.pending || state.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) return false
+        mutable.update { it.copy(adActive = true) }; return true
+    }
+    fun endAd() { mutable.update { it.copy(adActive = false) } }
+    suspend fun prepareAd(): RewardAdIntent {
+        check(BuildConfig.REWARDED_ADS_ENABLED && !BuildConfig.REWARDED_ADS_TEST)
+        check(!mutable.value.busy && !mutable.value.pending && mutable.value.room?.phase !in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE))
+        return authorized { requireNotNull(api).prepareAd(it) }.also { check(it.adUnit == BuildConfig.ADMOB_REWARD_UNIT) }
+    }
+    suspend fun confirmAd(id: String): Boolean {
+        val player = saved?.credentials?.playerId ?: return false
+        repeat(15) {
+            val result = authorized { requireNotNull(api).adStatus(it, id) }
+            mutex.withLock {
+                saved?.takeIf { it.credentials.playerId == player }?.let { persist(it.acceptWallet(result.wallet)) }
+            }
+            if (result.confirmed) return true
+            delay(2_000)
+        }
+        return false
+    }
     fun refill() = begin(PendingOperation.Refill(RefillRequest(UUID.randomUUID().toString())))
+    fun choosePowerUp(powerUp: PowerUp) {
+        if (!mutable.value.busy && !mutable.value.pending) mutable.update { it.copy(chosenPowerUp = powerUp) }
+    }
     fun replayFriends(tickets: Int) {
         val room = saved?.room ?: return
         if (tickets !in 1..6 || room.phase != RoomPhase.FINISHED || room.coins?.friendTable != true) return
         val round = room.round ?: return
-        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id)))
+        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id, rulesVersion = 2, powerUp = mutable.value.chosenPowerUp)))
     }
     fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = false, manualClaims = true,
-        prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 5, computerPlayers = 2)) =
+        prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 10, computerPlayers = 2)) =
         begin(PendingOperation.Create(CreateRoomRequest(UUID.randomUUID().toString(), options)))
     fun join(rawCode: String) {
         val code = rawCode.trim().uppercase()
@@ -255,11 +298,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         var walletResult: WalletView? = null
         try {
             val result = when (pending) {
-                is PendingOperation.Match -> authorized { api.match(it, pending.request) }
+                is PendingOperation.Match -> authorized(TelemetryOperation.MATCH) { api.match(it, pending.request) }
                 is PendingOperation.Refill -> { walletResult = authorized { api.refill(it, pending.request) }; null }
                 is PendingOperation.Create -> authorized { api.create(it, pending.request) }
                 is PendingOperation.Join -> authorized { api.join(it, pending.code) }
-                is PendingOperation.Command -> authorized { api.command(it, pending.code, pending.request) }
+                is PendingOperation.Command -> authorized(if (pending.request.action is RoomAction.Claim) TelemetryOperation.CLAIM else TelemetryOperation.REQUEST) { api.command(it, pending.code, pending.request) }
                 PendingOperation.Logout -> { authorized { api.logout(it) }; null }
                 is PendingOperation.DeleteProfile -> { api.deleteProfile(current.credentials.token, pending.request); deletionConfirmed = true; null }
             }

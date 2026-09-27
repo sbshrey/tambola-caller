@@ -117,7 +117,7 @@ class ManualTableTest {
         } }
         compose.waitForIdle()
         val visible = compose.onAllNodes(hasTestTag("hand-ticket-1") or hasTestTag("hand-ticket-2")).fetchSemanticsNodes().size
-        assertTrue(visible in 1..2)
+        assertEquals(2, visible)
         compose.onNodeWithTag("hand-ticket-3").assertDoesNotExist()
         compose.onNodeWithTag("tickets-up").assertIsNotEnabled()
         compose.onNodeWithTag("claim").assertDoesNotExist()

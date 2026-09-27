@@ -22,3 +22,4 @@ full-game/.test-workspace/
 full-game/tools/__pycache__/
 full-game/**/*.jks
 full-game/**/*.keystore
+full-game/app/**/google-services.json

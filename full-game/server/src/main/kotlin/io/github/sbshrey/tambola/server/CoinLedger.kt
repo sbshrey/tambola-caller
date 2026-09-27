@@ -78,6 +78,6 @@ internal object CoinLedger {
         "SELECT amount FROM coin_ledger WHERE player_id = ? AND entry_key = ?", player, key) { it.getLong(1) }.singleOrNull()
     private fun validate(key: String, amount: Long, now: Long) {
         require(key.matches(Regex("[A-Za-z0-9:_-]{1,200}")))
-        require(amount != 0L && amount in -19_200L..19_200L && now >= 0)
+        require(amount != 0L && amount in -100_000L..100_000L && now >= 0)
     }
 }

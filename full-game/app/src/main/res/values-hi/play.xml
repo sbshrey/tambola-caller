@@ -1,7 +1,7 @@
 <resources>
     <string name="play_quick">झटपट खेलें</string>
     <string name="play_tagline">थोड़ी किस्मत। ढेर सारी मस्ती।</string>
-    <string name="play_quick_details">3 टिकट · 2 कंप्यूटर खिलाड़ी · हर 5 सेकंड कॉल</string>
+    <string name="play_quick_details">3 टिकट · 2 कंप्यूटर खिलाड़ी · हर 10 सेकंड कॉल</string>
     <string name="play_free">मुफ़्त खेल · ऑफ़लाइन भी</string>
     <string name="play_custom">अपना खेल बनाएँ</string>
     <string name="play_customize">अवतार और इनाम</string>

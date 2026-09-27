@@ -1,0 +1,55 @@
+
+io.github.sbshrey.tambola.game.PlayExperienceTest:
+Error in oneTapQuickGameHasOnlyMyThreeTicketsAndStartsCalling(io.github.sbshrey.tambola.game.PlayExperienceTest):
+java.lang.AssertionError: Assert failed: The component with TestTag = 'quick-play' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.PlayExperienceTest.oneTapQuickGameHasOnlyMyThreeTicketsAndStartsCalling(PlayExperienceTest.kt:35)
+
+io.github.sbshrey.tambola.game.TableExperienceTest:
+Error in minimalSettingsChangeOnlyPersonalPreferences(io.github.sbshrey.tambola.game.TableExperienceTest):
+java.lang.AssertionError: expected:<5> but was:<10>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.settings(TableExperienceTest.kt:63)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.minimalSettingsChangeOnlyPersonalPreferences(TableExperienceTest.kt:38)
+
+Error in minimalSettingsRemainUsableInHindiAtLargeText(io.github.sbshrey.tambola.game.TableExperienceTest):
+java.lang.AssertionError: expected:<5> but was:<10>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.settings(TableExperienceTest.kt:63)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.minimalSettingsRemainUsableInHindiAtLargeText(TableExperienceTest.kt:39)
+
+io.github.sbshrey.tambola.game.ExpandedRewardsUiTest:..
+
+Time: 22.574
+There were 3 failures:
+1) oneTapQuickGameHasOnlyMyThreeTicketsAndStartsCalling(io.github.sbshrey.tambola.game.PlayExperienceTest)
+java.lang.AssertionError: Assert failed: The component with TestTag = 'quick-play' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.PlayExperienceTest.oneTapQuickGameHasOnlyMyThreeTicketsAndStartsCalling(PlayExperienceTest.kt:35)
+2) minimalSettingsChangeOnlyPersonalPreferences(io.github.sbshrey.tambola.game.TableExperienceTest)
+java.lang.AssertionError: expected:<5> but was:<10>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.settings(TableExperienceTest.kt:63)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.minimalSettingsChangeOnlyPersonalPreferences(TableExperienceTest.kt:38)
+3) minimalSettingsRemainUsableInHindiAtLargeText(io.github.sbshrey.tambola.game.TableExperienceTest)
+java.lang.AssertionError: expected:<5> but was:<10>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.settings(TableExperienceTest.kt:63)
+	at io.github.sbshrey.tambola.game.TableExperienceTest.minimalSettingsRemainUsableInHindiAtLargeText(TableExperienceTest.kt:39)
+
+FAILURES!!!
+Tests run: 5,  Failures: 3
+
+

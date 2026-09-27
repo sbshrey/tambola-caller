@@ -1,0 +1,12 @@
+<resources>
+    <string name="ad_watch">Watch a video · +1,000 coins</string>
+    <string name="ad_test_watch">Preview test ad · no coins</string>
+    <string name="ad_loading">Loading an optional video…</string>
+    <string name="ad_verifying">Verifying your reward…</string>
+    <string name="ad_confirmed">1,000 coins added! Up to five rewards per UTC day.</string>
+    <string name="ad_pending">Verification is taking longer. Your coins will arrive after confirmation; reopen your profile to refresh.</string>
+    <string name="ad_not_completed">Video closed before the reward. You can try again.</string>
+    <string name="ad_test_complete">Test video completed. Preview ads do not award coins.</string>
+    <string name="ad_unavailable">Video unavailable or daily limit reached. Please try later.</string>
+    <string name="ad_privacy">Ad privacy choices</string>
+</resources>

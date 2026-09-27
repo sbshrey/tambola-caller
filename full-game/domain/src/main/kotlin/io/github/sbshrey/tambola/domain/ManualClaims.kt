@@ -36,7 +36,7 @@ fun Round.claimComputer(playerId: String): Round {
  * Only revealed, manually marked numbers are accepted; the caller must authenticate playerId.
  */
 fun Round.claim(playerId: String, markedNumbers: Set<Int> = tickets.filter { it.playerId == playerId }
-    .flatMap { marks[it.id].orEmpty() }.toSet(), selection: ClaimSelection? = null): Round {
+    .flatMap { marks[it.id].orEmpty() }.filter { it in called }.toSet(), selection: ClaimSelection? = null): Round {
     require(settings.manualClaims) { "This round uses automatic awards" }
     require(status == RoundStatus.PLAYING || status == RoundStatus.PAUSED) { "This round is not active" }
     require(players.any { it.id == playerId }) { "Unknown player" }
@@ -57,9 +57,11 @@ fun Round.claim(playerId: String, markedNumbers: Set<Int> = tickets.filter { it.
     settings.prizes.forEach { prize ->
         if (selection != null && selection.prizeId != prize.name) return@forEach
         val existing = nextAwards.firstOrNull { it.prize == prize }
-        if (existing != null && existing.drawIndex < called.size) return@forEach
+        if (existing != null && existing.isClosed(settings, called.size)) return@forEach
+        if (settings.winnersPerPrize > 1 && playerId in existing?.playerIds.orEmpty()) return@forEach
         if (prize.isRankedHouse && prize != nextRank) return@forEach
-        val matching = owned.filter { (selection == null || it.id == selection.ticketId) && prize.matches(it, markedNumbers) && (!prize.isRankedHouse || it.id !in earlierHouseTickets) }
+        val eligible = owned.filter { (selection == null || it.id == selection.ticketId) && prize.matches(it, markedNumbers) && (!prize.isRankedHouse || it.id !in earlierHouseTickets) }
+        val matching = if (settings.winnersPerPrize > 1) eligible.take(1) else eligible
         if (matching.isEmpty()) return@forEach
         val ids = existing?.ticketIds.orEmpty().toSet() + matching.map { it.id }
         val winningTickets = tickets.filter { it.id in ids }

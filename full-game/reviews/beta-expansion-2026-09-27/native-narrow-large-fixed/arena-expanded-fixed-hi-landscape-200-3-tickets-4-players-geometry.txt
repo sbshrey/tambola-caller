@@ -1,0 +1,30 @@
+30 / 90 | scale=2.0 | size=235 x 95 | lines(left,right,bottom)=0.0,235.0,95.0 | clipped=false
+दावा करें | scale=2.0 | size=250 x 112 | lines(left,right,bottom)=0.0,250.0,112.0 | clipped=false
+3 टिकट | scale=2.0 | size=191 x 92 | lines(left,right,bottom)=0.0,191.0,92.0 | clipped=false
+अगली · 5 | scale=2.0 | size=265 x 102 | lines(left,right,bottom)=0.0,265.0,102.0 | clipped=false
+28 | scale=2.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+72 | scale=2.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+9 | scale=2.0 | size=27 x 61 | lines(left,right,bottom)=0.0,27.0,61.0 | clipped=false
+20 | scale=2.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+1/2 | scale=2.0 | size=115 x 95 | lines(left,right,bottom)=0.0,115.0,95.0 | clipped=false
+4 | scale=2.0 | size=103 x 88 | lines(left,right,bottom)=30.0,73.0,88.0 | clipped=false
+sidebar-prize-EARLY_FIVE | bounds=DpRect(left=16.0.dp, top=76.14815.dp, right=98.07407.dp, bottom=104.296295.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+5 | scale=2.0 | size=88 x 87 | lines(left,right,bottom)=23.0,65.0,87.0 | clipped=false
+120 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+sidebar-prize-CORNERS | bounds=DpRect(left=16.0.dp, top=104.296295.dp, right=98.07407.dp, bottom=132.44444.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+120 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+sidebar-prize-TOP_LINE | bounds=DpRect(left=16.0.dp, top=132.44444.dp, right=98.07407.dp, bottom=160.59259.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+120 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+sidebar-prize-MIDDLE_LINE | bounds=DpRect(left=16.0.dp, top=160.59259.dp, right=98.07407.dp, bottom=188.74074.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+120 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+sidebar-prize-BOTTOM_LINE | bounds=DpRect(left=16.0.dp, top=188.74074.dp, right=98.07407.dp, bottom=216.88889.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+120 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+sidebar-prize-HOUSE_ONE | bounds=DpRect(left=16.0.dp, top=199.7037.dp, right=98.07407.dp, bottom=227.85185.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+1 | scale=2.0 | size=88 x 87 | lines(left,right,bottom)=23.0,65.0,87.0 | clipped=false
+420 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+sidebar-prize-HOUSE_TWO | bounds=DpRect(left=16.0.dp, top=199.7037.dp, right=98.07407.dp, bottom=227.85185.dp) | rail=DpRect(left=10.074074.dp, top=72.0.dp, right=104.0.dp, bottom=227.85185.dp)
+2 | scale=2.0 | size=88 x 87 | lines(left,right,bottom)=23.0,65.0,87.0 | clipped=false
+180 | scale=2.0 | size=169 x 95 | lines(left,right,bottom)=55.0,169.0,95.0 | clipped=false
+दूसरा हाउस | scale=2.0 | size=858 x 216 | lines(left,right,bottom)=262.0,596.0,112.0 | clipped=false
+खेल पर वापस | scale=2.0 | size=450 x 126 | lines(left,right,bottom)=0.0,450.0,126.0 | clipped=false
+दावा करें | scale=2.0 | size=250 x 112 | lines(left,right,bottom)=0.0,250.0,112.0 | clipped=false

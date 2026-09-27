@@ -4,6 +4,7 @@ plugins { application; alias(libs.plugins.kotlin.jvm); alias(libs.plugins.kotlin
 kotlin { jvmToolchain(17) }
 application { mainClass.set("io.github.sbshrey.tambola.server.ServerKt") }
 dependencies {
+    implementation("com.google.crypto.tink:apps-rewardedads:1.14.0")
     // Align every transitive Netty module with the HTTP/security fixes newer than Ktor's baseline.
     implementation(platform(libs.netty.bom))
     implementation(project(":domain")); implementation(project(":protocol")); implementation(libs.serialization.json)

@@ -57,7 +57,7 @@ class TicketGenerator(private val random: Random = SecureRandom()) {
     }
 
     fun deal(players: List<Player>, perPlayer: Int): List<Ticket> {
-        require(players.isNotEmpty() && players.size <= 32 && perPlayer in 1..6)
+        require(players.isNotEmpty() && players.size <= 50 && perPlayer in 1..6)
         require(players.map { it.id }.distinct().size == players.size)
         val fingerprints = mutableSetOf<String>()
         return players.flatMap { player ->

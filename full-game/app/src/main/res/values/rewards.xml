@@ -1,0 +1,19 @@
+<resources>
+    <string name="diagnostics_title">Share crash and performance reports</string>
+    <string name="diagnostics_detail">Optional reports go to Google Firebase to help fix crashes and slow actions. They include app version, device details, crash stacks and timings. We do not add names, room codes, tickets or credentials. Turn this off at any time; unsent crash reports will be removed.</string>
+    <string name="powerup_title">Choose a power-up</string>
+    <string name="powerup_selected">Power-up: %1$s</string>
+    <string name="powerup_beta_free">Pick one before joining. Free during the beta. Bonuses never reduce another player’s prize.</string>
+    <string name="powerup_none">None</string>
+    <string name="powerup_none_detail">Play with the standard prizes.</string>
+    <string name="powerup_insurance">Ticket insurance</string>
+    <string name="powerup_insurance_detail">Win no prize in a completed round? Recover your entry cost after any unclaimed-pool refund.</string>
+    <string name="powerup_boost">Prize boost</string>
+    <string name="powerup_boost_detail" formatted="false">Get 25% extra on your prize winnings when the round completes. Whole coins, rounded down.</string>
+    <string name="powerup_bonus_coins">Power-up bonus · +%1$d coins</string>
+    <string name="beta_coins_grant">%1$d starting coins for the beta</string>
+    <string name="daily_coins_collected">Day %1$d reward collected: +%2$d coins</string>
+    <string name="daily_coins_rules">Open the game each day for free coins. Rewards grow for seven consecutive days, then restart. Missing a day restarts at day one. A new day begins at 00:00 UTC (05:30 in India).</string>
+    <string name="daily_coins_day">Day %1$d · %2$d coins</string>
+    <string name="multi_winner_rules">%1$d winners per category. Ties on the final winning call also share the fixed pool. Each player can win each category once.</string>
+</resources>

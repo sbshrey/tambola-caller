@@ -1,0 +1,8 @@
+30 / 90 | scale=2.0 | size=235 x 95 | lines(left,right,bottom)=0.0,235.0,95.0 | clipped=false
+दावा करें | scale=2.0 | size=250 x 112 | lines(left,right,bottom)=0.0,250.0,112.0 | clipped=false
+6 टिकट | scale=2.0 | size=191 x 92 | lines(left,right,bottom)=0.0,191.0,92.0 | clipped=false
+अगली · 5 | scale=2.0 | size=265 x 102 | lines(left,right,bottom)=0.0,265.0,102.0 | clipped=false
+28 | scale=2.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+72 | scale=2.0 | size=54 x 61 | lines(left,right,bottom)=0.0,54.0,61.0 | clipped=false
+1/3 | scale=2.0 | size=115 x 95 | lines(left,right,bottom)=0.0,115.0,95.0 | clipped=false
+दावा करें | scale=2.0 | size=250 x 112 | lines(left,right,bottom)=0.0,250.0,112.0 | clipped=false

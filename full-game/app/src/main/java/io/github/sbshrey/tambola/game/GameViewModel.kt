@@ -144,7 +144,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
         if (mutable.value.round?.finished == false) { navigate(Screen.GAME); resume(); return }
         updateSetup(SetupDraft(tickets = 3, bots = 2, assisted = false,
             prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE)))
-        val fastPreferences = mutable.value.preferences.copy(interval = 5)
+        val fastPreferences = mutable.value.preferences.copy(interval = 10)
         mutable.update { it.copy(preferences = fastPreferences) }
         updatePreferences(fastPreferences)
         create(automatic = true)

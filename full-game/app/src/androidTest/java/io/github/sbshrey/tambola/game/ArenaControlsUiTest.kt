@@ -47,6 +47,7 @@ class ArenaControlsUiTest {
     @Test fun englishPortraitOneTicket() = controls("en", false, ticketCount = 1)
     @Test fun hindiLandscapeThreeTickets() = controls("hi", true, ticketCount = 3)
     @Test fun hindiLandscapeEightFriends() = controls("hi", true, playerCount = 8)
+    @Test fun hindiLandscapeFiftyFriends() = controls("hi", true, playerCount = 50)
 
     @Suppress("DEPRECATION")
     private fun controls(language: String, landscape: Boolean, ticketCount: Int = 6, playerCount: Int = 4) {
@@ -68,12 +69,13 @@ class ArenaControlsUiTest {
         val words = GameText(context.resources)
         val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
         val totalTickets = ticketCount * playerCount
-        val pool = CoinPool(totalTickets)
+        val pool = CoinPool(totalTickets, if (playerCount > 8) 2 else 1)
         var round = Round.create(List(playerCount) { Player(if (it == 0) "me" else "peer-$it", "Player $it") },
-            RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = ticketCount, manualClaims = true, prizes = pool.prizes.map { it.prize }), Random(81)).start()
+            RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = ticketCount, manualClaims = true, winnersPerPrize = if (pool.version == 2) 5 else 1, prizes = pool.prizes.map { it.prize }), Random(81)).start()
         repeat(30) { round = round.draw() }
         val room = RoomView(code = "ABCD2345", roomId = "arena-controls", revision = 30, phase = RoomPhase.ACTIVE,
-            hostId = "me", locked = true, options = RoomOptions(game = round.settings.copy(ticketsPerPlayer = 6), coinGame = true, intervalSeconds = 5),
+            hostId = "me", locked = true, options = RoomOptions(game = round.settings.copy(ticketsPerPlayer = 6), coinGame = true, intervalSeconds = if (pool.version == 2) 10 else 5,
+                capacity = if (pool.version == 2) 50 else 32, coinRulesVersion = pool.version),
             members = round.players.map { MemberView(it.id, it.name, it.avatar, true, true) },
             round = PublicRound(round.id, round.status, round.called, round.tickets.filter { it.playerId == "me" },
                 emptyList(), emptyList(), emptyMap(), "fixture", players = round.players),
@@ -111,6 +113,7 @@ class ArenaControlsUiTest {
         }
         capture("live")
         val card = compose.onNodeWithTag("hand-ticket-1").getUnclippedBoundsInRoot()
+        if (ticketCount >= 2) compose.onNodeWithTag("hand-ticket-2").assertIsDisplayed()
         fun pageText() = compose.onAllNodesWithTag("ticket-page").fetchSemanticsNodes().firstOrNull()?.config?.get(SemanticsProperties.Text)
         val page = pageText()
         textFits(compose.onNodeWithTag("play-status"))

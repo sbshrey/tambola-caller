@@ -54,12 +54,14 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                         val award = table.awards.firstOrNull { it.prize.name == id }
                                         val custom = table.customAwards.firstOrNull { it.prizeId == id }
                                         val draw = award?.drawIndex ?: custom?.drawIndex
-                                        val wonByTicket = ticket.id in (award?.ticketIds ?: custom?.ticketIds).orEmpty()
+                                        val wonByTicket = ticket.id in (award?.ticketIds ?: custom?.ticketIds).orEmpty() ||
+                                            (table.settings.winnersPerPrize > 1 && ticket.playerId in award?.playerIds.orEmpty())
                                         val rankedHouse = table.settings.prizes.firstOrNull { it.name == id && it.isRankedHouse }
                                         val houseLocked = rankedHouse != null && (rankedHouse != nextHouse || closedHouses.any { ticket.id in it.ticketIds })
-                                        val open = (draw == null || draw == table.called.size) && !wonByTicket && !houseLocked
+                                        val closed = award?.isClosed(table.settings, table.called.size) ?: (draw != null && draw < table.called.size)
+                                        val open = !closed && !wonByTicket && !houseLocked
                                         val active = enabled && open && !table.finished
-                                        val taken = wonByTicket || (draw != null && draw < table.called.size)
+                                        val taken = wonByTicket || closed
                                         val coins = table.coins?.prizes?.firstOrNull { it.prize.name == id }?.coins
                                         Surface(onClick = { dismiss(); claim(ClaimSelection(ticket.id, id)) }, enabled = active,
                                             modifier = Modifier.weight(1f).heightIn(min = 60.dp).fillMaxHeight().testTag("claim-prize-$id")

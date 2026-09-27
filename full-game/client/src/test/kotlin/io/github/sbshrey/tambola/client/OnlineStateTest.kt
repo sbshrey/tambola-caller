@@ -163,8 +163,11 @@ class OnlineStateTest {
         assertThrows(InvalidRoomResponse::class.java) { updated.accept(update(first.copy(called = listOf(first.drawOrder[1]))), true) }
     }
 
-    @Test fun `only called numbers on owned tickets can be marked and marks survive catchup`() {
+    @Test fun `owned numbers can be marked without hints and marks survive catchup`() {
         val ticket = round.tickets.first { it.playerId == "asha" }
+        val manual = saved().mark(ticket.id, ticket.numbers.first())
+        assertEquals(setOf(ticket.numbers.first()), manual.marks[ticket.id])
+        assertEquals(manual.marks, WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(manual)).marks)
         val index = round.drawOrder.indexOf(ticket.numbers.first()) + 1
         val game = (1..index).fold(round) { current, _ -> current.draw() }
         val session = saved(game).mark(ticket.id, ticket.numbers.first())

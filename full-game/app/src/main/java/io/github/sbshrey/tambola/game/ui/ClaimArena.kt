@@ -51,14 +51,17 @@ internal fun ClaimArena(
     val ink = if (gameNight) GameNightPalette.cream else if (dark) Ivory else Ink
     val muted = if (gameNight) GameNightPalette.muted else if (dark) Color(0xFFB7D0C0) else Color(0xFF486257)
     val gold = Color(0xFFF4C879)
-    val remaining = table.settings.prizes.size + table.settings.customPrizes.size - table.awards.size - table.customAwards.size
+    val remaining = table.settings.prizes.size + table.settings.customPrizes.size -
+        table.awards.count { table.finished || it.isClosed(table.settings, table.called.size) } - table.customAwards.size
     var menu by remember { mutableStateOf(false) }
     var details by remember { mutableStateOf(false) }
     var board by remember(table.id) { mutableStateOf(false) }
     var history by remember(table.id) { mutableStateOf(false) }
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
-    LaunchedEffect(table.called.size, table.finished, claimEnabled) { claimTicketId = null }
+    LaunchedEffect(table.finished, claimEnabled) {
+        if (table.finished || !claimEnabled) claimTicketId = null
+    }
     LaunchedEffect(win?.id) { if (win != null) { delay(3400); dismissWin() } }
     val winText = win?.lines?.joinToString(" · ") { line ->
         val title = line.prize?.let(words::prizeTitle) ?: line.title
@@ -91,9 +94,8 @@ internal fun ClaimArena(
                         if (preferences.reducedMotion || table.latest == null) reveal.snapTo(1f)
                         else { reveal.snapTo(0f); reveal.animateTo(1f, tween(430)) }
                     }
-                    val target = hand.tickets.firstOrNull { table.latest in it.numbers && table.latest !in table.marks[it.id].orEmpty() }
                     Box(Modifier.size(62.dp), contentAlignment = Alignment.Center) {
-                    if (table.coins != null && table.nextDrawAt != null) DeadlineRing(table.nextDrawAt, table.serverTime, table.id, 5_000,
+                    if (table.coins != null && table.nextDrawAt != null) DeadlineRing(table.nextDrawAt, table.serverTime, table.id, table.callIntervalSeconds * 1_000L,
                         preferences.reducedMotion, Modifier.matchParentSize())
                     Box(Modifier.size(52.dp).graphicsLayer {
                         val p = reveal.value
@@ -101,8 +103,8 @@ internal fun ClaimArena(
                         scaleX = .82f + .18f * p + sin(p * Math.PI).toFloat() * .16f; scaleY = scaleX
                     }.background(Brush.linearGradient(if (gameNight) listOf(GameNightPalette.cream, GameNightPalette.coral) else listOf(Color(0xFFFFE3AB), gold)), CircleShape)
                         .border(3.dp, Color.White.copy(alpha = .25f), CircleShape).clip(CircleShape)
-                        .clickable(enabled = markEnabled && !table.finished && !table.settings.assistedMarking && target != null,
-                            onClickLabel = table.latest?.let { words(R.string.play_mark_number, it) }) { markNumber(target!!.id, table.latest!!) }
+                        .clickable(enabled = table.latest != null,
+                            onClickLabel = words(R.string.ui_hear_again), onClick = repeatCall)
                         .testTag("current-call").semantics {
                             contentDescription = table.latest?.let { words(R.string.ui_current_number, it) } ?: words(R.string.play_waiting)
                             liveRegion = LiveRegionMode.Polite
@@ -178,7 +180,8 @@ internal fun ClaimArena(
     if (details) ArenaDialog(words(R.string.play_prizes), { details = false }) {
         if (table.coins != null) {
             Text(words(R.string.coin_pool, table.coins.pool))
-            CoinPrizeGrid(table.coins.prizes, awarded = table.awards.map { it.prize }.toSet(), onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
+            if (table.settings.winnersPerPrize > 1) Text(words(R.string.multi_winner_rules, table.settings.winnersPerPrize))
+            CoinPrizeGrid(table.coins.prizes, awarded = table.awards.filter { table.finished || it.isClosed(table.settings, table.called.size) }.map { it.prize }.toSet(), onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
             Text(words(R.string.coin_ties), style = MaterialTheme.typography.bodySmall)
         } else {
             Text(words(R.string.play_claim_rules))
@@ -205,9 +208,8 @@ internal fun ClaimArena(
 private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boolean, mark: (String, Int) -> Unit,
     markEnabled: Boolean, claimEnabled: Boolean, choose: (String) -> Unit) {
     val words = gameText()
-    BoxWithConstraints(Modifier.fillMaxSize().testTag("owned-hand")) {
-        // Never shrink three or six tickets into one screen. Short windows get one.
-        val pageSize = if (maxHeight >= 248.dp) 2 else 1
+    Box(Modifier.fillMaxSize().testTag("owned-hand")) {
+        val pageSize = 2
         var firstTicket by rememberSaveable(table.id, ownerId) { mutableIntStateOf(0) }
         val page = (firstTicket / pageSize).coerceIn(0, ((table.tickets.size - 1) / pageSize).coerceAtLeast(0))
         val start = page * pageSize
@@ -253,7 +255,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                 .padding(horizontal = 6.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.SpaceEvenly) {
                 table.settings.prizes.take(if (table.coins != null) 8 else 6).forEach { prize ->
-                    val won = table.awards.any { it.prize == prize }
+                    val won = table.awards.any { it.prize == prize && (table.finished || it.isClosed(table.settings, table.called.size)) }
                     val rank = when (prize) {
                         Prize.EARLY_FIVE -> "5"; Prize.EARLY_TEN -> "10"
                         Prize.FULL_HOUSE, Prize.HOUSE_ONE -> "1"; Prize.HOUSE_TWO -> "2"; Prize.HOUSE_THREE -> "3"

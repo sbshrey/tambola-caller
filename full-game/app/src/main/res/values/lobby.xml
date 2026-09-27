@@ -3,7 +3,7 @@
     <string name="lobby_greeting">Hey, %1$s</string>
     <string name="lobby_first_heading">A little luck.\nA great game night.</string>
     <string name="lobby_heading">Make your next\ncall count.</string>
-    <string name="lobby_pace">5s calls · 6–8 prizes</string>
+    <string name="lobby_pace">10s calls · 6 shared prizes</string>
     <string name="lobby_choose">Pick your hand. We’ll find your table.</string>
     <string name="lobby_personalize">Choose your player</string>
     <string name="lobby_save_player">Save player</string>

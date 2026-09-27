@@ -1,6 +1,9 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package io.github.sbshrey.tambola.domain
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.security.SecureRandom
@@ -42,9 +45,13 @@ data class RoundSettings(
     val customPrizes: List<CustomPrize> = emptyList(),
     // False preserves the rules of previously saved rounds. New play flows opt in explicitly.
     val manualClaims: Boolean = false,
+    /** Minimum distinct winners; everyone tying on the final call is included. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val winnersPerPrize: Int = 1,
 ) {
     init {
         require(ticketsPerPlayer in 1..6)
+        require(winnersPerPrize in 1..5)
+        require(winnersPerPrize == 1 || (manualClaims && customPrizes.isEmpty() && prizes.none { it.isRankedHouse }))
         require(prizes.isNotEmpty() && prizes.distinct().size == prizes.size)
         require(!(Prize.FULL_HOUSE in prizes && prizes.any { it.isRankedHouse }))
         require(Prize.HOUSE_TWO !in prizes || Prize.HOUSE_ONE in prizes)
@@ -56,6 +63,10 @@ data class RoundSettings(
 
 @Serializable
 data class Award(val prize: Prize, val drawIndex: Int, val ticketIds: List<String>, val playerIds: List<String>)
+
+/** A multi-winner category closes only after its quota and the final tie window. */
+fun Award.isClosed(settings: RoundSettings, currentDraw: Int): Boolean =
+    playerIds.size >= settings.winnersPerPrize && drawIndex < currentDraw
 
 @Serializable
 data class Round(
@@ -102,7 +113,7 @@ data class Round(
     fun toggleMark(ticketId: String, number: Int): Round {
         require(status != RoundStatus.READY && !finished) { "This round is not active" }
         val ticket = tickets.firstOrNull { it.id == ticketId } ?: error("Unknown ticket")
-        require(number in ticket.numbers && number in called) { "Only called numbers can be marked" }
+        require(number in ticket.numbers) { "Only numbers on this ticket can be marked" }
         require(!settings.assistedMarking && !players.first { it.id == ticket.playerId }.computer) { "This ticket is automatically marked" }
         val marked = marks[ticketId].orEmpty()
         return copy(marks = marks + (ticketId to if (number in marked) marked - number else marked + number))
@@ -121,7 +132,7 @@ data class Round(
     internal fun terminalAward(results: List<Award>, customResults: List<CustomAward>): Boolean {
         val finalPrize = settings.prizes.filter { it.isRankedHouse }.maxByOrNull { it.ordinal }
             ?: settings.prizes.firstOrNull { it == Prize.FULL_HOUSE }
-        return if (finalPrize != null) results.any { it.prize == finalPrize }
+        return if (finalPrize != null) results.any { it.prize == finalPrize && it.playerIds.size >= settings.winnersPerPrize }
         else results.size == settings.prizes.size && customResults.size == settings.customPrizes.size
     }
 
@@ -147,16 +158,17 @@ data class Round(
 
     /** Validate untrusted persistence at the boundary, including awards by replay. */
     fun validated(): Round {
-        require(version in 1..5 && id.isNotBlank() && createdAt >= 0)
+        require(version in 1..6 && id.isNotBlank() && createdAt >= 0)
+        require(version >= 6 || (players.size <= 32 && settings.winnersPerPrize == 1))
         require(version >= 5 || ticketCounts.isEmpty())
         require(ticketCounts.isEmpty() || (ticketCounts.keys == players.map { it.id }.toSet() && ticketCounts.values.all { it in 1..settings.ticketsPerPlayer }))
         require(version >= 4 || (!settings.manualClaims && claims.isEmpty()))
         require(settings.manualClaims || claims.isEmpty())
         require(version >= 3 || players.all { it.avatar == 0 }) { "This saved format cannot contain player avatars" }
         require(version != 1 || (settings.customPrizes.isEmpty() && customAwards.isEmpty()))
-        require(players.size in 1..32 && players.map { it.id }.distinct().size == players.size)
+        require(players.size in 1..50 && players.map { it.id }.distinct().size == players.size)
         require(settings.mode != GameMode.FAMILY || (players.size in 2..8 && players.none { it.computer }))
-        require(settings.mode != GameMode.ONLINE || (players.size in 2..32 && players.any { !it.computer }))
+        require(settings.mode != GameMode.ONLINE || (players.size in 2..50 && players.any { !it.computer }))
         require(version >= 4 || settings.mode != GameMode.ONLINE || players.none { it.computer })
         require(tickets.size == players.sumOf { ticketCounts[it.id] ?: settings.ticketsPerPlayer })
         require(tickets.map { it.id }.distinct().size == tickets.size && tickets.map { it.fingerprint }.distinct().size == tickets.size)
@@ -164,7 +176,7 @@ data class Round(
         require(players.all { p -> tickets.count { it.playerId == p.id } == (ticketCounts[p.id] ?: settings.ticketsPerPlayer) })
         require(drawOrder.size == 90 && drawOrder.toSet() == (1..90).toSet())
         require(called.size <= 90 && called == drawOrder.take(called.size))
-        require(marks.all { (id, values) -> tickets.any { it.id == id && it.numbers.containsAll(values) } && called.containsAll(values) })
+        require(marks.all { (id, values) -> tickets.any { it.id == id && it.numbers.containsAll(values) } })
         require(status != RoundStatus.READY || called.isEmpty())
         if (settings.manualClaims) {
             validateManualClaims()
@@ -188,7 +200,7 @@ data class Round(
             require(ticketCounts.isEmpty() || (ticketCounts.keys == players.map { it.id }.toSet() && ticketCounts.values.all { it in 1..settings.ticketsPerPlayer }))
             val dealt = TicketGenerator(random).deal(players, settings.ticketsPerPlayer)
             val tickets = players.flatMap { player -> dealt.filter { it.playerId == player.id }.take(ticketCounts[player.id] ?: settings.ticketsPerPlayer) }
-            return Round(version = if (ticketCounts.isNotEmpty()) 5 else if (settings.manualClaims || (settings.mode == GameMode.ONLINE && players.any { it.computer })) 4 else 3,
+            return Round(version = if (settings.winnersPerPrize > 1 || players.size > 32) 6 else if (ticketCounts.isNotEmpty()) 5 else if (settings.manualClaims || (settings.mode == GameMode.ONLINE && players.any { it.computer })) 4 else 3,
                 id = UUID.randomUUID().toString(), createdAt = now, settings = settings, players = players.toList(),
                 tickets = tickets, drawOrder = (1..90).toList().shuffledWith(random), ticketCounts = ticketCounts.toMap()).validated()
         }

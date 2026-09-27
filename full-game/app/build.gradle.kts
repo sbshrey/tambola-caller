@@ -12,6 +12,29 @@ plugins {
     alias(libs.plugins.legacy.kapt)
     alias(libs.plugins.kotlin.serialization)
 }
+// Account setup is optional for local builds. Public telemetry builds opt in explicitly.
+val firebaseConfigured = providers.gradleProperty("tambolaFirebase").map(String::toBoolean).getOrElse(false)
+if (firebaseConfigured) {
+    require(file("src/publicBeta/google-services.json").isFile) { "Run tools/configure-firebase.ps1 after signing in to Firebase." }
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-perf")
+}
+val adTest = providers.gradleProperty("tambolaAdTest").map(String::toBoolean).getOrElse(false)
+val adApp = providers.gradleProperty("tambolaAdMobAppId").getOrElse("")
+val adUnit = providers.gradleProperty("tambolaAdMobRewardUnit").getOrElse("")
+val adLive = adApp.isNotEmpty() && adUnit.isNotEmpty()
+require(!adTest || !adLive) { "Choose live IDs or test mode, not both" }
+require((adApp.isEmpty() && adUnit.isEmpty()) || (adApp.matches(Regex("ca-app-pub-[0-9]{16}~[0-9]{10}")) && adUnit.matches(Regex("ca-app-pub-[0-9]{16}/[0-9]{10}"))))
+require(!adLive || (!adApp.startsWith("ca-app-pub-3940256099942544") && adApp.substringBefore('~') == adUnit.substringBefore('/')))
+dependencies {
+    implementation("com.google.android.gms:play-services-ads:25.5.0")
+    implementation("com.google.android.ump:user-messaging-platform:4.0.0")
+}
 android {
     namespace = "io.github.sbshrey.tambola.game"
     compileSdk = 36
@@ -19,9 +42,14 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        versionCode = 35
-        versionName = "0.35.0-alpha35"
+        manifestPlaceholders["admobAppId"] = adApp.ifEmpty { "ca-app-pub-3940256099942544~3347511713" }
+        buildConfigField("boolean", "REWARDED_ADS_ENABLED", adLive.toString())
+        buildConfigField("boolean", "REWARDED_ADS_TEST", "false")
+        buildConfigField("String", "ADMOB_REWARD_UNIT", "\"$adUnit\"")
+        versionCode = 36
+        versionName = "0.36.0-alpha36"
         buildConfigField("String", "ROOM_DISCOVERY_URL", "\"\"")
+        buildConfigField("boolean", "TELEMETRY_CONFIGURED", firebaseConfigured.toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -30,6 +58,11 @@ android {
         val endpoint = providers.gradleProperty("tambolaApiUrl").getOrElse("")
         require(endpoint.isEmpty() || (endpoint.length <= 256 && endpoint.all { it.code in 33..126 } && URI(endpoint).let { it.scheme == "https" && it.host != null && it.userInfo == null && it.query == null && it.fragment == null && it.path.orEmpty() in listOf("", "/") && (it.port == -1 || it.port in 1..65535) }))
         debug {
+            if (adTest) {
+                buildConfigField("boolean", "REWARDED_ADS_ENABLED", "true")
+                buildConfigField("boolean", "REWARDED_ADS_TEST", "true")
+                buildConfigField("String", "ADMOB_REWARD_UNIT", "\"ca-app-pub-3940256099942544/5224354917\"")
+            }
             val origin = endpoint.ifEmpty { "http://127.0.0.1:8080" }
             buildConfigField("String", "ROOM_API_URL", "\"$origin\"")
             manifestPlaceholders["inviteHost"] = URI(origin).host.lowercase(Locale.ROOT)
@@ -202,6 +235,7 @@ dependencies {
     implementation(libs.serialization.json); implementation(libs.coroutines.android)
     implementation(libs.room.runtime); kapt(libs.room.compiler); implementation(libs.datastore)
     testImplementation(libs.junit)
+    androidTestImplementation(libs.uiautomator)
     androidTestImplementation(platform(libs.compose.bom)); androidTestImplementation(libs.compose.test)
     androidTestImplementation(libs.android.test.runner); debugImplementation(libs.compose.test.manifest)
 }

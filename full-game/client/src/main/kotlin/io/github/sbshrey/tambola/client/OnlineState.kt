@@ -91,7 +91,7 @@ fun OnlineSaved.badgeProgress(): BadgeProgress = history.fold(badges) { progress
 fun OnlineSaved.mark(ticketId: String, number: Int): OnlineSaved {
     val game = room?.round ?: return this
     if (game.status !in setOf(RoundStatus.PLAYING, RoundStatus.PAUSED) || room.options.game.assistedMarking) return this
-    if (number !in game.called || game.ownTickets.none { it.id == ticketId && number in it.numbers }) return this
+    if (game.ownTickets.none { it.id == ticketId && number in it.numbers }) return this
     val old = marks[ticketId].orEmpty()
     return copy(marks = marks + (ticketId to if (number in old) old - number else old + number))
 }
@@ -121,22 +121,25 @@ fun RoomView.validateFor(playerId: String) {
         require(options.coinGame == (coins != null))
         wallet?.let { require(it.balance >= 0 && it.revision >= 1 && it.refillAfter >= 0 && it.ticketPrice == COIN_TICKET_PRICE) }
         coins?.let { economy ->
-            require(wallet != null && economy.ownTickets in 0..6 && economy.tickets in 0..192)
+            require(wallet != null && economy.ownTickets in 0..6 && economy.tickets in 0..(if (options.coinRulesVersion == 1) 192 else 300))
             require(economy.settledWinnings >= 0 && economy.returnedCoins >= 0)
+            require(economy.bonusCoins in 0..7_500L)
+            require(options.coinRulesVersion == 2 || (economy.powerUp == PowerUp.NONE && economy.bonusCoins == 0L))
             require(economy.pool == economy.tickets * COIN_TICKET_PRICE)
             require(economy.tickets >= 2 || phase == RoomPhase.CLOSED || (economy.friendTable && phase == RoomPhase.LOBBY))
-            if (economy.tickets >= 2) require(economy.prizes == CoinPool(economy.tickets).prizes)
+            if (economy.tickets >= 2) require(economy.prizes == CoinPool(economy.tickets, options.coinRulesVersion).prizes)
             if (economy.tickets < 2) require(economy.prizes.isEmpty())
             require(phase != RoomPhase.LOBBY || economy.friendTable || economy.startsAt != null)
             if (economy.friendTable) require(economy.startsAt == null && options.computerPlayers == 0)
         }
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
-        require(members.size <= 32 && members.map { it.playerId }.distinct().size == members.size)
+        require(protocolVersion >= 5 || (options.coinRulesVersion == 1 && options.game.winnersPerPrize == 1 && options.capacity <= 32))
+        require(members.size <= options.capacity && members.map { it.playerId }.distinct().size == members.size)
         require(members.all { it.displayName.isNotBlank() && it.displayName.length <= 40 && it.avatar in 0 until AVATAR_COUNT })
         require(phase == RoomPhase.CLOSED || members.any { it.playerId == playerId })
         round?.let { game ->
             require(phase in setOf(RoomPhase.ACTIVE, RoomPhase.FINISHED, RoomPhase.CLOSED))
-            require(game.players.size in 2..32 && game.players.map { it.id }.distinct().size == game.players.size)
+            require(game.players.size in 2..options.capacity && game.players.map { it.id }.distinct().size == game.players.size)
             require(game.players.any { it.id == playerId && !it.computer })
             require(game.players.count { it.computer } == options.computerPlayers)
             require(protocolVersion >= 3 || (!options.game.manualClaims && game.players.none { it.computer }))
@@ -150,6 +153,13 @@ fun RoomView.validateFor(playerId: String) {
                 require(game.ticketCounts.isNotEmpty() && economy.ownTickets == ownCount && economy.tickets == game.ticketCounts.values.sum())
                 require(economy.startsAt == null && options.game.prizes == economy.prizes.map { it.prize })
                 require(economy.settledWinnings + economy.returnedCoins <= economy.pool)
+                val expectedBonus = if (game.status != RoundStatus.COMPLETED) 0L else when (economy.powerUp) {
+                    PowerUp.NONE -> 0L
+                    PowerUp.PRIZE_BOOST -> economy.settledWinnings / 4
+                    PowerUp.TICKET_INSURANCE -> if (economy.settledWinnings > 0) 0L else
+                        (economy.ownTickets * COIN_TICKET_PRICE - economy.returnedCoins).coerceAtLeast(0)
+                }
+                require(economy.bonusCoins == expectedBonus)
             }
             require(game.ownTickets.map { it.id }.distinct().size == game.ownTickets.size)
             require(game.called.size <= 90 && game.called.distinct() == game.called && game.called.all { it in 1..90 })

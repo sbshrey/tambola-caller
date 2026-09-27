@@ -13,10 +13,11 @@ private val computerHandles = listOf("ChaiChamp", "NeonNinja", "LuckyMango", "Pi
 internal fun computerPlayer(roomId: String, index: Int): Player = Player("computer-$roomId-$index",
     computerHandles[Math.floorMod(roomId.hashCode() + index - 1, computerHandles.size)], computer = true, avatar = index)
 
-internal fun coinOptions(humans: Int = 1) = RoomOptions(
+internal fun coinOptions(humans: Int = 1, rulesVersion: Int = 1) = RoomOptions(
     game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6, manualClaims = true,
-        prizes = CoinPool(2).prizes.map { it.prize }),
-    capacity = 8, intervalSeconds = 5, computerPlayers = (4 - humans).coerceAtLeast(0), coinGame = true,
+        prizes = CoinPool(2, rulesVersion).prizes.map { it.prize }),
+    capacity = if (rulesVersion == 2) 50 else 8, intervalSeconds = if (rulesVersion == 2) 10 else 5,
+    computerPlayers = (4 - humans).coerceAtLeast(0), coinGame = true, coinRulesVersion = rulesVersion,
 )
 
 /** Lobby estimates may change as real players arrive. The started pool is immutable. */
@@ -25,9 +26,11 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
     require(purchases.keys == members.map { it.id }.toSet() && purchases.values.all { it in 1..6 })
     val computers = if (friendTable) 0 else (4 - members.size).coerceAtLeast(0)
     val tickets = purchases.values.sum() + computers * COMPUTER_TICKETS
-    val prizes = if (tickets >= 2) CoinPool(tickets).prizes.map { it.prize } else CoinPool(2).prizes.map { it.prize }
+    val prizes = CoinPool(tickets.coerceAtLeast(2), options.coinRulesVersion).prizes.map { it.prize }
+    val players = (members.size + computers).coerceAtLeast(1)
+    val winners = if (options.coinRulesVersion == 1) 1 else ((players + 9) / 10).coerceAtLeast(2).coerceAtMost(players)
     return copy(options = options.copy(computerPlayers = computers,
-        game = options.game.copy(prizes = prizes)))
+        game = options.game.copy(prizes = prizes, winnersPerPrize = winners)))
 }
 
 internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
@@ -37,7 +40,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
         computerPlayer(id, index)
     }
     val counts = purchases + computers.associate { it.id to COMPUTER_TICKETS }
-    val pool = CoinPool(counts.values.sum())
+    val pool = CoinPool(counts.values.sum(), options.coinRulesVersion)
     val settings = lobby.options.game.copy(prizes = pool.prizes.map { it.prize })
     val game = Round.create(members.map { Player(it.id, it.name, avatar = it.avatar) } + computers,
         settings, now = now, ticketCounts = counts).start()
@@ -45,7 +48,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
     return lobby.copy(options = lobby.options.copy(game = settings), phase = RoomPhase.ACTIVE, locked = true,
         expiresAt = now + ROOM_LIFETIME,
         startsAt = null, coinPool = pool, round = game, nonce = nonce, drawCommitment = commitment(game, nonce),
-        nextDrawAt = now + 5_000L)
+        nextDrawAt = now + options.intervalSeconds * 1_000L)
 }
 
 internal object RoomEconomy {
@@ -67,6 +70,12 @@ internal object RoomEconomy {
         pool.allocations(round).forEach { allocation ->
             if (round.players.any { it.id == allocation.playerId && !it.computer }) {
                 CoinLedger.credit(connection, allocation.playerId, "round:${round.id}:${allocation.key}", allocation.coins, now)
+            }
+        }
+        room.powerUps.forEach { (player, powerUp) ->
+            if (round.players.any { it.id == player && !it.computer }) {
+                val bonus = pool.powerUpBonus(round, player, powerUp)
+                if (bonus > 0) CoinLedger.credit(connection, player, "round:${round.id}:powerup", bonus, now)
             }
         }
     }

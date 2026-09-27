@@ -1,0 +1,338 @@
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedRewardsUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+io.github.sbshrey.tambola.game.ExpandedRewardsUiTest:
+INSTRUMENTATION_STATUS: test=englishDailyAndPowerUpChoices
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedRewardsUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=englishDailyAndPowerUpChoices
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedRewardsUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiDailyAndPowerUpChoicesAtLargeText
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedRewardsUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=hindiDailyAndPowerUpChoicesAtLargeText
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+io.github.sbshrey.tambola.game.CoinLobbyTest:
+INSTRUMENTATION_STATUS: test=allEightResultsKeepFullNamesAndAmounts
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: HOUSE_TWO payout must fit in the initial normal-text viewport
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:153)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+
+INSTRUMENTATION_STATUS: stream=
+Error in allEightResultsKeepFullNamesAndAmounts(io.github.sbshrey.tambola.game.CoinLobbyTest):
+java.lang.AssertionError: HOUSE_TWO payout must fit in the initial normal-text viewport
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:153)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+
+INSTRUMENTATION_STATUS: test=allEightResultsKeepFullNamesAndAmounts
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=queueCountdownEndsAndNewServerSnapshotStartsTheNextCountdown
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=queueCountdownEndsAndNewServerSnapshotStartsTheNextCountdown
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=friendsResultsOfferExplicitSameGroupPurchase
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=friendsResultsOfferExplicitSameGroupPurchase
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=brokeWalletShowsFreeCoinsInsteadOfAnyPurchase
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=brokeWalletShowsFreeCoinsInsteadOfAnyPurchase
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=allEightResultsAndReplayStayReachableInLargeHindi
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=allEightResultsAndReplayStayReachableInLargeHindi
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=prizeCardsWrapAtNarrowWidthsAndDoubleSizeText
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=prizeCardsWrapAtNarrowWidthsAndDoubleSizeText
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiLandingKeepsAllChoicesAndPlayVisibleAtLargeText
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=hindiLandingKeepsAllChoicesAndPlayVisibleAtLargeText
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=friendsResultsKeepReplayAndAlternativesReachableInLargeHindi
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=friendsResultsKeepReplayAndAlternativesReachableInLargeHindi
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=replayRetainsChoiceAcrossRemountAndOffersOnlyAffordableTickets
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=replayRetainsChoiceAcrossRemountAndOffersOnlyAffordableTickets
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=sharedResultsShowOnlyOwnShareAndPlayAgainRemainsOneTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=sharedResultsShowOnlyOwnShareAndPlayAgainRemainsOneTap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=refillUsesFreshServerClockAndRemountDoesNotRestartCooldown
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=refillUsesFreshServerClockAndRemountDoesNotRestartCooldown
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=sharedResultsStayReadableInHindiAtLargerTextSize
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=sharedResultsStayReadableInHindiAtLargerTextSize
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=firstPlayAndPersonalizationKeepSixReadableChoices
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.CoinLobbyTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=firstPlayAndPersonalizationKeepSixReadableChoices
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.GameDataTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+io.github.sbshrey.tambola.game.GameDataTest:
+INSTRUMENTATION_STATUS: test=settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.GameDataTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component with Text + InputText + EditableText contains 'Your game data' (ignoreCase: false) is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.GameDataTest.settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound(GameDataTest.kt:68)
+
+INSTRUMENTATION_STATUS: stream=
+Error in settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound(io.github.sbshrey.tambola.game.GameDataTest):
+java.lang.AssertionError: Assert failed: The component with Text + InputText + EditableText contains 'Your game data' (ignoreCase: false) is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.GameDataTest.settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound(GameDataTest.kt:68)
+
+INSTRUMENTATION_STATUS: test=settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.GameDataTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.GameDataTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=17
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'online-name')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.GameDataTest$disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile$1.invokeSuspend(GameDataTest.kt:98)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.GameDataTest.disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile(GameDataTest.kt:91)
+
+INSTRUMENTATION_STATUS: stream=
+Error in disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile(io.github.sbshrey.tambola.game.GameDataTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'online-name')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.GameDataTest$disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile$1.invokeSuspend(GameDataTest.kt:98)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.GameDataTest.disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile(GameDataTest.kt:91)
+
+INSTRUMENTATION_STATUS: test=disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 129.335
+There were 3 failures:
+1) allEightResultsKeepFullNamesAndAmounts(io.github.sbshrey.tambola.game.CoinLobbyTest)
+java.lang.AssertionError: HOUSE_TWO payout must fit in the initial normal-text viewport
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.completeResults(CoinLobbyTest.kt:153)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.allEightResultsKeepFullNamesAndAmounts(CoinLobbyTest.kt:124)
+2) settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound(io.github.sbshrey.tambola.game.GameDataTest)
+java.lang.AssertionError: Assert failed: The component with Text + InputText + EditableText contains 'Your game data' (ignoreCase: false) is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.GameDataTest.settingsDisclosureRemainsReadableAcrossRecreationWithoutChangingRound(GameDataTest.kt:68)
+3) disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile(io.github.sbshrey.tambola.game.GameDataTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'online-name')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:81)
+	at io.github.sbshrey.tambola.game.GameDataTest$disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile$1.invokeSuspend(GameDataTest.kt:98)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.GameDataTest.disclosureBeforeRegistrationPreservesNicknameWithoutCreatingProfile(GameDataTest.kt:91)
+
+FAILURES!!!
+Tests run: 17,  Failures: 3
+
+
+INSTRUMENTATION_CODE: -1

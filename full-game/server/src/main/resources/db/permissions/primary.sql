@@ -21,3 +21,5 @@ GRANT SELECT, INSERT ON coin_wallets, coin_ledger TO :"runtime_role";
 GRANT UPDATE (refill_after) ON coin_wallets TO :"runtime_role";
 GRANT SELECT, INSERT ON match_receipts TO :"runtime_role";
 GRANT UPDATE (response) ON match_receipts TO :"runtime_role";
+
+GRANT SELECT, INSERT ON reward_ad_intents, reward_ad_receipts TO :"runtime_role";

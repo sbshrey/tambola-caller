@@ -34,7 +34,12 @@ class CoinPoolTest {
         }
         assertThrows(IllegalArgumentException::class.java) { CoinPool(1) }
         assertThrows(IllegalArgumentException::class.java) { CoinPool(193) }
-        assertThrows(IllegalArgumentException::class.java) { CoinPool(2, 2) }
+        assertThrows(IllegalArgumentException::class.java) { CoinPool(2, 3) }
+        for (count in 2..300) {
+            val plan = CoinPool(count, 2)
+            assertEquals(6, plan.prizes.size)
+            assertEquals(plan.coins, plan.prizes.sumOf { it.coins })
+        }
     }
 
     private fun game(tickets: Int = 2, players: Int = 3): Pair<CoinPool, Round> {

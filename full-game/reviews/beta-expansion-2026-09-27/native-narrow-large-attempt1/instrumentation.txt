@@ -1,0 +1,213 @@
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedArenaUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+io.github.sbshrey.tambola.game.ExpandedArenaUiTest:
+INSTRUMENTATION_STATUS: test=landscapeKeepsTwoTicketsAndOpenClaimAcrossCalls
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedArenaUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=landscapeKeepsTwoTicketsAndOpenClaimAcrossCalls
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedArenaUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=portraitKeepsTwoTicketsAndOpenClaimAcrossCalls
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ExpandedArenaUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=portraitKeepsTwoTicketsAndOpenClaimAcrossCalls
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+io.github.sbshrey.tambola.game.ArenaControlsUiTest:
+INSTRUMENTATION_STATUS: test=englishPortraitControls
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=englishPortraitControls
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiPortraitControls
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=hindiPortraitControls
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiLandscapeThreeTickets
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:48)
+
+INSTRUMENTATION_STATUS: stream=
+Error in hindiLandscapeThreeTickets(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:48)
+
+INSTRUMENTATION_STATUS: test=hindiLandscapeThreeTickets
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=englishLandscapeControls
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=englishLandscapeControls
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=englishPortraitOneTicket
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=englishPortraitOneTicket
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiLandscapeControls
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:43)
+
+INSTRUMENTATION_STATUS: stream=
+Error in hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:43)
+
+INSTRUMENTATION_STATUS: test=hindiLandscapeControls
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiLandscapeEightFriends
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.ArenaControlsUiTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=9
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:49)
+
+INSTRUMENTATION_STATUS: stream=
+Error in hindiLandscapeEightFriends(io.github.sbshrey.tambola.game.ArenaControlsUiTest):
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:49)
+
+INSTRUMENTATION_STATUS: test=hindiLandscapeEightFriends
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 71.058
+There were 3 failures:
+1) hindiLandscapeThreeTickets(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeThreeTickets(ArenaControlsUiTest.kt:48)
+2) hindiLandscapeControls(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeControls(ArenaControlsUiTest.kt:43)
+3) hindiLandscapeEightFriends(io.github.sbshrey.tambola.game.ArenaControlsUiTest)
+java.lang.AssertionError: Clipped text: दावा करें
+Clipped text: दावा करें
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls(ArenaControlsUiTest.kt:174)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.controls$default(ArenaControlsUiTest.kt:52)
+	at io.github.sbshrey.tambola.game.ArenaControlsUiTest.hindiLandscapeEightFriends(ArenaControlsUiTest.kt:49)
+
+FAILURES!!!
+Tests run: 9,  Failures: 3
+
+
+INSTRUMENTATION_CODE: -1

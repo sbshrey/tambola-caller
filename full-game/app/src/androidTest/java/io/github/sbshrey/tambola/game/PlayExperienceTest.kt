@@ -30,17 +30,22 @@ class PlayExperienceTest {
         until { model.state.value.round == null && model.state.value.screen == Screen.HOME }
     }
 
-    @Test fun oneTapQuickGameHasOnlyMyThreeTicketsAndStartsCalling() {
+    @Test fun offlineQuickGameKeepsTwoTicketsAndTenSecondCalls() {
         capture("redesign-home")
-        compose.onNodeWithTag("quick-play").assertIsDisplayed().performClick()
+        compose.runOnIdle { model.quickPlay() }
         until { model.state.value.round != null && model.state.value.auto }
         val round = model.state.value.round!!
         assertEquals(3, round.settings.ticketsPerPlayer)
-        assertTrue(round.settings.assistedMarking)
+        assertFalse(round.settings.assistedMarking)
         assertEquals(2, round.players.count { it.computer })
-        assertEquals(5, model.state.value.preferences.interval)
+        assertEquals(10, model.state.value.preferences.interval)
         assertEquals(6, round.settings.prizes.size)
-        assertVisibleHand(3)
+        compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
+        compose.onNodeWithTag("hand-ticket-2").assertIsDisplayed()
+        compose.onNodeWithTag("hand-ticket-3").assertDoesNotExist()
+        compose.onNodeWithTag("tickets-down").performClick()
+        compose.onNodeWithTag("hand-ticket-3").assertIsDisplayed()
+        compose.onNodeWithTag("tickets-up").performClick()
         until { model.state.value.round!!.called.isNotEmpty() }
         compose.onNodeWithTag("local-auto").performClick()
         until { model.state.value.round!!.status == RoundStatus.PAUSED && !model.state.value.auto }

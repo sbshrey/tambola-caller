@@ -41,16 +41,17 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     val finished = room?.phase == RoomPhase.FINISHED
     val friendsFinished = finished && coins?.friendTable == true
     val active = room?.phase == RoomPhase.ACTIVE
-    val enabled = !state.loading && !state.busy && !state.pending && !state.storageFailure && !state.sessionExpired && state.available
+    val enabled = !state.adActive && !state.loading && !state.busy && !state.pending && !state.storageFailure && !state.sessionExpired && state.available
     var chosenTickets by rememberSaveable(state.preferredTickets) { mutableIntStateOf(state.preferredTickets) }
-    var profile by remember { mutableStateOf(false) }
+    var profile by rememberSaveable { mutableStateOf(false) }
     var profileName by rememberSaveable { mutableStateOf("") }
     var profileAvatar by rememberSaveable { mutableIntStateOf(0) }
     var delete by remember { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
-    var gameData by remember { mutableStateOf(false) }
+    var gameData by rememberSaveable { mutableStateOf(false) }
     var friendDialog by rememberSaveable { mutableStateOf(false) }
-    val balance = state.wallet?.balance ?: if (state.name == null) COIN_STARTER_BALANCE else null
+    var powerUps by remember { mutableStateOf(false) }
+    val balance = state.wallet?.balance ?: if (state.name == null) COIN_BETA_BALANCE else null
     val tickets = affordableTickets(chosenTickets, balance)
     val cost = tickets * COIN_TICKET_PRICE
     MaterialTheme(colorScheme = GameNightPalette.colors) {
@@ -64,7 +65,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                 Text("T", color = GameNightPalette.background, fontWeight = FontWeight.Black, fontSize = 23.sp,
                     modifier = Modifier.background(GameNightPalette.coral, CircleShape).padding(horizontal = 13.dp, vertical = 7.dp).clearAndSetSemantics {})
                 Text(words(R.string.ui_tambola_together), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Surface(onClick = { profile = true }, color = GameNightPalette.raised, shape = CircleShape,
+                Surface(onClick = { model.refreshWallet(); profile = true }, color = GameNightPalette.raised, shape = CircleShape,
                     modifier = Modifier.heightIn(min = 48.dp).testTag("coin-wallet").semantics { contentDescription = words(R.string.coin_profile) }) {
                     Row(Modifier.padding(horizontal = 10.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         AvatarBadge(state.avatar, Modifier.clearAndSetSemantics {}, size = 32.dp)
@@ -93,6 +94,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             Text(words(R.string.coin_won, coins?.settledWinnings ?: 0), color = CoinGold, fontSize = 28.sp, fontWeight = FontWeight.Black,
                                 modifier = Modifier.testTag("coin-winnings"))
                             if ((coins?.returnedCoins ?: 0) > 0) Text(words(R.string.coin_returned, coins!!.returnedCoins), fontSize = 13.sp, color = Color(0xFFB7D0C0))
+                            if ((coins?.bonusCoins ?: 0) > 0) Text(words(R.string.powerup_bonus_coins, coins!!.bonusCoins), color = GameNightPalette.mint)
                             val ownWins = remember(coins?.prizes, room.round?.awards, room.round?.ownTickets) {
                                 ownCoinWins(coins?.prizes.orEmpty(), room.round?.awards.orEmpty(), room.round?.ownTickets.orEmpty().map { it.id }.toSet())
                             }
@@ -178,6 +180,12 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                           }
                         }
                     }
+                    if (!active && !waiting) {
+                        TextButton(onClick = { powerUps = true }, enabled = enabled, modifier = Modifier.testTag("choose-powerup")) {
+                            Text(words(R.string.powerup_selected, words.powerUpTitle(state.chosenPowerUp)))
+                        }
+                        if (state.name != null) RewardedCoins(enabled, model)
+                    }
                     if (state.sessionExpired || state.storageFailure) TextButton(onClick = { reset = true }) { Text(words(R.string.ui_reset_online_data)) }
                     if (!state.available) Text(words(R.string.coin_unavailable), fontSize = 13.sp)
                     Text(words(R.string.coin_free), color = GameNightPalette.muted, fontSize = 11.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -185,7 +193,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                 }
               }
             }
-            if (wide) Row(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (wide) Row(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = if (finished) Alignment.Top else Alignment.CenterVertically) {
                 Box(Modifier.weight(if (waiting) 2f else .85f)) { hero() }
                 if (showControls) Box(Modifier.weight(1.15f)) { controls() }
             } else Column(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()).padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) { hero(); controls() }
@@ -194,9 +202,17 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     }
     if (profile && state.name == null) LobbyPlayerDialog(profileName, profileAvatar, enabled,
         changeName = { if (it.length <= 40) profileName = it }, chooseAvatar = { profileAvatar = it },
-        save = { profile = false; model.register(profileName, profileAvatar) }, close = { profile = false })
+        save = { profile = false; model.register(profileName, profileAvatar) }, close = { profile = false }, openData = { gameData = true })
     else if (profile) AlertDialog(onDismissRequest = { profile = false }, title = { Text(state.name ?: words(R.string.coin_profile)) }, text = {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(Modifier.testTag("coin-profile-scroll").verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(words(R.string.beta_coins_grant, COIN_BETA_BALANCE), fontWeight = FontWeight.Bold)
+            state.loginRewards?.let { reward ->
+                Text(words(R.string.daily_coins_collected, reward.day, reward.coins))
+            }
+            Text(words(R.string.daily_coins_rules))
+            DAILY_COIN_REWARDS.forEachIndexed { index, amount ->
+                Text(words(R.string.daily_coins_day, index + 1, amount))
+            }
             Text(words(R.string.coin_free))
             Text(words(R.string.coin_ties))
             TextButton(onClick = { profile = false; gameData = true }) { Text(words(R.string.privacy_open)) }
@@ -216,8 +232,30 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     if (gameData) GameDataDialog { gameData = false }
     if (friendDialog) FriendEntryDialog(tickets, cost, enabled,
         enter = { code -> friendDialog = false; friends(tickets, code) }, close = { friendDialog = false })
+    if (powerUps) ArenaDialog(words(R.string.powerup_title), { powerUps = false }) {
+        Text(words(R.string.powerup_beta_free))
+        PowerUp.entries.forEach { powerUp ->
+            OutlinedButton(onClick = { model.choosePowerUp(powerUp); powerUps = false }, enabled = enabled,
+                modifier = Modifier.fillMaxWidth().testTag("powerup-${powerUp.name}")) {
+                Column(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(words.powerUpTitle(powerUp), fontWeight = FontWeight.Bold)
+                    Text(words(when (powerUp) {
+                        PowerUp.NONE -> R.string.powerup_none_detail
+                        PowerUp.TICKET_INSURANCE -> R.string.powerup_insurance_detail
+                        PowerUp.PRIZE_BOOST -> R.string.powerup_boost_detail
+                    }), fontSize = 12.sp)
+                }
+            }
+        }
+    }
     }
 }
+
+private fun GameText.powerUpTitle(powerUp: PowerUp): String = this(when (powerUp) {
+    PowerUp.NONE -> R.string.powerup_none
+    PowerUp.TICKET_INSURANCE -> R.string.powerup_insurance
+    PowerUp.PRIZE_BOOST -> R.string.powerup_boost
+})
 
 @Composable
 internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifier, awarded: Set<Prize> = emptySet(), shared: Set<Prize> = emptySet(), onDark: Boolean = true) {
@@ -256,7 +294,7 @@ internal fun CoinCallClock(room: RoomView, connection: Connection, reconnect: ()
         Text(if (seconds > 0) words(if (largeText) R.string.play_next_call_short else R.string.coin_next, seconds)
             else words(if (largeText) R.string.play_next_call_wait else R.string.coin_next_wait),
             fontSize = 11.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("next-call-copy"))
-        LinearProgressIndicator(progress = { (remaining.value / 5000f).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = CoinGold)
+        LinearProgressIndicator(progress = { (remaining.value / (room.options.intervalSeconds * 1000f)).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth(), color = CoinGold)
     }
 }
 

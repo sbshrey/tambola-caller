@@ -85,6 +85,20 @@ class RuntimePrivilegesTest {
         assertEquals(state, failure.sqlState)
     }
 
+    @Test fun `restricted runtime can grant and cascade delete ad rewards`() {
+        val unit = "ca-app-pub-1234567890123456/1234567890"
+        val rewards = RoomService(mainRuntime, now::get, journal, RewardedAds.forTest(unit) { })
+        val actor = rewards.register(GuestRequest("Restricted ad player"), "ad-test")
+        val intent = rewards.prepareAd(actor.token)
+        val callback = "ad_unit=1234567890&custom_data=${intent.id}&reward_amount=1000&reward_item=coins&timestamp=${now.get()}&transaction_id=abcdef0123456789&signature=test&key_id=1"
+        rewards.verifyAd(callback); rewards.verifyAd(callback)
+        assertEquals(2500L, rewards.adStatus(actor.token, intent.id).wallet.balance)
+        denied(mainRuntime, "UPDATE reward_ad_receipts SET credited_at = 1")
+        rewards.deleteProfile(actor.token, DeleteProfileRequest(UUID.randomUUID().toString()), "ad-test")
+        rewards.verifyAd(callback)
+        assertEquals(0L, mainRuntime.transaction { it.query("SELECT count(*) FROM reward_ad_intents") { row -> row.getLong(1) }.single() })
+    }
+
     @Test fun `restricted roles play archive redact retry replay and clean retained records`() {
         val buyer = service.register(GuestRequest("Restricted coin buyer"), "coin-buyer")
         val purchase = MatchRequest(UUID.randomUUID().toString(), 6)

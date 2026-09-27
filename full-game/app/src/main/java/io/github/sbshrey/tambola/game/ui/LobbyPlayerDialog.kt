@@ -17,6 +17,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -28,7 +30,7 @@ import io.github.sbshrey.tambola.game.R
 /** A landscape keyboard leaves too little height for AlertDialog's fixed title/action slots. */
 @Composable
 internal fun LobbyPlayerDialog(name: String, avatar: Int, enabled: Boolean, changeName: (String) -> Unit,
-    chooseAvatar: (Int) -> Unit, save: () -> Unit, close: () -> Unit) {
+    chooseAvatar: (Int) -> Unit, save: () -> Unit, close: () -> Unit, openData: (() -> Unit)? = null) {
     val words = gameText()
     val focus = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
@@ -44,6 +46,10 @@ internal fun LobbyPlayerDialog(name: String, avatar: Int, enabled: Boolean, chan
                     if (!short) Text(words(R.string.lobby_personalize), fontSize = 22.sp, fontWeight = FontWeight.Bold)
                     OutlinedTextField(name, changeName, singleLine = true, enabled = enabled,
                         label = { Text(words(R.string.ui_online_display_name)) },
+                        trailingIcon = if (openData == null) null else ({
+                            IconButton(onClick = { finish(openData) }, modifier = Modifier.size(48.dp).testTag("open-game-data")
+                                .semantics { contentDescription = words(R.string.privacy_open) }) { Text("ⓘ", fontSize = 24.sp) }
+                        }),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = { finish {} }),
                         modifier = Modifier.fillMaxWidth().testTag("lobby-player-name"))
