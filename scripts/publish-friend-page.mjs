@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { resolve, dirname } from 'node:path';
 
 // Publish only the invitation assets and compatible worker routing to the existing Pages branch.
 // The rest of main's tree is retained; --expected-base prevents silently overwriting newer work.
@@ -32,14 +33,16 @@ for (const { path, content } of files) {
 if (!process.argv.includes('--apply')) {
   console.log(JSON.stringify({ ready: true, base: expected, sourceCommit, paths }));
 } else {
+  const publicationRecord = resolve(root, process.env.TAMBOLA_INVITE_PUBLICATION_RECORD || 'full-game/.test-workspace/friend-page-publication.json');
+  await mkdir(dirname(publicationRecord), { recursive: true });
   const tree = api(`git/commits/${expected}`).tree.sha;
   const entries = files.map(({ path, content }) => ({ path, mode: '100644', type: 'blob',
     sha: api('git/blobs', { content: Buffer.from(content.replaceAll('\r\n', '\n')).toString('base64'), encoding: 'base64' }).sha }));
   const nextTree = api('git/trees', { base_tree: tree, tree: entries }).sha;
-  const commit = api('git/commits', { message: 'Publish stable Tambola friend invitations', tree: nextTree, parents: [expected] }).sha;
+  const commit = api('git/commits', { message: 'Update Tambola friend invitation page', tree: nextTree, parents: [expected] }).sha;
   assert.equal(api('git/refs/heads/main', { sha: commit, force: false }, 'PATCH').object.sha, commit);
   const result = { publishedAt: new Date().toISOString(), base: expected, sourceCommit, mainCommit: commit, files: entries,
-    site: 'https://sbshrey.github.io/tambola-caller/friends/', scope: 'Only these four files changed on main; Pages build and public checks still required.' };
-  await writeFile(new URL('../full-game/reviews/stable-invitations-2026-09-27/pages-publication.json', import.meta.url), JSON.stringify(result, null, 2) + '\n');
+    site: 'https://sbshrey.github.io/tambola-caller/friends/', scope: 'Main changes are limited to the four allowed paths; Pages build and public checks still required.' };
+  await writeFile(publicationRecord, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));
 }

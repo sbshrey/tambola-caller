@@ -1,0 +1,25 @@
+
+io.github.sbshrey.tambola.game.NumberBoardUiTest:
+Error in englishLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Text overflows: Latest · 86; size=200 x 63; paragraph=1646.0x63.0; constraints=Constraints(minWidth = 0, maxWidth = 1646, minHeight = 0, maxHeight = 527); density=androidx.compose.ui.node.LayoutModifierNodeCoordinator@3e2c7; style=TextStyle(color=Color(1.0, 0.5372549, 0.4, 1.0, sRGB IEC61966-2.1), brush=null, alpha=1.0, fontSize=16.0.sp, fontWeight=FontWeight(weight=700), fontStyle=null, fontSynthesis=null, fontFamily=null, fontFeatureSettings=null, letterSpacing=Unspecified, baselineShift=null, textGeometricTransform=null, localeList=null, background=Color(0.0, 0.0, 0.0, 0.0, None), textDecoration=null, shadow=null, drawStyle=null, textAlign=Unspecified, textDirection=Unspecified, lineHeight=24.0.sp, textIndent=null, platformStyle=PlatformTextStyle(spanStyle=null, paragraphSyle=PlatformParagraphStyle(includeFontPadding=false, emojiSupportMatch=EmojiSupportMatch.Default)), lineHeightStyle=LineHeightStyle(alignment=LineHeightStyle.Alignment.Center, trim=LineHeightStyle.Trim.None,mode=LineHeightStyle.Mode.Fixed), lineBreak=LineBreak(strategy=Strategy.Unspecified, strictness=Strictness.Unspecified, wordBreak=WordBreak.Unspecified), hyphens=Hyphens.Unspecified, textMotion=null)
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:131)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:79)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.englishLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:46)
+
+
+Time: 5.633
+There was 1 failure:
+1) englishLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Text overflows: Latest · 86; size=200 x 63; paragraph=1646.0x63.0; constraints=Constraints(minWidth = 0, maxWidth = 1646, minHeight = 0, maxHeight = 527); density=androidx.compose.ui.node.LayoutModifierNodeCoordinator@3e2c7; style=TextStyle(color=Color(1.0, 0.5372549, 0.4, 1.0, sRGB IEC61966-2.1), brush=null, alpha=1.0, fontSize=16.0.sp, fontWeight=FontWeight(weight=700), fontStyle=null, fontSynthesis=null, fontFamily=null, fontFeatureSettings=null, letterSpacing=Unspecified, baselineShift=null, textGeometricTransform=null, localeList=null, background=Color(0.0, 0.0, 0.0, 0.0, None), textDecoration=null, shadow=null, drawStyle=null, textAlign=Unspecified, textDirection=Unspecified, lineHeight=24.0.sp, textIndent=null, platformStyle=PlatformTextStyle(spanStyle=null, paragraphSyle=PlatformParagraphStyle(includeFontPadding=false, emojiSupportMatch=EmojiSupportMatch.Default)), lineHeightStyle=LineHeightStyle(alignment=LineHeightStyle.Alignment.Center, trim=LineHeightStyle.Trim.None,mode=LineHeightStyle.Mode.Fixed), lineBreak=LineBreak(strategy=Strategy.Unspecified, strictness=Strictness.Unspecified, wordBreak=WordBreak.Unspecified), hyphens=Hyphens.Unspecified, textMotion=null)
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:131)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:79)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.englishLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:46)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

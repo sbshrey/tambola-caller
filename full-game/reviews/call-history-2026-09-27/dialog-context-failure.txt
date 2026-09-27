@@ -1,0 +1,78 @@
+
+io.github.sbshrey.tambola.game.NumberBoardUiTest:
+Error in largeHindiPortraitHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Failed to assert the following: (StateDescription = 'पुकार 76 पर पुकारा गया')
+Semantics of the node:
+Node #586 at (l=74.0, t=495.0, r=194.0, b=615.0)px, Tag: 'board-number-1'
+CollectionItemInfo = 'androidx.compose.ui.semantics.CollectionItemInfo@24a23c8'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 10.0.dp), topEnd = CornerSize(size = 10.0.dp), bottomEnd = CornerSize(size = 10.0.dp), bottomStart = CornerSize(size = 10.0.dp))'
+StateDescription = 'Called at call 76'
+Text = '[1]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 89 siblings
+Selector used: (TestTag = 'board-number-1')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiPortraitHistoryKeepsTicketPage(NumberBoardUiTest.kt:49)
+
+Error in largeHindiLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Failed to assert the following: (StateDescription = 'पुकार 76 पर पुकारा गया')
+Semantics of the node:
+Node #1362 at (l=74.0, t=495.0, r=225.0, b=646.0)px, Tag: 'board-number-1'
+CollectionItemInfo = 'androidx.compose.ui.semantics.CollectionItemInfo@40fd2fb'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 10.0.dp), topEnd = CornerSize(size = 10.0.dp), bottomEnd = CornerSize(size = 10.0.dp), bottomStart = CornerSize(size = 10.0.dp))'
+StateDescription = 'Called at call 76'
+Text = '[1]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 89 siblings
+Selector used: (TestTag = 'board-number-1')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:48)
+.....
+
+Time: 43.256
+There were 2 failures:
+1) largeHindiPortraitHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Failed to assert the following: (StateDescription = 'पुकार 76 पर पुकारा गया')
+Semantics of the node:
+Node #586 at (l=74.0, t=495.0, r=194.0, b=615.0)px, Tag: 'board-number-1'
+CollectionItemInfo = 'androidx.compose.ui.semantics.CollectionItemInfo@24a23c8'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 10.0.dp), topEnd = CornerSize(size = 10.0.dp), bottomEnd = CornerSize(size = 10.0.dp), bottomStart = CornerSize(size = 10.0.dp))'
+StateDescription = 'Called at call 76'
+Text = '[1]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 89 siblings
+Selector used: (TestTag = 'board-number-1')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiPortraitHistoryKeepsTicketPage(NumberBoardUiTest.kt:49)
+2) largeHindiLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Failed to assert the following: (StateDescription = 'पुकार 76 पर पुकारा गया')
+Semantics of the node:
+Node #1362 at (l=74.0, t=495.0, r=225.0, b=646.0)px, Tag: 'board-number-1'
+CollectionItemInfo = 'androidx.compose.ui.semantics.CollectionItemInfo@40fd2fb'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 10.0.dp), topEnd = CornerSize(size = 10.0.dp), bottomEnd = CornerSize(size = 10.0.dp), bottomStart = CornerSize(size = 10.0.dp))'
+StateDescription = 'Called at call 76'
+Text = '[1]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 89 siblings
+Selector used: (TestTag = 'board-number-1')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:48)
+
+FAILURES!!!
+Tests run: 7,  Failures: 2

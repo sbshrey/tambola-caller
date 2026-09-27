@@ -1,0 +1,76 @@
+
+io.github.sbshrey.tambola.game.NumberBoardUiTest:
+Error in largeHindiPortraitHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Text overflows: अभी पुकारा · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiPortraitHistoryKeepsTicketPage(NumberBoardUiTest.kt:49)
+
+Error in largeHindiLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Text overflows: अभी पुकारा · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:48)
+
+Error in englishLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Text overflows: Latest · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.englishLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:46)
+
+Error in largeEnglishPortraitHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Text overflows: Latest · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeEnglishPortraitHistoryKeepsTicketPage(NumberBoardUiTest.kt:47)
+...
+
+Time: 22.995
+There were 4 failures:
+1) largeHindiPortraitHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Text overflows: अभी पुकारा · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiPortraitHistoryKeepsTicketPage(NumberBoardUiTest.kt:49)
+2) largeHindiLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Text overflows: अभी पुकारा · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeHindiLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:48)
+3) englishLandscapeHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Text overflows: Latest · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.englishLandscapeHistoryKeepsTicketPage(NumberBoardUiTest.kt:46)
+4) largeEnglishPortraitHistoryKeepsTicketPage(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Text overflows: Latest · 86
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertFalse(Assert.java:65)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.assertFits(NumberBoardUiTest.kt:130)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.readableHistory(NumberBoardUiTest.kt:78)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.largeEnglishPortraitHistoryKeepsTicketPage(NumberBoardUiTest.kt:47)
+
+FAILURES!!!
+Tests run: 7,  Failures: 4

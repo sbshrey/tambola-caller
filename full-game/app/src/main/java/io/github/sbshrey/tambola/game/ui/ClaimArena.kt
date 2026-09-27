@@ -53,7 +53,8 @@ internal fun ClaimArena(
     val remaining = table.settings.prizes.size + table.settings.customPrizes.size - table.awards.size - table.customAwards.size
     var menu by remember { mutableStateOf(false) }
     var details by remember { mutableStateOf(false) }
-    var board by remember { mutableStateOf(false) }
+    var board by remember(table.id) { mutableStateOf(false) }
+    var history by remember(table.id) { mutableStateOf(false) }
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
     LaunchedEffect(table.called.size, table.finished) { claimTicketId = null }
@@ -77,7 +78,7 @@ internal fun ClaimArena(
                         }
                         DropdownMenu(menu, { menu = false }) {
                             DropdownMenuItem(text = { Text(words(R.string.ui_home)) }, onClick = { menu = false; back() }, modifier = Modifier.testTag("home"))
-                            DropdownMenuItem(text = { Text(words(R.string.ui_number_board)) }, onClick = { menu = false; board = true })
+                            DropdownMenuItem(text = { Text(words(R.string.ui_number_board)) }, onClick = { menu = false; history = false; board = true })
                             DropdownMenuItem(text = { Text(words(R.string.play_prizes)) }, onClick = { menu = false; details = true })
                             DropdownMenuItem(text = { Text(words(R.string.play_players_short, table.players.size)) }, onClick = { menu = false; players = true }, modifier = Modifier.testTag("table-players-menu"))
                             DropdownMenuItem(text = { Text(words(R.string.ui_hear_again)) }, enabled = table.latest != null, onClick = { menu = false; repeatCall() })
@@ -109,12 +110,19 @@ internal fun ClaimArena(
                             fontSize = (30 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
                     }
                     }
-                    Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                        .clickable(role = Role.Button) { history = true; board = true }
+                        .testTag("open-call-history").semantics(mergeDescendants = true) { contentDescription = words(R.string.board_history) },
+                        horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
                         table.called.dropLast(1).takeLast(if (landscape) 4 else 2).reversed().forEach { number ->
                             Box(Modifier.size(if (landscape) 34.dp else 28.dp).graphicsLayer { translationX = (1 - reveal.value) * -14.dp.toPx() }
                                 .background(ink.copy(alpha = .09f), CircleShape), contentAlignment = Alignment.Center) {
                                 Text("$number", fontSize = (14 / LocalDensity.current.fontScale).sp, fontWeight = FontWeight.Bold)
                             }
+                        }
+                        Canvas(Modifier.size(10.dp).clearAndSetSemantics {}) {
+                            drawLine(ink, Offset(size.width * .3f, 0f), Offset(size.width * .8f, size.height / 2), 1.5.dp.toPx())
+                            drawLine(ink, Offset(size.width * .8f, size.height / 2), Offset(size.width * .3f, size.height), 1.5.dp.toPx())
                         }
                     }
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.widthIn(max = if (landscape) 164.dp else 104.dp)) {
@@ -177,13 +185,7 @@ internal fun ClaimArena(
             }
         }
     }
-    if (board) ArenaDialog(words(R.string.ui_the_number_board), { board = false }) {
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            (1..90).forEach { number -> Box(Modifier.size(34.dp).background(if (number in table.called) Color(0xFF21634D) else Panel, RoundedCornerShape(7.dp)), contentAlignment = Alignment.Center) {
-                Text("$number", color = if (number in table.called) Color.White else MaterialTheme.colorScheme.onSurface, fontSize = 14.sp)
-            } }
-        }
-    }
+    if (board) CalledNumberDialog(table.called, history) { board = false }
 }
 
 @Composable

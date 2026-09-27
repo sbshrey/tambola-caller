@@ -1,0 +1,27 @@
+{
+  "nativeHistory": {
+    "seconds": 54.466,
+    "failures": 0,
+    "tests": 7
+  },
+  "nativeRegressions": {
+    "seconds": 64.857,
+    "failures": 0,
+    "tests": 7
+  },
+  "appJvm": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 123
+  },
+  "web": {
+    "tests": 71,
+    "failures": 0
+  },
+  "englishHindiResources": 798
+}

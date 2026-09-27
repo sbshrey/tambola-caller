@@ -184,17 +184,7 @@ fun PlayArena(
         Text(words(R.string.play_prizes_hint), color = Muted)
         RuleList(ownTable)
     }
-    if (board) ArenaDialog(words(R.string.ui_the_number_board), { board = false }) {
-        Text(words(R.string.ui_called_to_go, table.called.size, 90 - table.called.size))
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            (1..90).forEach { number ->
-                Box(Modifier.size(34.dp).background(if (number in table.called) DabGreen else Panel, RoundedCornerShape(7.dp)), contentAlignment = Alignment.Center) {
-                    Text("$number", color = if (number in table.called) Color.White else MaterialTheme.colorScheme.onSurface, fontSize = 14.sp)
-                }
-            }
-        }
-        Text(table.called.joinToString(" → "))
-    }
+    if (board) CalledNumberDialog(table.called) { board = false }
 }
 
 @Composable

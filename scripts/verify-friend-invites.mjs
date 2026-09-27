@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 const modulePath = process.env.TAMBOLA_PLAYWRIGHT_MODULE;
 const { chromium } = await import(modulePath ? pathToFileURL(modulePath).href : 'playwright');
 const root = fileURLToPath(new URL('../', import.meta.url));
-const evidence = resolve(root, 'full-game/reviews/stable-invitations-2026-09-27/browser');
+const evidence = resolve(root, process.env.TAMBOLA_INVITE_REVIEW_DIR || 'full-game/.test-workspace/friend-invite-browser');
 await mkdir(evidence, { recursive: true });
 const legacy = execFileSync('git', ['show', '76b6a2c5da5a4729a7dbcd28fac83878780ac9d8:sw.js'], { cwd: root, encoding: 'utf8', windowsHide: true });
 let oldWorker = true;
@@ -69,7 +69,7 @@ try {
   page.on('request', request => requests.push({ url: request.url(), type: request.resourceType() }));
   await page.goto(base + 'friends/#ABCDEFG2');
   await page.locator('#open[href^="intent:"]').waitFor();
-  assert.equal(await page.locator('#open').getAttribute('href'), 'intent://friends/ABCDEFG2#Intent;scheme=tambola-beta;package=io.github.sbshrey.tambola.game.beta;S.browser_fallback_url=https%3A%2F%2Fgithub.com%2Fsbshrey%2Ftambola-caller%2Freleases%2Ftag%2Ffull-game-alpha31-stable-invites;end');
+  assert.equal(await page.locator('#open').getAttribute('href'), 'intent://friends/ABCDEFG2#Intent;scheme=tambola-beta;package=io.github.sbshrey.tambola.game.beta;S.browser_fallback_url=https%3A%2F%2Fgithub.com%2Fsbshrey%2Ftambola-caller%2Freleases%2Ftag%2Ffull-game-alpha32-call-history;end');
   await page.screenshot({ path: resolve(evidence, 'english-desktop.png'), fullPage: true });
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { async writeText(value) { window.copiedCode = value; } } }));
   await page.getByRole('button', { name: 'Copy code', exact: true }).click();

@@ -1,0 +1,10 @@
+<resources>
+    <string name="board_numbers">Numbers</string>
+    <string name="board_history">Call history</string>
+    <string name="board_latest">Latest · %1$d</string>
+    <string name="board_latest_first">Latest first</string>
+    <string name="board_call_index">Call %1$d</string>
+    <string name="board_history_entry">Call %1$d, number %2$d</string>
+    <string name="board_called_at">Called at call %1$d</string>
+    <string name="board_latest_at">Latest number, call %1$d</string>
+</resources>

@@ -1,0 +1,31 @@
+
+io.github.sbshrey.tambola.game.NumberBoardUiTest:
+Error in calledAndUncalledNumbersHaveExplicitStates(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.AssertionError: Failed to assert the following: (StateDescription = 'Called at call 1')
+Semantics of the node:
+Node #135 at (l=698.0, t=206.0, r=718.0, b=262.0)px
+Text = '[7]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Selector used: ((Text + InputText + EditableText contains '7' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.calledAndUncalledNumbersHaveExplicitStates(NumberBoardUiTest.kt:29)
+
+
+Time: 4.719
+There was 1 failure:
+1) calledAndUncalledNumbersHaveExplicitStates(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.AssertionError: Failed to assert the following: (StateDescription = 'Called at call 1')
+Semantics of the node:
+Node #135 at (l=698.0, t=206.0, r=718.0, b=262.0)px
+Text = '[7]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Selector used: ((Text + InputText + EditableText contains '7' (ignoreCase: false)) && (hasAnyAncestorThat(IsDialog is defined)))
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.calledAndUncalledNumbersHaveExplicitStates(NumberBoardUiTest.kt:29)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

@@ -1,0 +1,6 @@
+
+io.github.sbshrey.tambola.game.NumberBoardUiTest:.......
+
+Time: 54.466
+
+OK (7 tests)

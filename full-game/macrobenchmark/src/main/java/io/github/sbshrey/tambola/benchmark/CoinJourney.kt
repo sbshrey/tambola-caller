@@ -19,6 +19,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private val computerOpponents: Boolean = false,
     private val target: String = "io.github.sbshrey.tambola.game",
     private val friendTable: Boolean = false,
+    private val checkCallHistory: Boolean = false,
     discoveryUrl: String? = null) : AutoCloseable {
     private val api = HttpRoomApi(if (discoveryUrl == null) "https://192.168.1.4:8443" else "https://sbshrey.github.io", discoveryUrl = discoveryUrl)
     private val peers = mutableListOf<GuestCredentials>()
@@ -49,7 +50,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
         listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png", "claim-confirmed-public.png",
-            "friend-network-connected.png", "friend-network-disconnected.png", "friend-network-restored.png")
+            "friend-network-connected.png", "friend-network-disconnected.png", "friend-network-restored.png", "call-history-public.png", "call-history-restored.png")
             .forEach { File(context.filesDir, it).delete() }
     }
 
@@ -402,6 +403,20 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         checkpoint("picker-boundary-passed")
     }
 
+    private fun verifyCallHistory(restored: Boolean) {
+        val called = requireNotNull(snapshot().round).called
+        assertTrue(called.isNotEmpty())
+        val page = textOf(node("ticket-page"))
+        tap("open-call-history")
+        until { runCatching { description(find("call-history-${called.size}")) == "Call ${called.size}, number ${called.last()}" }.getOrDefault(false) }
+        device.takeScreenshot(File(context.filesDir, if (restored) "call-history-restored.png" else "call-history-public.png"))
+        tap("number-board-numbers-tab")
+        node("board-number-1")
+        tap("dismiss-number-board")
+        assertEquals("Opening history must retain the ticket page", page, textOf(node("ticket-page")))
+        report.put(if (restored) "restoredCallHistoryVerified" else "callHistoryVerified", true)
+    }
+
     fun play() = captureFailure {
             readCards()
             var seen = 0
@@ -433,6 +448,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     marks += number
                 }
                 seen = round.called.size
+                if (checkCallHistory && seen >= 3 && !report.optBoolean("callHistoryVerified")) verifyCallHistory(restored = false)
                 for (prize in room.options.game.prizes) {
                     val current = requireNotNull(room.round)
                     if (room.phase != RoomPhase.ACTIVE || current.awards.any { it.prize == prize }) continue
@@ -495,6 +511,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     reopened = true
                     restoredMarks = marks.size
                     report.put(if (cold) "coldProcessRestoredMarks" else "foregroundRestoredMarks", marks.size)
+                    if (checkCallHistory) verifyCallHistory(restored = true)
                     if (expectedRounds > 1) recordMemory(if (cold) "cold-restored" else "foreground-restored")
                 }
                 report.put("calls", seen).put("claims", room.round!!.awards.size)
@@ -502,6 +519,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             }
             val result = snapshot()
             assertEquals(expectedPrizeCount, result.round!!.awards.size)
+            if (checkCallHistory) assertTrue(report.optBoolean("callHistoryVerified") && report.optBoolean("restoredCallHistoryVerified"))
             assertTrue("A server-confirmed claim must identify its ticket and prize", report.optBoolean("contextualClaimVerified"))
             if (!computerOpponents) assertTrue(result.round!!.awards.all { it.playerIds == listOf(mainId) })
             val winnings = verifiedWinnings(result)

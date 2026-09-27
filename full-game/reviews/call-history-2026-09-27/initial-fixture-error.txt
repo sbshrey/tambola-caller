@@ -1,0 +1,21 @@
+
+io.github.sbshrey.tambola.game.NumberBoardUiTest:
+Error in calledAndUncalledNumbersHaveExplicitStates(io.github.sbshrey.tambola.game.NumberBoardUiTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.domain.Round.validated(Round.kt:159)
+	at io.github.sbshrey.tambola.domain.Round$Companion.create(Round.kt:193)
+	at io.github.sbshrey.tambola.domain.Round$Companion.create$default(Round.kt:186)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.calledAndUncalledNumbersHaveExplicitStates(NumberBoardUiTest.kt:19)
+
+
+Time: 1.692
+There was 1 failure:
+1) calledAndUncalledNumbersHaveExplicitStates(io.github.sbshrey.tambola.game.NumberBoardUiTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.domain.Round.validated(Round.kt:159)
+	at io.github.sbshrey.tambola.domain.Round$Companion.create(Round.kt:193)
+	at io.github.sbshrey.tambola.domain.Round$Companion.create$default(Round.kt:186)
+	at io.github.sbshrey.tambola.game.NumberBoardUiTest.calledAndUncalledNumbersHaveExplicitStates(NumberBoardUiTest.kt:19)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
