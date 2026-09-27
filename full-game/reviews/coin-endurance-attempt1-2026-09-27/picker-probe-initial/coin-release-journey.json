@@ -1,0 +1,22 @@
+{
+  "completed": false,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; three passive HTTP QA peers",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 0,
+  "claims": 0,
+  "stage": "failed",
+  "elapsedMs": 33303,
+  "peerTicketQuantities": [
+    6,
+    6,
+    6
+  ],
+  "expectedPool": 2400,
+  "balanceBefore": 1500,
+  "failureType": "IllegalStateException",
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 3
+}

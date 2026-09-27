@@ -173,6 +173,50 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         report.put("ownedTickets", 6).put("distinctOwnNumbers", 90)
     }
 
+    /** A new call/finished round deliberately dismisses the picker; never retry a click blindly. */
+    private fun clickPrizeChoice(choice: UiObject2?, before: RoomView): RoomView? {
+        fun dismissedByGame(): RoomView? {
+            val after = snapshot()
+            if (after.phase == RoomPhase.ACTIVE && after.round!!.called.size == before.round!!.called.size) return null
+            report.put("pickerCallRollovers", report.optInt("pickerCallRollovers") + 1)
+            return after
+        }
+        if (choice == null) return dismissedByGame() ?: error("Prize picker missing within the same call")
+        try {
+            if (!choice.isEnabled) return dismissedByGame() ?: error("Selected prize disabled within the same call")
+            choice.click()
+        } catch (stale: StaleObjectException) {
+            return dismissedByGame() ?: throw stale
+        }
+        return null
+    }
+
+    /** Deterministically reproduce the original stale read using a real five-second call. */
+    fun verifyPickerCallBoundary() = captureFailure {
+        checkpoint("picker-boundary")
+        until(15_000, 250) { find("claim-ticket-1")?.isEnabled == true }
+        val before = snapshot()
+        showTicket(1)
+        tap("claim-ticket-1")
+        val choice = node("claim-prize-EARLY_FIVE")
+        assertTrue(choice.isEnabled)
+        until(10_000, 250) { snapshot().round!!.called.size != before.round!!.called.size }
+        until { find("claim-prize-EARLY_FIVE") == null }
+        var originalReadFailed = false
+        try { choice.isEnabled } catch (_: StaleObjectException) { originalReadFailed = true }
+        assertTrue("The original enabled-state read must reproduce the stale-node failure", originalReadFailed)
+        val after = checkNotNull(clickPrizeChoice(choice, before))
+        assertTrue(after.round!!.called.size > before.round!!.called.size)
+        assertTrue("A dismissed choice must not submit a claim", after.round!!.awards.isEmpty())
+        tap("claim-ticket-1")
+        assertTrue(node("claim-prize-EARLY_FIVE").isEnabled)
+        tap("dismiss-claim")
+        report.put("originalStaleReadReproduced", true).put("pickerCallBoundaryVerified", true)
+            .put("beforeCall", before.round!!.called.size).put("afterCall", after.round!!.called.size).put("completed", true)
+        device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
+        checkpoint("picker-boundary-passed")
+    }
+
     fun play() = captureFailure {
             readCards()
             var seen = 0
@@ -208,10 +252,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                     showTicket(entry.key)
                     tap("claim-ticket-${entry.key}")
                     val choice = device.wait(Until.findObject(By.res("claim-prize-${prize.name}")), 1500)
-                    if (choice == null) { if (snapshot().round!!.called.size != current.called.size) continue; error("Prize picker missing") }
-                    check(choice.isEnabled)
-                    choice.click()
-                    until(interval = 250) {
+                    val advanced = clickPrizeChoice(choice, room)
+                    if (advanced != null) room = advanced else until(interval = 250) {
                         room = snapshot()
                         val after = room.round!!
                         after.awards.any { it.prize == prize } || after.called.size != current.called.size

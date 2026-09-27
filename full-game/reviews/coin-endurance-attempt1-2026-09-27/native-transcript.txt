@@ -1,0 +1,79 @@
+
+io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark:INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter000_2026-09-27-00-33-59.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter000_2026-09-27-00-33-59.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter001_2026-09-27-00-42-17.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter001_2026-09-27-00-42-17.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter002_2026-09-27-00-50-28.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter002_2026-09-27-00-50-28.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter003_2026-09-27-00-58-18.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter003_2026-09-27-00-58-18.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter004_2026-09-27-01-06-11.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter004_2026-09-27-01-06-11.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter005_2026-09-27-01-14-20.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter005_2026-09-27-01-14-20.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter006_2026-09-27-01-22-37.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter006_2026-09-27-01-22-37.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_realCoinEndurance_iter007_2026-09-27-01-25-19.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter007_2026-09-27-01-25-19.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+
+Error in realCoinEndurance(io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark):
+androidx.test.uiautomator.StaleObjectException
+	at androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1042)
+	at androidx.test.uiautomator.UiObject2.isEnabled(UiObject2.java:460)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:212)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:301)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:176)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinEndurance$lambda$0$1(CoinReleaseBenchmark.kt:62)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.$r8$lambda$dW4-CZGHoJqajlKp3AOVST0bQzA(Unknown Source:0)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark$$ExternalSyntheticLambda5.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase$lambda$1$2(MacrobenchmarkPhase.kt:122)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.$r8$lambda$PeMUoW7LqzsiQZmYNvxqFTq6pxk(Unknown Source:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record(PerfettoCaptureWrapper.kt:216)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record$default(PerfettoCaptureWrapper.kt:173)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase(MacrobenchmarkPhase.kt:103)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark$lambda$3(Macrobenchmark.kt:304)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.TraceProcessorExtensions.runServer(TraceProcessorExtensions.kt:152)
+	at androidx.benchmark.TraceProcessorExtensions.runServer$default(TraceProcessorExtensions.kt:149)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark(Macrobenchmark.kt:296)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode(Macrobenchmark.kt:435)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated(MacrobenchmarkRule.kt:87)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated$default(MacrobenchmarkRule.kt:78)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinEndurance(CoinReleaseBenchmark.kt:60)
+
+
+Time: 3,566.714
+There was 1 failure:
+1) realCoinEndurance(io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark)
+androidx.test.uiautomator.StaleObjectException
+	at androidx.test.uiautomator.UiObject2.getAccessibilityNodeInfo(UiObject2.java:1042)
+	at androidx.test.uiautomator.UiObject2.isEnabled(UiObject2.java:460)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play$lambda$0(CoinJourney.kt:212)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:301)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.play(CoinJourney.kt:176)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinEndurance$lambda$0$1(CoinReleaseBenchmark.kt:62)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.$r8$lambda$dW4-CZGHoJqajlKp3AOVST0bQzA(Unknown Source:0)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark$$ExternalSyntheticLambda5.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase$lambda$1$2(MacrobenchmarkPhase.kt:122)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.$r8$lambda$PeMUoW7LqzsiQZmYNvxqFTq6pxk(Unknown Source:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record(PerfettoCaptureWrapper.kt:216)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record$default(PerfettoCaptureWrapper.kt:173)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase(MacrobenchmarkPhase.kt:103)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark$lambda$3(Macrobenchmark.kt:304)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.TraceProcessorExtensions.runServer(TraceProcessorExtensions.kt:152)
+	at androidx.benchmark.TraceProcessorExtensions.runServer$default(TraceProcessorExtensions.kt:149)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark(Macrobenchmark.kt:296)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode(Macrobenchmark.kt:435)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated(MacrobenchmarkRule.kt:87)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated$default(MacrobenchmarkRule.kt:78)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.realCoinEndurance(CoinReleaseBenchmark.kt:60)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

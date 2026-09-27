@@ -1,0 +1,132 @@
+{
+    "context": {
+        "build": {
+            "brand": "google",
+            "device": "generic_x86_arm",
+            "fingerprint": "google/sdk_gphone_x86_arm/generic_x86_arm:11/RSR1.201013.001/6903271:userdebug/dev-keys",
+            "id": "RSR1.201013.001",
+            "model": "sdk_gphone_x86_arm",
+            "type": "userdebug",
+            "version": {
+                "codename": "REL",
+                "sdk": 30
+            }
+        },
+        "cpuCoreCount": 3,
+        "cpuLocked": false,
+        "cpuMaxFreqHz": 2000,
+        "memTotalBytes": 2077138944,
+        "sustainedPerformanceModeEnabled": false,
+        "artMainlineVersion": 1,
+        "osCodenameAbbreviated": "R",
+        "compilationMode": "run-from-apk",
+        "payload": {}
+    },
+    "benchmarks": [
+        {
+            "name": "claimPickerCallBoundary",
+            "params": {},
+            "className": "io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark",
+            "totalRunTimeNs": 33860841500,
+            "metrics": {
+                "frameCount": {
+                    "minimum": 66.0,
+                    "maximum": 66.0,
+                    "median": 66.0,
+                    "coefficientOfVariation": 0.0,
+                    "runs": [
+                        66.0
+                    ]
+                }
+            },
+            "sampledMetrics": {
+                "frameDurationCpuMs": {
+                    "P50": 15.88915,
+                    "P90": 76.8133,
+                    "P95": 114.159725,
+                    "P99": 212.48760499999992,
+                    "runs": [
+                        [
+                            22.6101,
+                            19.4804,
+                            14.4505,
+                            12.7429,
+                            10.2038,
+                            16.8143,
+                            14.5266,
+                            18.7672,
+                            17.5554,
+                            13.8975,
+                            18.5573,
+                            15.3938,
+                            17.0829,
+                            13.9816,
+                            13.9968,
+                            18.9314,
+                            11.0069,
+                            9.831,
+                            11.3936,
+                            26.142,
+                            40.2488,
+                            79.1246,
+                            222.5134,
+                            63.6716,
+                            119.151,
+                            68.9358,
+                            12.4402,
+                            13.4454,
+                            10.8663,
+                            11.842,
+                            13.8563,
+                            12.6817,
+                            14.2751,
+                            17.9954,
+                            14.5121,
+                            14.675,
+                            15.4747,
+                            15.2059,
+                            14.7844,
+                            15.9892,
+                            17.0371,
+                            19.5775,
+                            13.2889,
+                            13.6341,
+                            14.4027,
+                            18.6121,
+                            30.0123,
+                            29.5474,
+                            99.1859,
+                            27.5352,
+                            13.7518,
+                            12.7908,
+                            17.8232,
+                            14.0405,
+                            98.6381,
+                            207.0891,
+                            38.2942,
+                            74.502,
+                            67.3394,
+                            15.7891,
+                            18.5711,
+                            14.8965,
+                            13.6075,
+                            142.0703,
+                            21.0037,
+                            13.86
+                        ]
+                    ]
+                }
+            },
+            "warmupIterations": 0,
+            "repeatIterations": 1,
+            "thermalThrottleSleepSeconds": 0,
+            "profilerOutputs": [
+                {
+                    "type": "PerfettoTrace",
+                    "label": "Trace Iteration 0",
+                    "filename": "CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace"
+                }
+            ]
+        }
+    ]
+}

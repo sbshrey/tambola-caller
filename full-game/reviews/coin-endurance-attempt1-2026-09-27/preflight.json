@@ -1,0 +1,12 @@
+{
+  "driverBuildPassed": true,
+  "driverBytes": 55990170,
+  "sourceCommit": "abef7138f0ed35cc44fae44a049dbd6d8a542d34",
+  "apks": {
+    "io.github.sbshrey.tambola.game": "0ad8d86287ae91902847475a7ac09ec104abf78db6303b5fa5975040cfd08716",
+    "io.github.sbshrey.tambola.benchmark": "a369168422db13e64051ee99226fb4fb4c96f17c266bfab1b27c7cd9686f5521"
+  },
+  "network": "verified private HTTPS/WSS",
+  "checkedAt": "2026-09-27T00:25:57.5008185+00:00",
+  "serial": "emulator-5582"
+}

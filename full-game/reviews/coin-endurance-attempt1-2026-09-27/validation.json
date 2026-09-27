@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-09-27T01:28:19.228563+00:00",
+  "accepted": false,
+  "observedRunnerExitCode": 1,
+  "failureType": "StaleObjectException",
+  "roundsCompleted": 7,
+  "completedRoundDurationMs": 3232900,
+  "cleanup": {
+    "nativeProfileDeleted": true,
+    "deletedQaPeers": 3
+  },
+  "installedApksUnchanged": {
+    "io.github.sbshrey.tambola.game": "0ad8d86287ae91902847475a7ac09ec104abf78db6303b5fa5975040cfd08716",
+    "io.github.sbshrey.tambola.benchmark": "a369168422db13e64051ee99226fb4fb4c96f17c266bfab1b27c7cd9686f5521"
+  },
+  "animationScalesObservedAfter": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "restorationBasis": "The runner reached its final JUnit assertion after its finally block restored and compared all three original in-memory values. No independent before-scale snapshot was saved.",
+  "noAdbReverseMappings": true,
+  "serverSourceCommit": "b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0",
+  "serviceRuntimeSha256": "f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10",
+  "localTraces": [
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter000_2026-09-27-00-33-59.perfetto-trace",
+      "sha256": "b237341e4ed5cbbdf0a8eff3e20b3c7b4e542879dd1f2e627a3184d09692f4e3",
+      "bytes": 53085091
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter001_2026-09-27-00-42-17.perfetto-trace",
+      "sha256": "93a5bf1ec5391cb881419f12ef346a2209bb8b544dcbc399214b17af122ffc5c",
+      "bytes": 51037960
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter002_2026-09-27-00-50-28.perfetto-trace",
+      "sha256": "4dd978488403c45fd8a220ebe1c1bc6e0c6d972c2f4a057ffcdd95a317339242",
+      "bytes": 52744435
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter003_2026-09-27-00-58-18.perfetto-trace",
+      "sha256": "f5af738b951349252b96fe7bcb657952c4e7b00af51157ef0254798c8458ab97",
+      "bytes": 49062089
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter004_2026-09-27-01-06-11.perfetto-trace",
+      "sha256": "02e5c80ed73e94b5dbaa79a4dea2e149b70dd474cd76009a352e98f81d329b17",
+      "bytes": 48832514
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter005_2026-09-27-01-14-20.perfetto-trace",
+      "sha256": "01f7283f62ccbd7ba3e48a562ea439fe4ec0b9b40a6e3b1aa5557bd3a8bef7cf",
+      "bytes": 51185070
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter006_2026-09-27-01-22-37.perfetto-trace",
+      "sha256": "a9c90eb377b821b5d7bdc229a684f09c8f75a0f18f7579de86073d101da4bcd0",
+      "bytes": 52094462
+    },
+    {
+      "path": ".test-workspace/alpha21-endurance-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realCoinEndurance_iter007_2026-09-27-01-25-19.perfetto-trace",
+      "sha256": "fb4530e9777a97194566e778e8d960416f6d409d08c0cd97260ccf0c6165fd1a",
+      "bytes": 14386263
+    }
+  ],
+  "limits": [
+    "Failed seven-round partial result; not nine-round or hour acceptance",
+    "No benchmarkData JSON produced after the exception; no aggregate frame acceptance",
+    "Last successful results screenshot is from round seven; failure screen is round eight",
+    "One API30 software emulator plus passive peers; not physical or computer-opponent acceptance"
+  ]
+}

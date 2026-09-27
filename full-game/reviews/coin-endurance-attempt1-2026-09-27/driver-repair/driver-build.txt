@@ -1,0 +1,62 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :macrobenchmark:preBuild UP-TO-DATE
+> Task :macrobenchmark:preLanReleaseBuild UP-TO-DATE
+> Task :macrobenchmark:checkTestedAppObfuscationLanRelease UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseResources UP-TO-DATE
+> Task :app:prepareLanTrust UP-TO-DATE
+> Task :macrobenchmark:prepareBenchmarkTrust UP-TO-DATE
+> Task :macrobenchmark:packageLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseNavigationResources UP-TO-DATE
+> Task :macrobenchmark:parseLanReleaseLocalResources UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseRFile UP-TO-DATE
+> Task :macrobenchmark:javaPreCompileLanRelease UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:compressLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseGlobalSynthetics UP-TO-DATE
+> Task :macrobenchmark:checkLanReleaseDuplicateClasses UP-TO-DATE
+> Task :macrobenchmark:desugarLanReleaseFileDependencies UP-TO-DATE
+> Task :macrobenchmark:mergeExtDexLanRelease UP-TO-DATE
+> Task :macrobenchmark:mergeLibDexLanRelease UP-TO-DATE
+> Task :macrobenchmark:checkLanReleaseAarMetadata UP-TO-DATE
+> Task :macrobenchmark:mapLanReleaseSourceSetPaths UP-TO-DATE
+> Task :macrobenchmark:compileLanReleaseNavigationResources UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseManifest UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseManifest UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseJniLibFolders UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseNativeLibs UP-TO-DATE
+> Task :macrobenchmark:stripLanReleaseDebugSymbols UP-TO-DATE
+> Task :macrobenchmark:validateSigningLanRelease UP-TO-DATE
+> Task :macrobenchmark:writeLanReleaseSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:compileLanReleaseKotlin
+> Task :macrobenchmark:compileLanReleaseJavaWithJavac NO-SOURCE
+> Task :macrobenchmark:processLanReleaseJavaRes UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseJavaResource UP-TO-DATE
+> Task :macrobenchmark:dexBuilderLanRelease
+> Task :macrobenchmark:mergeProjectDexLanRelease
+> Task :macrobenchmark:packageLanRelease
+> Task :macrobenchmark:createLanReleaseApkListingFileRedirect UP-TO-DATE
+> Task :macrobenchmark:assembleLanRelease
+
+BUILD SUCCESSFUL in 3s
+41 actionable tasks: 4 executed, 37 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

@@ -1,0 +1,90 @@
+{
+  "coin-release-journey.json": {
+    "sha256": "d5b8f63fc8596bbc503319ba4472f3dfc920100bfbc261106a826732cf463745",
+    "bytes": 8505
+  },
+  "driver-repair/benchmark.json": {
+    "sha256": "4f66b25c466978b183806c0a36372289d09dd14f169c210ed50985cf36377859",
+    "bytes": 4567
+  },
+  "driver-repair/coin-release-journey.json": {
+    "sha256": "9e5319e136d8f1bc6a73bc9c3567b6f41ac4ad1500b0e6c37ec80608cadea6e5",
+    "bytes": 615
+  },
+  "driver-repair/coin-release-results.png": {
+    "sha256": "02c1a1b0a6d6892dc4cd15c7d415130d008e913625780faf676fee5b42e2e377",
+    "bytes": 181512
+  },
+  "driver-repair/driver-build.txt": {
+    "sha256": "38fe2ca37758eededea8cce513a95343f9c2d26b0b13e4e4138232031d9ceebf",
+    "bytes": 3382
+  },
+  "driver-repair/local-traces.json": {
+    "sha256": "0ddfcae693920b77d7d9a1fae427ec412e582560713e9ae961bce0ffa52acba2",
+    "bytes": 318
+  },
+  "driver-repair/native-transcript.txt": {
+    "sha256": "13f99185a396b1348e5a28b7218c0468468b35a5c70c2a4809f89588fa717989",
+    "bytes": 5477
+  },
+  "driver-repair/validation.json": {
+    "sha256": "92332b142aaed2a34e92d0b545baf31a9d98a1a04cb678171dab3b4a174d1db5",
+    "bytes": 2041
+  },
+  "failure.png": {
+    "sha256": "c9efd20e62db1c97221a872971f6e94b8c9a0e120ad4f316b60cdfea2254b237",
+    "bytes": 191472
+  },
+  "failure.xml": {
+    "sha256": "f9d51f50c3514c95801576f8b0a91825d3e50fdd845dfd7e38f59103ab0538e4",
+    "bytes": 118067
+  },
+  "host-health-after.json": {
+    "sha256": "4082ce43b2e77906febcc2569668ca4f6b3a13e98df456781c09dac1f2e40321",
+    "bytes": 474
+  },
+  "native-transcript.txt": {
+    "sha256": "0c4adaadfcd90e37a7ca867467c338948f48ec4f952c31a317e800382ac9e496",
+    "bytes": 7662
+  },
+  "picker-probe-initial/coin-release-failure.png": {
+    "sha256": "909920d648d01cb810d35bf1c81ae6769b20f7333302d7e96820991a431fd0cc",
+    "bytes": 181297
+  },
+  "picker-probe-initial/coin-release-failure.xml": {
+    "sha256": "78e5a0dae912b07314ba3168c06bcf617a481f9a7c1ac83da63ee75cb4290f78",
+    "bytes": 114677
+  },
+  "picker-probe-initial/coin-release-journey.json": {
+    "sha256": "86e2929c598291c8a36c5dc29c8f110a67ae0f61d5d677404268d1aaab03cd1c",
+    "bytes": 500
+  },
+  "picker-probe-initial/driver-build.txt": {
+    "sha256": "6ff85bdec299843a8ffb5d9611a52a28e48d04cb14767fd72f310cfb043b7018",
+    "bytes": 3382
+  },
+  "picker-probe-initial/local-traces.json": {
+    "sha256": "81c02a269ae0838cf020bc133592ff40cd36aed7845e86c923ea253c4c184c56",
+    "bytes": 315
+  },
+  "picker-probe-initial/native-transcript.txt": {
+    "sha256": "6e26e3abaaa40b548c2eae0f33910a5a2061a34686b54180b98d4e1738b51473",
+    "bytes": 5437
+  },
+  "preflight.json": {
+    "sha256": "92d0baa642b3171cb53285f35f71514bd905146f8c67d934e0593e7cec6f7774",
+    "bytes": 490
+  },
+  "README.md": {
+    "sha256": "60b0279b9b5e85186a66b8aa4b0c22809f719c84fec95db7cea4a76a2d0a2e8f",
+    "bytes": 4472
+  },
+  "round-seven-results.png": {
+    "sha256": "fafff647edc721075a5cccd4e46d04f23cecdff09f9f8a18ebfa1dd51a201941",
+    "bytes": 112995
+  },
+  "validation.json": {
+    "sha256": "b586e219436f60cf4a4da5c3a2493125f0c7674675d698c9a1ade2f48fb3f212",
+    "bytes": 3963
+  }
+}

@@ -23,6 +23,15 @@ node tools/android-smoke.mjs --benchmark --animations --label optimized-startup 
 
 Use a fresh label. The runner restores system animation settings and copies benchmark outputs before another invocation can clear them. Full-journey reports and screenshots are read only from the driver package. Check `completed`, `nativeProfileDeleted`, and `deletedQaPeers` as well as JUnit status. A failed fixture is not app acceptance; inspect its captured screen and report. Never silently discard failed cleanup.
 
+The prize picker closes when a new call arrives. The driver handles a missing, disabled or stale captured choice only after a fresh public snapshot proves that the call or active phase changed. It does not blindly repeat a click; it still checks any accepted award before continuing. Missing/disabled controls within the same active call remain failures. A focused regression holds the actual picker object across the next real call, reproduces the original stale enabled-state read, checks the recovery path and reopens/dismisses a fresh picker:
+
+```powershell
+node tools/android-smoke.mjs --benchmark --animations --label picker-call-boundary `
+  --class 'io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark#claimPickerCallBoundary'
+```
+
+This short test deletes its four profiles and records `pickerCallBoundaryVerified`; it does not complete a round or replace endurance acceptance. Retain its report under its own label.
+
 ## Sustained coin play
 
 The explicit endurance check uses nine rounds and requires at least one hour of elapsed native gameplay. It keeps the same main identity, wallet and three passive QA peers throughout. Each round purchases six native tickets, manually marks numbers, claims the available pool prizes, verifies aggregate coin conservation, then checks a new three-ticket purchase/refund and retained selection. Peers buy only affordable tickets and use the normal free-refill API when eligible; no wallet balance or clock is modified out of band.

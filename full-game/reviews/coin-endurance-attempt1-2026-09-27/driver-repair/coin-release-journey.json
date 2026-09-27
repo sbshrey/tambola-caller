@@ -1,0 +1,26 @@
+{
+  "completed": true,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; three passive HTTP QA peers",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 0,
+  "claims": 0,
+  "stage": "picker-boundary-passed",
+  "elapsedMs": 40869,
+  "peerTicketQuantities": [
+    6,
+    6,
+    6
+  ],
+  "expectedPool": 2400,
+  "balanceBefore": 1500,
+  "pickerCallRollovers": 1,
+  "originalStaleReadReproduced": true,
+  "pickerCallBoundaryVerified": true,
+  "beforeCall": 1,
+  "afterCall": 2,
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 3
+}

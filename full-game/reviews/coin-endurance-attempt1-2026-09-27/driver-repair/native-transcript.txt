@@ -1,0 +1,81 @@
+
+io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark:INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_max=66.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_median=66.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_min=66.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_count_stddev=0.0
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p50=15.88915
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p90=76.8133
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p95=114.159725
+INSTRUMENTATION_STATUS: EMULATOR_frame_duration_cpu_millis_p99=212.48760499999992
+INSTRUMENTATION_STATUS: android.studio.display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_claimPickerCallBoundary
+  frameCount           [min  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace),   [median  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace),   [max  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace)
+  frameDurationCpuMs   P50   15.9,   P90   76.8,   P95  114.2,   P99  212.5
+    Traces: Iteration [0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_claimPickerCallBoundary
+  frameCount           [min  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace),   [median  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace),   [max  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace)
+  frameDurationCpuMs   P50   15.9,   P90   76.8,   P95  114.2,   P99  212.5
+    Traces: Iteration [0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v2display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark=NOTE: Your device is running a version of ART where method tracing is known to
+affect performance measurement after trace capture, so method tracing is
+off by default.
+
+To use method tracing, either flash this device, use a different device, or
+enable method tracing with MicrobenchmarkConfig / instrumentation argument, and
+only run one test at a time.
+
+For more information, see https://issuetracker.google.com/issues/316174880
+WARNING: Running on Emulator
+    Benchmark is running on an emulator, which is not representative of
+    real user devices. Use a physical device to benchmark. Emulator
+    benchmark improvements might not carry over to a real user's
+    experience (or even regress real device performance).
+
+CoinReleaseBenchmark_claimPickerCallBoundary
+  frameCount           [min  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace),   [median  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace),   [max  66.0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace)
+  frameDurationCpuMs   P50   15.9,   P90   76.8,   P95  114.2,   P99  212.5
+    Traces: Iteration [0](file://CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-31-35.perfetto-trace)
+
+INSTRUMENTATION_STATUS: android.studio.v3display.benchmark.outputDirPath=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark
+INSTRUMENTATION_STATUS_CODE: 2
+.
+
+Time: 41.058
+
+OK (1 test)
+
+

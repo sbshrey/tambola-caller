@@ -1,0 +1,63 @@
+
+io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark:INSTRUMENTATION_STATUS: additionalTestOutputFile_CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-30-10.perfetto-trace=/storage/emulated/0/Android/media/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_claimPickerCallBoundary_iter000_2026-09-27-01-30-10.perfetto-trace
+INSTRUMENTATION_STATUS_CODE: 2
+
+Error in claimPickerCallBoundary(io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark):
+java.lang.IllegalStateException: claim-ticket-1 is disabled
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.tap(CoinJourney.kt:61)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.verifyPickerCallBoundary$lambda$0(CoinJourney.kt:200)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:343)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.verifyPickerCallBoundary(CoinJourney.kt:195)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.claimPickerCallBoundary$lambda$0$1(CoinReleaseBenchmark.kt:74)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.$r8$lambda$PYyRq54HnUalGCkrLzE7cSaHj58(Unknown Source:0)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase$lambda$1$2(MacrobenchmarkPhase.kt:122)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.$r8$lambda$PeMUoW7LqzsiQZmYNvxqFTq6pxk(Unknown Source:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record(PerfettoCaptureWrapper.kt:216)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record$default(PerfettoCaptureWrapper.kt:173)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase(MacrobenchmarkPhase.kt:103)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark$lambda$3(Macrobenchmark.kt:304)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.TraceProcessorExtensions.runServer(TraceProcessorExtensions.kt:152)
+	at androidx.benchmark.TraceProcessorExtensions.runServer$default(TraceProcessorExtensions.kt:149)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark(Macrobenchmark.kt:296)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode(Macrobenchmark.kt:435)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated(MacrobenchmarkRule.kt:87)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated$default(MacrobenchmarkRule.kt:78)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.claimPickerCallBoundary(CoinReleaseBenchmark.kt:72)
+
+
+Time: 33.687
+There was 1 failure:
+1) claimPickerCallBoundary(io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark)
+java.lang.IllegalStateException: claim-ticket-1 is disabled
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.tap(CoinJourney.kt:61)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.verifyPickerCallBoundary$lambda$0(CoinJourney.kt:200)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:343)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.verifyPickerCallBoundary(CoinJourney.kt:195)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.claimPickerCallBoundary$lambda$0$1(CoinReleaseBenchmark.kt:74)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.$r8$lambda$PYyRq54HnUalGCkrLzE7cSaHj58(Unknown Source:0)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase$lambda$1$2(MacrobenchmarkPhase.kt:122)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.$r8$lambda$PeMUoW7LqzsiQZmYNvxqFTq6pxk(Unknown Source:0)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record(PerfettoCaptureWrapper.kt:216)
+	at androidx.benchmark.perfetto.PerfettoCaptureWrapper.record$default(PerfettoCaptureWrapper.kt:173)
+	at androidx.benchmark.macro.MacrobenchmarkPhaseKt.runPhase(MacrobenchmarkPhase.kt:103)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark$lambda$3(Macrobenchmark.kt:304)
+	at androidx.benchmark.macro.MacrobenchmarkKt$$ExternalSyntheticLambda2.invoke(D8$$SyntheticClass:0)
+	at androidx.benchmark.TraceProcessorExtensions.runServer(TraceProcessorExtensions.kt:152)
+	at androidx.benchmark.TraceProcessorExtensions.runServer$default(TraceProcessorExtensions.kt:149)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmark(Macrobenchmark.kt:296)
+	at androidx.benchmark.macro.MacrobenchmarkKt.macrobenchmarkWithStartupMode(Macrobenchmark.kt:435)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated(MacrobenchmarkRule.kt:87)
+	at androidx.benchmark.macro.junit4.MacrobenchmarkRule.measureRepeated$default(MacrobenchmarkRule.kt:78)
+	at io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark.claimPickerCallBoundary(CoinReleaseBenchmark.kt:72)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

@@ -64,4 +64,15 @@ class CoinReleaseBenchmark {
             journey.finishEndurance()
         }
     }
+
+    @Test fun claimPickerCallBoundary() {
+        requireCandidate()
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        CoinJourney(instrumentation.context, UiDevice.getInstance(instrumentation)).use { journey ->
+            benchmark.measureRepeated(target, listOf(FrameTimingMetric()), compilationMode = CompilationMode.Ignore(),
+                iterations = 1, setupBlock = { startActivityAndWait(); journey.prepare() }) {
+                journey.verifyPickerCallBoundary()
+            }
+        }
+    }
 }

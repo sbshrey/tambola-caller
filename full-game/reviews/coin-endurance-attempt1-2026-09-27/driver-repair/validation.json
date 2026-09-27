@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-09-27T01:32:16.726064+00:00",
+  "observedRunnerExitCode": 0,
+  "scope": "Deterministic UI-driver call-boundary regression, not a full round or endurance pass",
+  "journey": {
+    "completed": true,
+    "scope": "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; three passive HTTP QA peers",
+    "expectedRounds": 1,
+    "roundReports": [],
+    "memorySamples": [],
+    "roundNumber": 1,
+    "calls": 0,
+    "claims": 0,
+    "stage": "picker-boundary-passed",
+    "elapsedMs": 40869,
+    "peerTicketQuantities": [
+      6,
+      6,
+      6
+    ],
+    "expectedPool": 2400,
+    "balanceBefore": 1500,
+    "pickerCallRollovers": 1,
+    "originalStaleReadReproduced": true,
+    "pickerCallBoundaryVerified": true,
+    "beforeCall": 1,
+    "afterCall": 2,
+    "nativeProfileDeleted": true,
+    "deletedQaPeers": 3
+  },
+  "installedApkSha256": {
+    "io.github.sbshrey.tambola.game": "0ad8d86287ae91902847475a7ac09ec104abf78db6303b5fa5975040cfd08716",
+    "io.github.sbshrey.tambola.benchmark": "671fdc9c4ad5d903d84938d6240de0d03568f79b83749f6ea284479b12e6ba73"
+  },
+  "originalProbePackagedDriverSha256Observed": "c72fca0cfd9b394e57559300f28179721faeea41d164aa0702cc14268c4cfdc7",
+  "source": {
+    "macrobenchmark/src/main/java/io/github/sbshrey/tambola/benchmark/CoinJourney.kt": {
+      "sha256": "84ce8425ad69505654768f7f1b035182443f5fd0081c420d7731b92bb2f7f5a0",
+      "bytes": 21862
+    },
+    "macrobenchmark/src/main/java/io/github/sbshrey/tambola/benchmark/CoinReleaseBenchmark.kt": {
+      "sha256": "a2d62c9672cade5aa5da376193d39adb15e70905a1bf3badbbfa5dedda589372",
+      "bytes": 3669
+    },
+    "tools/android-smoke.mjs": {
+      "sha256": "ddaf020c240c1009c86b4d1ae09bb5903b402155e89db61f46cd031f76c11efc",
+      "bytes": 8605
+    }
+  },
+  "noAdbReverseMappings": true,
+  "animationScalesObservedAfter": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  }
+}
