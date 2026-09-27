@@ -18,7 +18,7 @@ The SQL profile recorded 20,831.984 ms of summed allocator-lock waits across 640
 
 ## Validation status
 
-The final four-permit build passed **all 158 tests in 29 server classes**, with no failures, errors or skipped tests. [Final validation](final-validation.json), [individual suite results](full-suite.json), [the transcript](full-suite.txt) and [the strengthened availability/failure regressions](final-regression.xml) identify the tested source. All 51 runtime JARs still match the measured candidate after that test-only strengthening. This is an availability fix with a throughput tradeoff, **not a purchase-speed improvement**. Deployment is recorded separately after the idle-host upgrade.
+The final four-permit build passed **all 158 tests in 29 server classes**, with no failures, errors or skipped tests. [Final validation](final-validation.json), [individual suite results](full-suite.json), [the transcript](full-suite.txt) and [the strengthened availability/failure regressions](final-regression.xml) identify the tested source. All 51 runtime JARs still match the measured candidate after that test-only strengthening. This is an availability fix with a throughput tradeoff, **not a purchase-speed improvement**. The reviewed source `3c37764c9540cde7a7fd647b9d761ca847edb228` is now deployed on the PC.
 
 | Four-permit comparison | First-wave purchase p95 | Repeat-wave purchase p95 |
 | --- | ---: | ---: |
@@ -34,6 +34,14 @@ All eight waves passed exact purchase/refund receipts, full-table allocation, 32
 These are cancelled purchase waves, not complete games. They exclude registration, calls, claims, Android, TLS and mobile networks, and explicitly do not claim capacity acceptance. The final regression suite strengthens the failure-release check to eight consecutive rejected purchases, so leaking any of the four permits cannot be hidden by unused permits. That test-only change followed the comparison and does not alter its service runtime.
 
 [Independent cleanup](cleanup.json) confirmed all nine recorded server PIDs and eighteen exact fixture databases are absent, with no remaining test schemas or other test-store client connections. The [installed service before deployment](host-before.json) remained healthy at source `bf03af5`, with runtime `5673b3092e1b27d06f3b76f0632c69ac13748dd8f810c4abc7d8ab36594e3aa8`. The measured baseline additionally contains alpha28's invitation parser; it is not byte-identical to that installed runtime. The complete production-source diff from the installed service consists of that parser and the bounded admission change. No database schema, game rule or APK update is required.
+
+## Installed and public checks
+
+The idle-host preflight found no unfinished rooms before the service update. Both fresh database archives and the previous runtime were retained in the protected host upgrade directory. [Deployment collection](deployment.json) verifies the archives' hashes and readability, unchanged primary/journal schemas 007/003, a fresh ready process and restricted-role startup. This does not repeat the earlier copied-backup restore drill. [The installed runtime](host-after.json) matches every measured candidate JAR, and the public tunnel stayed on the same address.
+
+[Installed TLS transactions](installed-coin-smoke.json) passed quick purchases, session rotation, old-token rejection, exact purchase/leave retries, full refunds and QA-profile deletion. The [public HTTPS friends probe](public-friends.json) used the ordinary published directory, created a two-person 3+2-ticket/500-coin table, checked the invitation page, replayed both purchases exactly, refunded both players to 1,500 and deleted its two QA profiles. [Public route checks](public-entry.json) also passed trusted TLS, hidden internal routes and unauthenticated purchase rejection. The test PostgreSQL service on port 55432 was stopped after independent cleanup; the serving database on 55433 remains running.
+
+The existing alpha28 APK remains published and compatible; its anonymous download returned HTTP 200 with the expected 29,141,105 bytes after deployment. There is no new APK release. These PC-origin HTTP checks do not replace a physical Android/mobile-data handoff, a fresh full native round, or the unresolved 320-player latency target.
 
 ## Rejected single-request queue
 

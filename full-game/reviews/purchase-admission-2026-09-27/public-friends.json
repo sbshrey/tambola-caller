@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-27T10:58:22.034Z",
+  "origin": "https://oral-assume-paintings-dvds.trycloudflare.com",
+  "checks": [
+    "normal published directory; trusted public HTTPS; two people; 3 and 2 tickets; 500-coin pool; exact purchase receipts",
+    "friend invitation landing targets the beta package and purchased table code",
+    "both purchases fully refunded once; exact leave receipts; no game started",
+    "both temporary QA profiles deleted"
+  ],
+  "scope": "Public HTTPS from this PC; no physical Android, mobile data, active calls or load acceptance"
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersions": {
+    "primary": 7,
+    "journal": 3
+  },
+  "backupRestoreRehearsed": false,
+  "collectorSha256": "08c0de481093c23f285e0e2b615d1526aba35a9ffdbcdbde731cb86d1406dd39",
+  "deployment": {
+    "freshServerProcess": true,
+    "backendReady": true,
+    "tlsClientAndCoinWriteRead": "pending external verification",
+    "backupPair": "20260927-105754.json",
+    "restrictedStartup": true,
+    "completedAt": "2026-09-27T10:58:05.771354Z",
+    "origin": "https://192.168.1.4:8443",
+    "sourceCommit": "3c37764c9540cde7a7fd647b9d761ca847edb228"
+  },
+  "checkedAt": "2026-09-27T10:58:44.6416532+00:00",
+  "retainedBackupPair": {
+    "completedAt": "2026-09-27T10:57:55.4898965Z",
+    "files": [
+      {
+        "bytes": 223166,
+        "name": "20260927-105754-primary.dump",
+        "sha256": "5c9ead60d1ff2f543b5e7f95504421ebdf75489399eb9fcb606a52a7121814bc"
+      },
+      {
+        "bytes": 17263,
+        "name": "20260927-105754-journal.dump",
+        "sha256": "e652aa4e1a38dfa94162da41df01b6640c2709cbdee94a321ea64ae684d4216c"
+      }
+    ],
+    "validation": "pg_restore archive listing; restore rehearsal remains separate"
+  },
+  "retainedArchivesHashAndListVerified": true
+}
