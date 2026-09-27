@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-09-27T12:18:21.3339225Z",
+  "ownedProcessesAbsent": [
+    20516,
+    2252,
+    1440,
+    20992
+  ],
+  "ownedRunIds": [
+    "8e0992f8ec894fa7",
+    "50baed6d38a54678",
+    "b812197aa3d64e4d",
+    "55c613907e6a455a"
+  ],
+  "remainingOwnedDatabases": 0,
+  "remainingTestSchemas": 0,
+  "remainingTestStoreConnections": 0,
+  "testPostgresStopped": true,
+  "testPostgresPort": 55432,
+  "testPostgresStoppedAt": "2026-09-27T12:19:10.3380158Z"
+}

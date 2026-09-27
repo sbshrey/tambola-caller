@@ -1,4 +1,6 @@
 * text=auto eol=lf
+# Unified-diff context lines are part of this retained rejected experiment.
+full-game/reviews/purchase-authentication-2026-09-27/candidate.patch -text -whitespace
 *.png binary
 *.mp3 binary
 # Keep hashed raw diagnostic transcripts byte-identical across checkouts.

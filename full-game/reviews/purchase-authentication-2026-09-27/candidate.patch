@@ -1,0 +1,48 @@
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
+index dbbdd446529f99745b69cf9e08bd4563bd413bb7..4082704b5f89d04659b50784275a8f5644e0524f 100644
+--- a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
+@@ -105,16 +105,14 @@ class RoomService(
+     fun match(token: String, request: MatchRequest): RoomUpdate {
+         validId(request.id)
+         request.previousFriendRound?.let(::validId)
+-        authenticatedRate(token, "match", 20)
+-        return database.transaction { connection ->
+-            val guest = authenticate(connection, token, lock = true)
++        return ratedMatch(token) { connection, guest ->
+             val hash = digest(WireJson.encodeToString(request))
+             val receipt = connection.query("SELECT request_hash, response FROM match_receipts WHERE actor = ? AND command_id = ?", guest.id, request.id) {
+                 Receipt(it.getString(1), it.getString(2))
+             }.singleOrNull()
+             if (receipt != null) {
+                 demand(receipt.hash == hash, 409, "id_reused", "This purchase ID already has different ticket choices.")
+-                return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
++                return@ratedMatch WireJson.decodeFromString<RoomUpdate>(receipt.response)
+             }
+             val now = clock()
+             val existing = connection.query("""SELECT payload FROM rooms WHERE (payload::jsonb->'options'->>'coinGame')::boolean AND phase IN ('LOBBY','ACTIVE')
+@@ -170,6 +168,24 @@ class RoomService(
+         }
+     }
+ 
++    /** Keep rejected attempts, but roll back all purchase changes before reporting their failure. */
++    private fun ratedMatch(token: String, purchase: (Connection, Guest) -> RoomUpdate): RoomUpdate {
++        val outcome = database.transaction { connection ->
++            val guest = authenticate(connection, token, lock = true)
++            rate(connection, "match:${guest.id}", 20)
++            val beforePurchase = connection.setSavepoint()
++            try {
++                Result.success(purchase(connection, guest))
++            } catch (error: Exception) {
++                connection.rollback(beforePurchase)
++                Result.failure(error)
++            } finally {
++                connection.releaseSavepoint(beforePurchase)
++            }
++        }
++        return outcome.getOrThrow()
++    }
++
+     fun revoke(token: String) = database.transaction { connection ->
+         val guest = authenticate(connection, token, lock = true)
+         val intent = journal?.revoke(guest.id, clock()) ?: RevocationIntent(0, guest.id, clock())

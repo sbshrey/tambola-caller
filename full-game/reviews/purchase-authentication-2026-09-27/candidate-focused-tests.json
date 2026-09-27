@@ -1,0 +1,23 @@
+[
+  {
+    "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "class": "io.github.sbshrey.tambola.server.MatchRateAtomicityTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "class": "io.github.sbshrey.tambola.server.PurchaseAdmissionTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

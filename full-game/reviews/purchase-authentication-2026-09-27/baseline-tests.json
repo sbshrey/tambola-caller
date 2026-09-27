@@ -1,0 +1,12 @@
+{
+  "tests": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "cases": [
+    "failed purchases retain the quota while leaving no purchase artifacts",
+    "receipt storage failure keeps the attempt but rolls back the entire purchase for an exact retry",
+    "simultaneous purchases cannot spend the same final quota slot twice",
+    "journal revocation rejects a purchase before consuming its quota without primary replay"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "order": "ABBA",
+  "playersPerWave": 320,
+  "wavesPerRun": 2,
+  "profiling": false,
+  "onlyChangedRuntimeJar": "server.jar",
+  "identicalFixtureAndClient": true,
+  "capacityAcceptance": false,
+  "decision": "Reject production draft: candidate cold and repeated p95 ranges overlap baseline; retain regression tests.",
+  "runs": [
+    {
+      "index": 1,
+      "variant": "baseline",
+      "startedAt": "2026-09-27T12:14:00.5050941Z",
+      "finishedAt": "2026-09-27T12:14:44.9564301Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/match-rate-burst-1-baseline.txt",
+      "runId": "8e0992f8ec894fa7",
+      "evidenceFile": "1-baseline.json",
+      "evidenceSha256": "4bf17d80558a18a94c4693e1fbd2f8b2c6e9dcc51403e8239607a98624f67db7",
+      "serverPid": 20516,
+      "runtime": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+      "coldP95Ms": 3330.0312,
+      "repeatP95Ms": 1477.0853
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "startedAt": "2026-09-27T12:14:44.9720305Z",
+      "finishedAt": "2026-09-27T12:15:21.0945591Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/match-rate-burst-2-candidate.txt",
+      "runId": "50baed6d38a54678",
+      "evidenceFile": "2-candidate.json",
+      "evidenceSha256": "fc234c123013deaec197faf7bd6d8fc05320e6b356d5a1acc4002862dd410623",
+      "serverPid": 2252,
+      "runtime": "5dee48cafa16152ac1b9a53a834163f11d4c45f781b152392d986897745c9aac",
+      "coldP95Ms": 3369.9128,
+      "repeatP95Ms": 1360.1518
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "startedAt": "2026-09-27T12:15:21.1074990Z",
+      "finishedAt": "2026-09-27T12:15:56.9939569Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/match-rate-burst-3-candidate.txt",
+      "runId": "b812197aa3d64e4d",
+      "evidenceFile": "3-candidate.json",
+      "evidenceSha256": "c1c4f2cb70d2ab750a383b5eab173a9e6057029ba9f73fe13d4f40875c13beed",
+      "serverPid": 1440,
+      "runtime": "5dee48cafa16152ac1b9a53a834163f11d4c45f781b152392d986897745c9aac",
+      "coldP95Ms": 3385.6993,
+      "repeatP95Ms": 1476.4489
+    },
+    {
+      "index": 4,
+      "variant": "baseline",
+      "startedAt": "2026-09-27T12:15:57.0042327Z",
+      "finishedAt": "2026-09-27T12:16:31.2312491Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/match-rate-burst-4-baseline.txt",
+      "runId": "55c613907e6a455a",
+      "evidenceFile": "4-baseline.json",
+      "evidenceSha256": "dd0269c4c06e4731069431f7bf75a26231642071680e4a2e8d9e711e794333b7",
+      "serverPid": 20992,
+      "runtime": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+      "coldP95Ms": 3414.918,
+      "repeatP95Ms": 1299.416
+    }
+  ]
+}
