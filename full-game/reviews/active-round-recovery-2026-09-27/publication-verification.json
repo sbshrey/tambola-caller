@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-27T16:02:38.976Z",
+  "passed": true,
+  "pagesBuild": "https://api.github.com/repos/sbshrey/tambola-caller/pages/builds/1243295010",
+  "mainCommit": "e3a6b9df16175927c67b54864a2b8a11f60dc748",
+  "sourceCommit": "790b9d8628592d6193c342bb2e1c9ebae031b9b9",
+  "site": "https://sbshrey.github.io/tambola-caller/",
+  "publicAssetsMatch": [
+    "friends/index.html",
+    "friends/invite.js",
+    "friends/styles.css",
+    "sw.js",
+    "index.html"
+  ],
+  "mainChangedFiles": [
+    "friends/index.html",
+    "friends/invite.js"
+  ],
+  "release": "https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha34-round-recovery",
+  "asset": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha34-round-recovery/Tambola-Internet-Beta-0.34.0.apk",
+  "sha256": "12c777f7ef1001d6c67a0e62ecda0e08c5b147829d0e07c651c5bc34485ee916",
+  "bytes": 29192565,
+  "anonymousDownloadStatus": 200,
+  "publicBrowserEnglishHindi": true,
+  "scope": "Actual public website and APK bytes without cache-busting. Headless Chromium; no physical-phone intent or cellular acceptance."
+}

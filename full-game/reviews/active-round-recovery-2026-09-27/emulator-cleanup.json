@@ -20,5 +20,7 @@
   "activeNetwork": "105",
   "noAdbReverse": true,
   "ownedEmulatorStopRequested": true,
-  "hostServicesUnchanged": true
+  "hostServicesUnchanged": true,
+  "ownedEmulatorStopped": true,
+  "stopVerifiedAt": "2026-09-27T16:03:06.261Z"
 }

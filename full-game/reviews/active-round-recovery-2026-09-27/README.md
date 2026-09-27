@@ -59,4 +59,8 @@ All 20 saved marks and the ticket page survived process death; call history was 
 
 The installed PC service/runtime identities remained unchanged, with no bridge or service restart. [Host verification](host-verification.json), [public endpoint check](public-entry.json). This is an automated functional round on an owned emulator, not independent remote-human, physical-phone, mobile-data or frame-performance acceptance.
 
-Publication verification will be recorded after upload and Pages completion.
+## Publication
+
+The [alpha34 prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha34-round-recovery) targets source commit `790b9d8628592d6193c342bb2e1c9ebae031b9b9`. Its [APK download](https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha34-round-recovery/Tambola-Internet-Beta-0.34.0.apk) was fetched anonymously and matched the tested SHA-256 and 29,192,565-byte size.
+
+The guarded publisher created main commit `e3a6b9df16175927c67b54864a2b8a11f60dc748`; actual changes are limited to `friends/index.html` and `friends/invite.js`. Pages build `1243295010` completed successfully. At **16:02 UTC**, normal public URLs for the invitation assets, stylesheet, service worker and caller homepage matched their reviewed local content. A fresh Chromium session checked the code display, English/Hindi switch, alpha34 download and explicit intent fallback without page errors. [Publication record](pages-publication.json), [verification](publication-verification.json), [public invitation](published-invitation.png). The public game endpoint also passed its readiness and route checks at 16:01 UTC. These checks do not establish Android browser handoff or physical/mobile-data acceptance; the broader goal remains active.
