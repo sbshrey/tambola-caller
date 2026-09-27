@@ -1,5 +1,7 @@
 {
-  "checkedAt": "2026-09-27T00:07:57.698520+00:00",
+  "checkedAt": "2026-09-27T00:10:52.693170+00:00",
+  "appSourceCommit": "72b73b7cdd5f3b82ec0dbeebcab6356667af9872",
+  "versionCode": 21,
   "serverSourceCommit": "b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0",
   "serviceRuntimeSha256": "f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10",
   "installedApksUnchanged": {
@@ -57,13 +59,11 @@
       "bytes": 53358858
     }
   ],
-  "collectorSha256": "0b5fabefa4291c5dd1675a43f9e3e12fa21b0d22262139afb2c5834665c84cd3",
+  "collectorSha256": "a9a4d02aa803e900a829a06e1d20029cd500b3b3409f74644b8d79322a6dfece",
   "limits": [
     "API30 software emulator, not physical phone reachability or performance",
     "Retained compilation and a different random round do not prove a frame-speed improvement",
-    "No new APK, production signing, public endpoint or reboot validation",
+    "Development-signed Wi-Fi APK; no production signing, public endpoint or reboot validation",
     "Installed archives hash/list checked; actual restore remains separate"
-  ],
-  "appSourceCommit": "72b73b7cdd5f3b82ec0dbeebcab6356667af9872",
-  "versionCode": 21
+  ]
 }

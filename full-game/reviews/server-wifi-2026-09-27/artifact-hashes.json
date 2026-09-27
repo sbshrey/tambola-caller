@@ -2,7 +2,7 @@
   "alpha20-game-table.png": "67fc3bb02c0e81ee761dafb14a5c6e37fbd3e621912af3443b162aef8584425f",
   "collect-deployment.ps1": "1baaec2513bf19e37839c4f3396002c34ab44333ea1fd8e8e1b7c7932149e16a",
   "deployment-state.json": "cd926d70e94d0396c3abe2782be550df7bb9cce8e0892c7a24180d6685ccdd95",
-  "host-health-after.json": "00b0ef791720133d2747b9e1dd687ef65a3c29e1ae0e103486c8b9f07fa02758",
+  "host-health-after.json": "965cdb609dab00bc1f041777f57165471f3c9361e544fb9b86d249205a572cb4",
   "https-transactions.json": "c5957d133f0773f3d7aeb7608dff2cd0e1f86319a6fe129ba429f10e6f09db6d",
   "native-before.json": "d29cc7a15e8a3d214cea6482d49cc02e92835cede61e54cfc49e4b54ac2493a1",
   "native-first-attempt/coin-release-failure.png": "b4c0a17603e877c99102d47e92397dae25b1881c01cdae3bad4c014e0a9a2776",

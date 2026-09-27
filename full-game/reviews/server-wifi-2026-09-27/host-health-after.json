@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-27T00:07:54.409Z",
+  "checkedAt": "2026-09-27T00:10:50.674Z",
   "httpsStatus": 200,
   "httpsBody": {
     "status": "ready",
@@ -13,6 +13,6 @@
     "status": "ready",
     "backendReady": true,
     "tlsReady": true,
-    "ageSeconds": 0.867
+    "ageSeconds": 1.575
   }
 }
