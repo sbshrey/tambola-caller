@@ -1,0 +1,9 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:........
+io.github.sbshrey.tambola.game.LandingActivityTest:..
+io.github.sbshrey.tambola.game.ManualTableTest:...
+io.github.sbshrey.tambola.game.TableExperienceTest:....
+
+Time: 83.09
+
+OK (17 tests)

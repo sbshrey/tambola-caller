@@ -59,8 +59,10 @@ fun PlayArena(
     footer: @Composable () -> Unit,
 ) {
     if (table.settings.manualClaims && markNumber != null && claim != null) {
-        ClaimArena(table, ownerId, preferences, status, markNumber, claim, claimMessage, repeatCall, back,
-            win, dismissWin, enabled, claimEnabled, extraMenu, footer)
+        MaterialTheme(colorScheme = if (table.coins != null) GameNightPalette.colors else MaterialTheme.colorScheme) {
+            ClaimArena(table, ownerId, preferences, status, markNumber, claim, claimMessage, repeatCall, back,
+                win, dismissWin, enabled, claimEnabled, extraMenu, footer)
+        }
         return
     }
     val words = gameText()
@@ -223,12 +225,15 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
     val words = gameText()
     val marked = table.marks[ticket.id].orEmpty()
     val ordinal = table.tickets.indexOf(ticket) + 1
-    Row(modifier.clip(RoundedCornerShape(10.dp)).background(Ivory).testTag("hand-ticket-$ordinal")) {
-        Box(Modifier.width(22.dp).fillMaxHeight().background(BallGold), contentAlignment = Alignment.Center) {
-            Text("%02d".format(ordinal), color = Ink, fontSize = (10 / LocalDensity.current.fontScale).sp, lineHeight = (12 / LocalDensity.current.fontScale).sp, maxLines = 1, fontWeight = FontWeight.Bold,
+    val gameNight = table.coins != null
+    val paper = if (gameNight) GameNightPalette.cream else Ivory
+    val ticketInk = if (gameNight) GameNightPalette.ticketInk else Ink
+    Row(modifier.clip(RoundedCornerShape(if (gameNight) 16.dp else 10.dp)).background(paper).testTag("hand-ticket-$ordinal")) {
+        Box(Modifier.width(22.dp).fillMaxHeight().background(if (gameNight) GameNightPalette.ticketBlank else BallGold), contentAlignment = Alignment.Center) {
+            Text("%02d".format(ordinal), color = ticketInk, fontSize = (10 / LocalDensity.current.fontScale).sp, lineHeight = (12 / LocalDensity.current.fontScale).sp, maxLines = 1, fontWeight = FontWeight.Bold,
                 modifier = Modifier.semantics { contentDescription = words(R.string.play_ticket_label, ordinal, marked.size) })
         }
-        BoxWithConstraints(Modifier.weight(1f).fillMaxHeight().padding(2.dp)) {
+        BoxWithConstraints(Modifier.weight(1f).fillMaxHeight().padding(if (gameNight) 5.dp else 2.dp)) {
             val cellHeight = ((maxHeight - 2.dp) / 3).coerceAtLeast(1.dp)
             val cellWidth = ((maxWidth - 8.dp) / 9).coerceAtLeast(1.dp)
             val density = LocalDensity.current
@@ -248,14 +253,16 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
                                 if (!dabbed || reducedMotion) stamp.snapTo(if (dabbed) 1f else 0f)
                                 else if (stamp.value < 1f) stamp.animateTo(1f, tween(360))
                             }
-                            val fill = animateColorAsState(if (dabbed) DabGreen else if (number == 0) Color(0xFFECE7D9) else Color.White,
+                            val fill = animateColorAsState(if (gameNight) {
+                                if (dabbed) GameNightPalette.ticketDab else if (number == 0) GameNightPalette.ticketBlank else GameNightPalette.ticketCell
+                            } else if (dabbed) DabGreen else if (number == 0) Color(0xFFECE7D9) else Color.White,
                                 animationSpec = tween(if (reducedMotion) 0 else 160), label = "dab")
                             Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(4.dp))
                                 .drawBehind { drawRect(fill.value) }
-                                .then(if (latest) Modifier.border(2.dp, Color(0xFFAB6500), RoundedCornerShape(4.dp)) else Modifier)
+                                .then(if (latest) Modifier.border(2.dp, if (gameNight) GameNightPalette.ticketEdge else Color(0xFFAB6500), RoundedCornerShape(4.dp)) else Modifier)
                                 .drawWithContent {
                                     drawContent()
-                                    if (dabbed && !reducedMotion && stamp.value < 1f) drawCircle(BallGold.copy(alpha = 1f - stamp.value),
+                                    if (dabbed && !reducedMotion && stamp.value < 1f) drawCircle((if (gameNight) GameNightPalette.ticketEdge else BallGold).copy(alpha = 1f - stamp.value),
                                         radius = size.minDimension * (.15f + stamp.value * .45f), style = Stroke(2.dp.toPx()))
                                 }
                                 .then(if (number != 0 && markNumber != null) Modifier.testTag("dab-$number")
@@ -266,11 +273,12 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
                                         if (!canMark) disabled()
                                         onClick { if (canMark) { markNumber(ticket.id, number); true } else false }
                                     } else Modifier), contentAlignment = Alignment.Center) {
-                                if (number != 0) Text("$number", fontSize = numberSize.sp, lineHeight = numberSize.sp, color = if (dabbed) Color.White else Ink,
+                                if (number != 0) Text("$number", fontSize = numberSize.sp, lineHeight = numberSize.sp, color = if (dabbed && !gameNight) Color.White else ticketInk,
                                     fontWeight = FontWeight.Bold, maxLines = 1, modifier = Modifier.testTag("ticket-number").clearAndSetSemantics {})
                                 if (dabbed) Canvas(Modifier.align(Alignment.BottomEnd).size(5.dp).padding(1.dp)) {
-                                    drawLine(Color.White, Offset(0f, size.height / 2), Offset(size.width / 3, size.height), 1f)
-                                    drawLine(Color.White, Offset(size.width / 3, size.height), Offset(size.width, 0f), 1f)
+                                    val check = if (gameNight) ticketInk else Color.White
+                                    drawLine(check, Offset(0f, size.height / 2), Offset(size.width / 3, size.height), 1f)
+                                    drawLine(check, Offset(size.width / 3, size.height), Offset(size.width, 0f), 1f)
                                 }
                             }
                         }
@@ -278,12 +286,15 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
                 }
             }
         }
-        if (claimTicket != null) Box(Modifier.width(82.dp).fillMaxHeight().padding(horizontal = 3.dp), contentAlignment = Alignment.Center) {
+        if (claimTicket != null) Box(Modifier.width(82.dp).fillMaxHeight().padding(horizontal = if (gameNight) 6.dp else 3.dp), contentAlignment = Alignment.Center) {
             Button(onClick = claimTicket, enabled = claimEnabled, contentPadding = PaddingValues(horizontal = 6.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BallGold, contentColor = Ink),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("claim-ticket-$ordinal")
+                colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
+                modifier = Modifier.fillMaxWidth().heightIn(min = if (gameNight) 68.dp else 48.dp).testTag("claim-ticket-$ordinal")
                     .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = RoundedCornerShape(12.dp)) {
-                Text(words(R.string.play_claim), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    if (gameNight) Text("✦", fontSize = 18.sp, lineHeight = 18.sp, modifier = Modifier.clearAndSetSemantics {})
+                    Text(words(R.string.play_claim), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
             }
         }
     }

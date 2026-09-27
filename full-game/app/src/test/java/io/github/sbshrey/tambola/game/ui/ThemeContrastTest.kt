@@ -9,7 +9,7 @@ import kotlin.math.min
 
 class ThemeContrastTest {
     @Test fun smallTextAndControlsRemainLegibleAcrossBothPalettes() {
-        listOf("day" to DayColors, "night" to NightColors).forEach { (name, c) ->
+        listOf("day" to DayColors, "night" to NightColors, "game night" to GameNightPalette.colors).forEach { (name, c) ->
             val pairs = listOf(
                 "background" to (c.onBackground to c.background), "primary" to (c.onPrimary to c.primary),
                 "secondary" to (c.onSecondary to c.secondary), "tertiary" to (c.onTertiary to c.tertiary),
@@ -26,6 +26,9 @@ class ThemeContrastTest {
         }
         listOf(Color.White, Ivory).forEach { assertTrue(ratio(Ink, it) >= 4.5f) }
         assertTrue(ratio(Color.White, Color(0xFF276950)) >= 4.5f)
+        listOf(GameNightPalette.cream, GameNightPalette.ticketCell, GameNightPalette.ticketDab, GameNightPalette.ticketBlank).forEach {
+            assertTrue("Printed ticket contrast", ratio(GameNightPalette.ticketInk, it) >= 4.5f)
+        }
     }
 
     private fun ratio(a: Color, b: Color): Float = (max(a.luminance(), b.luminance()) + .05f) / (min(a.luminance(), b.luminance()) + .05f)

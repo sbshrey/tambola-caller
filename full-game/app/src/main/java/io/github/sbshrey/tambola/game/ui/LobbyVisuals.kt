@@ -28,9 +28,16 @@ internal object GameNightPalette {
     val coral = Color(0xFFFF8966)
     val gold = Color(0xFFFFD575)
     val mint = Color(0xFFA8E3CB)
+    val ticketCell = Color(0xFFFFF9EF)
+    val ticketBlank = Color(0xFFE6D9BB)
+    val ticketInk = Color(0xFF463B35)
+    val ticketDab = Color(0xFFF2B878)
+    val ticketEdge = Color(0xFFB85A35)
     val colors = NightColors.copy(primary = coral, onPrimary = background, primaryContainer = raised, onPrimaryContainer = cream,
         secondary = mint, onSecondary = background, background = background, onBackground = cream,
         surface = panel, onSurface = cream, surfaceContainer = panel, surfaceContainerHigh = raised,
+        surfaceContainerLowest = background, surfaceContainerLow = background, surfaceContainerHighest = raised,
+        surfaceVariant = raised, surfaceBright = raised, surfaceDim = background, surfaceTint = coral,
         onSurfaceVariant = muted, outline = muted, outlineVariant = raised)
 }
 

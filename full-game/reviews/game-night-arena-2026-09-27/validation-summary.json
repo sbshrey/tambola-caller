@@ -1,0 +1,84 @@
+{
+  "baseCommit": "72eadeb096d93ee6b39ba5f7a5701c38d4c2d66e",
+  "sourceSha256": {
+    "app/src/main/java/io/github/sbshrey/tambola/game/MainActivity.kt": "0768a18afe1181a39b359a648d82f76947092733c82dd4318cb989f771db2573",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/ClaimArena.kt": "6bbd39497aac295b5a1ece6a7e44887189c9f5cd0808c103c1724901f254383c",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/PlayArena.kt": "eee43563104b4eef583b5fa2f83c24ffc3ff4394399474ef494538c862e8e226",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/TicketPrizePicker.kt": "106c4e3c020f6bafd81c096e2fd36ae1dcc1eeace8c93e1bcc56a1438c7520e7",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/LobbyVisuals.kt": "474313780d0eb58779283b762405d69e0665293fb2fc5d0202c5362486008979",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/TableRound.kt": "c310e73a40afcfd99c6d9f7f1aae5f00971716d1af9dee2b9ee85abb215ceb1d",
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/DeadlineRing.kt": "b7c117e66aa512db009e096b89a516e147f6e14471dc768d8b89420de42d5b29",
+    "app/src/androidTest/java/io/github/sbshrey/tambola/game/ManualTableTest.kt": "18d283459d4d3e91b60a8f0543efa6c80f49fb64851cd2160b6ec33ee2f46fbe",
+    "app/src/androidTest/java/io/github/sbshrey/tambola/game/TableExperienceTest.kt": "69be6ec3d10187e6876202178829c99f6602cbeed27933d5464f009f7cdcee0e",
+    "app/src/test/java/io/github/sbshrey/tambola/game/ui/ThemeContrastTest.kt": "74bf5bd39efa18f89acc6163872088fe9cc35be3b1b2cddcc8196623a5c5f2ab",
+    "tools/ui-review.init.gradle": "df0a7e680d890a7ec331a6b102079f29cf6d5527d87dedd8c33002f9764c0d2e"
+  },
+  "jvm": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "classes": [
+      "io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest",
+      "io.github.sbshrey.tambola.game.presentation.CoinResultsTest",
+      "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+      "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+      "io.github.sbshrey.tambola.game.ui.ThemeContrastTest"
+    ]
+  },
+  "lint": {
+    "Warning": 116
+  },
+  "lintIssueCounts": {
+    "OldTargetApi": 1,
+    "UnusedAttribute": 1,
+    "GradleDependency": 1,
+    "DiscouragedApi": 1,
+    "PluralsCandidate": 8,
+    "KaptUsageInsteadOfKsp": 1,
+    "UnusedResources": 103
+  },
+  "nativeRuns": {
+    "normal": {
+      "tests": 17,
+      "seconds": 83.09
+    },
+    "font150": {
+      "tests": 17,
+      "seconds": 85.353
+    }
+  },
+  "identities": {
+    "normal": {
+      "serial": "emulator-5582",
+      "appSha256": {
+        "io.github.sbshrey.tambola.game.uireview": "3dfcfb5b2edac94df40b6c74e3956586f3ab398b5a47fbd1c60b4ec1c8d3dd08",
+        "io.github.sbshrey.tambola.game.uireview.test": "3145624692f682607aa225fadf0d2c495434e3e1c2d8d855884188b12e5fa70f"
+      },
+      "installedAlpha22Before": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+      "installedAlpha22After": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+      "exitCode": 0,
+      "originalSystemFontScale": "1.0",
+      "requestedSystemFontScale": "1.0",
+      "restoredSystemFontScale": "1.0"
+    },
+    "font150": {
+      "serial": "emulator-5582",
+      "appSha256": {
+        "io.github.sbshrey.tambola.game.uireview": "3dfcfb5b2edac94df40b6c74e3956586f3ab398b5a47fbd1c60b4ec1c8d3dd08",
+        "io.github.sbshrey.tambola.game.uireview.test": "3145624692f682607aa225fadf0d2c495434e3e1c2d8d855884188b12e5fa70f"
+      },
+      "installedAlpha22Before": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+      "installedAlpha22After": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+      "exitCode": 0,
+      "originalSystemFontScale": "1.0",
+      "requestedSystemFontScale": "1.5",
+      "restoredSystemFontScale": "1.0"
+    }
+  },
+  "terminalExec": {
+    "id": 30760,
+    "exitCode": 0
+  },
+  "installedHostUpdated": false
+}

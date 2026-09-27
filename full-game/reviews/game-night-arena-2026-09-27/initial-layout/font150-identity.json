@@ -1,0 +1,13 @@
+{
+  "serial": "emulator-5582",
+  "appSha256": {
+    "io.github.sbshrey.tambola.game.uireview": "802031339fc3018ae853d28691efc2b4921e0b446ed60d4ec79a688102a14fb9",
+    "io.github.sbshrey.tambola.game.uireview.test": "405d0e561ef7e0d762c0971686c391ba90fab80d8af4b0cfbd90026232f82e7a"
+  },
+  "installedAlpha22Before": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+  "installedAlpha22After": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+  "exitCode": 0,
+  "originalSystemFontScale": "1.0",
+  "requestedSystemFontScale": "1.5",
+  "restoredSystemFontScale": "1.0"
+}

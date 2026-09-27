@@ -82,7 +82,13 @@ class ManualTableTest {
         assertEquals(marks, round.marks)
         assertEquals(bounds, compose.onNodeWithTag("hand-ticket-$shown").getUnclippedBoundsInRoot())
         compose.onNodeWithTag("claim-ticket-$shown").performClick()
-        compose.onNodeWithTag("claim-prize-HOUSE_ONE").assertIsDisplayed()
+        val pickerBounds = compose.onNodeWithTag("ticket-prize-picker").getUnclippedBoundsInRoot()
+        pool.prizes.forEach { slot ->
+            val choice = compose.onNodeWithTag("claim-prize-${slot.prize.name}").assertIsDisplayed().getUnclippedBoundsInRoot()
+            assertTrue("${slot.prize} choice is clipped", choice.top >= pickerBounds.top && choice.bottom <= pickerBounds.bottom)
+            assertTrue("${slot.prize} choice is too small", (choice.bottom - choice.top).value >= 48 - rounding && (choice.right - choice.left).value >= 48 - rounding)
+        }
+        captureTestScreen("manual-coin-prize-picker-$language")
         compose.onNodeWithTag("dismiss-claim").performClick()
         compose.onNodeWithTag("game-options").performClick()
         compose.onNodeWithTag("table-players-menu").performClick()
@@ -102,8 +108,9 @@ class ManualTableTest {
                 prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), Random(42)).start())
         repeat(90) { round = round.draw() }
         var submitted: ClaimSelection? = null
+        val pool = CoinPool(6)
         compose.setContent { TambolaTheme {
-            PlayArena(round.toTable(), "me", Preferences(reducedMotion = true), "Live", {}, {}, {}, null, {},
+            PlayArena(round.toTable().copy(coins = CoinTableView(6, 600, pool.prizes, 6, null)), "me", Preferences(reducedMotion = true), "Live", {}, {}, {}, null, {},
                 markNumber = { ticket, number -> round = round.toggleMark(ticket, number) },
                 claim = { choice -> submitted = choice; round = round.claim("me", selection = choice) },
                 footer = { Text("Live") })
