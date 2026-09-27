@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-09-27T03:32:36.023559+00:00",
+  "sourceBaseCommit": "5de285a643cbde4bafe3e5e1d4613805d89ab9b0",
+  "sourceWasDirty": true,
+  "sourceSha256": {
+    "full-game/app/src/main/AndroidManifest.xml": "80e30c70e77660b806a269656dca9613db9d12a4fb42a423cbcd3495a51497d5",
+    "full-game/app/src/main/java/io/github/sbshrey/tambola/game/MainActivity.kt": "a9d59bfb9ca20eeda9c3fa16fca6510e24a08159844dca523f0cd30b8d5ac7b8"
+  },
+  "command": "./gradlew.bat :app:compileDebugKotlin :app:lintDebug --console=plain",
+  "exitCode": 0,
+  "lintSeverities": {
+    "Warning": 88
+  },
+  "lintIds": {
+    "OldTargetApi": 1,
+    "UnusedAttribute": 1,
+    "GradleDependency": 1,
+    "DiscouragedApi": 1,
+    "PluralsCandidate": 8,
+    "KaptUsageInsteadOfKsp": 1,
+    "UnusedResources": 75
+  },
+  "mergedManifest": {
+    "appCategory": "game",
+    "MainActivity.screenOrientation": "sensorLandscape"
+  },
+  "deviceValidation": false,
+  "apkBuiltOrInstalled": false,
+  "nativeVisualRedesignIncluded": false
+}

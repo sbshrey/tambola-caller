@@ -25,7 +25,7 @@ The welcome has one primary Play action and optional personalization. Returning 
 
 ## Interaction and implementation handoff
 
-- Keep all screens in landscape. Android source now declares `sensorLandscape` and game category, and removes the gameplay-only orientation override. This source change has not yet been built or validated on a device; the installed alpha22 APK is unchanged.
+- Keep all screens in landscape. Android source now declares `sensorLandscape` and game category, and removes the gameplay-only orientation override. [Source compilation, lint and merged-manifest checks passed](../../full-game/reviews/landscape-source-2026-09-27/README.md), with 0 lint errors and 88 warnings, including fixed orientation. Device behavior remains unverified; the installed alpha22 APK is unchanged.
 - Reference frames are 1280×720, not a requirement to scale the entire native UI uniformly. Respect device cutouts, navigation insets, large text and at least 48 dp tap targets. When two tickets cannot retain readable cells and touch targets, show one ticket per page. Never compress six tickets onto one screen.
 - Persist dabs, selected ticket page and confirmed quantity. Only the owner sees their ticket numbers. A claim always carries the selected ticket and prize; actual eligibility, ties and credit remain server authoritative.
 - Freeze the 6/7/8-prize schedule when sales close. Real gameplay must expose taken/closed prizes and the pending claim state, then settle winnings at the server's call boundary. The design's immediate result transition is illustrative, not an implementation of settlement timing.
