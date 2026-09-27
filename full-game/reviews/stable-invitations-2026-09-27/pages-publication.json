@@ -1,0 +1,34 @@
+{
+  "publishedAt": "2026-09-27T12:59:53.334Z",
+  "base": "76b6a2c5da5a4729a7dbcd28fac83878780ac9d8",
+  "sourceCommit": "4954cff39815326ce16f1734897b0c997a07f9e3",
+  "mainCommit": "981a4da4dee74c45ad2404657599a9880480d70f",
+  "files": [
+    {
+      "path": "friends/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "438d7959bb8c8fa40a8133eb04d16c0d5f561f4b"
+    },
+    {
+      "path": "friends/invite.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b344ca4dd4d62a3be282dddd7ae5c033850f3c4"
+    },
+    {
+      "path": "friends/styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75aed6da01fba0f512cf589f49f2718272034c50"
+    },
+    {
+      "path": "sw.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d030a504c828504b6894fc1b89bb3ef91b8eec4c"
+    }
+  ],
+  "site": "https://sbshrey.github.io/tambola-caller/friends/",
+  "scope": "Only these four files changed on main; Pages build and public checks still required."
+}

@@ -26,3 +26,11 @@ APK SHA-256: `489cef056ac49323aaf9923159bdd01fbcc2f05b53ed4951be9ebf0666b0386a`,
 ## Remaining boundaries
 
 Stable pages do not keep an expired/started table joinable and do not keep the PC server running through power loss. Previously shared tunnel-hosted links retain their old limitation; alpha31 creates the new stable links. Other browsers retain manual code entry if they do not support Android intents. Physical-phone mobile-data/browser handoff, touch/audio, TalkBack, frame performance, production signing, editable Figma updates and high-load latency remain open. The broader goal remains active.
+
+## Publication
+
+[Alpha31 is published](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha31-stable-invites) from `4954cff39815326ce16f1734897b0c997a07f9e3`. The guarded page publication created main commit `981a4da4dee74c45ad2404657599a9880480d70f`; the GitHub commit inventory confirms that only the four specified files changed. [Publication record](pages-publication.json). Pages build `1242992341` reached `built` for that exact commit.
+
+At 13:01 UTC, anonymous public reads of all four assets and the caller index matched repository bytes, the actual public page rendered English/Hindi with the correct code and alpha31 download destination, and an anonymous APK download matched its tested hash and byte count. [Public verification](publication-verification.json), [published Hindi page](published-hindi.png). This check used the public site without cache-busting parameters.
+
+The public game endpoint remained healthy, with its original tunnel address, serving process and server JAR unchanged. No game-service or bridge restart was needed. [Entry verification](public-entry.json), [host identity](host-verification.json). The dedicated emulator was stopped after the test deleted both QA profiles; no connected device remained. The PC host stays online for users.
