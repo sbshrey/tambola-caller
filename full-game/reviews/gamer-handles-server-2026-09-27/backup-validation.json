@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "name": "20260927-062050-primary.dump",
+      "sha256": "8908186cf85c94784b5521fcd088c7d1632eb14f0fe74600743ddd0ff22b6157",
+      "bytes": 187425,
+      "archiveListingPassed": true
+    },
+    {
+      "name": "20260927-062050-journal.dump",
+      "sha256": "1557a69d48b5555e1072c51552b7d18e6fe68794e1e6903882b230d3c4676908",
+      "bytes": 14992,
+      "archiveListingPassed": true
+    }
+  ],
+  "validation": "pg_restore archive listing; restore rehearsal remains separate",
+  "completedAt": "2026-09-27T06:20:51.6069425Z"
+}

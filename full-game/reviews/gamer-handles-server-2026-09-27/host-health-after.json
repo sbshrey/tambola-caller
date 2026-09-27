@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-09-27T07:31:54.908Z",
+  "httpsStatus": 200,
+  "httpsBody": {
+    "status": "ready",
+    "protocolVersion": 4
+  },
+  "sourceCommit": "cfdb236830a376b13d96d2cecf521032e3b441c9",
+  "serviceRuntimeSha256": "3f0e1aa1db385105ea7575ef3dfa89422dcb2640749c9756b0a4cf5179f2cda8",
+  "jarCount": 51,
+  "installedRuntimeMatchesCandidate": true,
+  "supervisor": {
+    "status": "ready",
+    "backendReady": true,
+    "tlsReady": true,
+    "ageSeconds": 1.171
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-09-27T07:33:12.6114353Z",
+  "sourceCommit": "cfdb236830a376b13d96d2cecf521032e3b441c9",
+  "pid": 13560,
+  "configuredJavaMatches": true,
+  "configuredLibrariesInCommand": true,
+  "processStartedAt": "2026-09-27T07:02:36.0490951Z",
+  "supervisorStartedAt": "2026-09-27T07:02:36.0490951Z",
+  "supervisorStatus": "ready",
+  "supervisorCheckedAt": "2026-09-27T07:33:09.1250128Z"
+}

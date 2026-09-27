@@ -1,0 +1,16 @@
+{
+  "archive-gamer-handles.py": "a4167e0188d53c44cbf1a5bbe647224043418f0b64766d43f9cfdc76f30aacc9",
+  "backup-validation.json": "d898eaf9192fd5fc6e2b14733ad2773d3401ed961f20535f1d285c04d8c24631",
+  "deployment-status-damaged.bin": "d6d5d3d99e18dc145cc28998cfef9472ea5e3fba85fd570f597ef6a71648ef8b",
+  "host-health-after.json": "c1f8354a57647075f98be26eeef9aa5d589b8c1a9b899e8ea31b2b1335e53d42",
+  "host-health-before.json": "0ed3d4dae46701f5cd3788c1fdb3368f7d13f37605d158dd45d24c430c01f8c4",
+  "https-transactions.json": "f866cd19d4539455f43130c0b88dc4f3317cabf3f96b6e5377cae5869aef9424",
+  "live-process.json": "874f3442a3d732dd01ee3e16c85a128d0ea1001b5e588167e4c661f693e289b4",
+  "live-roster.json": "63fc30cef971b8c90e8cb4fac4ae3cc415b1293df4a474504dc2c0b1d257659e",
+  "README.md": "7df950ee031872e90055c8201c9014e4a9596f184120b5be69c53b993f03ba25",
+  "server-validation.txt": "343dfa5dbc9082343f85df17c9544abe6391f3459ab25e2b360e42335e8d8c40",
+  "upgrade-preflight.txt": "dcbfbdd78db445a862e7078dcd571b58327e915edeef0746837b4cc05b1e2565",
+  "upgrade-transcript.txt": "f63811403712ed0cd0f3c2df8965f65d47d34f0ab64281ae2069e22cad3d8c6f",
+  "validation.json": "936e858f5030a9d08677ff2d48cf948924663c423f5f51595682231196659892",
+  "verify-gamer-handles.mjs": "7eb99ed15dea93b056f1119f2d54d3a7ba310ff8b44a4cba580ea9adfa512ff3"
+}

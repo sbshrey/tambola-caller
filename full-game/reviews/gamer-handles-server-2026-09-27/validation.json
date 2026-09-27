@@ -1,0 +1,223 @@
+{
+  "sourceCommit": "cfdb236830a376b13d96d2cecf521032e3b441c9",
+  "runtimeSha256": "3f0e1aa1db385105ea7575ef3dfa89422dcb2640749c9756b0a4cf5179f2cda8",
+  "tests": 144,
+  "suites": [
+    {
+      "name": "io.github.sbshrey.tambola.server.AvatarTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "10.573"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.27"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "11.819"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "19.8"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "11.504"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "32.776"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.762"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "27.211"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "20.767"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventChangesTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "10.719"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.705"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.EventStreamsTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.896"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.HttpTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "19.08"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.021"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.InviteSiteTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.233"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.232"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "17.023"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.NativeClientTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.867"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.598"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "13.552"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RoomServiceTest",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "30.093"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "167.49"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "17.291"
+    },
+    {
+      "name": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.001"
+    }
+  ],
+  "unchangedAlpha23ApkSha256": "872b505cd397397940d88d190d65f7748ad7c4a85c17d397d7a3de390265d033",
+  "scope": "Fresh full server suite on isolated PostgreSQL, guarded idle-host deployment, verified HTTPS purchase/refund/session and computer-roster checks. No new native full-round or physical-phone acceptance.",
+  "deploymentRecordDamage": {
+    "bytes": 351,
+    "allZeroBytes": true,
+    "sha256": "d6d5d3d99e18dc145cc28998cfef9472ea5e3fba85fd570f597ef6a71648ef8b",
+    "note": "Final status record is unusable. Successful upgrade transcript, original live probes, fresh runtime/process/readiness attestation and checksum-valid backup pair are separate evidence. The damaged original was not rewritten."
+  }
+}

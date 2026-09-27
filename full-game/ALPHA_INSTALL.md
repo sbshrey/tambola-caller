@@ -10,7 +10,7 @@ The 29.1 MB APK disables debugging and uses code/resource shrinking with the exi
 
 1. On this PC, run the [firewall setup](../docs/WIFI_HOST.md#one-administrator-action-for-phone-testing) once in Administrator PowerShell. Keep the PC signed in, awake and connected.
 2. Connect the phone to the same local network as `192.168.1.4`. Guest-network isolation may prevent access. The app uses private HTTPS port 8443; no adb mapping or certificate installation is required on the phone.
-3. Choose 1–6 tickets and tap **Play**. A new profile gets 1,500 free coins; each ticket costs 100. Sales close after 12 seconds, then calls arrive every five seconds. Empty seats fill with labelled computers. Their new gamer-style handles are in the preview/source but are not yet deployed to the server.
+3. Choose 1–6 tickets and tap **Play**. A new profile gets 1,500 free coins; each ticket costs 100. Sales close after 12 seconds, then calls arrive every five seconds. Empty seats fill with labelled computers using fictional gamer-style handles such as ChaiChamp, NeonNinja and LuckyMango. The [server update](reviews/gamer-handles-server-2026-09-27/README.md) is deployed; an existing compatible Wi-Fi APK receives these names without reinstalling.
 
 Mark numbers manually. One or two readable tickets appear at once; use up/down controls for more. Each ticket has its own **Claim** button and prize picker. The ticket pool funds six to eight prizes; house prizes open in order. Results show winnings and offer another round. Coins have no purchase, transfer or cash redemption.
 

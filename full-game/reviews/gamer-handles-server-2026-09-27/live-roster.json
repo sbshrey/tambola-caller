@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-09-27T06:21:06.326Z",
+  "sourceCommit": "cfdb236830a376b13d96d2cecf521032e3b441c9",
+  "serviceRuntimeSha256": "3f0e1aa1db385105ea7575ef3dfa89422dcb2640749c9756b0a4cf5179f2cda8",
+  "result": "passed",
+  "checks": [
+    "one exact charge and receipt replay; six private tickets; three distinct fictional handles explicitly flagged computer; fixed 1500-coin pool with seven prizes",
+    "first automatic call arrived; roster identities and wallet remained stable",
+    "only temporary Roster QA profile deleted; deleted session rejected"
+  ],
+  "scope": "Verified HTTPS on this PC; simulated roster and first automatic call. Not physical-phone or full-round acceptance.",
+  "computers": [
+    {
+      "name": "ChaiChamp",
+      "computer": true,
+      "avatar": 1
+    },
+    {
+      "name": "NeonNinja",
+      "computer": true,
+      "avatar": 2
+    },
+    {
+      "name": "LuckyMango",
+      "computer": true,
+      "avatar": 3
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 Created 27 September 2026. Review the design before another APK installation.
 
+Current implementation: the Game night design is packaged in [alpha23](../../full-game/reviews/game-night-alpha23-2026-09-27/README.md), and the [fictional gamer handles are deployed](../../full-game/reviews/gamer-handles-server-2026-09-27/README.md) to the PC server. The native review sections below retain the scope of their earlier checkpoints. Browser examples remain simulated design data.
+
 - [Editable Figma design](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696): the **Joining, timer & settings · v2** page has nine screens imported as vector and text layers. Page 1 is preserved. This is a design board, not a wired Figma prototype or production component library.
 - [Clickable browser review on this computer](http://127.0.0.1:8877/review.html): simulated interactions and motion, with screen selection and a feedback download. The loopback preview must be running; it is not a public link or a multiplayer server.
 - `Tambola-Landscape-Review.svg` is the portable vector board. `frames/` holds each 1280×720 screen. `build_design.py` regenerates these originals and the prototype's demo data.
