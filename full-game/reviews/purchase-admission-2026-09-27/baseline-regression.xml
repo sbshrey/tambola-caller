@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.server.PurchaseAdmissionTest" tests="2" skipped="0" failures="1" errors="0" timestamp="2026-09-27T10:29:59.894Z" hostname="DESKTOP-SBSHREY" time="10.148">
+  <properties/>
+  <testcase name="a rejected purchase releases admission for the next player" classname="io.github.sbshrey.tambola.server.PurchaseAdmissionTest" time="5.781"/>
+  <testcase name="queued quick purchases leave wallets and friend tables available" classname="io.github.sbshrey.tambola.server.PurchaseAdmissionTest" time="4.362">
+    <failure message="kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 1500 ms" type="kotlinx.coroutines.TimeoutCancellationException">kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 1500 ms
+	at _COROUTINE._BOUNDARY._(CoroutineDebugging.kt:42)
+	at io.github.sbshrey.tambola.server.PurchaseAdmissionTest$queued quick purchases leave wallets and friend tables available$1$2.invokeSuspend(PurchaseAdmissionTest.kt:52)
+	at io.github.sbshrey.tambola.server.PurchaseAdmissionTest$queued quick purchases leave wallets and friend tables available$1.invokeSuspend(PurchaseAdmissionTest.kt:30)
+	at io.ktor.server.testing.TestApplicationKt$runTestApplication$2$2.invokeSuspend(TestApplication.kt:522)
+	at io.ktor.server.testing.TestApplicationKt.runTestApplication(TestApplication.kt:522)
+	at io.ktor.server.testing.TestApplicationKt$testApplication$1.invokeSuspend(TestApplication.kt:506)
+	at io.ktor.test.dispatcher.TestCommonKt$runTestWithRealTime$1.invokeSuspend(TestCommon.kt:40)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$1.invokeSuspend(TestBuilders.kt:317)
+Caused by: kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 1500 ms
+	at kotlinx.coroutines.TimeoutKt.TimeoutCancellationException(Timeout.kt:189)
+	at kotlinx.coroutines.TimeoutCoroutine.run(Timeout.kt:157)
+	at kotlinx.coroutines.EventLoopImplBase$DelayedRunnableTask.run(EventLoop.common.kt:505)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.DefaultExecutor.run(DefaultExecutor.kt:105)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <system-out><![CDATA[2026-09-27 16:00:05,264 INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-09-27 16:00:05,352 INFO  io.ktor.test - Application started in 0.109 seconds.
+2026-09-27 16:00:05,354 INFO  io.ktor.test - Responding at http://localhost:80
+2026-09-27 16:00:05,354 INFO  io.ktor.test - Responding at https://localhost:443
+2026-09-27 16:00:07,785 INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-09-27 16:00:07,789 INFO  io.ktor.test - Application started in 0.004 seconds.
+2026-09-27 16:00:07,790 INFO  io.ktor.test - Responding at http://localhost:80
+2026-09-27 16:00:07,790 INFO  io.ktor.test - Responding at https://localhost:443
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

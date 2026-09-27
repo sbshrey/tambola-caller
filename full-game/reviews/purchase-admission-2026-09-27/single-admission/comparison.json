@@ -1,0 +1,59 @@
+{
+  "runs": [
+    {
+      "index": 1,
+      "variant": "baseline",
+      "startedAt": "2026-09-27T10:41:52.4619989Z",
+      "finishedAt": "2026-09-27T10:42:29.9814626Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/admission-burst-1-baseline.txt",
+      "runId": "fe2ca83a31ca4785",
+      "runtime": "a29430f47f9203b84f1f7b6b0fd840a2426b9eee168a881af40998a58be6dc1a",
+      "firstP95": 3364.4941,
+      "repeatP95": 1137.3907
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "startedAt": "2026-09-27T10:42:30.0148866Z",
+      "finishedAt": "2026-09-27T10:43:05.4994803Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/admission-burst-2-candidate.txt",
+      "runId": "8958ac6858fc4deb",
+      "runtime": "06dc583f3499ae9fb15833eb5436257862924eaf078c7c3cb706a6aa510aad06",
+      "firstP95": 4002.0796,
+      "repeatP95": 2115.5384
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "startedAt": "2026-09-27T10:43:05.5023535Z",
+      "finishedAt": "2026-09-27T10:43:40.5543234Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/admission-burst-3-candidate.txt",
+      "runId": "a178b84d754943c2",
+      "runtime": "06dc583f3499ae9fb15833eb5436257862924eaf078c7c3cb706a6aa510aad06",
+      "firstP95": 3963.2919,
+      "repeatP95": 2298.8558
+    },
+    {
+      "index": 4,
+      "variant": "baseline",
+      "startedAt": "2026-09-27T10:43:40.5573879Z",
+      "finishedAt": "2026-09-27T10:44:14.5858250Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/admission-burst-4-baseline.txt",
+      "runId": "40c992c4d6b94c97",
+      "runtime": "a29430f47f9203b84f1f7b6b0fd840a2426b9eee168a881af40998a58be6dc1a",
+      "firstP95": 3109.8042,
+      "repeatP95": 1355.3715
+    }
+  ],
+  "onlyDifferingJar": [
+    "server.jar"
+  ],
+  "sourceHashes": {
+    "server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt": "ed9d566a195685f8c77d31a13ebc08bb8b8cebdd93f6df1717d4f3dc05cd2fea",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseAdmissionTest.kt": "609e8653bd8c0ac207b80aeca8c1aa2a5057959f8bcd5eb931c5edaf47aea200"
+  }
+}

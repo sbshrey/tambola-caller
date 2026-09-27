@@ -22,7 +22,7 @@ Invitation URLs use the temporary tunnel hostname. Restarting the tunnel makes o
 
 ## PC operation
 
-Installed helpers live in `%LOCALAPPDATA%\TambolaTogetherPublicHost`. The original game/database service stays in `%LOCALAPPDATA%\TambolaTogetherHost`; its databases, runtime and private LAN TLS are unchanged.
+Installed helpers live in `%LOCALAPPDATA%\TambolaTogetherPublicHost`. The game/database service runs in `%LOCALAPPDATA%\TambolaTogetherHost`, with its existing databases and private LAN TLS. Service updates are tracked separately from the public gateway and APK.
 
 The public gateway listens only on `127.0.0.1:18081`, forwarding allowlisted game paths to `127.0.0.1:18080`. It serves only the bounded `/friends/CODE` invitation pages locally, without querying room membership or reflecting request hosts. Pages have no scripts, external assets, analytics or automatic redirects and suppress referrers. Internal metrics, arbitrary proxy paths and legacy `/invite/` routes stay blocked. The gateway bounds API bodies to 32 KiB, limits per-address requests/registration, and caps WebSocket streams at 80. It removes forwarded headers before contacting the game service. Cloudflare supplies `CF-Connecting-IP` to this loopback-only gateway; the original service retains its own conservative shared-peer quotas. Neither database ports nor router inbound ports are exposed.
 

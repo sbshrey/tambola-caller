@@ -78,6 +78,8 @@ The [installed-backup drill](../full-game/reviews/installed-recovery-2026-09-27/
 
 ## Reference evidence
 
+The [quick-purchase admission review](../full-game/reviews/purchase-admission-2026-09-27/README.md) reproduces a separate availability issue: an allocator backlog can exhaust the shared pool and delay unrelated wallet reads and friend-table joins. A four-request coroutine limit fixes that regression and passes all 158 server tests. The two matched 320-player candidate runs preserve receipts/refunds/conservation, but cold purchase p95 is 3,421–3,477 ms against baseline 3,081–3,138 ms. This is an explicit availability/throughput tradeoff, not closure of the one-second purchase target. A slower single-request draft was rejected. Physical-phone, full capacity and production-release gates remain open.
+
 - The supplied 13.76-second clip shows two landscape tickets, recent calls, left avatars, direct dabs and per-ticket prize selection. Arrows suggest paging; the later explicit user instruction establishes it. The clip does not prove verification, latency or opponent identity.
 - [Octro's Play listing](https://play.google.com/store/apps/details?id=com.octro.tambola&hl=en) showed 5M+ installs on 26 September, highest among the Tambola-specific candidates checked. This is a store snapshot, not an exhaustive market ranking.
 - [Its published rules](https://tambola.octro.com/how-to-play.html) describe virtual ticket purchase, a ticket-funded pool and ticket-level prize choice. Our code, artwork and layouts are original.

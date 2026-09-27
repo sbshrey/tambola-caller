@@ -1,0 +1,234 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.server.AvatarTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 7.116
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 5.804
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 10.632
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 18.192
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 11.338
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 31.326
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 2.014
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 27.776
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 21.795
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.EventChangesTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 10.887
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 13.637
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.EventStreamsTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.009
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.FriendReplayTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 11.3
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.FriendTableTest",
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 14.432
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 7.319
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.HttpTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 20.4
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.02
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.InviteSiteTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 7.664
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 13.149
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 18.323
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.NativeClientTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 5.342
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 5.997
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 14.915
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.PurchaseAdmissionTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 4.766
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.RoomServiceTest",
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 33.754
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 176.05
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.009
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 17.976
+  },
+  {
+    "name": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.001
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-09-27T10:56:45.230Z",
+  "serverTests": 158,
+  "classes": 29,
+  "failures": 0,
+  "skipped": 0,
+  "runtimeMatchesMeasuredCandidate": true,
+  "serviceRuntimeSha256": "f26bc71a48b349ad77fa722a7ebe7938ef1d94981859af1f4ac78aa03e95e372",
+  "sourceHashes": {
+    "server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt": "09e59add74a052bc42cec974dcedcec2eb38518d7119460c2bc60577d98cc41e",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/PurchaseAdmissionTest.kt": "039d6e7e1dcd1e1c45f10118d6274bc73fb4a26487e3eed6bdb5f38ed57778bc"
+  }
+}

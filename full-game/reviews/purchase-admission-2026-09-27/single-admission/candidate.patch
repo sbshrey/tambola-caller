@@ -1,0 +1,38 @@
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt
+index bb81d02..f1a2e3b 100644
+--- a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/Server.kt
+@@ -16,6 +16,8 @@ import io.ktor.utils.io.*
+ import io.ktor.websocket.*
+ import kotlinx.coroutines.*
+ import kotlinx.coroutines.CancellationException
++import kotlinx.coroutines.sync.Mutex
++import kotlinx.coroutines.sync.withLock
+ import kotlinx.io.readByteArray
+ import kotlinx.serialization.encodeToString
+ import java.sql.SQLException
+@@ -92,6 +94,9 @@ internal fun validateRecoveryConfiguration(host: String, primaryUrl: String, jou
+ fun Application.roomsModule(database: Database, service: RoomService = RoomService(database), runWorker: Boolean = true,
+     operations: ServiceOperations = ServiceOperations(runWorker), journalDatabase: Database? = null, inviteSite: InviteSite? = null) {
+     val streams = EventStreams()
++    // Quick allocation is serialized in PostgreSQL. Wait here before borrowing a
++    // connection, so a busy quick-play queue leaves capacity for active games and friends.
++    val quickPurchases = Mutex()
+     install(OperationsPlugin) { this.operations = operations }
+     install(ContentNegotiation) { json(WireJson) }
+     install(WebSockets) { pingPeriod = 15.seconds; timeout = 30.seconds; maxFrameSize = 1_024; masking = false }
+@@ -137,7 +142,13 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
+             }
+             post("/matches") {
+                 val body = call.body<MatchRequest>()
+-                call.respond(withContext(Dispatchers.IO) { service.match(call.bearer(), body) })
++                val token = call.bearer()
++                val result = if (body.friendTable) {
++                    withContext(Dispatchers.IO) { service.match(token, body) }
++                } else quickPurchases.withLock {
++                    withContext(Dispatchers.IO) { service.match(token, body) }
++                }
++                call.respond(result)
+             }
+             post("/guests") {
+                 val body = call.body<GuestRequest>()

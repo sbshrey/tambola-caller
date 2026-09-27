@@ -1,0 +1,18 @@
+[2026-09-27T16:11:58.890+0530][0.011s] Using G1
+[2026-09-27T16:11:59.224+0530][0.344s] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 14M->3M(128M) 2.404ms
+[2026-09-27T16:11:59.608+0530][0.728s] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 17M->5M(128M) 3.659ms
+[2026-09-27T16:12:02.826+0530][3.946s] GC(2) Pause Young (Concurrent Start) (Metadata GC Threshold) 51M->9M(128M) 5.614ms
+[2026-09-27T16:12:02.826+0530][3.946s] GC(3) Concurrent Mark Cycle
+[2026-09-27T16:12:02.834+0530][3.954s] GC(3) Pause Remark 10M->10M(128M) 1.434ms
+[2026-09-27T16:12:02.836+0530][3.956s] GC(3) Pause Cleanup 10M->10M(128M) 0.081ms
+[2026-09-27T16:12:02.837+0530][3.957s] GC(3) Concurrent Mark Cycle 10.964ms
+[2026-09-27T16:12:05.328+0530][6.449s] GC(4) Pause Young (Concurrent Start) (G1 Evacuation Pause) 79M->20M(128M) 13.617ms
+[2026-09-27T16:12:05.328+0530][6.450s] GC(5) Concurrent Mark Cycle
+[2026-09-27T16:12:05.343+0530][6.464s] GC(5) Pause Remark 23M->23M(128M) 2.750ms
+[2026-09-27T16:12:05.349+0530][6.470s] GC(5) Pause Cleanup 23M->23M(128M) 0.044ms
+[2026-09-27T16:12:05.350+0530][6.471s] GC(5) Concurrent Mark Cycle 21.038ms
+[2026-09-27T16:12:07.219+0530][8.339s] GC(6) Pause Young (Normal) (G1 Evacuation Pause) 82M->25M(128M) 12.046ms
+[2026-09-27T16:12:08.726+0530][9.847s] GC(7) Pause Young (Normal) (G1 Evacuation Pause) 86M->22M(128M) 3.384ms
+[2026-09-27T16:12:10.213+0530][11.333s] GC(8) Pause Young (Normal) (G1 Evacuation Pause) 90M->24M(128M) 3.957ms
+[2026-09-27T16:12:11.591+0530][12.712s] GC(9) Pause Young (Normal) (G1 Evacuation Pause) 93M->26M(128M) 4.733ms
+[2026-09-27T16:12:12.962+0530][14.083s] GC(10) Pause Young (Normal) (G1 Evacuation Pause) 95M->22M(128M) 2.128ms

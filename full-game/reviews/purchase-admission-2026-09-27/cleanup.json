@@ -1,0 +1,30 @@
+{
+  "observedAt": "2026-09-27T10:56:44.9832552Z",
+  "counts": {
+    "ownedDatabasesRemaining": 0,
+    "testSchemasRemaining": 0,
+    "otherClientConnections": 0
+  },
+  "recordedServerPidsAbsent": [
+    8012,
+    23868,
+    18912,
+    15092,
+    6440,
+    22028,
+    10648,
+    5552,
+    11976
+  ],
+  "runIds": [
+    "9979f383ebeb4d0b",
+    "b04f08f864514933",
+    "b122620dd0b84048",
+    "1614c3db171b42c5",
+    "79545e2026c14939",
+    "fe2ca83a31ca4785",
+    "8958ac6858fc4deb",
+    "a178b84d754943c2",
+    "40c992c4d6b94c97"
+  ]
+}

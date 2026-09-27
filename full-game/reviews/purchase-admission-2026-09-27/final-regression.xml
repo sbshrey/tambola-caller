@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.server.PurchaseAdmissionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-27T10:52:32.842Z" hostname="DESKTOP-SBSHREY" time="4.766">
+  <properties/>
+  <testcase name="a rejected purchase releases admission for the next player" classname="io.github.sbshrey.tambola.server.PurchaseAdmissionTest" time="1.968"/>
+  <testcase name="queued quick purchases leave wallets and friend tables available" classname="io.github.sbshrey.tambola.server.PurchaseAdmissionTest" time="2.797"/>
+  <system-out><![CDATA[2026-09-27 16:22:34,620 INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-09-27 16:22:34,621 INFO  io.ktor.test - Application started in 0.001 seconds.
+2026-09-27 16:22:34,621 INFO  io.ktor.test - Responding at http://localhost:80
+2026-09-27 16:22:34,621 INFO  io.ktor.test - Responding at https://localhost:443
+2026-09-27 16:22:36,843 INFO  io.ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-09-27 16:22:36,845 INFO  io.ktor.test - Application started in 0.002 seconds.
+2026-09-27 16:22:36,846 INFO  io.ktor.test - Responding at http://localhost:80
+2026-09-27 16:22:36,846 INFO  io.ktor.test - Responding at https://localhost:443
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
