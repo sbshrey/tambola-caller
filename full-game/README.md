@@ -6,6 +6,8 @@ Play buys 1–6 disjoint tickets with free virtual coins, starts a short countdo
 
 The current [optimized alpha21 APK](ALPHA_INSTALL.md) fixes a cancellation race: an expected room disconnection no longer loses the saved leave receipt or shows a misleading error after a refund. It retains affordable ticket choices and server-based refill timing. Its external UI check passed an 87-call round, cold-process mark recovery, all eight prizes, retained ticket quantity and purchase/refund on the updated PC service. The 29.1 MB APK uses the same development signature. [Alpha21 evidence](reviews/leave-receipt-2026-09-27/README.md) preserves the reproduced failure, regression and packaged result separately from physical-phone and production acceptance.
 
+The [store, privacy and support draft](RELEASE_CONTENT_DRAFT.md) describes the current coin game and wallet retention. Operator details, public hosting, deletion support, physical-device acceptance and production signing remain unresolved; these pages have not been published.
+
 ## Earlier checkpoints
 
 Alpha13 redesigns play around a compact game table: one-tap quick games, all 1–6 owned tickets together without a ticket carousel or scrolling, non-repeating numbers across each player's hand, and a covered handoff for shared-device family play. See the [design research](../docs/GAMEPLAY_REDESIGN.md), [alpha13 validation](ALPHA13_VALIDATION.md) and [installation guide](ALPHA_INSTALL.md). Alpha14 packages the verified build-tool migration with Android 8/11/16, upgrade, multiplayer and recovery acceptance; see [alpha14 validation](ALPHA14_VALIDATION.md). It remains an internal development build.
@@ -53,24 +55,27 @@ The backend can build separately with `-PserverOnly=true`; its tests require an 
 
 The app ID is `io.github.sbshrey.tambola.game`. It installs beside the existing Tambola Keyboard. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`; it is an internal alpha, not a signed production release. Build-time imports check all 270 voice recordings and five original sound assets against repository manifests. `node tools/compose-sounds.mjs --check` also verifies that the PCM files reproduce exactly. No OpenAI key is needed to build or play.
 
-## Rules and data
+## Current coin rules and data
 
 - Tickets have 3 rows, 9 columns, and 15 unique numbers. Each row has 5; columns follow the standard 1–9, 10–19, …, 80–90 ranges and ascend vertically.
-- The shared Kotlin domain module owns ticket validation, secure random draws, standard prize rules, same-draw ties, points, round status, and save validation by replay. A mark is a player's visual aid; it cannot forge a winning ticket.
-- Setup can end the round at the first, second or third house, or continue through all 90 calls. Ranked houses replace standalone full-house points; previously winning tickets cannot win a later rank.
-- The custom-prize editor supports AND/OR groups, row/column/range/position selectors, count thresholds, specific owned tickets and multiple-ticket requirements. Live sample examples use separate illustrative tickets. Invalid/impossible counts and incompatible ticket allowances are explained before dealing.
-- Prize inspection keeps the locked definition visible and shows actual selected numbers, missing calls, winning tickets and the award call. All eligibility is independent of manual marking.
-- Every winning ticket appears in an award. Players receive points once per prize even with multiple winning tickets; tied players each get full points.
-- Leaving the foreground pauses offline play and audio. Restoring a round does not automatically speak or draw.
-- The game table keeps all owned tickets and the main play action on screen. Manual play uses one large action to dab confirmed called numbers; adaptive layouts support landscape and large system text. Other players' ticket grids are private.
-- Room stores rounds atomically. Preferences use DataStore. Offline history is local; deleting offline rounds requires confirmation. Online snapshots and sessions use a separate encrypted store.
-- Setup/editor drafts use the ViewModel and saved instance state to survive recreation. Rematches retain players/settings/custom prizes and produce a fresh round when dealt. Sharing starts with a preview and leaves player names out unless selected.
+- Each player buys 1–6 tickets with no repeated number within that hand. A full six-ticket strip covers 1–90 once. The service returns only the player's own ticket numbers and never reveals future draws during play.
+- A 12-second lobby accepts up to eight people. At the deadline, fewer than four humans are supplemented with labelled computer players to make four participants. The server calls a new number every five seconds.
+- The game table displays one or two readable tickets per page. Marks and the selected page persist; calls never jump to another ticket. Claim opens beside its ticket and requires a prize choice.
+- Ticket purchases cost 100 free coins each. The frozen ticket pool funds Early Five, Corners, Top/Middle/Bottom and one to three ranked house prizes. Earlier house-winning tickets cannot take a later house rank. Shared claims on the same call split a prize by winning ticket, with deterministic rounding; settled coin shares replace the old points/badges progression.
+- The shared Kotlin domain module owns ticket validation, secure random draws, prize rules and save validation. The service validates selected claims against the current round and call, then settles payouts atomically. A forged mark cannot make an uncalled number eligible.
+- Retries retain their original purchase/claim/cancellation identity. Cancelling an unstarted purchase refunds it once. At round completion, any unawarded pool is returned proportionally to purchased tickets. Results retain the chosen quantity for a new, explicit purchase.
+- Calls continue on the server when a player backgrounds or disconnects. Audio follows the foreground/interruption controls; reconnect restores purchased tickets and saved marks on the same installation.
+- Session/device credentials, cached online games, marks and pending requests use Android Keystore-backed encryption. Preferences use DataStore. Same-installation session renewal retains the server wallet, but there is no wallet recovery after local reset, uninstall or device loss. The [data disclosure](app/src/main/res/values/privacy.xml) and [release draft](RELEASE_CONTENT_DRAFT.md) describe retention and deletion.
 
-Assets in this build: native vector/Compose graphics, the repository's previously generated AI voice recordings, and original synthesized music/effects. No runtime AI calls, analytics, ads, payments, microphone permission, or OpenAI key are included. Internet permission supports private rooms; solo and family play remain offline.
+Older offline saves, private-room invitations, setup/custom-rule editors, scores and badges remain in source for compatibility and their historical tests. They are not the current app's primary playing flow; the earlier checkpoint documents describe that functionality.
+
+Assets in this build: native vector/Compose graphics, the repository's previously generated AI voice recordings, and original synthesized music/effects. No runtime AI calls, analytics SDK, ads, cash payments, microphone permission or OpenAI key are included. Network access is required for the coin game, including tables with computers; service health uses aggregate operational metrics.
 
 ## Test scope
 
 [Performance acceptance](PERFORMANCE.md) tracks the fresh sustained service workload, native-client traffic measurement and remaining physical-device budgets separately from correctness checks.
+
+The current [coin capacity fixture](server/COIN_LOAD.md) and [optimized native driver](macrobenchmark/README.md) cover ticket purchases, selected claims, wallet conservation, exact receipts, reconnects and cleanup at their documented scopes. The active coin plan links executed results and unresolved latency/endurance/physical-device gates; source fixtures alone are not acceptance evidence.
 
 The domain suite includes 100,000 generated-ticket property cases, maximum-size unique deals, draw exhaustion, ties, marks, undo, ranked houses, corrupt saves, and standard-rule missing-number checks. Android instrumented tests exercise complete offline play, recreation/resume, family tickets, rule inspection, and cancellation. Actual results and limitations belong in the execution ledger; having tests in source is not proof they passed.
 
