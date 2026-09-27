@@ -14,6 +14,7 @@ const animations = args.includes('--animations');
 const idleGuard = args.includes('--idle-guard');
 const markGuard = args.includes('--mark-guard');
 const benchmark = args.includes('--benchmark');
+const endurance = args.includes('--endurance');
 function option(name, fallback) {
   const index = args.indexOf(name);
   return index < 0 ? fallback : args[index + 1];
@@ -26,6 +27,8 @@ assert.match(label, /^[a-z0-9-]+$/);
 if (selectedClass) assert.match(selectedClass, /^io\.github\.sbshrey\.tambola\.(game|benchmark)\.[A-Za-z0-9_.#]+$/);
 if (benchmark) assert.ok(selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.') && !online && !faultProxy && !idleGuard && !markGuard);
 else assert.ok(!selectedClass?.startsWith('io.github.sbshrey.tambola.benchmark.'), 'Use --benchmark for the separate optimized-app driver');
+if (endurance) assert.ok(benchmark && animations && selectedClass === 'io.github.sbshrey.tambola.benchmark.CoinReleaseBenchmark#realCoinEndurance');
+if (selectedClass?.endsWith('#realCoinEndurance')) assert.ok(endurance, 'Explicit --endurance opt-in is required');
 if (idleGuard) assert.equal(selectedClass, 'io.github.sbshrey.tambola.game.CoinIdleTest');
 if (markGuard) assert.ok(selectedClass === 'io.github.sbshrey.tambola.game.CoinMarkTest' && animations && !online && !lan && !idleGuard);
 if (lan) assert.ok(!online && selectedClass, '--lan requires an explicit test class and no loopback fixture');
@@ -63,13 +66,14 @@ try {
   if (idleGuard) command.push('-e', 'tambolaIdleGuard', 'true');
   if (markGuard) command.push('-e', 'tambolaMarkGuard', 'true');
   if (benchmark) command.push('-e', 'tambolaBenchmark', 'true', '-e', 'androidx.benchmark.suppressErrors', 'EMULATOR');
+  if (endurance) command.push('-e', 'tambolaEndurance', 'true');
   if (selectedClass) command.push('-e', 'class', selectedClass);
   else command.push('-e', 'notClass', 'io.github.sbshrey.tambola.game.ProcessRecoveryTest,io.github.sbshrey.tambola.game.NativePairTest,io.github.sbshrey.tambola.game.UpgradeAvatarTest,io.github.sbshrey.tambola.game.LocaleProcessTest,io.github.sbshrey.tambola.game.NativeLibraryTest,io.github.sbshrey.tambola.game.StorageLifecycleTest,io.github.sbshrey.tambola.game.LongSessionTest,io.github.sbshrey.tambola.game.CoinIdleTest');
   command.push(`${benchmark ? 'io.github.sbshrey.tambola.benchmark' : 'io.github.sbshrey.tambola.game.test'}/androidx.test.runner.AndroidJUnitRunner`);
   const child = spawn(adb, ['-s', serial, ...command], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
   const append = chunk => { output += chunk.toString(); process.stdout.write(chunk); };
   child.stdout.on('data', append); child.stderr.on('data', append);
-  const timeout = setTimeout(() => child.kill(), 600_000);
+  const timeout = setTimeout(() => child.kill(), endurance ? 95 * 60_000 : 600_000);
   try {
     exitCode = await new Promise((done, reject) => { child.once('error', reject); child.once('close', done); });
   } finally { clearTimeout(timeout); }
@@ -89,7 +93,7 @@ try {
       { encoding: 'utf8', windowsHide: true, timeout: 60_000 });
     await writeFile(resolve(destination, 'collection.txt'), `${copied.stdout || ''}${copied.stderr || ''}`);
     assert.equal(copied.status, 0, 'Collect benchmark reports before another invocation');
-    if (selectedClass?.endsWith('#realCoinRound')) {
+    if (selectedClass?.endsWith('#realCoinRound') || endurance) {
       for (const name of ['coin-release-journey.json', 'coin-release-results.png', 'coin-release-failure.png', 'coin-release-failure.xml']) {
         // exec-out does not reliably propagate a missing remote file's exit status.
         const exists = spawnSync(adb, ['-s', serial, 'shell', 'run-as', 'io.github.sbshrey.tambola.benchmark', 'test', '-f', `files/${name}`],

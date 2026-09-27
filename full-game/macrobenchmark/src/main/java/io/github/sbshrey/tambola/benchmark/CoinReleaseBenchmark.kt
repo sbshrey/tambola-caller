@@ -51,4 +51,17 @@ class CoinReleaseBenchmark {
             }
         }
     }
+
+    @Test fun realCoinEndurance() {
+        requireCandidate()
+        assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaEndurance") == "true")
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        CoinJourney(instrumentation.context, UiDevice.getInstance(instrumentation), expectedRounds = 9).use { journey ->
+            benchmark.measureRepeated(target, listOf(FrameTimingMetric()), compilationMode = CompilationMode.Ignore(),
+                iterations = 9, setupBlock = { startActivityAndWait(); journey.prepare() }) {
+                journey.play()
+            }
+            journey.finishEndurance()
+        }
+    }
 }
