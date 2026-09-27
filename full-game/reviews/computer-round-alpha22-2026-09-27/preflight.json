@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-09-27T01:50:09.062039+00:00",
+  "sourceCommit": "998b8a8ae36c0feffeb73da8104f1beefedcf5e0",
+  "apks": {
+    "io.github.sbshrey.tambola.game": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+    "io.github.sbshrey.tambola.benchmark": "93803ae35cece132857567dd3414b0c34b4250a8c7c290c966a7d622a4dfab91"
+  },
+  "animationScales": {
+    "window_animation_scale": "1.0",
+    "transition_animation_scale": "1.0",
+    "animator_duration_scale": "null"
+  },
+  "fontScale": "1.0",
+  "host": {
+    "checkedAt": "2026-09-27T01:50:08.977Z",
+    "httpsStatus": 200,
+    "httpsBody": {
+      "status": "ready",
+      "protocolVersion": 4
+    },
+    "sourceCommit": "b6d5eb6f7cc9c6c70006e4d9c422c2abe75187e0",
+    "serviceRuntimeSha256": "f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10",
+    "jarCount": 51,
+    "installedRuntimeMatchesCandidate": true,
+    "supervisor": {
+      "status": "ready",
+      "backendReady": true,
+      "tlsReady": true,
+      "ageSeconds": 1.48
+    }
+  }
+}

@@ -1,0 +1,136 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preLanReleaseBuild UP-TO-DATE
+> Task :app:mergeLanReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeLanReleaseNativeLibs UP-TO-DATE
+> Task :app:stripLanReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractLanReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeLanReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkLanReleaseDuplicateClasses UP-TO-DATE
+> Task :app:generateLanReleaseBuildConfig
+> Task :app:generateLanReleaseResources UP-TO-DATE
+> Task :app:prepareLanTrust
+> Task :app:packageLanReleaseResources UP-TO-DATE
+> Task :app:processLanReleaseNavigationResources UP-TO-DATE
+> Task :app:parseLanReleaseLocalResources UP-TO-DATE
+> Task :app:generateLanReleaseRFile UP-TO-DATE
+> Task :app:javaPreCompileLanRelease UP-TO-DATE
+> Task :app:mergeLanReleaseArtProfile UP-TO-DATE
+> Task :app:checkLanReleaseAarMetadata UP-TO-DATE
+> Task :app:mapLanReleaseSourceSetPaths UP-TO-DATE
+> Task :app:compileLanReleaseNavigationResources UP-TO-DATE
+> Task :app:mergeLanReleaseResources UP-TO-DATE
+> Task :app:createLanReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksLanRelease UP-TO-DATE
+> Task :app:processLanReleaseMainManifest
+> Task :app:processLanReleaseManifest
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeLanReleaseStartupProfile UP-TO-DATE
+> Task :app:generateLanReleaseAssets UP-TO-DATE
+> Task :app:prepareSounds
+> Task :app:kaptGenerateStubsLanReleaseKotlin
+> Task :app:prepareVoices
+> Task :app:mergeLanReleaseAssets UP-TO-DATE
+> Task :app:compressLanReleaseAssets UP-TO-DATE
+> Task :app:extractLanReleaseVersionControlInfo UP-TO-DATE
+> Task :app:collectLanReleaseDependencies UP-TO-DATE
+> Task :app:sdkLanReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningLanRelease UP-TO-DATE
+> Task :app:writeLanReleaseAppMetadata UP-TO-DATE
+> Task :app:writeLanReleaseSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:preBuild UP-TO-DATE
+> Task :macrobenchmark:preLanReleaseBuild UP-TO-DATE
+> Task :macrobenchmark:checkTestedAppObfuscationLanRelease UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:prepareBenchmarkTrust UP-TO-DATE
+> Task :macrobenchmark:packageLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseNavigationResources UP-TO-DATE
+> Task :macrobenchmark:parseLanReleaseLocalResources UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseRFile UP-TO-DATE
+> Task :app:processLanReleaseManifestForPackage
+> Task :macrobenchmark:javaPreCompileLanRelease UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:compressLanReleaseAssets UP-TO-DATE
+> Task :macrobenchmark:generateLanReleaseGlobalSynthetics UP-TO-DATE
+> Task :macrobenchmark:checkLanReleaseDuplicateClasses UP-TO-DATE
+> Task :macrobenchmark:desugarLanReleaseFileDependencies UP-TO-DATE
+> Task :macrobenchmark:mergeExtDexLanRelease UP-TO-DATE
+> Task :macrobenchmark:mergeLibDexLanRelease UP-TO-DATE
+> Task :macrobenchmark:checkLanReleaseAarMetadata UP-TO-DATE
+> Task :macrobenchmark:mapLanReleaseSourceSetPaths UP-TO-DATE
+> Task :macrobenchmark:compileLanReleaseNavigationResources UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseManifest UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseManifest UP-TO-DATE
+> Task :macrobenchmark:processLanReleaseResources UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseJniLibFolders UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseNativeLibs UP-TO-DATE
+> Task :macrobenchmark:stripLanReleaseDebugSymbols UP-TO-DATE
+> Task :macrobenchmark:validateSigningLanRelease UP-TO-DATE
+> Task :macrobenchmark:writeLanReleaseSigningConfigVersions UP-TO-DATE
+> Task :app:kaptLanReleaseKotlin
+> Task :macrobenchmark:compileLanReleaseKotlin
+> Task :macrobenchmark:compileLanReleaseJavaWithJavac NO-SOURCE
+> Task :macrobenchmark:processLanReleaseJavaRes UP-TO-DATE
+> Task :macrobenchmark:mergeLanReleaseJavaResource UP-TO-DATE
+> Task :macrobenchmark:dexBuilderLanRelease
+> Task :macrobenchmark:mergeProjectDexLanRelease
+> Task :macrobenchmark:packageLanRelease
+> Task :macrobenchmark:createLanReleaseApkListingFileRedirect UP-TO-DATE
+> Task :macrobenchmark:assembleLanRelease
+> Task :app:processLanReleaseResources
+
+> Task :app:compileLanReleaseKotlin
+w: file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/src/main/java/io/github/sbshrey/tambola/game/online/OnlineViewModel.kt:284:97 Check for instance is always 'true'.
+
+> Task :app:compileLanReleaseJavaWithJavac
+> Task :app:mergeLanReleaseGeneratedProguardFiles UP-TO-DATE
+> Task :app:processLanReleaseJavaRes UP-TO-DATE
+> Task :app:mergeLanReleaseJavaResource UP-TO-DATE
+> Task :app:generateLanReleaseLintVitalReportModel
+> Task :app:generateLanReleaseLintReportModel
+> Task :app:expandLanReleaseArtProfileWildcards
+> Task :app:produceLanReleaseComposeMapping
+> Task :app:reportLanReleaseComposeMappingErrors
+> Task :app:lintVitalAnalyzeLanRelease
+> Task :app:lintVitalReportLanRelease SKIPPED
+> Task :app:lintVitalLanRelease SKIPPED
+> Task :app:lintAnalyzeLanRelease
+> Task :app:minifyLanReleaseWithR8
+> Task :app:mergeLanReleaseComposeMapping
+> Task :app:convertShrunkResourcesToBinaryLanRelease
+> Task :app:compileLanReleaseArtProfile
+> Task :app:optimizeLanReleaseResources
+> Task :app:packageLanRelease
+> Task :app:createLanReleaseApkListingFileRedirect
+> Task :app:assembleLanRelease
+
+> Task :app:lintReportLanRelease
+Wrote HTML report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-lanRelease.html
+Wrote SARIF report to file:///D:/Github/App%20Ideas/tambola-caller/full-game/app/build/reports/lint-results-lanRelease.sarif
+
+> Task :app:lintLanRelease
+
+[Incubating] Problems report is available at: file:///D:/Github/App%20Ideas/tambola-caller/full-game/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 22s
+99 actionable tasks: 33 executed, 66 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

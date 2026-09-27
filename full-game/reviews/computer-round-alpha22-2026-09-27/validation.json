@@ -1,0 +1,29 @@
+{
+  "accepted": true,
+  "checkedAt": "2026-09-27T01:58:23.918157+00:00",
+  "apks": {
+    "io.github.sbshrey.tambola.game": "05dfaa405629fec0a5ab57234941eca1229b9f2cb13034a496e3549759bdb4b4",
+    "io.github.sbshrey.tambola.benchmark": "93803ae35cece132857567dd3414b0c34b4250a8c7c290c966a7d622a4dfab91"
+  },
+  "sourceCommit": "998b8a8ae36c0feffeb73da8104f1beefedcf5e0",
+  "installedHashesMatch": true,
+  "animationAndFontSettingsRestored": true,
+  "adbReverseEmpty": true,
+  "allQaProfilesDeleted": true,
+  "frameMetricsAreEmulatorDiagnosticsOnly": true,
+  "lint": {
+    "Error": 0,
+    "Warning": 90
+  },
+  "trace": {
+    "file": "CoinReleaseBenchmark_realComputerRound_iter000_2026-09-27-01-57-07.perfetto-trace",
+    "bytes": 45648379,
+    "sha256": "b4606cdb1913bcb10d5a394200861b2b3960a60765e4ff3c58f4df8be198856c"
+  },
+  "nativeDurationSeconds": 447.978,
+  "sourceHashes": {
+    "app/src/main/java/io/github/sbshrey/tambola/game/ui/ClaimArena.kt": "2e33af86f9df6851bfd8b2d5d1b23125ab20803919d79d1423e2b8b1b4e3e9f6",
+    "macrobenchmark/src/main/java/io/github/sbshrey/tambola/benchmark/CoinJourney.kt": "703117f8d79c2f6f3b9860aa6467586a033d10344a4d5547a3d89a821b5951b5",
+    "macrobenchmark/src/main/java/io/github/sbshrey/tambola/benchmark/CoinReleaseBenchmark.kt": "09870516f85563e74e0c7ff18312867d8956f442e227d0e1adb0bb1ba4aebec9"
+  }
+}
