@@ -1,6 +1,6 @@
-# Beta expansion in progress
+# Beta expansion — alpha36
 
-The public release remains alpha35 until the new client and server pass their release checks.
+[Alpha36 is published](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha36-expanded-multiplayer). The anonymous APK download matches the tested optimized build. Firebase and AdMob account activation remain pending.
 
 Confirmed requirements: PC-hosted internet multiplayer, ten-second calls, two tickets per page, no called-number hints on tickets, claim choices stay open across calls, 50,000 beta coins including an existing-user upgrade, seven increasing daily rewards, rewarded ads, power-ups, 30–50-player tables, and several winners sharing each of six fixed prize pools.
 
@@ -21,6 +21,6 @@ Implementation and verification checklist:
 - [x] Rewarded ad test integration, signed server-side reward verification, activation instructions (live account activation pending).
 - [x] Firebase Crashlytics/Performance SDK integration and collection controls compile.
 - [ ] Firebase project/account configuration and real console verification (user chose to sign in later).
-- [ ] Full regression checks, native playtest, backup/migration rehearsal, PC-host deployment, APK publication and anonymous download verification.
+- [x] Regression checks, native playtest, backup/migration validation, PC-host deployment, APK publication and anonymous download verification. See the review for the resolved index/runtime issues and the test-driver cleanup failure, recovered and covered by a focused passing check.
 
 Firebase account creation is waiting for the user to run `firebase login --reauth`; they chose to sign in later. AdMob has no account yet: prepare test integration, then guide activation. Do not claim telemetry or live ad rewards are active before their external setup and verification succeed. Power-ups are open to our recommendation and must not reveal called ticket numbers or reduce another winner's prize share.
