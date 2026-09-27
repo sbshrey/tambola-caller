@@ -116,7 +116,7 @@ class RoomService(
                 return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
             }
             val now = clock()
-            val existing = connection.query("""SELECT payload FROM rooms WHERE matchable AND phase IN ('LOBBY','ACTIVE')
+            val existing = connection.query("""SELECT payload FROM rooms WHERE (payload::jsonb->'options'->>'coinGame')::boolean AND phase IN ('LOBBY','ACTIVE')
                 AND expires_at > ? AND id IN (SELECT room_id FROM room_participants WHERE player_id = ?)
                 AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
                 ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
@@ -128,15 +128,24 @@ class RoomService(
                 // wallet before serializing shared lobby selection; all writes still
                 // roll back together if the purchase cannot complete.
                 CoinLedger.ensure(connection, guest.id, now)
-                connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
+                if (!request.friendTable) connection.query("SELECT pg_advisory_xact_lock(749023809)") { true }
                 val purchaseAt = clock()
-                val waiting = connection.query(OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
-                val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id, coinOptions(),
-                    emptyList(), purchaseAt + ROOM_LIFETIME, startsAt = purchaseAt + MATCH_COUNTDOWN).also {
-                    connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, true)",
-                        it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it))
+                val waiting = when {
+                    request.friendCode != null -> load(connection, requireNotNull(request.friendCode)).also {
+                        demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
+                        demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
+                    }
+                    request.friendTable -> null
+                    else -> connection.query(OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
-                demand(room.startsAt!! > clock(), 409, "sales_closed", "That round is starting. Try Play again.")
+                val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
+                    coinOptions().let { if (request.friendTable) it.copy(computerPlayers = 0) else it }, emptyList(),
+                    purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
+                    startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
+                    connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
+                        it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it), !request.friendTable)
+                }
+                demand(room.expiresAt > clock() && (room.friendTable || requireNotNull(room.startsAt) > clock()), 409, "sales_closed", "That round is starting. Try Play again.")
                 changed(connection, room.copy(
                     members = room.members + Member(guest.id, guest.name, guest.avatar, purchaseAt, ready = true, lastSeen = purchaseAt),
                     purchases = room.purchases + (guest.id to request.tickets)), "tickets_bought", purchaseAt, before = room)
@@ -471,12 +480,12 @@ class RoomService(
         fun host() = demand(room.hostId == actor, 403, "host_only", "Only the host can do that.")
         fun lobby() = demand(room.phase == RoomPhase.LOBBY, 409, "not_lobby", "Settings and membership are locked during a round.")
         fun active() = demand(room.phase == RoomPhase.ACTIVE, 409, "not_active", "There is no active round.")
-        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.BuyTickets || action == RoomAction.Leave,
+        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.BuyTickets || action == RoomAction.Leave || (room.friendTable && action == RoomAction.Start),
             403, "automatic_coin_round", "Coin rounds are managed by the server.")
         return when (action) {
             is RoomAction.BuyTickets -> {
                 lobby()
-                demand(room.options.coinGame && now < requireNotNull(room.startsAt), 409, "sales_closed", "Ticket sales have closed.")
+                demand(room.options.coinGame && (room.friendTable || now < requireNotNull(room.startsAt)), 409, "sales_closed", "Ticket sales have closed.")
                 room.copy(purchases = room.purchases + (actor to action.quantity))
             }
             is RoomAction.Ready -> { lobby(); room.copy(members = room.members.map { if (it.id == actor) it.copy(ready = action.value) else it }) }
@@ -496,6 +505,7 @@ class RoomService(
                 val count = room.members.size + room.options.computerPlayers
                 demand(count in 2..room.options.capacity && room.members.all { it.ready && now - it.lastSeen < PRESENCE_TIMEOUT },
                     409, "not_ready", "At least two seats are needed; every human member must be connected and ready.")
+                if (room.friendTable) return room.startCoinRound(now)
                 val houses = room.options.game.prizes.count { it.isRankedHouse }.coerceAtLeast(1)
                 demand(count * room.options.game.ticketsPerPlayer >= houses,
                     409, "insufficient_tickets", "$houses houses need at least $houses tickets at the table. Add players or increase tickets per player.")

@@ -5,6 +5,7 @@ import io.github.sbshrey.tambola.protocol.*
 import java.sql.Connection
 
 internal const val MATCH_COUNTDOWN = 12_000L
+internal const val FRIEND_LOBBY_LIFETIME = 15 * 60_000L
 internal const val COMPUTER_TICKETS = 3
 
 // Fictional game handles; computer identity stays explicit in the public player record.
@@ -22,14 +23,15 @@ internal fun coinOptions(humans: Int = 1) = RoomOptions(
 internal fun RoomRecord.coinLobby(): RoomRecord {
     if (!options.coinGame || phase != RoomPhase.LOBBY) return this
     require(purchases.keys == members.map { it.id }.toSet() && purchases.values.all { it in 1..6 })
-    val computers = (4 - members.size).coerceAtLeast(0)
-    val pool = CoinPool(purchases.values.sum() + computers * COMPUTER_TICKETS)
+    val computers = if (friendTable) 0 else (4 - members.size).coerceAtLeast(0)
+    val tickets = purchases.values.sum() + computers * COMPUTER_TICKETS
+    val prizes = if (tickets >= 2) CoinPool(tickets).prizes.map { it.prize } else CoinPool(2).prizes.map { it.prize }
     return copy(options = options.copy(computerPlayers = computers,
-        game = options.game.copy(prizes = pool.prizes.map { it.prize })))
+        game = options.game.copy(prizes = prizes)))
 }
 
 internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
-    check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty())
+    check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable || members.size >= 2))
     val lobby = coinLobby()
     val computers = (1..lobby.options.computerPlayers).map { index ->
         computerPlayer(id, index)
@@ -41,6 +43,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
         settings, now = now, ticketCounts = counts).start()
     val nonce = secret()
     return lobby.copy(options = lobby.options.copy(game = settings), phase = RoomPhase.ACTIVE, locked = true,
+        expiresAt = now + ROOM_LIFETIME,
         startsAt = null, coinPool = pool, round = game, nonce = nonce, drawCommitment = commitment(game, nonce),
         nextDrawAt = now + 5_000L)
 }

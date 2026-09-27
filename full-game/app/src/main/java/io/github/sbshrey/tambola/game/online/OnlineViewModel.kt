@@ -164,9 +164,12 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     /** Save a device profile and a retryable purchase before entering the first table. */
-    fun play(tickets: Int) {
+    fun play(tickets: Int, friendTable: Boolean = false, friendCode: String? = null) {
         if (tickets !in 1..6 || api == null || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
-        if (saved != null) { begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets))); return }
+        val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
+        if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
+        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code)
+        if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {
             try {
@@ -175,7 +178,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 val credentials = api.guest(GuestRequest(name, avatar))
                 mutex.withLock {
                     persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, name, avatar)
-                        .withPending(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets))))
+                        .withPending(PendingOperation.Match(request)))
                 }
                 performPending()
             } catch (error: CancellationException) { throw error }

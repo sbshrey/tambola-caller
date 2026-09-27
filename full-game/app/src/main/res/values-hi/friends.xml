@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="friend_play">दोस्तों के साथ खेलें</string>
+    <string name="friend_create">टेबल बनाएं</string>
+    <string name="friend_join">कोड से जुड़ें</string>
+    <string name="friend_entry_detail">आपका समूह, आपकी टेबल। 7 दोस्तों को बुलाएं। सभी के जुड़ने पर होस्ट खेल शुरू करेगा।</string>
+    <string name="friend_entry_cost">%1$d टिकट · %2$d सिक्के</string>
+    <string name="friend_refund">शुरू होने से पहले छोड़ने पर सारे सिक्के वापस। केवल मुफ्त वर्चुअल सिक्के।</string>
+    <string name="friend_title">दोस्तों की टेबल</string>
+    <string name="friend_host_hint">कोड साझा करें। सभी के आने पर खेल शुरू करें।</string>
+    <string name="friend_guest_hint">आप जुड़ गए! सभी के आने पर होस्ट खेल शुरू करेगा।</string>
+    <string name="friend_code_label">टेबल कोड</string>
+    <string name="friend_invite">दोस्तों को बुलाएं</string>
+    <string name="friend_copy">कोड कॉपी करें</string>
+    <string name="friend_copied">कोड कॉपी हो गया</string>
+    <string name="friend_share_text">मेरी तंबोला टेबल से जुड़ें!\nकोड: %1$s\nनए Internet Beta में दोस्तों के साथ खेलें → कोड से जुड़ें चुनें।\nऐप पाएं: https://github.com/sbshrey/tambola-caller/releases\nसभी के आने पर होस्ट शुरू करेगा। केवल मुफ्त वर्चुअल सिक्के।</string>
+    <string name="friend_people">टेबल पर %2$d में से %1$d दोस्त</string>
+    <string name="friend_host">होस्ट · तैयार</string>
+    <string name="friend_ready">खेलने को तैयार</string>
+    <string name="friend_reconnecting">फिर से जुड़ रहे हैं…</string>
+    <string name="friend_start">सभी आ गए · खेल शुरू करें</string>
+    <string name="friend_wait">दोस्तों के जुड़ने का इंतज़ार</string>
+    <string name="friend_expires">%1$d मिनट में शुरू करें। शुरू न हुई टेबल बंद होगी और सभी को सिक्के वापस मिलेंगे।</string>
+    <string name="friend_closed">वह टेबल शुरू हो गई है या दोस्तों की टेबल नहीं है। अपने दोस्त से नया कोड मांगें।</string>
+</resources>

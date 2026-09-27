@@ -18,6 +18,7 @@ import java.util.regex.Pattern
 internal class CoinJourney(private val context: Context, private val device: UiDevice, private val expectedRounds: Int = 1,
     private val computerOpponents: Boolean = false,
     private val target: String = "io.github.sbshrey.tambola.game",
+    private val friendTable: Boolean = false,
     discoveryUrl: String? = null) : AutoCloseable {
     private val api = HttpRoomApi(if (discoveryUrl == null) "https://192.168.1.4:8443" else "https://sbshrey.github.io", discoveryUrl = discoveryUrl)
     private val peers = mutableListOf<GuestCredentials>()
@@ -138,12 +139,18 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         if (expectedRounds > 1) recordMemory("entry")
         tap("buy-tickets-6")
         createdMain = true
-        tap("coin-play")
-        node("cancel-match")
+        if (friendTable) {
+            tap("play-friends")
+            tap("friend-enter")
+            code = textOf(node("friend-code")).replace(" ", "")
+            check(requireNotNull(code).matches(Regex("[A-HJ-NP-Z2-9]{8}")))
+            report.put("friendTable", true)
+        } else tap("coin-play")
+        node(if (friendTable) "friend-waiting" else "cancel-match")
         assertEquals(balanceBefore - 600, balance())
         runBlocking {
             for ((index, peer) in peers.withIndex()) {
-                val request = MatchRequest(UUID.randomUUID().toString(), quantities[index])
+                val request = MatchRequest(UUID.randomUUID().toString(), quantities[index], friendTable, code.takeIf { friendTable })
                 val purchase = api.match(peer.token, request)
                 assertEquals(purchase, api.match(peer.token, request))
                 val room = purchase.snapshot
@@ -158,6 +165,12 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         assertEquals(expectedPool, lobby.coins!!.pool)
         expectedPrizeCount = lobby.coins!!.prizes.size
         assertTrue(expectedPrizeCount in 6..8)
+        if (friendTable) {
+            assertTrue(lobby.coins!!.friendTable)
+            assertNull(lobby.coins!!.startsAt)
+            device.takeScreenshot(File(context.filesDir, "friends-public-ready.png"))
+            tap("friend-start")
+        }
         node("play-arena", 20_000)
         if (computerOpponents) {
             val round = snapshot().round!!

@@ -124,9 +124,11 @@ fun RoomView.validateFor(playerId: String) {
             require(wallet != null && economy.ownTickets in 0..6 && economy.tickets in 0..192)
             require(economy.settledWinnings >= 0 && economy.returnedCoins >= 0)
             require(economy.pool == economy.tickets * COIN_TICKET_PRICE)
-            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED)
+            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED || (economy.friendTable && phase == RoomPhase.LOBBY))
             if (economy.tickets >= 2) require(economy.prizes == CoinPool(economy.tickets).prizes)
-            require(phase != RoomPhase.LOBBY || economy.startsAt != null)
+            if (economy.tickets < 2) require(economy.prizes.isEmpty())
+            require(phase != RoomPhase.LOBBY || economy.friendTable || economy.startsAt != null)
+            if (economy.friendTable) require(economy.startsAt == null && options.computerPlayers == 0)
         }
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
         require(members.size <= 32 && members.map { it.playerId }.distinct().size == members.size)

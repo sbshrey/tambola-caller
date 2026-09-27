@@ -1,8 +1,11 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package io.github.sbshrey.tambola.server
 
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.protocol.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.EncodeDefault
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
@@ -42,15 +45,16 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
     val purchases: Map<String, Int> = emptyMap(),
     val startsAt: Long? = null,
     val coinPool: CoinPool? = null,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val friendTable: Boolean = false,
 ) {
     fun coinView(actor: String): CoinTableView? {
         if (!options.coinGame) return null
         val tickets = purchases.values.sum() + options.computerPlayers * COMPUTER_TICKETS
-        if (coinPool == null && tickets < 2) return CoinTableView(tickets, tickets * COIN_TICKET_PRICE, emptyList(), purchases[actor] ?: 0, startsAt)
+        if (coinPool == null && tickets < 2) return CoinTableView(tickets, tickets * COIN_TICKET_PRICE, emptyList(), purchases[actor] ?: 0, startsAt, friendTable = friendTable)
         val pool = coinPool ?: CoinPool(tickets)
         val allocations = round?.let(pool::allocations).orEmpty().filter { it.playerId == actor }
         return CoinTableView(pool.soldTickets, pool.coins, pool.prizes, purchases[actor] ?: 0, startsAt,
-            allocations.filter { it.prize != null }.sumOf { it.coins }, allocations.filter { it.prize == null }.sumOf { it.coins })
+            allocations.filter { it.prize != null }.sumOf { it.coins }, allocations.filter { it.prize == null }.sumOf { it.coins }, friendTable)
     }
     fun view(actor: String, now: Long): RoomView = RoomView(
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,

@@ -30,7 +30,7 @@ private val CoinGold = Color(0xFFF4C879)
 
 @Composable
 fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit,
-    reducedMotion: Boolean = false) {
+    reducedMotion: Boolean = false, friends: (Int, String?) -> Unit = { tickets, code -> model.play(tickets, true, code) }) {
     val words = gameText()
     val room = state.room
     val coins = room?.coins
@@ -45,6 +45,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     var delete by remember { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
     var gameData by remember { mutableStateOf(false) }
+    var friendDialog by rememberSaveable { mutableStateOf(false) }
     val balance = state.wallet?.balance ?: if (state.name == null) COIN_STARTER_BALANCE else null
     val tickets = affordableTickets(chosenTickets, balance)
     val cost = tickets * COIN_TICKET_PRICE
@@ -71,7 +72,9 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
             val hero: @Composable () -> Unit = {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (waiting) {
-                        TableCountdown(room, state.playerId, reducedMotion)
+                        if (coins?.friendTable == true) FriendWaitingRoom(room, state.playerId, enabled && state.connection == Connection.LIVE,
+                            start = { model.command(RoomAction.Start) })
+                        else TableCountdown(room, state.playerId, reducedMotion)
                         Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
                             " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                         TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
@@ -142,13 +145,19 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         if (balance != null && balance < COIN_TICKET_PRICE) {
                             CoinRefill(state.serverTime, state.wallet?.refillAfter, enabled, model::refill)
                         } else {
+                          Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Button(onClick = { play(tickets) }, enabled = enabled && (balance == null || balance >= cost),
                                 colors = ButtonDefaults.buttonColors(containerColor = GameNightPalette.coral, contentColor = GameNightPalette.background,
                                     disabledContainerColor = GameNightPalette.raised, disabledContentColor = GameNightPalette.muted),
-                                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("coin-play"), shape = RoundedCornerShape(16.dp)) {
+                                modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("coin-play"), shape = RoundedCornerShape(16.dp)) {
                                 if (state.busy) CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp, color = GameNightPalette.cream)
                                 else Text(words(if (finished) R.string.coin_play_again else R.string.coin_play, cost), fontSize = 19.sp, fontWeight = FontWeight.Black)
                             }
+                            OutlinedButton(onClick = { friendDialog = true }, enabled = enabled && (balance == null || balance >= cost),
+                                modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("play-friends"), shape = RoundedCornerShape(16.dp)) {
+                                Text(words(R.string.friend_play), fontWeight = FontWeight.Bold)
+                            }
+                          }
                         }
                     }
                     if (state.sessionExpired || state.storageFailure) TextButton(onClick = { reset = true }) { Text(words(R.string.ui_reset_online_data)) }
@@ -187,6 +196,8 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     state.error?.let { error -> AlertDialog(onDismissRequest = model::clearError, title = { Text(words(R.string.ui_online_play)) },
         text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
     if (gameData) GameDataDialog { gameData = false }
+    if (friendDialog) FriendEntryDialog(tickets, cost, enabled,
+        enter = { code -> friendDialog = false; friends(tickets, code) }, close = { friendDialog = false })
     }
 }
 

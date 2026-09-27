@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.FriendTableTest:..
+
+Time: 34.026
+
+OK (2 tests)
+
+
