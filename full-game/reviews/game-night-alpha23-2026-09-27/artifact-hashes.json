@@ -1,0 +1,234 @@
+{
+  "alpha23-computer-round-final-runner.json": {
+    "sha256": "849248fb6899c3a5916b9e958051828410f4985d413f3d9feab3b6e6702f4b6b",
+    "bytes": 228
+  },
+  "alpha23-driver-fix-build.txt": {
+    "sha256": "6ff85bdec299843a8ffb5d9611a52a28e48d04cb14767fd72f310cfb043b7018",
+    "bytes": 3382
+  },
+  "alpha23-driver-transition-build.txt": {
+    "sha256": "dfa8c411e59bb63e5850b7f0e3757fecba9fe5affa986623f0551ddff040730b",
+    "bytes": 3495
+  },
+  "alpha23-final-preflight.json": {
+    "sha256": "20c2865bcf8432f90a360d30145497f4c67abf5e69f1ad6dbf380f20bea4a56d",
+    "bytes": 1592
+  },
+  "alpha23-fixed-preflight.json": {
+    "sha256": "aa289c3b73db52c50799ed0f12720aac0dbabbb956618433781a3c643d94fac2",
+    "bytes": 1591
+  },
+  "alpha23-fresh-preflight.json": {
+    "sha256": "eabf08e92c45401a2f0c6f9a2f4588669d2c3331888acf15146be19f2ace6ed0",
+    "bytes": 1592
+  },
+  "alpha23-installed.json": {
+    "sha256": "0c7bbe104331465c4643b7ba2177b665c24f7f3109808be8c39f26e00337a4aa",
+    "bytes": 1525
+  },
+  "alpha23-manifest.txt": {
+    "sha256": "b7ca447476028acebd40a3e55c5304bf5f26df6f6ac22639129eb70af176f764",
+    "bytes": 12317
+  },
+  "alpha23-network-trust.txt": {
+    "sha256": "c67c5d7ef14d1f186efcf32abac48293207d3490d91fbb23ab1060e12a52697f",
+    "bytes": 384
+  },
+  "alpha23-optimized-build.txt": {
+    "sha256": "86d9032273f66dfd2685258f5937ea985d95afb009d701e78b04b2c9f22a5d1d",
+    "bytes": 8845
+  },
+  "alpha23-package-probe-after-reboot.json": {
+    "sha256": "cc6ec74ba84714d3cf9f891b9659d7c644106819644dfcbbbc3107b2031e3fb1",
+    "bytes": 90
+  },
+  "alpha23-postflight.json": {
+    "sha256": "fef93fdd27664a1d4a23cca8e3276321870fdbfc60b21b791bcee583e6b613dd",
+    "bytes": 1592
+  },
+  "alpha23-preflight.json": {
+    "sha256": "63c0bf7ff769f3fc250fe5742c4ea329c32f797e7f0ae3e038f8d19f35b5335a",
+    "bytes": 1525
+  },
+  "alpha23-reboot-preflight.json": {
+    "sha256": "860f73515c45e302da9f2e60b5b47551ff0755d5bb2dbf975b0e50db6aa309b1",
+    "bytes": 1591
+  },
+  "alpha23-signature.txt": {
+    "sha256": "fbcb6408599540add12be8160a4550cdf6763b72a42fb70cf9c1427f02b471ca",
+    "bytes": 311
+  },
+  "alpha23-verify.py": {
+    "sha256": "09a1863eb655f916960a68aa753bddf4abe1e28e116c1a71f567c9423021e761",
+    "bytes": 3948
+  },
+  "android-smoke.mjs": {
+    "sha256": "6cb13c9e047bc9e3aae7a287a516fb60670076ce9ff4846e39f30c49d8e006a5",
+    "bytes": 8918
+  },
+  "archive-alpha23.py": {
+    "sha256": "1deaa4c4ed65226f4bbc682cbf185a092107cf9c625204b984403f43e8fa09d7",
+    "bytes": 8883
+  },
+  "benchmark.json": {
+    "sha256": "08a2be349ce05ebf79a177060f38ec734f6ce839896bcd0df2c92579d8fe8e7d",
+    "bytes": 442807
+  },
+  "collection.txt": {
+    "sha256": "116543dc297e4f33635bcd80c6ed06accbb91b22648137b80339757dfcf79edd",
+    "bytes": 126
+  },
+  "emulator-package-stall/alpha23-after-timeout.json": {
+    "sha256": "1efabd781670444f56939f9e7b3890317aa0a2f3648c3df0a7e62bbb6b2f792e",
+    "bytes": 1591
+  },
+  "emulator-package-stall/alpha23-cleanup-after.xml": {
+    "sha256": "20d19bab3083f0266a32b3c58157bb862436c12ee3b6b278cf326175662292ff",
+    "bytes": 17024
+  },
+  "emulator-package-stall/alpha23-cleanup-before.xml": {
+    "sha256": "bf9db4043cb7b72bf3dd73703caba2d7d63d59f318b5e7c16fc442054ef6ac9a",
+    "bytes": 16997
+  },
+  "emulator-package-stall/alpha23-cleanup-confirm.xml": {
+    "sha256": "7a1cdab2c26c315c6f001041f2c2590e26a3370b265e156eb7034a8da09a4162",
+    "bytes": 6273
+  },
+  "emulator-package-stall/alpha23-cleanup-profile.xml": {
+    "sha256": "9fbf17496db26bf2c05308236765f23ddc38fdff9d5024134426b294d7f110b9",
+    "bytes": 7353
+  },
+  "emulator-package-stall/alpha23-computer-round-fixed.txt": {
+    "sha256": "6b0b033d7037aa8ddf7a69211a5103f7efa70451dcdceee3c32185c11647472e",
+    "bytes": 5394
+  },
+  "emulator-package-stall/alpha23-driver-timeout-logcat.txt": {
+    "sha256": "369abc144bd080fb61fa97dc21fce3402323bd380aed7b4314cf800045cd7f22",
+    "bytes": 10432
+  },
+  "emulator-package-stall/alpha23-timeout-cleanup.json": {
+    "sha256": "24073eab3387758400237f0d827698ff365d36a43b39af6acec1b6105cb54a3a",
+    "bytes": 355
+  },
+  "emulator-package-stall/alpha23-timeout-final-journey.json": {
+    "sha256": "fd3703eeec2a1cfd38ec1898fb4d861999e5ee12027d386a0a4ad9f2200603f0",
+    "bytes": 2297
+  },
+  "emulator-package-stall/results.png": {
+    "sha256": "847f3f9a57d52d4618b7be3f08031695b895bf19f12931b6f1c4e721d75b69ac",
+    "bytes": 139921
+  },
+  "initial-driver-failure/coin-release-failure.png": {
+    "sha256": "26c79818c96d53a316e462ff78064d2fbe9c7fe7c47fdd43fa3e61689fe734cb",
+    "bytes": 121433
+  },
+  "initial-driver-failure/coin-release-failure.xml": {
+    "sha256": "af651df475868a4ca4cdda7c6c7dfd1812312928624137673a6f90907c3b2c9f",
+    "bytes": 29779
+  },
+  "initial-driver-failure/coin-release-journey.json": {
+    "sha256": "727c658976090bd0d2d12b0a02ccffc8c62145d3e490f7f7f4288e684be66913",
+    "bytes": 399
+  },
+  "initial-driver-failure/native-transcript.txt": {
+    "sha256": "4660d59918c80d0d0d5f66d0242f2e2989f74d65ecbfa69858bd24104660ff47",
+    "bytes": 4773
+  },
+  "journey.json": {
+    "sha256": "79aa93d5a272f33b2745624ddca8d5443fda466cb906b8e9f7e276d10af05664",
+    "bytes": 2229
+  },
+  "lint.xml": {
+    "sha256": "e9978c30a84cc822e8d3efb55c8fd361027343218f33f5f44187a587912b68d1",
+    "bytes": 143753
+  },
+  "native-transcript.txt": {
+    "sha256": "76cd216acf1e05e66f92cc16d7a513ed9ae6f82b0caaa12d723645ed8803c215",
+    "bytes": 5464
+  },
+  "README.md": {
+    "sha256": "29906190765ee7566ec7dcaed416693dd06866ea63697dea7a09d36cf5c805cd",
+    "bytes": 6749
+  },
+  "results-transition-failure/coin-release-failure.png": {
+    "sha256": "a810e90e5e9743d77bafc85f7ba9d8a57d95883fc30e2c676cdb04338ace0ea5",
+    "bytes": 140418
+  },
+  "results-transition-failure/coin-release-failure.xml": {
+    "sha256": "3d0fc14eaa85c92d57648a369fa280d402192bd7d309898ada71fb1c43a191fe",
+    "bytes": 45140
+  },
+  "results-transition-failure/coin-release-journey.json": {
+    "sha256": "979253d146f45c0bd359e05fb0fe806b23feea6e6e839202686f104865b44565",
+    "bytes": 687
+  },
+  "results-transition-failure/native-transcript.txt": {
+    "sha256": "741db61053dd8817c183d9ba2afe251d4565d1b52287dfb331b9baaa14c7924c",
+    "bytes": 5640
+  },
+  "results-transition-failure/runner.json": {
+    "sha256": "46a995ebe029dd6e74a3f14bf4f79c8d20937315f92c68b0717e06c24471e233",
+    "bytes": 229
+  },
+  "results.png": {
+    "sha256": "6d237f464150478902bb440719f48adecc18ba7c00ecf9547c0656e53fa9aee2",
+    "bytes": 149238
+  },
+  "run-alpha23-acceptance.mjs": {
+    "sha256": "025fa7c3a72ceb37685ff91a362c3d8a33a72e5533a235d524ca6d4ecd46d9d3",
+    "bytes": 1331
+  },
+  "unit/TEST-io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest.xml": {
+    "sha256": "77a0d279dc0377fb5f28b612e74a06ac254d94697459f500a832f746af00a5b6",
+    "bytes": 552
+  },
+  "unit/TEST-io.github.sbshrey.tambola.game.presentation.CoinResultsTest.xml": {
+    "sha256": "c8fd19f5c36c8eba24291583ab20348f6dcc8daf128d859fca156e21f522b4fc",
+    "bytes": 1261
+  },
+  "unit/TEST-io.github.sbshrey.tambola.game.presentation.WinMomentTest.xml": {
+    "sha256": "29d6649cc90f3fa239e9f1864d020add5a49f015941f303ebb7602ab81e4b781",
+    "bytes": 1098
+  },
+  "unit/TEST-io.github.sbshrey.tambola.game.setup.SetupDraftTest.xml": {
+    "sha256": "538a809ff86cf49297989d11b62b933502214500c6fffbca5fe3e798c9532e58",
+    "bytes": 1054
+  },
+  "unit/TEST-io.github.sbshrey.tambola.game.ui.ThemeContrastTest.xml": {
+    "sha256": "8ce4ce78919bf8896de91f52b43488d13e3bea883f7897102d0665cbdc9ccffc",
+    "bytes": 499
+  },
+  "validation.json": {
+    "sha256": "a762b8d1aacdfc29a9d96150b22d0a4424bdb501befe687eb221ca1a722dcfd1",
+    "bytes": 2517
+  },
+  "windows-interruption/alpha23-interrupted-final-cleanup.json": {
+    "sha256": "12c126d276d9f19c399fd27250491532ff03850765e7b9ddd22acc6771ac7e8f",
+    "bytes": 481
+  },
+  "windows-interruption/alpha23-interrupted-qa-apply.txt": {
+    "sha256": "90f2d5670839ddf330a8f69f8dd8b04d3dc2f47eff486496a66284aceab35c7f",
+    "bytes": 152
+  },
+  "windows-interruption/alpha23-interrupted-qa-inspect.txt": {
+    "sha256": "0bf728db288c693aad15f5b886c9afba535fe2e97f9e0238e9a022011ca3278e",
+    "bytes": 87
+  },
+  "windows-interruption/alpha23-interrupted-qa-inventory.json": {
+    "sha256": "aee4bd16bb033c5273cb378f80d075adf8aade1e3adfbd8b8b4b4befa0c9e574",
+    "bytes": 399
+  },
+  "windows-interruption/alpha23-interrupted-qa.ps1": {
+    "sha256": "0afb835c9d1efdf36d3e82eaa8f087baf2ade2f8e06214183c2823abfbc3e972",
+    "bytes": 1990
+  },
+  "windows-interruption/alpha23-windows-interruption.json": {
+    "sha256": "087378cba8126b5be80a0036c2e3acb99bc559f5285202a6e5bee8e18acfb810",
+    "bytes": 1099
+  },
+  "windows-interruption/Alpha23InterruptedQa.java": {
+    "sha256": "ba7d27dae2afb32f46e05bd0405dab27556b9db9703b1e478f55dab7a64a8e3c",
+    "bytes": 4062
+  }
+}

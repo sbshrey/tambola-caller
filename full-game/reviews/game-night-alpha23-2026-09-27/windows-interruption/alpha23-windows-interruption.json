@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-09-27T05:46:29.321833+00:00",
+  "interruptedRunnerSession": 8484,
+  "result": "unaccepted; Windows reboot interrupted native round",
+  "windowsBootUtc": "2026-09-27T05:18:55Z",
+  "hostProcessesObservedStartedUtc": "2026-09-27T05:35:12Z",
+  "hostReadyObservedUtc": "2026-09-27T05:36:08.059Z",
+  "hostRuntimeSha256": "f2b39e5bb622b0bd9c368da654a9412fc3e34d617e171497a1f521b7ec80ee10",
+  "controlledWindowsRebootTest": false,
+  "oldAvdPreserved": "tambola_full_game_alpha12_api30",
+  "freshAvd": "tambola_full_game_alpha23_api30",
+  "oldAndroidBootFailure": "PackageManager requires exactly one installer; user package restrictions contained invalid binary bytes",
+  "metadataBackupSha256": "b8fa27ebc98f16d4c9d807347a8a43d7ac261020bf89c340ea5c6a22a7fb5a33",
+  "metadataRepair": "Original restrictions and manifest cache retained; attempted rebuild did not restore boot; original AVD preserved",
+  "qaCleanup": "Exact IDs, starter names/timestamps and exclusive shared room verified; existing journal append and live replay deleted the two owned test profiles"
+}

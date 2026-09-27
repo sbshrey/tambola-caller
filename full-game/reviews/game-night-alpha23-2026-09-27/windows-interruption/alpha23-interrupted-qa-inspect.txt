@@ -1,0 +1,2 @@
+Verified the exact two QA identities, starter timestamps and exclusive shared room.
+

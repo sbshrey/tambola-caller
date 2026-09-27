@@ -1,0 +1,26 @@
+{
+  "completed": false,
+  "scope": "Non-debuggable optimized app; external UI actions; real HTTPS\/WSS round; one passive HTTP QA peer and two labelled computer opponents",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "roundNumber": 1,
+  "calls": 82,
+  "claims": 6,
+  "stage": "failed",
+  "elapsedMs": 472142,
+  "peerTicketQuantities": [
+    6
+  ],
+  "expectedPool": 1800,
+  "balanceBefore": 1500,
+  "labelledComputers": 2,
+  "computerFundedCoins": 600,
+  "ownedTickets": 6,
+  "distinctOwnNumbers": 90,
+  "pickerCallRollovers": 1,
+  "coldProcessRestoredMarks": 20,
+  "failureType": "StaleObjectException",
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 1
+}

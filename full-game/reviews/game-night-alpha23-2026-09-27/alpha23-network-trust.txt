@@ -1,0 +1,11 @@
+E: network-security-config (line=1)
+    E: base-config (line=2)
+      A: cleartextTrafficPermitted=false
+    E: domain-config (line=3)
+      A: cleartextTrafficPermitted=false
+        E: domain (line=4)
+          A: includeSubdomains=false
+            T: '192.168.1.4'
+        E: trust-anchors (line=5)
+            E: certificates (line=5)
+              A: src=@0x7f0d0000

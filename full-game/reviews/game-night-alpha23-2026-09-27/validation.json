@@ -1,0 +1,56 @@
+{
+  "accepted": true,
+  "checkedAt": "2026-09-27T06:05:17.241748+00:00",
+  "appSourceCommit": "21163f8dd7cddc443e0803cb91062c10c75dd3be",
+  "driverSourceCommit": "cd2fa423ba6fc4ef51465ecea8789b1946593522",
+  "app": {
+    "path": "releases/0.23.0-alpha23-wifi-optimized/Tambola-Together-0.23.0-alpha23-wifi-optimized.apk",
+    "sha256": "872b505cd397397940d88d190d65f7748ad7c4a85c17d397d7a3de390265d033",
+    "bytes": 29100925,
+    "versionCode": 23,
+    "versionName": "0.23.0-alpha23-wifi-optimized",
+    "debuggable": false,
+    "profileableByShell": true,
+    "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c"
+  },
+  "driver": {
+    "sha256": "38de4197c9f455bd057063daaa0aa65375244a79badd4107cb4cb40251701e78",
+    "bytes": 55990170
+  },
+  "installedHashesMatch": true,
+  "animationAndFontSettingsRestored": true,
+  "adbReverseEmpty": true,
+  "allQaProfilesDeleted": true,
+  "nativeDurationSeconds": 481.738,
+  "unitTests": 15,
+  "lint": {
+    "Error": 0,
+    "Warning": 119
+  },
+  "frameMetricsAreEmulatorDiagnosticsOnly": true,
+  "traces": [
+    {
+      "path": ".test-workspace/alpha23-computer-round-final-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realComputerRound_iter000_2026-09-27-06-03-46.perfetto-trace",
+      "sha256": "2f6cc24fb87611a6dfbad4a2d57858ab8483ca97e530f3aa8acc999abc4cf1ce",
+      "bytes": 72918968
+    }
+  ],
+  "incompleteAttemptTraces": [
+    {
+      "path": ".test-workspace/alpha23-computer-round-fixed-benchmark/io.github.sbshrey.tambola.benchmark/CoinReleaseBenchmark_realComputerRound_iter000_2026-09-27-05-07-15.perfetto-trace",
+      "sha256": "b929dd3b53fc3e0eeb6a7940ecb5d7e3829b956e8dd85f7fea860654106395f8",
+      "bytes": 47727875
+    }
+  ],
+  "sourceHashes": {
+    "app/build.gradle.kts": "7eedd27fb31898ca5af3c139708bdfebadef87aca5a3cf8e1ecdf79eb48e3c28",
+    "macrobenchmark/src/main/java/io/github/sbshrey/tambola/benchmark/CoinJourney.kt": "0a9ee5d2309ae22a5bed49072ca650ef22a51c56a2bc2deb5bcad7f14bd0ff88",
+    "tools/android-smoke.mjs": "6cb13c9e047bc9e3aae7a287a516fb60670076ce9ff4846e39f30c49d8e006a5"
+  },
+  "limits": [
+    "One random round on the API30 software emulator; no physical frame-performance acceptance",
+    "No new server deployment; gaming-handle source change is not installed",
+    "Prior nine-round endurance belongs to alpha22, not this APK",
+    "Development signing and PC-local HTTPS only; no production-release claim"
+  ]
+}

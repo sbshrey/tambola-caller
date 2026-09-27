@@ -1,0 +1,1 @@
+/sdcard/Android/media/io.github.sbshrey.tambola.benchmark/: 3 files pulled, 0 skipped. 157.3 MB/s (73361853 bytes in 0.445s)

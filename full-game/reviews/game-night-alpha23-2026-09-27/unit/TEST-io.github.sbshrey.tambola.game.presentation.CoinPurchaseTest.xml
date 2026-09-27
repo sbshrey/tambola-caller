@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-09-27T04:56:41.332Z" hostname="DESKTOP-SBSHREY" time="0.008">
+  <properties/>
+  <testcase name="whole ticket affordability never overspends or overflows and preserves smaller choices" classname="io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

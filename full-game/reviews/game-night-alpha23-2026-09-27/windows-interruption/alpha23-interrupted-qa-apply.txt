@@ -1,0 +1,3 @@
+Verified the exact two QA identities, starter timestamps and exclusive shared room.
+Both interrupted QA profiles removed by durable journal replay.
+
