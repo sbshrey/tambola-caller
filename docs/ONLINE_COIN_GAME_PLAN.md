@@ -4,6 +4,8 @@ Updated 27 September 2026. This supersedes the earlier offline-first release pla
 
 ## Player experience
 
+- **Landscape design review (27 September):** [editable Figma board](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/) and [local design sources/preview notes](../designs/landscape-lobby-v1/README.md) now cover game-like onboarding, landing, countdown, tickets, claims and rewards, plus a lighter visual alternative. Review and iterate these before another APK installation. The all-screen landscape source change is drafted; it is not yet compiled/device-validated or present in the installed alpha22 APK.
+
 - Online multiplayer is the only primary play flow. Ticket choice and Play create a saved guest identity automatically; profile controls remain secondary. Retain legacy save compatibility internally; do not advertise practice, solo, family, badges or tutorials in the main flow.
 - Manual marking, five-second automatic calls, short caller audio, visible ball entry and dab stamps. No instruction paragraphs during play.
 - Up to six disjoint tickets. Show two readable tickets when height permits, otherwise one. Explicit up/down controls and a page counter. Preserve marks and page across calls and rotation. Never switch pages unexpectedly when a number arrives.
