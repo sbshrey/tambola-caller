@@ -1,0 +1,253 @@
+{
+  "uniqueTestsWithSuccessfulEvidence": 73,
+  "initialAttempt": {
+    "tests": 73,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "cause": "Test invocation omitted TAMBOLA_PG_BIN; no performance wave started",
+    "classes": [
+      {
+        "class": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "details": [
+          {
+            "test": "actual primary backup restore cannot resurrect deleted access or shared profile fields after replay",
+            "message": "java.lang.IllegalArgumentException: Set TAMBOLA_PG_BIN to PostgreSQL 16 client binaries for the restore drill"
+          }
+        ]
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+        "tests": 9,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "details": [
+          {
+            "test": "restoring an enrolled profile cannot bypass the live deletion journal",
+            "message": "java.lang.IllegalArgumentException: Set TAMBOLA_PG_BIN to PostgreSQL 16 client binaries for the restore drill"
+          }
+        ]
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.HttpTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "details": []
+      },
+      {
+        "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+        "tests": 6,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "details": [
+          {
+            "test": "restoring a pre-rotation backup never revives signed-out access and preserves shared play",
+            "message": "java.lang.IllegalArgumentException: Set TAMBOLA_PG_BIN to PostgreSQL 16 client binaries for the restore drill"
+          }
+        ]
+      }
+    ]
+  },
+  "correctedEnvironment": {
+    "TAMBOLA_PG_BIN": "C:/Program Files/PostgreSQL/16/bin",
+    "observedClientVersion": "16.9"
+  },
+  "retriedClasses": [
+    {
+      "class": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "finalClassResults": [
+    {
+      "class": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.CoinMatchTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.EventPollingTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.HttpTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": []
+    },
+    {
+      "class": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "sourceHashes": {
+    "server/src/main/kotlin/io/github/sbshrey/tambola/server/Database.kt": "f3af715bc88005638864cdd10dff1c64bd58007a8e28a533f7dfc93e35d76794",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/DatabaseTimeoutTest.kt": "d9eb534e71a7f423e217d4ea13e92b477052c21b3b2abc14463b0f2efe6ac71f"
+  },
+  "changedRuntimeLibraries": [
+    "server.jar"
+  ],
+  "scope": "Isolated PostgreSQL 55432; installed Wi-Fi host unchanged; comparison is diagnostic, not capacity acceptance"
+}

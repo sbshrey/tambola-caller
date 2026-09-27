@@ -24,8 +24,7 @@ class Database(url: String, user: String, password: String, schema: String = "pu
         connection.isReadOnly = readOnly
         connection.autoCommit = false
         try {
-            connection.execute("SET LOCAL lock_timeout = '5s'")
-            connection.execute("SET LOCAL statement_timeout = '10s'")
+            connection.query("SELECT set_config('lock_timeout', '5s', true), set_config('statement_timeout', '10s', true)") { true }
             val result = block(connection)
             connection.commit()
             result
