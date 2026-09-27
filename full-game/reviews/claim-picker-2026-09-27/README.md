@@ -53,6 +53,8 @@ At 15:15 UTC the public endpoint remained healthy and the configured installed s
 
 ## Publication
 
-The tested APK is prepared for the [alpha33 prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha33-readable-claims). Public asset and invitation-page verification will be recorded after publication.
+The [alpha33 prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha33-readable-claims) targets source commit `9b7821b8638956bd4705ce7d373c78f3f4b595a4`. Its [APK download](https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha33-readable-claims/Tambola-Internet-Beta-0.33.0.apk) was fetched anonymously and matched the tested SHA-256 and 29,192,205-byte size.
+
+The guarded website publisher created main commit `c5b87577e02cf62ceb263d4bfa3e775024defdf7`; actual changes are limited to `friends/index.html` and `friends/invite.js`. Pages build `1243220190` completed successfully. The first verification stopped while Pages was still building; after completion, the full public check passed at **15:18 UTC**. Normal URLs for the invitation files, stylesheet, service worker and caller homepage matched the reviewed local content. A fresh Chromium session verified the code display, English/Hindi switch, alpha33 download link and explicit intent fallback without page errors. [Publication record](pages-publication.json), [verification](publication-verification.json), [public invitation](published-invitation.png). Physical Android intent handoff remains outside this check.
 
 Physical-phone/mobile-data/TalkBack acceptance, native competitor gameplay, frame performance, production signing, editable Figma updates and high-load latency remain open. The broader goal remains active.

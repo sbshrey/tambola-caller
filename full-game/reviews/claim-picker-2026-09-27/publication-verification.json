@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-09-27T15:18:08.573Z",
+  "passed": true,
+  "pagesBuild": "https://api.github.com/repos/sbshrey/tambola-caller/pages/builds/1243220190",
+  "mainCommit": "c5b87577e02cf62ceb263d4bfa3e775024defdf7",
+  "sourceCommit": "9b7821b8638956bd4705ce7d373c78f3f4b595a4",
+  "site": "https://sbshrey.github.io/tambola-caller/",
+  "publicAssetsMatch": [
+    "friends/index.html",
+    "friends/invite.js",
+    "friends/styles.css",
+    "sw.js",
+    "index.html"
+  ],
+  "mainChangedFiles": [
+    "friends/index.html",
+    "friends/invite.js"
+  ],
+  "release": "https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha33-readable-claims",
+  "asset": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha33-readable-claims/Tambola-Internet-Beta-0.33.0.apk",
+  "sha256": "e318900b61708846db7bd6010f3091f420d8e95efdcbff739d287aa6465d1583",
+  "bytes": 29192205,
+  "anonymousDownloadStatus": 200,
+  "publicBrowserEnglishHindi": true,
+  "scope": "Actual public website and APK bytes without cache-busting. Headless Chromium; no physical-phone intent or cellular acceptance."
+}
