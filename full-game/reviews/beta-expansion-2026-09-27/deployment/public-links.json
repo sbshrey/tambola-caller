@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checkedAt": "2026-09-27T18:28:18.960Z",
+  "site": "https://sbshrey.github.io/tambola-caller/friends/",
+  "gatewayOrigin": "https://farmer-outlets-routines-story.trycloudflare.com",
+  "release": "full-game-alpha36-expanded-multiplayer",
+  "checks": [
+    "public Pages HTML and JS point to alpha36",
+    "current public invitation handler points to alpha36"
+  ]
+}
