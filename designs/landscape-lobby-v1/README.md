@@ -48,6 +48,7 @@ It is not connected to the game server. Calls are a fixed demo snapshot, coins r
 - In the browser, exercised welcome/landing, six-ticket purchase selection, countdown, paging to tickets 5–6, preserved a manual dab after leaving/returning to its page, and selected a prize from ticket 1.
 - An incomplete full-house claim returned “Not complete yet”; the example Early 5 accepted 120 coins and showed a 1,320-coin illustrative balance after the default purchase. No browser console errors were reported during these checks.
 - One-ticket selection showed one visible ticket, a 1,000-coin pool with five 100-coin small prizes and a 500-coin house, and hid the second house.
+- Claim-dialog keyboard verification: focus enters the prize options, Tab/Shift+Tab wrap inside the picker, the table behind it has no tab stops, and Escape returns focus to the same ticket's Claim button. Reducing ticket quantity also bounds the selected ticket/page to the remaining hand.
 - Corrected animation transform interference and preview sizing after visual inspection. `preview-lobby.png` records the corrected landing.
 - JavaScript syntax and repository whitespace checks passed. No APK was built or installed for this design review. Native touch/layout, physical phone rotation, large fonts, audio and frame performance remain separate checks.
 

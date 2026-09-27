@@ -50,14 +50,20 @@ function economy(){
   amount('#Wallet text',(screen==='lobby'||screen==='daylight'?1500:screen==='results'?1500-quantity*100+win.coins:1500-quantity*100).toLocaleString()+'  coins');
 }
 function show(next,record=true){
+  const previous=screen;
   clearInterval(timer);if(record&&next!==screen)history.push(screen);screen=next;chooser.value=next;
+  if(next==='claim')page=Math.floor((claimTicket-1)/2)+1;
   let body=screens[next];
   if(next==='game'||next==='game2')body=screens[`play${page}`];
-  if(next==='claim')body=screens[`play${page}`]+screens['claim-overlay'];
+  if(next==='claim')body=`<g id="claim-background" aria-hidden="true" style="pointer-events:none">${screens[`play${page}`]}</g><g role="dialog" aria-modal="true" aria-label="Choose a prize for ticket ${claimTicket}">${screens['claim-overlay']}</g>`;
   stage.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">${defs}${body}</svg>`;
   document.querySelector('#caption').textContent=captions[next];economy();
   if(['game','game2','claim'].includes(next))updateHand();
-  if(next==='claim')amount('#claim-ticket-label',`TICKET ${String(claimTicket).padStart(2,'0')}`);
+  if(next==='claim'){
+    amount('#claim-ticket-label',`TICKET ${String(claimTicket).padStart(2,'0')}`);
+    stage.querySelectorAll('#claim-background [tabindex]').forEach(el=>el.setAttribute('tabindex','-1'));
+    stage.querySelector('[data-action="claim-win"]').focus();
+  }else if(previous==='claim'&&next==='game')stage.querySelector(`#Claim-ticket-${claimTicket}`)?.focus();
   if(next==='results'){
     amount('#won-value','+'+win.coins);amount('#Won-prize text',`${win.name.toUpperCase()} · TICKET ${String(claimTicket).padStart(2,'0')}`);
     amount('[data-action="ready"] text','PLAY AGAIN  ·  '+quantity*100);
@@ -70,7 +76,8 @@ function show(next,record=true){
   }
 }
 function choose(n){
-  quantity=n;amount('#ticket-count-label',`${n} ticket${n===1?'':'s'}`);amount('#ticket-cost-label',`${n*100} coins`);
+  quantity=n;claimTicket=Math.min(claimTicket,n);page=Math.min(page,Math.ceil(n/2));
+  amount('#ticket-count-label',`${n} ticket${n===1?'':'s'}`);amount('#ticket-cost-label',`${n*100} coins`);
   amount('[data-action="ready"] text','PLAY  ·  '+n*100);
   stage.querySelector('[data-action="ready"]')?.setAttribute('aria-label',`Play for ${n*100} coins`);
   stage.querySelectorAll('[data-action^="tickets-"]').forEach(el=>{
@@ -103,7 +110,15 @@ function act(el){
   else if(screens[action])show(action);
 }
 stage.addEventListener('click',event=>{const el=event.target.closest('[data-action]');if(el)act(el)});
-stage.addEventListener('keydown',event=>{if(['Enter',' '].includes(event.key)){const el=event.target.closest('[data-action]');if(el){event.preventDefault();act(el)}}});
+stage.addEventListener('keydown',event=>{
+  if(screen==='claim'&&event.key==='Escape'){event.preventDefault();show('game');return}
+  if(screen==='claim'&&event.key==='Tab'){
+    const controls=[...stage.querySelectorAll('[role="dialog"] [data-action]')];
+    const next=(controls.indexOf(document.activeElement)+(event.shiftKey?-1:1)+controls.length)%controls.length;
+    event.preventDefault();controls[next].focus();return;
+  }
+  if(['Enter',' '].includes(event.key)){const el=event.target.closest('[data-action]');if(el){event.preventDefault();act(el)}}
+});
 chooser.onchange=()=>{if(chooser.value==='game2'){quantity=Math.max(quantity,3);page=2}else if(chooser.value==='game')page=1;show(chooser.value)};
 document.querySelector('#back').onclick=()=>show(history.pop()||'welcome',false);
 document.querySelector('#motion').onclick=event=>{document.body.classList.toggle('reduce');event.target.textContent=document.body.classList.contains('reduce')?'Motion off':'Motion on'};
