@@ -2,6 +2,8 @@
 
 Updated 27 September 2026. This supersedes the earlier offline-first release plan and single-button/all-tickets interaction. The user confirmed Wi-Fi testing first on this Windows computer. No public endpoint is required for that milestone.
 
+**Internet friends extension (alpha25):** the user subsequently chose temporary hosting on this PC. The public Internet Beta now adds **Play with friends** beside quick play: invite code, 2–8 actual people, host start after everyone connects, and a fifteen-minute waiting deadline with refunds. Computers fill only quick-play tables. Friend tables use the same coin ledger, ticket claims and saved recovery, but are excluded from public matchmaking. [Implementation, Figma work, rival research and acceptance](../full-game/reviews/friends-table-2026-09-27/README.md); [operating guide](INTERNET_BETA.md). This does not close the physical-device, performance, production-signing or Store gates below.
+
 ## Player experience
 
 - **Landscape design (27 September):** the [editable Figma board](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=4-2696) and [browser preview](../designs/landscape-lobby-v1/README.md) remain the feedback path without reinstalling. Game night welcome/lobby, landscape table, actual roster arrivals, five-second ring, minimal Settings and selected-ticket prize picker are now packaged in alpha23. [Native layout checks](../full-game/reviews/game-night-arena-2026-09-27/README.md) passed at normal and 150% text. The [exact optimized APK](../full-game/reviews/game-night-alpha23-2026-09-27/README.md) passed a full 78-call multiplayer round, payouts, process recovery and replay/refund. Physical-device and production acceptance remain open.
@@ -11,7 +13,7 @@ Updated 27 September 2026. This supersedes the earlier offline-first release pla
 - Up to six disjoint tickets. Show two readable tickets when height permits, otherwise one. Explicit up/down controls and a page counter. Preserve marks and page across calls and rotation. Never switch pages unexpectedly when a number arrives.
 - Claim belongs beside each ticket and opens a compact prize picker. The command identifies exactly that ticket, chosen prize, round, call and marks. A choice cannot silently claim another ticket or scheme. Closed/already-owned prizes are unavailable; invalid claims get a brief message, not a ticket-destroying penalty.
 - Recent calls and round counters across the top; prizes and players on the left. A new call closes the picker to avoid accidentally submitting an old choice against a new call.
-- Computers fill empty seats with delayed reactions using the same revealed numbers and rules. Identify them as computers; do not fabricate human participation. Human arrivals join the next lobby, not a sold/started round.
+- In quick play, computers fill empty seats with delayed reactions using the same revealed numbers and rules. Identify them as computers; do not fabricate human participation. Friends tables have no computer seats and wait for their host. Human arrivals join an accepting lobby, not a sold/started round.
 
 ## Virtual economy defaults
 

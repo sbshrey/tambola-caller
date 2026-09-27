@@ -1,0 +1,45 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:
+Error in friendsRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest):
+java.lang.IllegalStateException: UI condition timed out at fresh-profile-check
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:62)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:59)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.tap(CoinJourney.kt:69)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare$lambda$0(CoinJourney.kt:144)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda6.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:473)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare(CoinJourney.kt:106)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRound(InternetBetaTest.kt:20)
+	Suppressed: java.lang.IllegalStateException: UI condition timed out at failed
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:62)
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:59)
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.close(CoinJourney.kt:487)
+		at io.ktor.client.HttpClient$$ExternalSyntheticAutoCloseableDispatcher0.m(D8$$SyntheticClass:0)
+		at kotlin.jdk7.AutoCloseableKt.closeFinally(AutoCloseableJVM.kt:46)
+		at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRound(InternetBetaTest.kt:20)
+
+
+Time: 37.331
+There was 1 failure:
+1) friendsRound(io.github.sbshrey.tambola.benchmark.InternetBetaTest)
+java.lang.IllegalStateException: UI condition timed out at fresh-profile-check
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:62)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:59)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.tap(CoinJourney.kt:69)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare$lambda$0(CoinJourney.kt:144)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney$$ExternalSyntheticLambda6.invoke(D8$$SyntheticClass:0)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.captureFailure(CoinJourney.kt:473)
+	at io.github.sbshrey.tambola.benchmark.CoinJourney.prepare(CoinJourney.kt:106)
+	at io.github.sbshrey.tambola.benchmark.InternetBetaTest.friendsRound(InternetBetaTest.kt:20)
+	Suppressed: java.lang.IllegalStateException: UI condition timed out at failed
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.until(CoinJourney.kt:62)
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.until$default(CoinJourney.kt:59)
+		at io.github.sbshrey.tambola.benchmark.CoinJourney.close(CoinJourney.kt:487)
+		at io.ktor.client.HttpClient$$ExternalSyntheticAutoCloseableDispatcher0.m(D8$$SyntheticClass:0)
+		at kotlin.jdk7.AutoCloseableKt.closeFinally(AutoCloseableJVM.kt:46)
+		... 33 more
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

@@ -138,14 +138,16 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         report.put("peerTicketQuantities", JSONArray(quantities)).put("expectedPool", expectedPool).put("balanceBefore", balanceBefore)
         if (expectedRounds > 1) recordMemory("entry")
         tap("buy-tickets-6")
-        createdMain = true
         if (friendTable) {
             tap("play-friends")
-            tap("friend-enter")
+            // Dialogs have their own accessibility root; use the actual visible button.
+            val create = textButton("Create table")
+            createdMain = true
+            create.click()
             code = textOf(node("friend-code")).replace(" ", "")
             check(requireNotNull(code).matches(Regex("[A-HJ-NP-Z2-9]{8}")))
             report.put("friendTable", true)
-        } else tap("coin-play")
+        } else { createdMain = true; tap("coin-play") }
         node(if (friendTable) "friend-waiting" else "cancel-match")
         assertEquals(balanceBefore - 600, balance())
         runBlocking {

@@ -1,6 +1,6 @@
 # Tambola Together
 
-**Internet beta:** the separate alpha24 `publicBeta` APK connects to this PC over public HTTPS/WSS, with automatic tunnel-address discovery. [Download the prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha24-internet-beta) and see the [Internet host guide](../docs/INTERNET_BETA.md). It has a separate player profile from the Wi-Fi app. This is temporary PC hosting, not a cloud or Store release.
+**Internet beta:** alpha25 adds private friends’ tables for 2–8 people, shareable codes, a host-controlled start, and pre-start refunds. The `publicBeta` APK connects to this PC over public HTTPS/WSS with automatic tunnel-address discovery. [Download the prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha25-friends) and see the [Internet host guide](../docs/INTERNET_BETA.md). Install over alpha24 to retain its profile; the Wi-Fi app keeps a separate profile. This is temporary PC hosting, not a cloud or Store release.
 
 Native Android game under development on `shrey/full-tambola-game`. The current scope is the [online coin game](../docs/ONLINE_COIN_GAME_PLAN.md), tested first on the [private Wi-Fi host](../docs/WIFI_HOST.md). That scope supersedes the earlier offline/family plans below.
 

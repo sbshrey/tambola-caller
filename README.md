@@ -8,7 +8,7 @@ Built from the [shared V1 discussion and design reference](https://chatgpt.com/s
 
 ## Full Android game in development
 
-**Internet multiplayer beta:** [download Tambola Internet Beta](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha24-internet-beta) for Android 8+. It connects over mobile data or other Wi-Fi through the temporary PC host. The PC must stay awake, signed in and online. This beta installs alongside the Wi-Fi app with a separate player profile. [Hosting and operating guide](docs/INTERNET_BETA.md).
+**Internet multiplayer beta:** [download Tambola Internet Beta alpha25](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha25-friends) for Android 8+. Choose **Play with friends**, create a table and share its code; 2–8 friends can join across the Internet and the host starts when everyone arrives. Quick play is also available. The PC host must stay awake, signed in and online. Install over alpha24 to keep your beta profile; it remains separate from the Wi-Fi app. [Hosting and operating guide](docs/INTERNET_BETA.md).
 
 **Review the new landscape design without installing an APK:** [editable Figma screens](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=3-1215) and [clickable preview instructions](designs/landscape-lobby-v1/README.md). The Game night design is included in alpha23 and the Internet beta.
 

@@ -1,0 +1,10 @@
+{
+  "voiceClips": 270,
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "matchesPackagedApk": true,
+  "versionName": "0.25.0-alpha25-internet-beta",
+  "sha256": "acea95a3b2a549805dbd0e814bdb7248acf9bc81541cce5e93906162e71ef1b3",
+  "versionCode": 25,
+  "appId": "io.github.sbshrey.tambola.game.beta",
+  "checkedAt": "2026-09-27T08:44:58.0406064+00:00"
+}
