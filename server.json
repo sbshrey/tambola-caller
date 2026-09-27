@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "expiresAt": 0,
-  "origin": "https://not-running.trycloudflare.com",
-  "service": "tambola-together-public-beta-v1"
+  "service": "tambola-together-public-beta-v1",
+  "origin": "https://purpose-asking-trails-surf.trycloudflare.com",
+  "expiresAt": 1790579766460
 }
