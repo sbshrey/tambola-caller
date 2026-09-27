@@ -53,7 +53,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
         } else if (!state.loading && state.screen in setOf(Screen.HOME, Screen.ONLINE) && invitation.code == null &&
             (onlineState.room == null || onlineState.room.options.coinGame)) {
             CoinLobby(onlineState, online, play = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets) },
-                resume = { roomDetails = false; model.navigate(Screen.ONLINE) }, settings = { model.navigate(Screen.SETTINGS) })
+                resume = { roomDetails = false; model.navigate(Screen.ONLINE) }, settings = { model.navigate(Screen.SETTINGS) }, reducedMotion = state.preferences.reducedMotion)
         } else BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
             // A fixed action panel must not consume the reading area at large text sizes or
             // in a short window. Keep those actions in the same scroll flow as the room.

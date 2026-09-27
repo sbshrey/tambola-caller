@@ -1,0 +1,10 @@
+// Explicitly opt in with -I tools/ui-review.init.gradle for emulator UI checks.
+// The debug APK and its test package coexist with the installed Wi-Fi candidate.
+allprojects {
+    plugins.withId('com.android.application') {
+        android.buildTypes.named('debug') {
+            applicationIdSuffix = '.uireview'
+            versionNameSuffix = '-ui-review'
+        }
+    }
+}

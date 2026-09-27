@@ -1,0 +1,14 @@
+<resources>
+    <string name="lobby_welcome">तंबोला टुगेदर में आपका स्वागत है</string>
+    <string name="lobby_greeting">नमस्ते, %1$s</string>
+    <string name="lobby_first_heading">थोड़ी किस्मत।\nढेर सारी मस्ती।</string>
+    <string name="lobby_heading">अगली पुकार,\nआपकी जीत।</string>
+    <string name="lobby_pace">हर 5 सेकंड कॉल · 6–8 इनाम</string>
+    <string name="lobby_choose">टिकट चुनें। मेज़ हम ढूँढेंगे।</string>
+    <string name="lobby_personalize">अपना खिलाड़ी चुनें</string>
+    <string name="lobby_save_player">खिलाड़ी सहेजें</string>
+    <plurals name="lobby_ticket_count">
+        <item quantity="one">%d टिकट</item>
+        <item quantity="other">%d टिकट</item>
+    </plurals>
+</resources>

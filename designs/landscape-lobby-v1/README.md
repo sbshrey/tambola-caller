@@ -25,7 +25,7 @@ The welcome has one primary Play action and optional personalization. Returning 
 
 ## Interaction and implementation handoff
 
-- Keep all screens in landscape. Android source now declares `sensorLandscape` and game category, and removes the gameplay-only orientation override. [Source compilation, lint and merged-manifest checks passed](../../full-game/reviews/landscape-source-2026-09-27/README.md), with 0 lint errors and 88 warnings, including fixed orientation. Device behavior remains unverified; the installed alpha22 APK is unchanged.
+- Keep all screens in landscape. Android source declares `sensorLandscape` and game category, and removes the gameplay-only orientation override. [Source checks](../../full-game/reviews/landscape-source-2026-09-27/README.md) and the subsequent [native review](../../full-game/reviews/game-night-lobby-2026-09-27/README.md) passed. Launch, Settings and return to home remain landscape on the API 30 emulator at normal and 150% system text. Physical-device/OEM behavior remains unverified; the installed alpha22 APK is unchanged.
 - Reference frames are 1280×720, not a requirement to scale the entire native UI uniformly. Respect device cutouts, navigation insets, large text and at least 48 dp tap targets. When two tickets cannot retain readable cells and touch targets, show one ticket per page. Never compress six tickets onto one screen.
 - Persist dabs, selected ticket page and confirmed quantity. Only the owner sees their ticket numbers. A claim always carries the selected ticket and prize; actual eligibility, ties and credit remain server authoritative.
 - Freeze the 6/7/8-prize schedule when sales close. Real gameplay must expose taken/closed prizes and the pending claim state, then settle winnings at the server's call boundary. The design's immediate result transition is illustrative, not an implementation of settlement timing.
@@ -50,7 +50,13 @@ It is not connected to the game server. Calls are a fixed demo snapshot, coins r
 - One-ticket selection showed one visible ticket, a 1,000-coin pool with five 100-coin small prizes and a 500-coin house, and hid the second house.
 - Claim-dialog keyboard verification: focus enters the prize options, Tab/Shift+Tab wrap inside the picker, the table behind it has no tab stops, and Escape returns focus to the same ticket's Claim button. Reducing ticket quantity also bounds the selected ticket/page to the remaining hand.
 - Corrected animation transform interference and preview sizing after visual inspection. `preview-lobby.png` records the corrected landing.
-- JavaScript syntax and repository whitespace checks passed. No APK was built or installed for this design review. Native touch/layout, physical phone rotation, large fonts, audio and frame performance remain separate checks.
+- JavaScript syntax and repository whitespace checks passed. The initial Figma/browser review required no APK installation. The later isolated native review is recorded below; phone rotation, audio and frame performance remain separate checks.
+
+## Native implementation checkpoint
+
+Game night is the working direction while the optional visual preference remains open. The welcome and returning-player lobby now use the design's palette, original ticket/ball artwork, finite entrance animation, six ticket choices, explicit cost and one Play action. Optional player setup preserves the ticket choice; the form keeps its input and actions above the landscape keyboard. Pending purchases show receipt recovery instead of a second purchase action.
+
+[Native evidence and screenshots](../../full-game/reviews/game-night-lobby-2026-09-27/README.md) record nine UI tests at each of two system text sizes, English/Hindi fixtures, 15 JVM tests and lint with no errors. A separate `.uireview` package coexists with alpha22; it is not a release candidate or a new multiplayer acceptance run. The live ticket/claim arena still needs the new visual treatment. Continue reviewing in Figma and the browser without reinstalling the main app.
 
 ## Inspiration
 
@@ -72,4 +78,4 @@ python -X utf8 build_design.py
 python -m http.server 8877 --bind 127.0.0.1
 ```
 
-Open `http://127.0.0.1:8877/review.html`. Use the screen selector to compare states; use Feedback to download local notes. Figma comments remain the primary place to review the static design. Iterate the sources and the Figma board together before applying an approved direction to native screens.
+Open `http://127.0.0.1:8877/review.html`. Use the screen selector to compare states; use Feedback to download local notes. Figma comments remain the primary place to review the static design. Iterate the sources, Figma board and native implementation together as feedback arrives.

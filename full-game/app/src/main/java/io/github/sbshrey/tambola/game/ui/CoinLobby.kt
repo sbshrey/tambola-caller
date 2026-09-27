@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,7 +29,8 @@ import io.github.sbshrey.tambola.protocol.*
 private val CoinGold = Color(0xFFF4C879)
 
 @Composable
-fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit) {
+fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit,
+    reducedMotion: Boolean = false) {
     val words = gameText()
     val room = state.room
     val coins = room?.coins
@@ -35,26 +38,35 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     val finished = room?.phase == RoomPhase.FINISHED
     val active = room?.phase == RoomPhase.ACTIVE
     val enabled = !state.loading && !state.busy && !state.pending && !state.storageFailure && !state.sessionExpired && state.available
-    var chosenTickets by rememberSaveable(state.playerId, state.preferredTickets) { mutableIntStateOf(state.preferredTickets) }
+    var chosenTickets by rememberSaveable(state.preferredTickets) { mutableIntStateOf(state.preferredTickets) }
     var profile by remember { mutableStateOf(false) }
+    var profileName by rememberSaveable { mutableStateOf("") }
+    var profileAvatar by rememberSaveable { mutableIntStateOf(0) }
     var delete by remember { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
     var gameData by remember { mutableStateOf(false) }
     val balance = state.wallet?.balance ?: if (state.name == null) COIN_STARTER_BALANCE else null
     val tickets = affordableTickets(chosenTickets, balance)
     val cost = tickets * COIN_TICKET_PRICE
-    Surface(Modifier.fillMaxSize().testTag("coin-lobby"), color = Color(0xFF0B352E), contentColor = Ivory) {
+    MaterialTheme(colorScheme = GameNightPalette.colors) {
+    Surface(Modifier.fillMaxSize().testTag("coin-lobby"), color = GameNightPalette.background, contentColor = GameNightPalette.cream) {
       BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding()) {
         val wide = maxWidth > 650.dp && maxWidth > maxHeight
-        Column(Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        val compact = maxHeight < 430.dp || LocalDensity.current.fontScale >= 1.3f
+        LobbyBackdrop(Modifier.matchParentSize())
+        Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("T", color = Ink, fontWeight = FontWeight.Black, fontSize = 23.sp,
-                    modifier = Modifier.background(CoinGold, CircleShape).padding(horizontal = 13.dp, vertical = 7.dp))
+                Text("T", color = GameNightPalette.background, fontWeight = FontWeight.Black, fontSize = 23.sp,
+                    modifier = Modifier.background(GameNightPalette.coral, CircleShape).padding(horizontal = 13.dp, vertical = 7.dp).clearAndSetSemantics {})
                 Text(words(R.string.ui_tambola_together), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                TextButton(onClick = { profile = true }, modifier = Modifier.testTag("coin-wallet")) {
-                    Text(balance?.let { words(R.string.coin_balance, it) } ?: "…", color = CoinGold, fontWeight = FontWeight.Bold)
+                Surface(onClick = { profile = true }, color = GameNightPalette.raised, shape = CircleShape,
+                    modifier = Modifier.heightIn(min = 48.dp).testTag("coin-wallet").semantics { contentDescription = words(R.string.coin_profile) }) {
+                    Row(Modifier.padding(horizontal = 10.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        AvatarBadge(state.avatar, Modifier.clearAndSetSemantics {}, size = 32.dp)
+                        Text(balance?.let { words(R.string.coin_balance, it) } ?: "…", color = GameNightPalette.gold, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    }
                 }
-                TextButton(onClick = settings) { Text(words(R.string.ui_settings), color = Ivory, fontSize = 12.sp) }
+                LobbySettingsButton(settings)
             }
             val hero: @Composable () -> Unit = {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -69,9 +81,8 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
                             modifier = Modifier.testTag("cancel-match")) { Text(words(R.string.coin_cancel), color = Ivory) }
                     } else {
-                        Text(words(if (finished) R.string.coin_results else R.string.play_tagline), fontSize = if (wide) 26.sp else 32.sp,
-                            lineHeight = 38.sp, fontWeight = FontWeight.Black)
                         if (finished) {
+                            Text(words(R.string.coin_results), fontSize = 24.sp, fontWeight = FontWeight.Black)
                             Text(words(R.string.coin_won, coins?.settledWinnings ?: 0), color = CoinGold, fontSize = 28.sp, fontWeight = FontWeight.Black,
                                 modifier = Modifier.testTag("coin-winnings"))
                             if ((coins?.returnedCoins ?: 0) > 0) Text(words(R.string.coin_returned, coins!!.returnedCoins), fontSize = 13.sp, color = Color(0xFFB7D0C0))
@@ -80,73 +91,89 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             }
                             CoinPrizeGrid(ownWins.map { it.prize }, Modifier.fillMaxWidth(), awarded = ownWins.map { it.prize.prize }.toSet(),
                                 shared = ownWins.filter { it.shared }.map { it.prize.prize }.toSet())
-                        } else Box(Modifier.fillMaxWidth().height(if (wide) 132.dp else 168.dp)) { GameNightArtwork() }
+                        } else {
+                            LobbyGreeting(state.name, compact)
+                            GameNightArtwork(Modifier.fillMaxWidth().height(if (compact) 124.dp else 190.dp), reducedMotion)
+                        }
                     }
                 }
             }
             val controls: @Composable () -> Unit = {
               if (!waiting || state.pending || state.connection != Connection.LIVE) {
-                Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(26.dp), color = Color(0xFFF7F2E5), contentColor = Ink) {
-                  Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    if (waiting) {
+                Surface(modifier = Modifier.fillMaxWidth().testTag("lobby-ticket-panel"), shape = RoundedCornerShape(26.dp), color = GameNightPalette.panel, contentColor = GameNightPalette.cream,
+                    border = BorderStroke(1.dp, GameNightPalette.raised)) {
+                  Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (state.pending) {
+                        Text(words(R.string.coin_pending), fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        if (state.busy) CircularProgressIndicator(Modifier.size(26.dp), strokeWidth = 2.dp)
+                        OutlinedButton(onClick = model::retry, enabled = !state.busy && !state.storageFailure,
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("coin-retry")) { Text(words(R.string.coin_retry)) }
+                    } else if (waiting) {
                         if (state.connection != Connection.LIVE) TextButton(onClick = model::reconnect) { Text(words(R.string.play_reconnecting)) }
                     } else if (active) {
                         Text(words(R.string.coin_pool, coins?.pool ?: 0), fontSize = 24.sp, fontWeight = FontWeight.Black)
                         Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("resume-match")) { Text(words(R.string.coin_resume)) }
                     } else {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Text(words(R.string.coin_tickets), fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                            Text(words(R.string.coin_price), fontSize = 12.sp, color = Color(0xFF486257))
+                            Text(words(R.string.coin_tickets), fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                            Text(words(R.string.coin_price), fontSize = 12.sp, color = GameNightPalette.muted)
                         }
+                        if (!compact) Text(words(R.string.lobby_choose), fontSize = 12.sp, color = GameNightPalette.muted)
                         BoxWithConstraints {
-                            val columns = if (maxWidth < 330.dp) 3 else 6
+                            val columns = if (maxWidth < 308.dp) 3 else 6
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                              (1..6).toList().chunked(columns).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                              (1..6).toList().chunked(columns).forEach { row -> Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 row.forEach { count ->
                                     val selected = tickets == count
                                     val affordable = balance == null || balance >= count * COIN_TICKET_PRICE
+                                    val description = pluralStringResource(R.plurals.lobby_ticket_count, count, count)
                                     Surface(onClick = { chosenTickets = count }, enabled = enabled && affordable, shape = RoundedCornerShape(13.dp),
-                                        color = if (selected && affordable) Color(0xFF21634D) else Color.White,
-                                        contentColor = if (!affordable) Ink.copy(alpha = .38f) else if (selected) Color.White else Ink,
-                                        modifier = Modifier.weight(1f).heightIn(min = 52.dp).testTag("buy-tickets-$count")
-                                            .semantics { this.selected = selected && affordable; contentDescription = words(R.string.coin_choose_count, count) }) {
-                                        Box(contentAlignment = Alignment.Center) { Text("$count", fontSize = 22.sp, fontWeight = FontWeight.Black) }
+                                        color = if (selected && affordable) GameNightPalette.coral else GameNightPalette.raised,
+                                        contentColor = if (!affordable) GameNightPalette.muted.copy(alpha = .45f) else if (selected) GameNightPalette.background else GameNightPalette.cream,
+                                        modifier = Modifier.weight(1f).heightIn(min = 64.dp).testTag("buy-tickets-$count")
+                                            .semantics { this.selected = selected && affordable; contentDescription = description }) {
+                                        Box(contentAlignment = Alignment.Center) { Text("$count", fontSize = 24.sp, fontWeight = FontWeight.Black) }
                                     }
                                 }
                               } }
                             }
                         }
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(pluralStringResource(R.plurals.lobby_ticket_count, tickets, tickets), fontSize = 13.sp)
+                            Text(words(R.string.coin_balance, cost), color = GameNightPalette.gold, fontSize = 14.sp, fontWeight = FontWeight.Bold,
+                                modifier = Modifier.testTag("lobby-ticket-cost"))
+                        }
                         if (balance != null && balance < COIN_TICKET_PRICE) {
                             CoinRefill(state.serverTime, state.wallet?.refillAfter, enabled, model::refill)
                         } else {
                             Button(onClick = { play(tickets) }, enabled = enabled && (balance == null || balance >= cost),
-                                colors = ButtonDefaults.buttonColors(containerColor = CoinGold, contentColor = Ink),
+                                colors = ButtonDefaults.buttonColors(containerColor = GameNightPalette.coral, contentColor = GameNightPalette.background,
+                                    disabledContainerColor = GameNightPalette.raised, disabledContentColor = GameNightPalette.muted),
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("coin-play"), shape = RoundedCornerShape(16.dp)) {
-                                if (state.busy) CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp, color = Ink)
+                                if (state.busy) CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp, color = GameNightPalette.cream)
                                 else Text(words(if (finished) R.string.coin_play_again else R.string.coin_play, cost), fontSize = 19.sp, fontWeight = FontWeight.Black)
                             }
                         }
                     }
-                    if (state.pending) {
-                        Text(words(R.string.coin_pending), fontSize = 13.sp)
-                        OutlinedButton(onClick = model::retry, enabled = !state.busy && !state.storageFailure, modifier = Modifier.fillMaxWidth().testTag("coin-retry")) { Text(words(R.string.coin_retry)) }
-                    }
                     if (state.sessionExpired || state.storageFailure) TextButton(onClick = { reset = true }) { Text(words(R.string.ui_reset_online_data)) }
                     if (!state.available) Text(words(R.string.coin_unavailable), fontSize = 13.sp)
-                    Text(words(R.string.coin_free), color = Color(0xFF486257), fontSize = 11.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Text(words(R.string.coin_free), color = GameNightPalette.muted, fontSize = 11.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
                   }
                 }
               }
             }
-            if (wide) Row(Modifier.weight(1f).verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.weight(if (waiting) 2f else 1f)) { hero() }
-                if (!waiting || state.pending || state.connection != Connection.LIVE) Box(Modifier.weight(1f)) { controls() }
+            if (wide) Row(Modifier.weight(1f).verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.weight(if (waiting) 2f else .85f)) { hero() }
+                if (!waiting || state.pending || state.connection != Connection.LIVE) Box(Modifier.weight(1.15f)) { controls() }
             } else Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) { hero(); controls() }
         }
       }
     }
-    if (profile) AlertDialog(onDismissRequest = { profile = false }, title = { Text(state.name ?: words(R.string.coin_profile)) }, text = {
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    if (profile && state.name == null) LobbyPlayerDialog(profileName, profileAvatar, enabled,
+        changeName = { if (it.length <= 40) profileName = it }, chooseAvatar = { profileAvatar = it },
+        save = { profile = false; model.register(profileName, profileAvatar) }, close = { profile = false })
+    else if (profile) AlertDialog(onDismissRequest = { profile = false }, title = { Text(state.name ?: words(R.string.coin_profile)) }, text = {
+        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(words(R.string.coin_free))
             Text(words(R.string.coin_ties))
             TextButton(onClick = { profile = false; gameData = true }) { Text(words(R.string.privacy_open)) }
@@ -164,6 +191,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     state.error?.let { error -> AlertDialog(onDismissRequest = model::clearError, title = { Text(words(R.string.ui_online_play)) },
         text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
     if (gameData) GameDataDialog { gameData = false }
+    }
 }
 
 @Composable

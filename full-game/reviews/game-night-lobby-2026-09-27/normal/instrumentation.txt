@@ -1,0 +1,7 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:........
+io.github.sbshrey.tambola.game.LandingActivityTest:.
+
+Time: 44.821
+
+OK (9 tests)

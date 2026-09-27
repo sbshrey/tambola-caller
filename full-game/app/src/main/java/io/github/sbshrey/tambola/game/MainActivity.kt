@@ -62,16 +62,16 @@ class MainActivity : AppCompatActivity() {
                 Appearance.LIGHT -> false
                 Appearance.DARK -> true
             }
-            val forestLobby = state.screen in setOf(Screen.HOME, Screen.ONLINE) &&
+            val gameLobby = state.screen in setOf(Screen.HOME, Screen.ONLINE) &&
                 (onlineState.room == null || onlineState.room?.options?.coinGame == true) &&
                 (state.screen == Screen.HOME || onlineState.room?.phase != io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE)
-            LaunchedEffect(dark, forestLobby) {
+            LaunchedEffect(dark, gameLobby) {
                 val transparent = android.graphics.Color.TRANSPARENT
                 val lightBar = android.graphics.Color.rgb(255, 249, 240)
                 val darkBar = android.graphics.Color.rgb(18, 29, 43)
                 enableEdgeToEdge(
-                    statusBarStyle = if (dark || forestLobby) SystemBarStyle.dark(transparent) else SystemBarStyle.light(transparent, transparent),
-                    navigationBarStyle = if (forestLobby) SystemBarStyle.dark(android.graphics.Color.rgb(11, 53, 46)) else if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
+                    statusBarStyle = if (dark || gameLobby) SystemBarStyle.dark(transparent) else SystemBarStyle.light(transparent, transparent),
+                    navigationBarStyle = if (gameLobby) SystemBarStyle.dark(android.graphics.Color.rgb(25, 22, 47)) else if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
                 )
             }
             TambolaTheme(dark) { TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss) }

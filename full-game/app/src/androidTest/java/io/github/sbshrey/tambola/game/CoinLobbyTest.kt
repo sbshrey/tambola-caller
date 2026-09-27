@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.game
 
 import android.content.res.Configuration
+import android.content.pm.ActivityInfo
 import android.os.SystemClock
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
@@ -19,12 +20,70 @@ import io.github.sbshrey.tambola.protocol.*
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Before
 import java.util.Locale
 import java.util.Random
 
 /** Render real lobby screens with local fixtures; no guest, purchase or persisted profile. */
 class CoinLobbyTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+
+    @Before fun landscape() {
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
+        compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+    }
+
+    @Test fun firstPlayAndPersonalizationKeepSixReadableChoices() = landing("en", 1f)
+    @Test fun hindiLandingKeepsAllChoicesAndPlayVisibleAtLargeText() = landing("hi", 1.5f)
+
+    private fun landing(language: String, scale: Float) {
+        val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)); fontScale = scale }
+        val context = compose.activity.createConfigurationContext(config)
+        val words = GameText(context.resources)
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        var state by mutableStateOf(OnlineUiState(loading = false, available = true))
+        var selected = 0; var purchases = 0
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+                LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
+                TambolaTheme { CoinLobby(state, model, { selected = it; purchases++ }, {}, {}, reducedMotion = true) }
+            }
+        }
+        compose.onNodeWithTag("lobby-welcome-heading").assertIsDisplayed()
+        compose.onNodeWithTag("lobby-player-name").assertDoesNotExist()
+        (1..6).forEach {
+            val button = compose.onNodeWithTag("buy-tickets-$it").assertIsDisplayed().assertIsEnabled()
+            val bounds = button.getUnclippedBoundsInRoot()
+            assertTrue("Ticket choice $it must retain a 48dp target", (bounds.right - bounds.left).value >= 48f && (bounds.bottom - bounds.top).value >= 48f)
+        }
+        compose.onNodeWithTag("coin-play").assertIsDisplayed().assertIsEnabled()
+        captureTestScreen("game-night-welcome-$language")
+        compose.onNodeWithTag("buy-tickets-6").performClick().assertIsSelected()
+        compose.onNodeWithTag("lobby-ticket-cost").assertTextEquals(words(R.string.coin_balance, 600L))
+        compose.onNodeWithTag("coin-wallet").performClick()
+        compose.onNodeWithTag("lobby-player-name").performTextInput("Mira")
+        compose.onNodeWithText(words(R.string.lobby_save_player)).assertIsEnabled()
+        captureTestScreen("game-night-player-$language")
+        val input = compose.onNodeWithTag("lobby-player-name").fetchSemanticsNode().boundsInRoot
+        assertTrue("The keyboard must leave the whole name field visible", input.height / compose.activity.resources.displayMetrics.density >= 50f)
+        compose.onNodeWithText(words(R.string.lobby_save_player)).assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.ui_keep_playing)).assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.ui_keep_playing)).performClick()
+        // A saved first profile must not reset the hand selected immediately before personalization.
+        compose.runOnIdle { state = state.copy(name = "Mira", playerId = "local-review", wallet = WalletView(1500, 1, 0)) }
+        compose.onNodeWithTag("lobby-welcome-heading").assertDoesNotExist()
+        compose.onNodeWithTag("lobby-heading").assertIsDisplayed()
+        compose.onNodeWithTag("buy-tickets-6").assertIsSelected()
+        compose.onNodeWithTag("coin-play").assertIsDisplayed().performClick()
+        assertEquals(6, selected); assertEquals(1, purchases)
+        captureTestScreen("game-night-lobby-$language")
+        // Unknown purchase acknowledgement gets one recovery action, never another purchase.
+        compose.runOnIdle { state = state.copy(pending = true) }
+        compose.onNodeWithTag("coin-play").assertDoesNotExist()
+        compose.onNodeWithTag("buy-tickets-6").assertDoesNotExist()
+        compose.onNodeWithTag("coin-retry").assertIsDisplayed().assertIsEnabled()
+        captureTestScreen("game-night-pending-$language")
+    }
 
     private fun finished(): RoomView {
         val plan = CoinPool(4)

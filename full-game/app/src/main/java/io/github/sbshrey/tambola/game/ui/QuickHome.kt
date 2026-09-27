@@ -27,7 +27,7 @@ fun QuickHome(state: GameUiState, model: GameViewModel) {
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(words(R.string.play_tagline), color = Ivory, style = MaterialTheme.typography.headlineMedium)
         // Original vector art stays offline and costs no image download at startup.
-        Box(Modifier.fillMaxWidth().height(136.dp)) { GameNightArtwork() }
+        GameNightArtwork(Modifier.fillMaxWidth().height(136.dp), state.preferences.reducedMotion)
         PrimaryAction(words(R.string.ui_online_play), modifier = Modifier.testTag("quick-play"), enabled = !state.saving) { model.navigate(Screen.ONLINE) }
     }
 }

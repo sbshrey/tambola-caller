@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="io.github.sbshrey.tambola.game.ui.ThemeContrastTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-09-27T04:14:37.838Z" hostname="DESKTOP-SBSHREY" time="0.033">
+  <properties/>
+  <testcase name="smallTextAndControlsRemainLegibleAcrossBothPalettes" classname="io.github.sbshrey.tambola.game.ui.ThemeContrastTest" time="0.033"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
