@@ -11,7 +11,10 @@ import java.util.concurrent.TimeUnit
 
 class CoinLedgerTest : PostgresTest() {
     private fun guest() = service.register(GuestRequest("Coin QA"), UUID.randomUUID().toString())
-    private fun spend(player: String, key: String, amount: Long) = database.transaction { CoinLedger.change(it, player, key, -amount, now.get()) }
+    private fun spend(player: String, key: String, amount: Long) = database.transaction {
+        CoinLedger.change(it, player, key, -amount, now.get())
+        CoinLedger.view(it, player)
+    }
     private fun entries(player: String) = database.transaction { connection ->
         connection.query("SELECT entry_key, amount FROM coin_ledger WHERE player_id = ? ORDER BY entry_key", player) { it.getString(1) to it.getLong(2) }
     }

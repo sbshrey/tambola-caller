@@ -1,0 +1,21 @@
+{
+  "tests": 57,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "classes": [
+    "io.github.sbshrey.tambola.server.BackupRestoreTest",
+    "io.github.sbshrey.tambola.server.CoinLedgerTest",
+    "io.github.sbshrey.tambola.server.CoinMatchTest",
+    "io.github.sbshrey.tambola.server.DeviceSessionTest",
+    "io.github.sbshrey.tambola.server.HttpTest",
+    "io.github.sbshrey.tambola.server.OperationsHttpTest",
+    "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+    "io.github.sbshrey.tambola.server.SessionRevocationTest"
+  ],
+  "scope": "Isolated PostgreSQL 55432 regression; installed primary and runtime unchanged",
+  "sourceHashes": {
+    "server/src/main/kotlin/io/github/sbshrey/tambola/server/CoinLedger.kt": "d6478a30b509554ca34b454aa68400083bf61db760b2313203bf917feda6a4f1",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinLedgerTest.kt": "8f7010a9826562ad8249f6aa0593f632159f24748fa270ce3289f6618fe810d2"
+  }
+}

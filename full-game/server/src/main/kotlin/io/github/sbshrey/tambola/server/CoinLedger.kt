@@ -31,17 +31,18 @@ internal object CoinLedger {
     """.trimIndent(), player) { WalletView(it.getLong(1), it.getLong(2), it.getLong(3)) }.singleOrNull()
         ?: fail(401, "wallet_missing", "This wallet is no longer available.")
 
-    fun change(connection: Connection, player: String, key: String, amount: Long, now: Long): WalletView {
+    fun change(connection: Connection, player: String, key: String, amount: Long, now: Long) {
         validate(key, amount, now)
         lock(connection, player)
         previous(connection, player, key)?.let {
             demand(it == amount, 409, "id_reused", "This coin operation already has a different amount.")
-            return view(connection, player)
+            return
         }
         val before = view(connection, player)
         demand(amount > 0 || before.balance >= -amount, 409, "coins_low", "Choose fewer tickets or collect free coins.")
         connection.execute("INSERT INTO coin_ledger VALUES (?, ?, ?, ?)", player, key, amount, now)
-        return view(connection, player)
+        // The room response reads its wallet after all room effects are reconciled.
+        // No caller needs an intermediate snapshot of this individual ledger write.
     }
 
     /** Credit a still-existing wallet once. A deleted profile is never recreated. */

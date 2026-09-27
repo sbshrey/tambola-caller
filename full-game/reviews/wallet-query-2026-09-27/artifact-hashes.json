@@ -1,0 +1,10 @@
+{
+  "baseline-transcript.txt": "39115eca5839c6dfce95d7218edb15695dc687b1a4492f9b9df1c607e3a0c3da",
+  "baseline.json": "1284267a41a2b782f914a06cc42981b2ff8306282a09d4109734e0d62d444618",
+  "candidate-transcript.txt": "dc1e5df9b624ae7cb27be7eba2029f4971c6692cc07b8739ae15792e760ff410",
+  "candidate.json": "a1506c22b44f9e20fab97eb07e8a7d0995b96c8f7c4237d2b43ca51c35b3dd21",
+  "cleanup.json": "6c7aa81c662b7357042b7d125e37c850857fb7f518e8720853c9a39a852ef875",
+  "README.md": "050d00dcb595dfdc7cdd509559491ad0b4e45980f13e454661a1e8f36b195d1c",
+  "regression-validation.json": "76c6a70abb9b82ea998576392b938212f89bce13e1245a35219ea5deb17c78a7",
+  "regression.txt": "6a04d50f30b9c579db2f9b0efb55bdddbb5c31ab64cf81d4713b1b6421295e7f"
+}
