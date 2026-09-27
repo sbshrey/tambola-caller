@@ -1,0 +1,10 @@
+{
+  "matches": true,
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "serial": "emulator-5554",
+  "installedSha256": "4b376998ef917f2d15f247e3bf4cc45524b3ebd0fad33db7a6dc1896d1501ac2",
+  "observedAt": "2026-09-27T09:55:36.1960118+00:00",
+  "packagedSha256": "4b376998ef917f2d15f247e3bf4cc45524b3ebd0fad33db7a6dc1896d1501ac2",
+  "versionCode": 27,
+  "sourceCommit": "bcc0b66375e107ba6b72636ad4899013fa944187"
+}

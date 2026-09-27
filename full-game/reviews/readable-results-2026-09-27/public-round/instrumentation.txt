@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.benchmark.InternetBetaTest:.
+
+Time: 474.174
+
+OK (1 test)
+
+

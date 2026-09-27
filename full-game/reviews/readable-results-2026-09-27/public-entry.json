@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "observedAt": "2026-09-27T09:35:09.462Z",
+  "observedAt": "2026-09-27T09:55:38.424Z",
   "origin": "https://sleep-equilibrium-cooler-marking.trycloudflare.com",
   "checks": [
     "public system-trusted HTTPS",
