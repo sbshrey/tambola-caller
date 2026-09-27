@@ -1,0 +1,62 @@
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :server:compileKotlin UP-TO-DATE
+> Task :server:compileJava NO-SOURCE
+> Task :server:processResources UP-TO-DATE
+> Task :server:classes UP-TO-DATE
+> Task :server:jar UP-TO-DATE
+> Task :server:compileTestKotlin UP-TO-DATE
+> Task :server:compileTestJava NO-SOURCE
+> Task :server:startScripts
+> Task :server:installDist
+> Task :server:processTestResources NO-SOURCE
+> Task :server:testClasses UP-TO-DATE
+
+> Task :server:coinPurchaseBurst FAILED
+Exception in thread "main" java.lang.IllegalArgumentException: TAMBOLA_TEST_DATABASE_URL is required
+	at io.github.sbshrey.tambola.server.IsolatedLoadService.required(IsolatedLoadService.kt:23)
+	at io.github.sbshrey.tambola.server.IsolatedLoadService.<init>(IsolatedLoadService.kt:24)
+	at io.github.sbshrey.tambola.server.CoinPurchaseBurst.run(CoinPurchaseBurst.kt:31)
+	at io.github.sbshrey.tambola.server.CoinPurchaseBurst.access$run(CoinPurchaseBurst.kt:21)
+	at io.github.sbshrey.tambola.server.CoinPurchaseBurst$main$1.invokeSuspend(CoinPurchaseBurst.kt:25)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at io.github.sbshrey.tambola.server.CoinPurchaseBurst.main(CoinPurchaseBurst.kt:25)
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':server:coinPurchaseBurst' (registered in build file 'server\build.gradle.kts').
+> Process 'command 'D:\Github\App Ideas\tambola-caller\full-game\.test-workspace\temurin17\jdk-17.0.20.1+1\bin\java.exe'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 4s
+13 actionable tasks: 3 executed, 10 up-to-date

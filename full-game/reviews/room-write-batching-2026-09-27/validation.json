@@ -1,0 +1,886 @@
+{
+  "recordedAt": "2026-09-27T03:48:49.620078+00:00",
+  "sourceBaseCommit": "65efaee92b098301fbb95118ed9130710d916a9f",
+  "sourceWasDirty": true,
+  "sourceSha256": {
+    "server/src/main/kotlin/io/github/sbshrey/tambola/server/CoinLedger.kt": "4f19669676fb21284376a81dbd7ade4ec285ec849aacfc8bdc56b3f4ba097f3d",
+    "server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt": "4ba6ccf8673a1fce3fe532cf8e7db6cd0bc98f4686d58fce3fc9b860499688fd",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinLedgerTest.kt": "4ca97695d958b8a0139ca16a83cabc2dac0f033a0300ec5b74449e79473dd5f1",
+    "server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinMatchTest.kt": "7dc5661dc4e9e183f90739b9f9d4d78166efbc9ac192005e61e6f501322410c1"
+  },
+  "completeRegressionSuite": {
+    "classes": 26,
+    "tests": 144,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.sbshrey.tambola.server.AvatarTest",
+        "tests": 3,
+        "cases": [
+          {
+            "name": "concurrent duplicate avatar commands have one receipt and no shared-lock upgrade deadlock",
+            "seconds": 2.274
+          },
+          {
+            "name": "failure saving room rolls back profile avatar and retry uses original intent",
+            "seconds": 1.795
+          },
+          {
+            "name": "own lobby avatar is durable locked in a round and original receipts cannot roll it back",
+            "seconds": 1.992
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.BackupRestoreTest",
+        "tests": 1,
+        "cases": [
+          {
+            "name": "actual primary backup restore cannot resurrect deleted access or shared profile fields after replay",
+            "seconds": 4.582
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.BusyDeletionReplayTest",
+        "tests": 4,
+        "cases": [
+          {
+            "name": "busy profile defers replay without advancing the cursor or blocking an unrelated room",
+            "seconds": 2.285
+          },
+          {
+            "name": "busy logout defers both intent kinds in sequence without blocking other players",
+            "seconds": 2.239
+          },
+          {
+            "name": "a missing recovery cursor fails both strict startup replay and background replay",
+            "seconds": 2.311
+          },
+          {
+            "name": "busy cursor cannot clear a prior genuine recovery failure",
+            "seconds": 2.505
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+        "tests": 9,
+        "cases": [
+          {
+            "name": "simultaneous debits serialize across rooms and cannot overspend",
+            "seconds": 1.881
+          },
+          {
+            "name": "aborted room transaction rolls back its debit and the same request can safely retry",
+            "seconds": 1.603
+          },
+          {
+            "name": "a debit waiting on another transaction checks the newly committed balance",
+            "seconds": 1.801
+          },
+          {
+            "name": "profile deletion removes wallet history and delayed credits cannot recreate it",
+            "seconds": 1.998
+          },
+          {
+            "name": "retried purchase has one debit and changed amount cannot reuse its identity",
+            "seconds": 1.886
+          },
+          {
+            "name": "settlement is immutable idempotent and remains spendable after service restart",
+            "seconds": 1.628
+          },
+          {
+            "name": "registration and concurrent wallet reads grant starter coins once and old profiles initialize lazily",
+            "seconds": 1.696
+          },
+          {
+            "name": "broke refill is bounded and retryable without duplicate grants",
+            "seconds": 1.578
+          },
+          {
+            "name": "two rooms can credit the same wallets in opposite order without locking each other",
+            "seconds": 2.051
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.CoinLobbyIndexTest",
+        "tests": 4,
+        "cases": [
+          {
+            "name": "a real backup restores generated lobby metadata and remains purchasable",
+            "seconds": 4.539
+          },
+          {
+            "name": "payload only changes retain HOT eligibility unlike an expression index",
+            "seconds": 1.821
+          },
+          {
+            "name": "full lobbies are skipped and a freed older seat becomes available again",
+            "seconds": 1.893
+          },
+          {
+            "name": "migration backfills existing lobbies and verifies idempotently",
+            "seconds": 2.06
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+        "tests": 14,
+        "cases": [
+          {
+            "name": "a three house game settles every slot exactly once and conserves all human coins",
+            "seconds": 3.22
+          },
+          {
+            "name": "event write failure rolls back the room participants debit and receipt before an exact retry",
+            "seconds": 1.964
+          },
+          {
+            "name": "same-call claims stay provisional then split once and return the remaining pool",
+            "seconds": 2.07
+          },
+          {
+            "name": "simultaneous real players fill one lobby without duplicate debits then spill at eight seats",
+            "seconds": 1.87
+          },
+          {
+            "name": "purchase quantity changes and leave commit once with exact retry receipts",
+            "seconds": 1.817
+          },
+          {
+            "name": "deleting a queued profile removes its purchase and redacts others stored match receipts",
+            "seconds": 1.746
+          },
+          {
+            "name": "computer payouts consume only their allocations and active expiry returns the unawarded pool",
+            "seconds": 2.073
+          },
+          {
+            "name": "simultaneous retries of one match have one receipt one seat and one charge",
+            "seconds": 1.931
+          },
+          {
+            "name": "computer fill is explicit and its quantities and prize pool remain fixed after start",
+            "seconds": 1.72
+          },
+          {
+            "name": "six independent quantities freeze the exact pool and only owned disjoint tickets are exposed",
+            "seconds": 1.732
+          },
+          {
+            "name": "insufficient balance rolls back the room membership purchase and receipt together",
+            "seconds": 1.758
+          },
+          {
+            "name": "leaving an old lobby cannot hide an already purchased newer game",
+            "seconds": 1.962
+          },
+          {
+            "name": "returning to an owned table does not wait for unrelated lobby allocation",
+            "seconds": 1.936
+          },
+          {
+            "name": "an interrupted countdown refunds reservations once and leaves no spent ghost room",
+            "seconds": 1.769
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.DatabaseTimeoutTest",
+        "tests": 1,
+        "cases": [
+          {
+            "name": "timeouts apply to reads and writes and do not leak after commit or rollback",
+            "seconds": 1.92
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.DeletionJournalTest",
+        "tests": 10,
+        "cases": [
+          {
+            "name": "database inspection rejects shared storage even when URL spellings differ",
+            "seconds": 2.716
+          },
+          {
+            "name": "journal failure cannot confirm deletion or mutate primary state",
+            "seconds": 2.283
+          },
+          {
+            "name": "a missing journal entry fails replay and readiness without advancing the cursor",
+            "seconds": 2.694
+          },
+          {
+            "name": "concurrent journal writers produce contiguous committed sequence and duplicate intent is stable",
+            "seconds": 2.431
+          },
+          {
+            "name": "different journal and rollback behind applied cursor fail closed",
+            "seconds": 2.937
+          },
+          {
+            "name": "journal is mandatory except for explicit isolated local development",
+            "seconds": 1.827
+          },
+          {
+            "name": "durable intent survives primary rollback denies access and replay completes redaction",
+            "seconds": 2.325
+          },
+          {
+            "name": "two replay workers and two retries redact shared rooms without skipping intents or deadlocking",
+            "seconds": 2.211
+          },
+          {
+            "name": "expired confirmation still suppresses identity and journal contains only recovery fields",
+            "seconds": 2.549
+          },
+          {
+            "name": "journal outage makes real HTTP readiness unavailable while liveness remains available",
+            "seconds": 3.145
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.DeviceSessionTest",
+        "tests": 9,
+        "cases": [
+          {
+            "name": "restoring an enrolled profile cannot bypass the live deletion journal",
+            "seconds": 4.602
+          },
+          {
+            "name": "wallet purchase receipt belongs to the identity across session rotation",
+            "seconds": 1.748
+          },
+          {
+            "name": "logout revokes durable proof and allows retention cleanup",
+            "seconds": 1.671
+          },
+          {
+            "name": "expired session renews same earned wallet after cleanup without a new starter grant",
+            "seconds": 1.752
+          },
+          {
+            "name": "lost renewal response retries exactly and stale requests cannot rotate back",
+            "seconds": 1.886
+          },
+          {
+            "name": "renewal rollback leaves original session and retry intent usable",
+            "seconds": 1.699
+          },
+          {
+            "name": "enrollment cannot be changed or stolen by sharing keys between profiles",
+            "seconds": 1.811
+          },
+          {
+            "name": "session endpoints authenticate strictly use no-store and never echo device proof",
+            "seconds": 2.093
+          },
+          {
+            "name": "concurrent retries issue one exact session while competing replacements conflict",
+            "seconds": 1.724
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.EventChangesTest",
+        "tests": 5,
+        "cases": [
+          {
+            "name": "initial snapshots deltas resync and invalid cursors retain their semantics",
+            "seconds": 1.742
+          },
+          {
+            "name": "matching revisions cannot bypass membership room lifetime or credential expiry",
+            "seconds": 1.773
+          },
+          {
+            "name": "unchanged coin poll does not wait for event history or wallet relation locks",
+            "seconds": 1.799
+          },
+          {
+            "name": "matching revisions still check fresh journal suppression recovery state and availability",
+            "seconds": 2.489
+          },
+          {
+            "name": "quiet presence renewals still persist and a reconnect still emits its revision",
+            "seconds": 1.834
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+        "tests": 6,
+        "cases": [
+          {
+            "name": "polls renew presence and reconnect with a durable revision",
+            "seconds": 2.035
+          },
+          {
+            "name": "an event committed after reading the room is deferred to the next snapshot",
+            "seconds": 1.653
+          },
+          {
+            "name": "quiet authenticated polls leave database tuples unchanged and do not consume HTTP quota",
+            "seconds": 2.291
+          },
+          {
+            "name": "every poll rechecks revocation expiry membership and room lifetime",
+            "seconds": 2.22
+          },
+          {
+            "name": "quiet poll checks independent deletion suppression before primary replay",
+            "seconds": 2.685
+          },
+          {
+            "name": "admission quota is persisted across workers and expires at the next minute",
+            "seconds": 1.794
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.EventStreamsTest",
+        "tests": 2,
+        "cases": [
+          {
+            "name": "simultaneous acquisitions cannot exceed limits and concurrent release is idempotent",
+            "seconds": 0.004
+          },
+          {
+            "name": "credential and total limits reject excess connections and released slots can be reused",
+            "seconds": 0.006
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.HistoryDeletionTest",
+        "tests": 2,
+        "cases": [
+          {
+            "name": "all retained rooms archives and peer responses redact across cursor pages",
+            "seconds": 3.904
+          },
+          {
+            "name": "failure on the final response rolls back earlier pages and durable replay succeeds",
+            "seconds": 3.347
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.HttpTest",
+        "tests": 8,
+        "cases": [
+          {
+            "name": "HTTP validates requests authentication and health without exposing secrets",
+            "seconds": 1.824
+          },
+          {
+            "name": "profile deletion authenticates validates and confirms the same request after access is removed",
+            "seconds": 1.77
+          },
+          {
+            "name": "wallet endpoints authenticate reject forged amounts and return only spendable balance",
+            "seconds": 1.831
+          },
+          {
+            "name": "two authenticated websocket clients receive private snapshots and durable draw replay",
+            "seconds": 3.885
+          },
+          {
+            "name": "match HTTP rejects forged prices and returns a private retryable purchase",
+            "seconds": 1.705
+          },
+          {
+            "name": "an open event stream closes after session revocation",
+            "seconds": 2.417
+          },
+          {
+            "name": "websocket rejects spectators without room membership",
+            "seconds": 1.811
+          },
+          {
+            "name": "a quiet authenticated websocket closes after independent logout before primary replay",
+            "seconds": 3.017
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.InviteConfigurationTest",
+        "tests": 2,
+        "cases": [
+          {
+            "name": "configuration is optional but rejects incomplete insecure or malformed metadata",
+            "seconds": 0.004
+          },
+          {
+            "name": "association uses only configured package and normalized public fingerprints",
+            "seconds": 0.025
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.InviteSiteTest",
+        "tests": 4,
+        "cases": [
+          {
+            "name": "landing page is bilingual canonical private and does not inspect or create rooms",
+            "seconds": 1.789
+          },
+          {
+            "name": "public routes stay absent when no origin is configured",
+            "seconds": 1.818
+          },
+          {
+            "name": "association endpoint returns configured metadata as JSON without redirect",
+            "seconds": 1.904
+          },
+          {
+            "name": "malformed encoded or tracking links do not render an invitation",
+            "seconds": 2.07
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.JournalAuthenticationTest",
+        "tests": 5,
+        "cases": [
+          {
+            "name": "journal outage rejects live and missing credentials without cached stream authorization",
+            "seconds": 2.566
+          },
+          {
+            "name": "journal rollback during authentication cannot pass a previously checked head",
+            "seconds": 2.386
+          },
+          {
+            "name": "uninitialized mismatched and ahead recovery cursors fail authenticated access closed",
+            "seconds": 2.685
+          },
+          {
+            "name": "changing both stored identities cannot bypass the running journal identity guard",
+            "seconds": 2.794
+          },
+          {
+            "name": "independent logout denies a previously admitted stream and purchases before primary replay",
+            "seconds": 2.476
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.ManualOnlinePlayTest",
+        "tests": 8,
+        "cases": [
+          {
+            "name": "mixed rematch creates fresh private tickets and preserves agreed bot seats",
+            "seconds": 1.828
+          },
+          {
+            "name": "claim identity and marks cannot target another call round or player",
+            "seconds": 1.885
+          },
+          {
+            "name": "last human leaving by profile deletion closes computer room and cancels pending reactions",
+            "seconds": 2.107
+          },
+          {
+            "name": "computer seats are explicit do not register guests and count toward capacity",
+            "seconds": 2.15
+          },
+          {
+            "name": "pause cancels reactions and resume reschedules without duplicate awards",
+            "seconds": 2.042
+          },
+          {
+            "name": "computer claim reactions survive service restart and never reveal private cards",
+            "seconds": 1.992
+          },
+          {
+            "name": "one command claims only chosen ticket and scheme and same-call claimant shares it despite old revision",
+            "seconds": 2.657
+          },
+          {
+            "name": "concurrent retries produce one claim proof and one receipt",
+            "seconds": 2.301
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.NativeClientTest",
+        "tests": 2,
+        "cases": [
+          {
+            "name": "native room stream retains numeric close code without remote reason text",
+            "seconds": 2.418
+          },
+          {
+            "name": "production client exchanges live snapshots with real Netty websocket",
+            "seconds": 2.671
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.OperationsHttpTest",
+        "tests": 3,
+        "cases": [
+          {
+            "name": "metrics are disabled without operator configuration",
+            "seconds": 2.301
+          },
+          {
+            "name": "readiness reports a failed or stalled worker even when database health succeeds and recovers after a pass",
+            "seconds": 1.815
+          },
+          {
+            "name": "protected scrape counts HTTP outcomes without exposing request data or creating dynamic labels",
+            "seconds": 2.441
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.ProfileDeletionTest",
+        "tests": 7,
+        "cases": [
+          {
+            "name": "failure while scrubbing an audit rolls back profile room receipts and confirmation together",
+            "seconds": 2.048
+          },
+          {
+            "name": "concurrent duplicate deletion returns one confirmation and racing joins cannot restore the name",
+            "seconds": 2.026
+          },
+          {
+            "name": "deleting the final member closes the room and an unrelated profile remains intact",
+            "seconds": 2.264
+          },
+          {
+            "name": "deleting an active host redacts all stored profile copies and transfers control without changing the game",
+            "seconds": 1.91
+          },
+          {
+            "name": "redaction is tied to identity rather than replacing another player's matching display name",
+            "seconds": 2.133
+          },
+          {
+            "name": "expired unrevoked sessions may delete but signed out sessions cannot and confirmations expire",
+            "seconds": 1.896
+          },
+          {
+            "name": "migration backfills former members from archived rounds and verifies immutable checksums",
+            "seconds": 2.685
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.RoomServiceTest",
+        "tests": 15,
+        "cases": [
+          {
+            "name": "leaving and removing lobby members revoke access and select another host",
+            "seconds": 2.211
+          },
+          {
+            "name": "complete online round custom prizes audit and rematch share domain rules",
+            "seconds": 2.194
+          },
+          {
+            "name": "concurrent retries draw exactly once and different commands reject a stale revision",
+            "seconds": 2.003
+          },
+          {
+            "name": "two schedulers and a replacement service preserve one durable draw per interval",
+            "seconds": 2.62
+          },
+          {
+            "name": "finished roster and winner labels survive a player leaving without disclosing other cards",
+            "seconds": 2.117
+          },
+          {
+            "name": "guest rate limits are durable across service instances and room expiry is enforced",
+            "seconds": 2.141
+          },
+          {
+            "name": "durable event replay detects stale and future cursors",
+            "seconds": 1.658
+          },
+          {
+            "name": "event write failure rolls back room state and receipt before retry",
+            "seconds": 1.927
+          },
+          {
+            "name": "authentication stores only token hash and supports revocation and expiry",
+            "seconds": 1.988
+          },
+          {
+            "name": "room creation is idempotent and changing reused request is rejected",
+            "seconds": 1.909
+          },
+          {
+            "name": "lobby enforces membership capacity readiness host controls and configuration freeze",
+            "seconds": 3.051
+          },
+          {
+            "name": "snapshots never disclose future draws nonce or another player's ticket",
+            "seconds": 3.972
+          },
+          {
+            "name": "disconnected host transfers controls while a connected guest keeps the round alive",
+            "seconds": 4.233
+          },
+          {
+            "name": "ranked houses require enough actual tickets when starting",
+            "seconds": 4.11
+          },
+          {
+            "name": "32 players with six tickets complete 90 automatic draws with 192 unique tickets",
+            "seconds": 8.799
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.RuntimePrivilegesTest",
+        "tests": 9,
+        "cases": [
+          {
+            "name": "runtime cannot erase or rewrite suppression migration or journal identity",
+            "seconds": 40.599
+          },
+          {
+            "name": "database connect privileges separate the primary and journal identities",
+            "seconds": 15.107
+          },
+          {
+            "name": "restricted roles play archive redact retry replay and clean retained records",
+            "seconds": 15.895
+          },
+          {
+            "name": "verification rejects missing modified and newer migrations without repairing them",
+            "seconds": 15.43
+          },
+          {
+            "name": "startup detects column grants delegation membership and missing required privileges",
+            "seconds": 16.049
+          },
+          {
+            "name": "restricted roles enroll renew retain and delete the same wallet",
+            "seconds": 15.674
+          },
+          {
+            "name": "journal migration preserves existing intents identity and sequence",
+            "seconds": 17.34
+          },
+          {
+            "name": "restricted roles journal logout and replay its original revocation without erasing wallet",
+            "seconds": 14.975
+          },
+          {
+            "name": "runtime has no schema temp registry or permission delegation authority",
+            "seconds": 16.502
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.ServiceOperationsTest",
+        "tests": 3,
+        "cases": [
+          {
+            "name": "histograms are cumulative concurrent and bounded independently of arbitrary paths",
+            "seconds": 0.008
+          },
+          {
+            "name": "metrics authorization needs a separate strong secret and never accepts guest-shaped missing credentials",
+            "seconds": 0.001
+          },
+          {
+            "name": "worker readiness requires recent success and cleanup failures remain due",
+            "seconds": 0.001
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.SessionRevocationTest",
+        "tests": 6,
+        "cases": [
+          {
+            "name": "mixed concurrent journal writes share contiguous commit order and stable duplicate revocations",
+            "seconds": 2.378
+          },
+          {
+            "name": "failed independent write cannot confirm logout or discard a usable device credential",
+            "seconds": 2.261
+          },
+          {
+            "name": "journal upgrade from version two retains identity history and primary cursor",
+            "seconds": 2.384
+          },
+          {
+            "name": "missing revocation cannot be skipped and duplicate intent kinds cannot advance head",
+            "seconds": 2.436
+          },
+          {
+            "name": "journal revocation survives primary rollback and retry keeps original expiry",
+            "seconds": 2.372
+          },
+          {
+            "name": "restoring a pre-rotation backup never revives signed-out access and preserves shared play",
+            "seconds": 4.853
+          }
+        ]
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.StartupConfigurationTest",
+        "tests": 2,
+        "cases": [
+          {
+            "name": "local migration and privilege exception requires two explicit loopback fixtures",
+            "seconds": 0.001
+          },
+          {
+            "name": "ordinary serving never opts into fixture permissions implicitly",
+            "seconds": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  "comparisonOrder": [
+    {
+      "index": 1,
+      "variant": "baseline",
+      "startedAt": "2026-09-27T03:45:55.9001283Z",
+      "finishedAt": "2026-09-27T03:46:39.2865700Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/room-write-burst-1-baseline.txt",
+      "runId": "f7064fc16dab4478",
+      "runtimeSha256": "dc731dd1cca93691bfe9974be677059b8ba45d7dfdf5368d7ea4621fc0154653",
+      "firstWaveMs": {
+        "count": 320,
+        "p50": 2320.3186,
+        "p95": 3511.669999,
+        "p99": 3665.2976,
+        "max": 3712.6845
+      },
+      "repeatWaveMs": {
+        "count": 320,
+        "p50": 719.8259,
+        "p95": 1355.0836,
+        "p99": 1404.1386,
+        "max": 1426.7935
+      }
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "startedAt": "2026-09-27T03:46:39.3121728Z",
+      "finishedAt": "2026-09-27T03:47:13.4456613Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/room-write-burst-2-candidate.txt",
+      "runId": "9c8d1ca1e5c44c84",
+      "runtimeSha256": "4235eb9723b5fae26675995fc36a18ecc1ca231c84fc148e9e677928ac1a564c",
+      "firstWaveMs": {
+        "count": 320,
+        "p50": 2224.954701,
+        "p95": 3534.918,
+        "p99": 3664.264499,
+        "max": 3702.2732
+      },
+      "repeatWaveMs": {
+        "count": 320,
+        "p50": 651.5124,
+        "p95": 1399.968099,
+        "p99": 1473.184,
+        "max": 1485.103301
+      }
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "startedAt": "2026-09-27T03:47:13.4498745Z",
+      "finishedAt": "2026-09-27T03:47:47.0665568Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/room-write-burst-3-candidate.txt",
+      "runId": "5f9331cf50024369",
+      "runtimeSha256": "4235eb9723b5fae26675995fc36a18ecc1ca231c84fc148e9e677928ac1a564c",
+      "firstWaveMs": {
+        "count": 320,
+        "p50": 1884.492699,
+        "p95": 3062.2018,
+        "p99": 3115.7604,
+        "max": 3254.4738
+      },
+      "repeatWaveMs": {
+        "count": 320,
+        "p50": 616.1289,
+        "p95": 1359.924299,
+        "p99": 1456.7462,
+        "max": 1500.6655
+      }
+    },
+    {
+      "index": 4,
+      "variant": "baseline",
+      "startedAt": "2026-09-27T03:47:47.0689464Z",
+      "finishedAt": "2026-09-27T03:48:23.5964918Z",
+      "exitCode": 0,
+      "transcript": ".test-workspace/room-write-burst-4-baseline.txt",
+      "runId": "c06922c155b545a7",
+      "runtimeSha256": "dc731dd1cca93691bfe9974be677059b8ba45d7dfdf5368d7ea4621fc0154653",
+      "firstWaveMs": {
+        "count": 320,
+        "p50": 2028.3935,
+        "p95": 3409.112,
+        "p99": 3549.788599,
+        "max": 3584.6357
+      },
+      "repeatWaveMs": {
+        "count": 320,
+        "p50": 799.165399,
+        "p95": 1625.9726,
+        "p99": 1704.2716,
+        "max": 1765.7746
+      }
+    }
+  ],
+  "changedRuntimeFiles": [
+    "server.jar"
+  ],
+  "comparisonSetupFailure": "The first benchmark invocation omitted TAMBOLA_TEST_DATABASE_URL and stopped before service construction. The wrapper was corrected before the four measured runs.",
+  "capacityAcceptance": false,
+  "installedHostChanged": false,
+  "candidateDisposition": "Rejected and production sources restored to the baseline; candidate patch is preserved but not applied.",
+  "retainedBaselineValidation": {
+    "tests": 32,
+    "classes": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "io.github.sbshrey.tambola.server.AvatarTest",
+        "tests": 3
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.CoinLedgerTest",
+        "tests": 9
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.CoinMatchTest",
+        "tests": 14
+      },
+      {
+        "name": "io.github.sbshrey.tambola.server.EventPollingTest",
+        "tests": 6
+      }
+    ],
+    "execExitCode": 0,
+    "runtimeSha256": "dc731dd1cca93691bfe9974be677059b8ba45d7dfdf5368d7ea4621fc0154653",
+    "runtimeByteIdenticalToBaseline": true
+  },
+  "candidatePatchSha256": "1fa55206c9046952a41a3b0eac2ad059cd6dd76e473ec2a91ae22bd7cda75097"
+}

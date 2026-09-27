@@ -252,6 +252,31 @@ class CoinMatchTest : PostgresTest() {
         assertEquals(accepted, service.match(actor.token, request))
     }
 
+    @Test fun `event write failure rolls back the room participants debit and receipt before an exact retry`() {
+        val host = guest(); val actor = guest()
+        val before = match(host, 3)
+        val record = stored(before.code)
+        val request = MatchRequest(id(), 2)
+        database.transaction {
+            it.execute("""ALTER TABLE room_events ADD CONSTRAINT reject_purchase_event
+                CHECK (payload::jsonb->>'type' <> 'tickets_bought') NOT VALID""")
+        }
+        assertEquals("23514", assertThrows(java.sql.SQLException::class.java) { service.match(actor.token, request) }.sqlState)
+        assertEquals(record, stored(before.code))
+        assertEquals(1500L, service.wallet(actor.token).balance)
+        assertEquals(1, count("match_receipts"))
+        database.transaction {
+            assertTrue(it.query("SELECT 1 FROM room_participants WHERE player_id = ?", actor.playerId) { true }.isEmpty())
+            assertEquals(1, it.query("SELECT count(*) FROM room_events WHERE room_id = ?", before.roomId) { row -> row.getInt(1) }.single())
+            it.execute("ALTER TABLE room_events DROP CONSTRAINT reject_purchase_event")
+        }
+        val accepted = service.match(actor.token, request)
+        assertEquals(before.roomId, accepted.snapshot.roomId)
+        assertEquals(1300L, accepted.snapshot.wallet!!.balance)
+        assertEquals(accepted, service.match(actor.token, request))
+        assertEquals(2, count("match_receipts"))
+    }
+
     @Test fun `deleting a queued profile removes its purchase and redacts others stored match receipts`() {
         val actor = guest("Delete this name"); val peer = guest("Peer")
         val first = match(actor, 6)

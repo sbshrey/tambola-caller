@@ -1,0 +1,83 @@
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/CoinLedger.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/CoinLedger.kt
+index 6312b13..5490eaa 100644
+--- a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/CoinLedger.kt
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/CoinLedger.kt
+@@ -34,13 +34,26 @@ internal object CoinLedger {
+     fun change(connection: Connection, player: String, key: String, amount: Long, now: Long) {
+         validate(key, amount, now)
+         lock(connection, player)
+-        previous(connection, player, key)?.let {
++        // Take the wallet lock in a separate statement so a waiting debit gets a
++        // fresh READ COMMITTED snapshot after the previous owner commits.
++        val (previous, inserted) = connection.query("""
++            WITH previous AS (
++                SELECT amount FROM coin_ledger WHERE player_id = ? AND entry_key = ?
++            ), inserted AS (
++                INSERT INTO coin_ledger (player_id, entry_key, amount, created_at)
++                SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM previous)
++                    AND (? > 0 OR (SELECT coalesce(sum(amount), 0) FROM coin_ledger WHERE player_id = ?) >= ?)
++                RETURNING amount
++            )
++            SELECT (SELECT amount FROM previous), EXISTS (SELECT 1 FROM inserted)
++        """.trimIndent(), player, key, player, key, amount, now, amount, player, -amount) {
++            (it.getObject(1) as? Number)?.toLong() to it.getBoolean(2)
++        }.single()
++        previous?.let {
+             demand(it == amount, 409, "id_reused", "This coin operation already has a different amount.")
+             return
+         }
+-        val before = view(connection, player)
+-        demand(amount > 0 || before.balance >= -amount, 409, "coins_low", "Choose fewer tickets or collect free coins.")
+-        connection.execute("INSERT INTO coin_ledger VALUES (?, ?, ?, ?)", player, key, amount, now)
++        demand(inserted, 409, "coins_low", "Choose fewer tickets or collect free coins.")
+         // The room response reads its wallet after all room effects are reconciled.
+         // No caller needs an intermediate snapshot of this individual ledger write.
+     }
+diff --git a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
+index 439de60..328b713 100644
+--- a/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
++++ b/full-game/server/src/main/kotlin/io/github/sbshrey/tambola/server/RoomService.kt
+@@ -608,21 +608,37 @@ class RoomService(
+             RoomEconomy.reconcile(connection, previous, next, now)
+             RoomEconomy.settle(connection, next, now)
+         }
+-        save(connection, next)
+         val event = RoomEvent(next.revision, type, now, next.round?.id)
+-        connection.execute("INSERT INTO room_events VALUES (?, ?, ?)", next.id, next.revision, WireJson.encodeToString(event))
++        save(connection, next, event)
+         if (next.revision > EVENT_LIMIT)
+             connection.execute("DELETE FROM room_events WHERE room_id = ? AND revision <= ?", next.id, next.revision - EVENT_LIMIT)
+         if (next.round?.finished == true) connection.execute("INSERT INTO finished_rounds VALUES (?, ?, ?) ON CONFLICT DO NOTHING", next.id, next.round.id, WireJson.encodeToString(next))
+         return next
+     }
+
+-    private fun save(connection: Connection, room: RoomRecord) {
+-        connection.execute("UPDATE rooms SET phase = ?, expires_at = ?, payload = ? WHERE id = ?", room.phase.name, room.expiresAt, WireJson.encodeToString(room), room.id)
++    private fun save(connection: Connection, room: RoomRecord, event: RoomEvent? = null) {
+         val ids = (room.members.map { it.id } + room.round?.players.orEmpty().map { it.id }).distinct()
+         val array = connection.createArrayOf("text", ids.toTypedArray())
+-        try { connection.execute("INSERT INTO room_participants SELECT ?, id FROM guests WHERE id = ANY(?) ON CONFLICT DO NOTHING", room.id, array) }
+-        finally { array.free() }
++        try {
++            // RETURNING links the dependent writes without rereading a changed
++            // row in the statement's shared snapshot. All effects still commit
++            // with the wallet and command receipt in the outer transaction.
++            val eventWrite = if (event == null) "" else """,
++                event_written AS (INSERT INTO room_events SELECT id, ?, ? FROM saved)
++            """.trimIndent()
++            val params = mutableListOf<Any?>(room.phase.name, room.expiresAt, WireJson.encodeToString(room), room.id, array)
++            if (event != null) params.addAll(listOf(event.revision, WireJson.encodeToString(event)))
++            check(connection.query("""
++                WITH saved AS (
++                    UPDATE rooms SET phase = ?, expires_at = ?, payload = ? WHERE id = ? RETURNING id
++                ), participants AS (
++                    INSERT INTO room_participants
++                    SELECT saved.id, guests.id FROM saved CROSS JOIN guests WHERE guests.id = ANY(?)
++                    ON CONFLICT DO NOTHING
++                )$eventWrite
++                SELECT id FROM saved
++            """.trimIndent(), *params.toTypedArray()) { it.getString(1) }.singleOrNull() == room.id)
++        } finally { array.free() }
+     }
+
+     private fun update(connection: Connection, room: RoomRecord, actor: String, after: Long?): RoomUpdate {

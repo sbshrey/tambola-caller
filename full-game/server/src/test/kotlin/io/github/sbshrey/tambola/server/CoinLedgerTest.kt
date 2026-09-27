@@ -6,8 +6,10 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.util.UUID
 import java.util.concurrent.Callable
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 class CoinLedgerTest : PostgresTest() {
     private fun guest() = service.register(GuestRequest("Coin QA"), UUID.randomUUID().toString())
@@ -58,6 +60,45 @@ class CoinLedgerTest : PostgresTest() {
             failure("id_reused") { spend(actor.playerId, "purchase:one", 500) }
             assertEquals(900L, service.wallet(actor.token).balance)
         } finally { executor.shutdownNow() }
+    }
+
+    @Test fun `a debit waiting on another transaction checks the newly committed balance`() {
+        val actor = guest()
+        val held = CountDownLatch(1); val release = CountDownLatch(1)
+        val waiterPid = AtomicInteger()
+        val executor = Executors.newFixedThreadPool(2)
+        try {
+            val first = executor.submit(Callable {
+                database.transaction {
+                    CoinLedger.change(it, actor.playerId, "purchase:held", -1200, now.get())
+                    held.countDown()
+                    check(release.await(10, TimeUnit.SECONDS))
+                }
+            })
+            assertTrue(held.await(5, TimeUnit.SECONDS))
+            val waiting = executor.submit(Callable {
+                try {
+                    database.transaction {
+                        waiterPid.set(it.query("SELECT pg_backend_pid()") { row -> row.getInt(1) }.single())
+                        CoinLedger.change(it, actor.playerId, "purchase:waiting", -600, now.get())
+                    }
+                    "paid"
+                } catch (error: ApiFailure) { error.code }
+            })
+            val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5)
+            var blocked = false
+            while (!blocked && System.nanoTime() < deadline) {
+                if (waiterPid.get() != 0) blocked = database.transaction {
+                    it.query("SELECT cardinality(pg_blocking_pids(?)) > 0", waiterPid.get()) { row -> row.getBoolean(1) }.single()
+                }
+                if (!blocked) Thread.sleep(10)
+            }
+            assertTrue("The second debit must actually wait on the held wallet", blocked)
+            release.countDown(); first.get(5, TimeUnit.SECONDS)
+            assertEquals("coins_low", waiting.get(5, TimeUnit.SECONDS))
+            assertEquals(300L, service.wallet(actor.token).balance)
+            assertEquals(2, entries(actor.playerId).size)
+        } finally { release.countDown(); executor.shutdownNow(); executor.awaitTermination(10, TimeUnit.SECONDS) }
     }
 
     @Test fun `aborted room transaction rolls back its debit and the same request can safely retry`() {
