@@ -48,7 +48,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         require(expectedRounds in listOf(1, 9))
         require(!computerOpponents || expectedRounds == 1)
         report.put("expectedRounds", expectedRounds).put("roundReports", roundReports).put("memorySamples", memorySamples)
-        listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png", "claim-confirmed-public.png")
+        listOf("coin-release-results.png", "coin-release-failure.png", "coin-release-failure.xml", "friends-replay-ready.png", "claim-confirmed-public.png",
+            "friend-network-connected.png", "friend-network-disconnected.png", "friend-network-restored.png")
             .forEach { File(context.filesDir, it).delete() }
     }
 
@@ -185,7 +186,66 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         checkpoint("playing")
     }
 
-    /** External links must review first and preserve already purchased tables. */
+    /** An interrupted connection preserves the purchased friends table and restores host controls. */
+    fun verifyFriendsReconnect() = captureFailure {
+        report.put("scope", "Optimized public beta on the owned emulator: real Wi-Fi/data disconnection, saved friends lobby, manual reconnect, unchanged purchase and full refund; one HTTP QA peer. No physical-phone acceptance.")
+        Configurator.getInstance().waitForIdleTimeout = 100
+        checkpoint("connection-empty-profile")
+        node("coin-play"); verifyEmptyProfile()
+        val wifi = device.executeShellCommand("settings get global wifi_on").trim()
+        val data = device.executeShellCommand("settings get global mobile_data").trim()
+        check(wifi in setOf("0", "1") && data in setOf("0", "1")) { "Cannot safely restore unknown network settings" }
+        runBlocking { peers += api.guest(GuestRequest("Connection QA peer", 2)) }
+        tap("buy-tickets-3"); tap("play-friends")
+        val create = textButton("Create table")
+        createdMain = true
+        create.click(); node("friend-waiting", 30_000)
+        code = textOf(node("friend-code")).replace(" ", "").also { check(it.matches(Regex("[A-HJ-NP-Z2-9]{8}"))) }
+        runBlocking { api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 2, true, code)) }
+        until(30_000) { find("friend-start")?.isEnabled == true && find("waiting-connection") == null }
+        val before = snapshot()
+        assertEquals(2, before.members.size); assertEquals(500L, before.coins!!.pool); assertEquals(1200L, balance())
+        val width = node("friend-waiting").visibleBounds.width()
+        device.takeScreenshot(File(context.filesDir, "friend-network-connected.png"))
+        checkpoint("disconnecting-owned-emulator")
+        try {
+            device.executeShellCommand("svc wifi disable")
+            device.executeShellCommand("svc data disable")
+            until(10_000) { device.executeShellCommand("settings get global wifi_on").trim() == "0" &&
+                device.executeShellCommand("settings get global mobile_data").trim() == "0" }
+            until(90_000) { find("waiting-connection-copy")?.let(::textOf).orEmpty().contains("last confirmed table") }
+            assertFalse(node("friend-start").isEnabled)
+            assertEquals(width, node("friend-waiting").visibleBounds.width())
+            assertNull(find("lobby-ticket-panel")); assertEquals(1200L, balance())
+            device.takeScreenshot(File(context.filesDir, "friend-network-disconnected.png"))
+            tap("waiting-reconnect")
+            assertFalse(node("friend-start").isEnabled); assertEquals(1200L, balance())
+            report.put("savedTableVisibleOffline", true).put("startDisabledOffline", true).put("sameTableWidthOffline", true)
+                .put("explicitReconnectRequested", true)
+        } finally {
+            device.executeShellCommand("svc wifi ${if (wifi == "1") "enable" else "disable"}")
+            device.executeShellCommand("svc data ${if (data == "1") "enable" else "disable"}")
+            until(10_000) { device.executeShellCommand("settings get global wifi_on").trim() == wifi &&
+                device.executeShellCommand("settings get global mobile_data").trim() == data }
+            report.put("originalNetworkSettingsRestored", true)
+            checkpoint("network-restored")
+        }
+        // The passive peer shares this emulator's network and must restore its own presence too.
+        until(60_000, interval = 500) { runCatching { snapshot() }.isSuccess &&
+            find("waiting-connection") == null && find("friend-start")?.isEnabled == true }
+        val after = snapshot()
+        assertEquals(before.roomId, after.roomId); assertEquals(before.code, after.code)
+        assertEquals(before.members.map { it.playerId }.toSet(), after.members.map { it.playerId }.toSet())
+        assertEquals(500L, after.coins!!.pool); assertEquals(1200L, balance())
+        device.takeScreenshot(File(context.filesDir, "friend-network-restored.png"))
+        tap("cancel-match")
+        until(30_000) { find("coin-play")?.isEnabled == true && balance() == 1500L }
+        assertEquals(200L, snapshot().coins!!.pool)
+        report.put("sameRoomAndPurchaseRestored", true).put("walletAfterPurchase", 1200).put("walletAfterReconnect", 1200)
+            .put("walletAfterRefund", 1500).put("completed", true)
+        checkpoint("friends-connection-passed")
+    }
+
     fun verifyFriendInvitation() = captureFailure {
         report.put("scope", "Optimized public beta: cold/warm external invitations, explicit ticket purchase, duplicate/occupied guards and refund; one HTTP QA host")
         Configurator.getInstance().waitForIdleTimeout = 100

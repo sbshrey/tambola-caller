@@ -1,0 +1,215 @@
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stream=
+io.github.sbshrey.tambola.game.FriendConnectionUiTest:
+INSTRUMENTATION_STATUS: test=englishPortraitExplainsSavedTableAtLargeText
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (NOT (Text + InputText + EditableText contains 'Everyone’s here · Start game' (ignoreCase: false)))
+Semantics of the node:
+Node #53 at (l=42.0, t=1433.0, r=1038.0, b=1570.0)px, Tag: 'friend-start'
+Role = 'Button'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 50.0%), topEnd = CornerSize(size = 50.0%), bottomEnd = CornerSize(size = 50.0%), bottomStart = CornerSize(size = 50.0%))'
+Text = '[Everyone’s here · Start game]'
+[Disabled]
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 11 siblings
+Selector used: (TestTag = 'friend-start')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:67)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:30)
+
+INSTRUMENTATION_STATUS: stream=
+Error in englishPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest):
+java.lang.AssertionError: Failed to assert the following: (NOT (Text + InputText + EditableText contains 'Everyone’s here · Start game' (ignoreCase: false)))
+Semantics of the node:
+Node #53 at (l=42.0, t=1433.0, r=1038.0, b=1570.0)px, Tag: 'friend-start'
+Role = 'Button'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 50.0%), topEnd = CornerSize(size = 50.0%), bottomEnd = CornerSize(size = 50.0%), bottomStart = CornerSize(size = 50.0%))'
+Text = '[Everyone’s here · Start game]'
+[Disabled]
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 11 siblings
+Selector used: (TestTag = 'friend-start')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:67)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:30)
+
+INSTRUMENTATION_STATUS: test=englishPortraitExplainsSavedTableAtLargeText
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=englishLandscapeRetainsTableDuringReconnect
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: A disconnected table must keep its width expected:<651.4286> but was:<403.42856>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:66)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishLandscapeRetainsTableDuringReconnect(FriendConnectionUiTest.kt:28)
+
+INSTRUMENTATION_STATUS: stream=
+Error in englishLandscapeRetainsTableDuringReconnect(io.github.sbshrey.tambola.game.FriendConnectionUiTest):
+java.lang.AssertionError: A disconnected table must keep its width expected:<651.4286> but was:<403.42856>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:66)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishLandscapeRetainsTableDuringReconnect(FriendConnectionUiTest.kt:28)
+
+INSTRUMENTATION_STATUS: test=englishLandscapeRetainsTableDuringReconnect
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiPortraitExplainsSavedTableAtLargeText
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (NOT (Text + InputText + EditableText contains 'सभी आ गए · खेल शुरू करें' (ignoreCase: false)))
+Semantics of the node:
+Node #207 at (l=42.0, t=1350.0, r=1038.0, b=1487.0)px, Tag: 'friend-start'
+Role = 'Button'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 50.0%), topEnd = CornerSize(size = 50.0%), bottomEnd = CornerSize(size = 50.0%), bottomStart = CornerSize(size = 50.0%))'
+Text = '[सभी आ गए · खेल शुरू करें]'
+[Disabled]
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 11 siblings
+Selector used: (TestTag = 'friend-start')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:67)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:31)
+
+INSTRUMENTATION_STATUS: stream=
+Error in hindiPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest):
+java.lang.AssertionError: Failed to assert the following: (NOT (Text + InputText + EditableText contains 'सभी आ गए · खेल शुरू करें' (ignoreCase: false)))
+Semantics of the node:
+Node #207 at (l=42.0, t=1350.0, r=1038.0, b=1487.0)px, Tag: 'friend-start'
+Role = 'Button'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 50.0%), topEnd = CornerSize(size = 50.0%), bottomEnd = CornerSize(size = 50.0%), bottomStart = CornerSize(size = 50.0%))'
+Text = '[सभी आ गए · खेल शुरू करें]'
+[Disabled]
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 11 siblings
+Selector used: (TestTag = 'friend-start')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:67)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:31)
+
+INSTRUMENTATION_STATUS: test=hindiPortraitExplainsSavedTableAtLargeText
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=hindiLandscapeRetainsTableAtLargeText
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=io.github.sbshrey.tambola.game.FriendConnectionUiTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=4
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: A disconnected table must keep its width expected:<651.4286> but was:<403.42856>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:66)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiLandscapeRetainsTableAtLargeText(FriendConnectionUiTest.kt:29)
+
+INSTRUMENTATION_STATUS: stream=
+Error in hindiLandscapeRetainsTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest):
+java.lang.AssertionError: A disconnected table must keep its width expected:<651.4286> but was:<403.42856>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:66)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiLandscapeRetainsTableAtLargeText(FriendConnectionUiTest.kt:29)
+
+INSTRUMENTATION_STATUS: test=hindiLandscapeRetainsTableAtLargeText
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 12.834
+There were 4 failures:
+1) englishPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest)
+java.lang.AssertionError: Failed to assert the following: (NOT (Text + InputText + EditableText contains 'Everyone’s here · Start game' (ignoreCase: false)))
+Semantics of the node:
+Node #53 at (l=42.0, t=1433.0, r=1038.0, b=1570.0)px, Tag: 'friend-start'
+Role = 'Button'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 50.0%), topEnd = CornerSize(size = 50.0%), bottomEnd = CornerSize(size = 50.0%), bottomStart = CornerSize(size = 50.0%))'
+Text = '[Everyone’s here · Start game]'
+[Disabled]
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 11 siblings
+Selector used: (TestTag = 'friend-start')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:67)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:30)
+2) englishLandscapeRetainsTableDuringReconnect(io.github.sbshrey.tambola.game.FriendConnectionUiTest)
+java.lang.AssertionError: A disconnected table must keep its width expected:<651.4286> but was:<403.42856>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:66)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishLandscapeRetainsTableDuringReconnect(FriendConnectionUiTest.kt:28)
+3) hindiPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest)
+java.lang.AssertionError: Failed to assert the following: (NOT (Text + InputText + EditableText contains 'सभी आ गए · खेल शुरू करें' (ignoreCase: false)))
+Semantics of the node:
+Node #207 at (l=42.0, t=1350.0, r=1038.0, b=1487.0)px, Tag: 'friend-start'
+Role = 'Button'
+Shape = 'RoundedCornerShape(topStart = CornerSize(size = 50.0%), topEnd = CornerSize(size = 50.0%), bottomEnd = CornerSize(size = 50.0%), bottomStart = CornerSize(size = 50.0%))'
+Text = '[सभी आ गए · खेल शुरू करें]'
+[Disabled]
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 11 siblings
+Selector used: (TestTag = 'friend-start')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:264)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:254)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:67)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:31)
+4) hindiLandscapeRetainsTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest)
+java.lang.AssertionError: A disconnected table must keep its width expected:<651.4286> but was:<403.42856>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:66)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiLandscapeRetainsTableAtLargeText(FriendConnectionUiTest.kt:29)
+
+FAILURES!!!
+Tests run: 4,  Failures: 4
+
+
+INSTRUMENTATION_CODE: -1

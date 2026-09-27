@@ -31,7 +31,11 @@
     <string name="friend_host">होस्ट · तैयार</string>
     <string name="friend_ready">खेलने को तैयार</string>
     <string name="friend_reconnecting">फिर से जुड़ रहे हैं…</string>
-    <string name="friend_start">सभी आ गए · खेल शुरू करें</string>
+    <string name="friend_start">खेल शुरू करें</string>
+    <string name="friend_wait_connection">कनेक्शन का इंतज़ार</string>
+    <string name="lobby_table_connecting">आपकी टेबल से जुड़ रहे हैं…</string>
+    <string name="lobby_table_reconnecting">फिर जुड़ रहे हैं… टेबल की पिछली जानकारी दिख रही है।</string>
+    <string name="lobby_table_disconnected">कनेक्शन नहीं है। टेबल की पिछली जानकारी दिख रही है।</string>
     <string name="friend_wait">दोस्तों के जुड़ने का इंतज़ार</string>
     <string name="friend_expires">%1$d मिनट में शुरू करें। शुरू न हुई टेबल बंद होगी और सभी को सिक्के वापस मिलेंगे।</string>
     <string name="friend_closed">वह टेबल शुरू हो गई है या दोस्तों की टेबल नहीं है। अपने दोस्त से नया कोड मांगें।</string>

@@ -1,0 +1,62 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :client:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :domain:compileKotlin UP-TO-DATE
+> Task :domain:compileJava NO-SOURCE
+> Task :domain:processResources NO-SOURCE
+> Task :domain:classes UP-TO-DATE
+> Task :domain:jar UP-TO-DATE
+> Task :protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :protocol:compileKotlin UP-TO-DATE
+> Task :protocol:compileJava NO-SOURCE
+> Task :client:compileKotlin UP-TO-DATE
+> Task :client:compileJava NO-SOURCE
+> Task :client:processResources NO-SOURCE
+> Task :client:classes UP-TO-DATE
+> Task :client:jar UP-TO-DATE
+> Task :protocol:processResources NO-SOURCE
+> Task :protocol:classes UP-TO-DATE
+> Task :protocol:jar UP-TO-DATE
+> Task :macrobenchmark:preBuild UP-TO-DATE
+> Task :macrobenchmark:prePublicBetaBuild UP-TO-DATE
+> Task :macrobenchmark:checkTestedAppObfuscationPublicBeta UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:packagePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaNavigationResources UP-TO-DATE
+> Task :macrobenchmark:parsePublicBetaLocalResources UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaRFile UP-TO-DATE
+> Task :macrobenchmark:javaPreCompilePublicBeta UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:compressPublicBetaAssets UP-TO-DATE
+> Task :macrobenchmark:generatePublicBetaGlobalSynthetics UP-TO-DATE
+> Task :macrobenchmark:checkPublicBetaDuplicateClasses UP-TO-DATE
+> Task :macrobenchmark:desugarPublicBetaFileDependencies UP-TO-DATE
+> Task :macrobenchmark:mergeExtDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:mergeLibDexPublicBeta UP-TO-DATE
+> Task :macrobenchmark:checkPublicBetaAarMetadata UP-TO-DATE
+> Task :macrobenchmark:mapPublicBetaSourceSetPaths UP-TO-DATE
+> Task :macrobenchmark:compilePublicBetaNavigationResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaManifest UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaManifest UP-TO-DATE
+> Task :macrobenchmark:processPublicBetaResources UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaJniLibFolders UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaNativeLibs UP-TO-DATE
+> Task :macrobenchmark:stripPublicBetaDebugSymbols UP-TO-DATE
+> Task :macrobenchmark:validateSigningPublicBeta UP-TO-DATE
+> Task :macrobenchmark:writePublicBetaSigningConfigVersions UP-TO-DATE
+> Task :macrobenchmark:compilePublicBetaKotlin
+> Task :macrobenchmark:compilePublicBetaJavaWithJavac NO-SOURCE
+> Task :macrobenchmark:dexBuilderPublicBeta
+> Task :macrobenchmark:processPublicBetaJavaRes UP-TO-DATE
+> Task :macrobenchmark:mergePublicBetaJavaResource UP-TO-DATE
+> Task :macrobenchmark:mergeProjectDexPublicBeta
+> Task :macrobenchmark:packagePublicBeta
+> Task :macrobenchmark:createPublicBetaApkListingFileRedirect UP-TO-DATE
+> Task :macrobenchmark:assemblePublicBeta
+
+BUILD SUCCESSFUL in 24s
+39 actionable tasks: 4 executed, 35 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.1/userguide/configuration_cache_enabling.html

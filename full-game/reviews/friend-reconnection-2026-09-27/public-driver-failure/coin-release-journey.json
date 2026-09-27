@@ -1,0 +1,11 @@
+{
+  "completed": false,
+  "scope": "Optimized public beta on the owned emulator: real Wi-Fi\/data disconnection, saved friends lobby, manual reconnect, unchanged purchase and full refund; one HTTP QA peer. No physical-phone acceptance.",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "stage": "failed",
+  "elapsedMs": 37157,
+  "failureType": "IllegalStateException",
+  "deletedQaPeers": 1
+}

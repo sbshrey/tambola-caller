@@ -1,0 +1,44 @@
+[
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.ClaimFeedbackTest",
+    "tests": 3,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.CoinPurchaseTest",
+    "tests": 1,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.CoinResultsTest",
+    "tests": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.presentation.WinMomentTest",
+    "tests": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.setup.SetupDraftTest",
+    "tests": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "io.github.sbshrey.tambola.game.ui.ThemeContrastTest",
+    "tests": 1,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

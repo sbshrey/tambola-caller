@@ -32,11 +32,12 @@ private val CoinGold = Color(0xFFF4C879)
 @Composable
 fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit,
     reducedMotion: Boolean = false, friends: (Int, String?) -> Unit = { tickets, code -> model.play(tickets, true, code) },
-    replayFriends: (Int) -> Unit = model::replayFriends) {
+    replayFriends: (Int) -> Unit = model::replayFriends, reconnect: () -> Unit = model::reconnect) {
     val words = gameText()
     val room = state.room
     val coins = room?.coins
     val waiting = room?.phase == RoomPhase.LOBBY
+    val showControls = !waiting || state.pending || state.sessionExpired || state.storageFailure
     val finished = room?.phase == RoomPhase.FINISHED
     val friendsFinished = finished && coins?.friendTable == true
     val active = room?.phase == RoomPhase.ACTIVE
@@ -75,9 +76,13 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
             val hero: @Composable () -> Unit = {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (waiting) {
-                        if (coins?.friendTable == true) FriendWaitingRoom(room, state.playerId, enabled && state.connection == Connection.LIVE,
-                            start = { model.command(RoomAction.Start) }, invitationLink = model::friendInvitation)
-                        else TableCountdown(room, state.playerId, reducedMotion)
+                        if (coins?.friendTable == true) FriendWaitingRoom(room, state.playerId, enabled,
+                            start = { model.command(RoomAction.Start) }, invitationLink = model::friendInvitation,
+                            connection = state.connection, reconnect = reconnect)
+                        else {
+                            TableCountdown(room, state.playerId, reducedMotion)
+                            if (state.connection != Connection.LIVE) WaitingConnectionNotice(state.connection, enabled, reconnect)
+                        }
                         Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
                             " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                         TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
@@ -101,7 +106,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                 }
             }
             val controls: @Composable () -> Unit = {
-              if (!waiting || state.pending || state.connection != Connection.LIVE) {
+              if (showControls) {
                 Surface(modifier = Modifier.fillMaxWidth().testTag("lobby-ticket-panel"), shape = RoundedCornerShape(26.dp), color = GameNightPalette.panel, contentColor = GameNightPalette.cream,
                     border = BorderStroke(1.dp, GameNightPalette.raised)) {
                   Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -111,7 +116,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         OutlinedButton(onClick = model::retry, enabled = !state.busy && !state.storageFailure,
                             modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("coin-retry")) { Text(words(R.string.coin_retry)) }
                     } else if (waiting) {
-                        if (state.connection != Connection.LIVE) TextButton(onClick = model::reconnect) { Text(words(R.string.play_reconnecting)) }
+                        // Connection recovery stays with the table; fatal recovery controls follow below.
                     } else if (active) {
                         Text(words(R.string.coin_pool, coins?.pool ?: 0), fontSize = 24.sp, fontWeight = FontWeight.Black)
                         Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("resume-match")) { Text(words(R.string.coin_resume)) }
@@ -182,7 +187,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
             }
             if (wide) Row(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.weight(if (waiting) 2f else .85f)) { hero() }
-                if (!waiting || state.pending || state.connection != Connection.LIVE) Box(Modifier.weight(1.15f)) { controls() }
+                if (showControls) Box(Modifier.weight(1.15f)) { controls() }
             } else Column(Modifier.weight(1f).testTag("lobby-scroll").verticalScroll(rememberScrollState()).padding(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) { hero(); controls() }
         }
       }

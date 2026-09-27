@@ -31,7 +31,11 @@
     <string name="friend_host">Host · ready</string>
     <string name="friend_ready">Ready to play</string>
     <string name="friend_reconnecting">Reconnecting…</string>
-    <string name="friend_start">Everyone’s here · Start game</string>
+    <string name="friend_start">Start game</string>
+    <string name="friend_wait_connection">Waiting for connection</string>
+    <string name="lobby_table_connecting">Connecting to your table…</string>
+    <string name="lobby_table_reconnecting">Reconnecting… This is your last confirmed table.</string>
+    <string name="lobby_table_disconnected">Not connected. This is your last confirmed table.</string>
     <string name="friend_wait">Waiting for connected friends</string>
     <string name="friend_expires">Start within %1$d min. Unstarted tables close and refund everyone.</string>
     <string name="friend_closed">That table has started or is not a friends’ table. Ask your friend for a new code.</string>

@@ -1,0 +1,10 @@
+✔ friend landing is local, bounded, bilingual and launches only after a user gesture (75.486ms)
+✔ public ingress bounds routes and bodies, strips forwarded headers and carries a WebSocket (31.7458ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 269.1365

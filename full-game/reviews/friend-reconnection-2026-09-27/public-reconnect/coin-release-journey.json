@@ -1,0 +1,20 @@
+{
+  "completed": true,
+  "scope": "Optimized public beta on the owned emulator: real Wi-Fi\/data disconnection, saved friends lobby, manual reconnect, unchanged purchase and full refund; one HTTP QA peer. No physical-phone acceptance.",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "stage": "friends-connection-passed",
+  "elapsedMs": 22213,
+  "savedTableVisibleOffline": true,
+  "startDisabledOffline": true,
+  "sameTableWidthOffline": true,
+  "explicitReconnectRequested": true,
+  "originalNetworkSettingsRestored": true,
+  "sameRoomAndPurchaseRestored": true,
+  "walletAfterPurchase": 1200,
+  "walletAfterReconnect": 1200,
+  "walletAfterRefund": 1500,
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 1
+}

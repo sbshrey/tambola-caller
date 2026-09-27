@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import io.github.sbshrey.tambola.game.online.Connection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,7 +57,7 @@ internal fun FriendEntryDialog(tickets: Int, cost: Long, enabled: Boolean, enter
 /** Only actual members appear here. The host controls the start; seats do not fill with computers. */
 @Composable
 internal fun FriendWaitingRoom(room: RoomView, playerId: String?, enabled: Boolean, start: () -> Unit,
-    invitationLink: suspend (String) -> String? = { null }) {
+    invitationLink: suspend (String) -> String? = { null }, connection: Connection = Connection.LIVE, reconnect: () -> Unit = {}) {
     val words = gameText()
     val context = LocalContext.current
     var copied by remember(room.code) { mutableStateOf(false) }
@@ -68,7 +69,8 @@ internal fun FriendWaitingRoom(room: RoomView, playerId: String?, enabled: Boole
     val ready = room.members.size >= 2 && room.members.all { it.connected && it.ready }
     Column(Modifier.fillMaxWidth().testTag("friend-waiting"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(words(R.string.friend_title), fontSize = 25.sp, fontWeight = FontWeight.Black)
-        Text(words(if (host) R.string.friend_host_hint else R.string.friend_guest_hint), color = GameNightPalette.muted, fontSize = 13.sp)
+        if (connection == Connection.LIVE) Text(words(if (host) R.string.friend_host_hint else R.string.friend_guest_hint), color = GameNightPalette.muted, fontSize = 13.sp)
+        else WaitingConnectionNotice(connection, enabled, reconnect)
         val invite: @Composable () -> Unit = { Surface(color = GameNightPalette.panel, shape = RoundedCornerShape(22.dp), border = BorderStroke(1.dp, GameNightPalette.raised)) {
             Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(words(R.string.friend_code_label), color = GameNightPalette.muted, fontSize = 12.sp)
@@ -110,10 +112,10 @@ internal fun FriendWaitingRoom(room: RoomView, playerId: String?, enabled: Boole
                 }
             }
         }
-        if (host) Button(onClick = start, enabled = enabled && ready && seconds > 0,
+        if (host) Button(onClick = start, enabled = enabled && connection == Connection.LIVE && ready && seconds > 0,
             modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("friend-start"),
             colors = ButtonDefaults.buttonColors(containerColor = GameNightPalette.coral, contentColor = GameNightPalette.background)) {
-            Text(words(if (ready) R.string.friend_start else R.string.friend_wait), fontWeight = FontWeight.Bold)
+            Text(words(if (connection != Connection.LIVE) R.string.friend_wait_connection else if (ready) R.string.friend_start else R.string.friend_wait), fontWeight = FontWeight.Bold)
         }
         } }
         BoxWithConstraints(Modifier.fillMaxWidth()) {
