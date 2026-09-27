@@ -8,6 +8,8 @@ Built from the [shared V1 discussion and design reference](https://chatgpt.com/s
 
 ## Full Android game in development
 
+**Review the new landscape design without installing an APK:** [editable Figma screens](https://www.figma.com/design/MY3fG0NL8iLCs8sIZz9xqt/?node-id=3-1215) and [clickable preview instructions](designs/landscape-lobby-v1/README.md). The design review is separate from the currently packaged alpha22 app.
+
 Tambola Together is developing online multiplayer with free virtual coins, 1–6 disjoint tickets, manual marking, per-ticket prize claims, paged landscape play, caller audio and win animations. Empty seats use labelled computers. The development work is on `shrey/full-tambola-game`, with this PC hosting private Wi-Fi testing. See the [full-game guide](full-game/README.md), [current online plan](docs/ONLINE_COIN_GAME_PLAN.md), [alpha installation](full-game/ALPHA_INSTALL.md) and [host operation](docs/WIFI_HOST.md). Public hosting and production release gates remain unfinished.
 
 ## Android keyboard for WhatsApp hosts
