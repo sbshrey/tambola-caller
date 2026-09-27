@@ -1,0 +1,9 @@
+# Competitor Android download boundary
+
+27 September 2026. [Octro's download page](https://tambola.octro.com/download.html) links its Android images to Google Play; inspecting its live HTML exposed no direct Tambola APK link. [Google Play](https://play.google.com/store/apps/details?hl=en-US&id=com.octro.tambola) still displays **5M+ downloads**. This is a listing observation, not an exhaustive download ranking or installed-app evaluation.
+
+The fetched Play sample includes reports of repeated numbers/suspected bots, dissatisfaction with prize returns and unavailable free-chip advertisements. These are user reports, not verified defects or evidence about the competitor's algorithm. Our relevant design responses remain labelled computer opponents, independent draw commitments, visible ticket-funded prize pools and free refills without advertisements.
+
+An unauthenticated request to the [APKMirror 6.59 listing](https://www.apkmirror.com/apk/octro-inc/octro-tambola-play-bingo-game/octro-tambola-play-bingo-game-6-59-release/octro-tambola-play-bingo-game-6-59-android-apk-download/) returned HTTP **403**. The APKPure page timed out locally; its publicly exposed [download link](https://d.apkpure.net/b/XAPK/com.octro.tambola?version=latest) also returned **403**. [The download result](download-result.json) records that no file was obtained or installed. No access restriction was bypassed, no account was used, and no competitor app was run on the endurance emulator. Mirror cache entries exposed conflicting versions, so none is treated as a verified current APK.
+
+The previous video/listing/design research remains useful, but **native competitor gameplay has not been tested**. Revisit installation through an accessible publisher/store route after the current native measurement session. No competitor code, branding or artwork has been added to our game.
