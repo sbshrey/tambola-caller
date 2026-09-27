@@ -62,6 +62,9 @@ object CoinPurchaseBurst {
                 record("fixtureSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/CoinPurchaseBurst.kt"))))
                 record("profilerSourceSha256", sha(Files.readAllBytes(env.root.resolve("server/src/test/kotlin/io/github/sbshrey/tambola/server/ProfiledCoinServer.kt"))))
                 record("sqlProfiling", env.sqlProfiling); record("poolProfiling", System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true")
+                val allocationWindows = System.getenv("TAMBOLA_COIN_LOAD_ALLOCATION_WINDOWS") == "true"
+                check(!allocationWindows || env.sqlProfiling)
+                record("allocationWindowProfiling", allocationWindows)
                 val requestProfiling = System.getenv("TAMBOLA_COIN_LOAD_REQUEST_PROFILE") == "true"
                 check(!requestProfiling || env.sqlProfiling)
                 record("requestProfiling", requestProfiling)

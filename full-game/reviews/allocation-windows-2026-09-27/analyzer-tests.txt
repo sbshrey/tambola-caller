@@ -1,0 +1,8 @@
+test_incomplete_or_mislabelled_captures_fail (__main__.AllocationAnalysisTest.test_incomplete_or_mislabelled_captures_fail) ... ok
+test_real_capture_coverage_matches_an_independent_interval_union (__main__.AllocationAnalysisTest.test_real_capture_coverage_matches_an_independent_interval_union) ... ok
+test_unrelated_private_log_lines_are_never_retained (__main__.AllocationAnalysisTest.test_unrelated_private_log_lines_are_never_retained) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.177s
+
+OK

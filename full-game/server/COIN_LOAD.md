@@ -63,6 +63,27 @@ python tools/analyze-purchase-phases.py .test-workspace/coin-load-<run-id>/burst
 
 The analyzer requires a complete successful event for every primary purchase in each wave, verifies phase arithmetic and emits an aggregate JSON plus a validated `.timings.txt` file. It records input, analyzer and timing hashes. Receipt retries outside purchase windows remain in the filtered evidence but are excluded from wave statistics. Keep raw service logs private. Profiling adds overhead; these results diagnose waits and cannot establish latency or capacity acceptance.
 
+### Allocation transaction intervals
+
+Set `TAMBOLA_COIN_LOAD_ALLOCATION_WINDOWS=true` together with SQL profiling for fixed-label elapsed intervals in the isolated purchase-burst fixture. Keep client, pool and request profiling disabled when isolating this diagnostic, and retain eight players per transport. The analyzer requires complete successful purchases, tables, subscriptions, receipt retries and refunds in every wave.
+
+```powershell
+$env:TAMBOLA_COIN_LOAD_PLAYERS='320'
+$env:TAMBOLA_COIN_BURST_STREAMS='true'
+$env:TAMBOLA_COIN_BURST_PLAYERS_PER_TRANSPORT='8'
+$env:TAMBOLA_COIN_LOAD_SQL_PROFILE='true'
+$env:TAMBOLA_COIN_LOAD_ALLOCATION_WINDOWS='true'
+$env:TAMBOLA_COIN_LOAD_CLIENT_PROFILE='false'
+$env:TAMBOLA_COIN_LOAD_POOL_PROFILE='false'
+$env:TAMBOLA_COIN_LOAD_REQUEST_PROFILE='false'
+.\gradlew.bat :server:coinPurchaseBurst '-PserverOnly=true' --console=plain
+python tools/analyze-allocation-windows.py .test-workspace/coin-load-<run-id>/burst-evidence.json .test-workspace/coin-load-<run-id>/service-diagnostic.log .test-workspace/coin-load-<run-id>/allocation-windows.json
+```
+
+Each interval begins after the advisory-lock query returns and ends after commit returns. Monotonic offsets measure its duration, overlap and union; coarse wall-clock timestamps assign it to the fixture's purchase wave. The interval is a proxy for lock occupancy: the database releases its transaction lock before the commit response reaches the application, so neighboring observed intervals can overlap. Gaps include boundary/round-trip and scheduling effects and do not prove the database was idle. The original `COIN_SQL_TIMING` output remains available to its existing analyzer.
+
+The report partitions accumulated interval duration into JDBC executions, commit and remaining time, and compares the interval union with the client's complete purchase window. JDBC time includes network, database and scheduling; the residual includes statement preparation, decoding and application work. Neither is CPU time. On this Windows JVM, a short probe observed CPU-clock steps of 15.625 ms, too coarse for per-transaction CPU attribution. No CPU field is exported. Filtered output contains only timestamps, durations, counts and fixed query categories; keep the raw service log private. Rollbacks and failed commits produce no successful interval. This is instrumented diagnosis and cannot pass latency/capacity acceptance.
+
 ### Client transport phases
 
 Set `TAMBOLA_COIN_LOAD_CLIENT_PROFILE=true` for test-only OkHttp transport observations in `coinPurchaseBurst`. The profiled client mirrors the shipping client's timeout, redirect and WebSocket settings; the default unprofiled fixture still uses the native client directly. Keep SQL, pool and server-request profiling disabled when isolating this diagnostic. The fixture retains one transport per eight players and records its actual dispatcher limits (currently 64 requests overall, five per host).

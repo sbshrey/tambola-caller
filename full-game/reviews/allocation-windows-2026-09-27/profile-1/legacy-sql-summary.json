@@ -1,0 +1,73 @@
+{
+  "samples": 640,
+  "definition": "Diagnostic proxy timings in milliseconds. OutsideExecuteCalls includes preparation, decoding and application work, not just CPU time. Includes instrumentation overhead; not capacity acceptance.",
+  "analyzerSha256": "eebcf5a2d325e680e2e59b144376482867eb16a90133e208798af52f8e6b283b",
+  "segments": {
+    "wait": {
+      "sumMs": 5183.2901,
+      "p50": 4.8611,
+      "p95": 26.5889,
+      "max": 72.6201
+    },
+    "locked": {
+      "sumMs": 3577.3058,
+      "p50": 3.8731,
+      "p95": 14.2613,
+      "max": 53.2381
+    },
+    "commit": {
+      "sumMs": 795.4114,
+      "p50": 0.3699,
+      "p95": 5.3848,
+      "max": 42.6349
+    },
+    "outsideExecuteCalls": {
+      "sumMs": 391.0987,
+      "p50": 0.4137000000000004,
+      "p95": 1.332200000000002,
+      "max": 34.543200000000006
+    }
+  },
+  "queries": {
+    "wallet_view": {
+      "count": 1280,
+      "totalMs": 382.20430000000005
+    },
+    "room_select": {
+      "count": 640,
+      "totalMs": 296.72480000000036
+    },
+    "participants_insert": {
+      "count": 640,
+      "totalMs": 290.6275999999999
+    },
+    "room_update": {
+      "count": 640,
+      "totalMs": 282.94539999999984
+    },
+    "wallet_lock": {
+      "count": 640,
+      "totalMs": 264.9944999999999
+    },
+    "receipt_insert": {
+      "count": 640,
+      "totalMs": 225.34470000000024
+    },
+    "ledger_insert": {
+      "count": 640,
+      "totalMs": 203.31980000000024
+    },
+    "ledger_previous": {
+      "count": 640,
+      "totalMs": 201.18960000000007
+    },
+    "event_insert": {
+      "count": 640,
+      "totalMs": 190.09730000000005
+    },
+    "room_insert": {
+      "count": 80,
+      "totalMs": 53.34770000000001
+    }
+  }
+}

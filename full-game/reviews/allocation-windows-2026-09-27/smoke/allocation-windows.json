@@ -1,0 +1,206 @@
+{
+  "passed": true,
+  "capacityAcceptance": false,
+  "samples": 16,
+  "waves": [
+    {
+      "wave": 1,
+      "allocations": 8,
+      "clientPurchaseP95Ms": 470.1472,
+      "clientWindowMs": 476,
+      "observedAllocationSpanMs": 152.8616,
+      "observedUnionMs": 128.237,
+      "unionShareOfClientWindowPercent": 26.940546218487395,
+      "gapsWithinObservedSpanMs": 24.6246,
+      "overlappingObservedMs": 0.0,
+      "metrics": {
+        "waitMs": {
+          "sumMs": 128.05440000000002,
+          "meanMs": 16.006800000000002,
+          "p50Ms": 8.8833,
+          "p95Ms": 46.6989,
+          "maxMs": 46.6989
+        },
+        "heldMs": {
+          "sumMs": 128.237,
+          "meanMs": 16.029625,
+          "p50Ms": 8.33,
+          "p95Ms": 50.284,
+          "maxMs": 50.284
+        },
+        "commitMs": {
+          "sumMs": 8.3641,
+          "meanMs": 1.0455125,
+          "p50Ms": 0.6599,
+          "p95Ms": 2.808,
+          "maxMs": 2.808
+        },
+        "jdbcMs": {
+          "sumMs": 65.4205,
+          "meanMs": 8.1775625,
+          "p50Ms": 5.7872,
+          "p95Ms": 11.8163,
+          "maxMs": 11.8163
+        },
+        "outsideJdbcMs": {
+          "sumMs": 54.4524,
+          "meanMs": 6.80655,
+          "p50Ms": 1.922,
+          "p95Ms": 39.3272,
+          "maxMs": 39.3272
+        }
+      },
+      "shareOfSummedHeldTimePercent": {
+        "commitMs": 6.522376537192855,
+        "jdbcMs": 51.015307594532,
+        "outsideJdbcMs": 42.46231586827515
+      },
+      "queries": {
+        "receipt_insert": {
+          "count": 8,
+          "sumMs": 14.0033
+        },
+        "wallet_view": {
+          "count": 16,
+          "sumMs": 9.440000000000001
+        },
+        "event_insert": {
+          "count": 8,
+          "sumMs": 7.5482000000000005
+        },
+        "room_update": {
+          "count": 8,
+          "sumMs": 7.546299999999999
+        },
+        "ledger_previous": {
+          "count": 8,
+          "sumMs": 5.906700000000001
+        },
+        "participants_insert": {
+          "count": 8,
+          "sumMs": 5.5397
+        },
+        "room_select": {
+          "count": 8,
+          "sumMs": 5.410900000000001
+        },
+        "ledger_insert": {
+          "count": 8,
+          "sumMs": 4.3159
+        },
+        "wallet_lock": {
+          "count": 8,
+          "sumMs": 4.1545000000000005
+        },
+        "room_insert": {
+          "count": 1,
+          "sumMs": 1.555
+        }
+      }
+    },
+    {
+      "wave": 2,
+      "allocations": 8,
+      "clientPurchaseP95Ms": 92.3165,
+      "clientWindowMs": 100,
+      "observedAllocationSpanMs": 63.0712,
+      "observedUnionMs": 61.8659,
+      "unionShareOfClientWindowPercent": 61.86590000000001,
+      "gapsWithinObservedSpanMs": 1.2053,
+      "overlappingObservedMs": 0.14759999999999707,
+      "metrics": {
+        "waitMs": {
+          "sumMs": 93.2687,
+          "meanMs": 11.6585875,
+          "p50Ms": 11.0687,
+          "p95Ms": 19.8747,
+          "maxMs": 19.8747
+        },
+        "heldMs": {
+          "sumMs": 62.0135,
+          "meanMs": 7.7516875,
+          "p50Ms": 6.905,
+          "p95Ms": 11.0776,
+          "maxMs": 11.0776
+        },
+        "commitMs": {
+          "sumMs": 6.0251,
+          "meanMs": 0.7531375,
+          "p50Ms": 0.4407,
+          "p95Ms": 1.9567,
+          "maxMs": 1.9567
+        },
+        "jdbcMs": {
+          "sumMs": 47.6228,
+          "meanMs": 5.95285,
+          "p50Ms": 5.3981,
+          "p95Ms": 8.6124,
+          "maxMs": 8.6124
+        },
+        "outsideJdbcMs": {
+          "sumMs": 8.3656,
+          "meanMs": 1.0457,
+          "p50Ms": 0.9996,
+          "p95Ms": 1.2949,
+          "maxMs": 1.2949
+        }
+      },
+      "shareOfSummedHeldTimePercent": {
+        "commitMs": 9.715787691389778,
+        "jdbcMs": 76.79424641408725,
+        "outsideJdbcMs": 13.489965894522967
+      },
+      "queries": {
+        "wallet_lock": {
+          "count": 8,
+          "sumMs": 6.1322
+        },
+        "room_insert": {
+          "count": 1,
+          "sumMs": 6.1043
+        },
+        "wallet_view": {
+          "count": 16,
+          "sumMs": 5.861700000000001
+        },
+        "room_update": {
+          "count": 8,
+          "sumMs": 5.209699999999999
+        },
+        "room_select": {
+          "count": 8,
+          "sumMs": 4.7042
+        },
+        "receipt_insert": {
+          "count": 8,
+          "sumMs": 4.5386999999999995
+        },
+        "participants_insert": {
+          "count": 8,
+          "sumMs": 4.4831
+        },
+        "ledger_insert": {
+          "count": 8,
+          "sumMs": 3.9685
+        },
+        "ledger_previous": {
+          "count": 8,
+          "sumMs": 3.7305
+        },
+        "event_insert": {
+          "count": 8,
+          "sumMs": 2.8899000000000004
+        }
+      }
+    }
+  ],
+  "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+  "profilerSourceSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+  "inputSha256": {
+    "fixture": "67d4f88563eabaf80954fc65cd84d0f82db9ab1ebd6ece4909936de79f8e4ad3",
+    "privateLog": "bc11df4c5da176123e848f80a91015adda9b4ef3b2253fbc9b9f371f167ea03f",
+    "analyzer": "e4842f654db2ed9768e62683fab23f4ca4504e167d2dd6f38d58db6d3c41aade",
+    "filteredTimings": "1473a99b29267ee7123af0fe66323062005ca22b710a98829fd35ec3ca508ffa"
+  },
+  "scope": "After advisory-query return through commit return; approximate lock occupancy, not exact database lock lifetime. JDBC includes transport, server and scheduling; outside-JDBC is not CPU. Overlap and gaps include boundary/round-trip effects. Instrumented diagnostic, not capacity acceptance."
+}

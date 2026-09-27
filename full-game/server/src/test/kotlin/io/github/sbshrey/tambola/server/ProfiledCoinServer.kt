@@ -13,13 +13,15 @@ import jdk.jfr.consumer.RecordingStream
 
 /** Diagnostic launcher only: fixed timing labels, no query text, bindings, identities or credentials. */
 object ProfiledCoinServer {
+    private val originNanos = System.nanoTime()
     @JvmStatic fun main(args: Array<String>) {
         require(args.isEmpty() && System.getenv("TAMBOLA_COIN_LOAD_SQL_PROFILE") == "true")
+        val allocationWindows = System.getenv("TAMBOLA_COIN_LOAD_ALLOCATION_WINDOWS") == "true"
         Class.forName("org.postgresql.Driver")
         val original = DriverManager.getDrivers().toList().single { it.javaClass.name == "org.postgresql.Driver" }
         DriverManager.deregisterDriver(original)
         DriverManager.registerDriver(object : Driver by original {
-            override fun connect(url: String?, info: Properties?): Connection? = original.connect(url, info)?.let(::instrument)
+            override fun connect(url: String?, info: Properties?): Connection? = original.connect(url, info)?.let { instrument(it, allocationWindows) }
         })
         val poolProfile = System.getenv("TAMBOLA_COIN_LOAD_POOL_PROFILE") == "true"
         val requestProfile = System.getenv("TAMBOLA_COIN_LOAD_REQUEST_PROFILE") == "true"
@@ -52,17 +54,22 @@ object ProfiledCoinServer {
         io.github.sbshrey.tambola.server.main(args)
     }
 
-    private class Sample(val wait: Long, val started: Long) {
+    private class Sample(val wait: Long, val started: Long, val allocationWindows: Boolean, val emit: (String) -> Unit) {
+        private val startedEpochMs = if (allocationWindows) System.currentTimeMillis() else 0L
         val queries = linkedMapOf<String, LongArray>()
         fun record(label: String, nanos: Long) {
             val item = queries.getOrPut(label) { longArrayOf(0, 0) }
             item[0]++; item[1] += nanos
         }
         fun finish(commit: Long) {
-            val duration = System.nanoTime() - started
-            println("COIN_SQL_TIMING|$wait|$duration|$commit|" + queries.entries.joinToString(";") { (label, values) ->
+            val ended = System.nanoTime()
+            val endedEpochMs = if (allocationWindows) System.currentTimeMillis() else 0L
+            val duration = ended - started
+            val items = queries.entries.joinToString(";") { (label, values) ->
                 "$label:${values[0]}:${values[1]}"
-            })
+            }
+            emit("COIN_SQL_TIMING|$wait|$duration|$commit|$items")
+            if (allocationWindows) emit("COIN_ALLOCATION_WINDOW|$startedEpochMs|$endedEpochMs|${started - originNanos}|${ended - originNanos}|$wait|$commit|$items")
         }
     }
 
@@ -70,7 +77,7 @@ object ProfiledCoinServer {
         method.invoke(target, *(args ?: emptyArray()))
     } catch (error: InvocationTargetException) { throw error.cause ?: error }
 
-    private fun instrument(connection: Connection): Connection {
+    internal fun instrument(connection: Connection, allocationWindows: Boolean = false, emit: (String) -> Unit = ::println): Connection {
         var sample: Sample? = null
         return Proxy.newProxyInstance(Connection::class.java.classLoader, arrayOf(Connection::class.java)) { _, method, args ->
             when (method.name) {
@@ -85,7 +92,7 @@ object ProfiledCoinServer {
                             val start = System.nanoTime()
                             invoke(statement, call, values).also {
                                 val elapsed = System.nanoTime() - start
-                                if (allocationLock) sample = Sample(elapsed, System.nanoTime())
+                                if (allocationLock) sample = Sample(elapsed, System.nanoTime(), allocationWindows, emit)
                                 else sample?.record(label, elapsed)
                             }
                         }

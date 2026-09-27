@@ -1,0 +1,13 @@
+{
+  "tests": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 12.085,
+  "cases": [
+    "committed windows include elapsed SQL and intervening time without SQL text",
+    "default instrumentation retains the old format without new windows",
+    "confirmed advisory lock waiting stays outside the acquired window",
+    "failed SQL and rollback do not leak a window into later commits"
+  ]
+}

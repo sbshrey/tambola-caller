@@ -1,0 +1,60 @@
+{
+    "runId": "778ca74afdac418f",
+    "players": 320,
+    "requestedWaves": 2,
+    "scope": "Synthetic seeded profiles; native public HTTP purchase/read/leave/wallet routes, optional immediate WebSocket subscriptions; no registration, calls, claims, Android, TLS or capacity acceptance. Same clients/server reused between waves.",
+    "immediateStreams": true,
+    "clientTransportProfiling": false,
+    "serverHeapMiB": 512,
+    "serverActiveProcessors": 4,
+    "playersPerTransport": 8,
+    "sharedHttpTransports": 40,
+    "lifecycleSourceSha256": "b2fb3b32b3cc674d098eb951d39b9d5e5372d630a8b445d7fd7d7b53502475b8",
+    "clientJarSha256": "df61dc8a13f463d06e9b45fcfaa673bd34ed198a2c8fc4061a8056eb01b109e7",
+    "fixtureSourceSha256": "04953625e14192710ebdcd3d36a5da828db0f7fba66ce5804fb9714016bc242a",
+    "profilerSourceSha256": "2a74e0e5a7bf6ffe4c0f03328d4a6105f6b775e4ec9838a2fb6e3991895a19d5",
+    "sqlProfiling": true,
+    "poolProfiling": false,
+    "allocationWindowProfiling": true,
+    "requestProfiling": false,
+    "serviceJarSha256": "2135b43b2bd7c75dc5a713031f92fc4c5757c39324e2c7a56e74fdd285b20e1b",
+    "serviceRuntimeSha256": "fd51150ed608bbdc7f6326ca057f624bea9e56d759a80eeda60c0e29435d55b7",
+    "serviceRuntimeManifest": "07c6344059af30a135144209c7c8bd666b8823124422ec859864d209d4ab7ca1  HikariCP-6.3.0.jar\n07be99758b699e194f70fb9784d94202dc6c98212877829e3d72b020f2660576  alpn-api-1.1.3.v20160715.jar\n7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05  annotations-23.0.0.jar\n857658c8bdcbff794949a8d9922f88d63ee3751c203c7cd7d21ea97f9e745288  checker-qual-3.55.1.jar\n4a4b0affb22a9572409d3a6bde99ce3f2045c551cadc1ca7fe09690892c526c3  config-1.4.5.jar\nb13b933bf86c6a71a704218ace05df5bd1e2332c6818fae25e6f1c2e5fa74342  domain.jar\n0b7b8b003a90ea491579b62f5118828e45112914c65589b00faa49d6ec785839  jansi-2.4.2.jar\n44380abf37d245ce5c0f294f43512d1c39a59642bfa463922c74e96877cf49f8  kotlin-reflect-2.2.21.jar\n2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f  kotlin-stdlib-2.4.20.jar\n5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd  kotlinx-coroutines-core-jvm-1.10.2.jar\n3da805e9da2ff3cb119f744dcd11de6a18e32a5b933518f17418ba5795cfa775  kotlinx-io-bytestring-jvm-0.8.0.jar\n610770cc855edf1c57d9fcd7c69fd040af57adaf8834505f91805de680783d13  kotlinx-io-core-jvm-0.8.0.jar\n1f0afa172110e45a7231ef1b44ae8fd84c1ebaff96f3fc3ad68ef8c48120b59c  kotlinx-serialization-core-jvm-1.9.0.jar\n98abb132b03e11b80318d45350ec9ebbb5453d26505e81331bf2eea7143b6fbe  kotlinx-serialization-json-io-jvm-1.9.0.jar\nd94cc34cae39246a1af74fda63f9c4812ce12216ef641d5fa3bbbb539a6922d8  kotlinx-serialization-json-jvm-1.9.0.jar\n0d786a12576309dedc16f9a2ff464016d51cfc1fe20d7890912200ff2abce0ea  ktor-events-jvm-3.3.3.jar\nff43508bf8fcc179bf672ac6e5e058f8010a62adf944a1e0cf0982b6657e064f  ktor-http-cio-jvm-3.3.3.jar\n7f70cf5011d9cbafc0a2cc8dc51943e47aea5b25d6fb20b2dfb8b5dc6d591085  ktor-http-jvm-3.3.3.jar\nc1bead8c0a2218456a3b7c2bdfea79ac1395ad5b20f2c502a7f39e35911b2710  ktor-io-jvm-3.3.3.jar\nf50c3898289c2bfb76aae862b4fa1b19de32e11ed5e3d8090b49eeb57ddf6626  ktor-network-jvm-3.3.3.jar\n5a77106c9737f5abe3a13c41e567148eb9f3d7223fb2bc9613ec28175920fdf7  ktor-serialization-jvm-3.3.3.jar\nf29c0b2be7ec7dea560c19ebe5a0442fa2736d90c5078b249d6c7bca80245b94  ktor-serialization-kotlinx-json-jvm-3.3.3.jar\n6d5366c19b87a681a8feefec7358e91fbc70559055137ec474a9b2a8bb84be17  ktor-serialization-kotlinx-jvm-3.3.3.jar\nbbe6998103727e036936f49d28bad388eb64acef8c1031b721a2b10eb1d426fb  ktor-server-content-negotiation-jvm-3.3.3.jar\n99d298bf02246cd87ff73d5ca7808535f4cc75ab1457279ccd80c7298bbda631  ktor-server-core-jvm-3.3.3.jar\nc377fe92938a04e0979dbc37a4f49d2b6846c11711dca464a83d1dfaf95692be  ktor-server-netty-jvm-3.3.3.jar\n6eddbc82077fcf55cb3348d94b35e3453d65a6651ef3a417a1214a5671b239b1  ktor-server-status-pages-jvm-3.3.3.jar\nebc5131dda06ffb4d0680e3ca38dc549912bb0fe69f62b3df6c8e27a8ffff3db  ktor-server-websockets-jvm-3.3.3.jar\nad020bd9cd5cae0f5f5d743fc8786dfbffb9dc1d8efb76a6b1972b3578c81d7a  ktor-utils-jvm-3.3.3.jar\n3fc9047c79ca3f174d86c37855ea846025d56341f7774addd1d369668fcb4f82  ktor-websocket-serialization-jvm-3.3.3.jar\n129cf6de3ee4ef12ad2a265acb932056eac9243ab6e5f053e8eb02e9cb14d894  ktor-websockets-jvm-3.3.3.jar\n16ccdfd1847eca169d5651c5f799ea990472350e0c38f68fd6bc47d705ef4a0a  logback-classic-1.6.4.jar\n1b67779e224455ae7e00bd4ccadaf05c38531927ea4363f66412359373f2e9d7  logback-core-1.6.4.jar\nfdf236d2b76aa9710684401fdad7dff9dec56e43da5d39172c9a55ba5f14b360  netty-buffer-4.2.18.Final.jar\n7e4612bead7ba88ac6f7908fa722f90ad6835ea96505c9e40b2f93686c1f61f3  netty-codec-base-4.2.18.Final.jar\n9d8a4b9a6a2a166ec5a4bbe51a78b4f6a726457c51d81495743c7e7ccb9f4765  netty-codec-compression-4.2.18.Final.jar\n2d50765eb58591ce35146c54ca032a257808d2165d8985a8522c70ea1470e8d7  netty-codec-http-4.2.18.Final.jar\na45a2b06c377b9c87c21ae2b37f04c8d808192590a73d977e7a60fd59921f283  netty-codec-http2-4.2.18.Final.jar\n5d97cae5669685872339698efe13f74fe3cdb2dccdb36963b2352bd95acf7070  netty-common-4.2.18.Final.jar\n6d5a08d9dd6d7d0211202e22dbb1629b23a62550335c7e80892da1d4cb115540  netty-handler-4.2.18.Final.jar\n68373ec544cf769ba17bf2ef455166d98f2c260dff536edf35ef57067a9c155f  netty-resolver-4.2.18.Final.jar\neac4f12068db4489e60c6520fad663e5d872f0436a7c641aa9e08db649947863  netty-transport-4.2.18.Final.jar\n3677ca998f3db749d3fdb0fb1b1674f9809f4fbe8f819a346f4858dfb16c4d95  netty-transport-classes-epoll-4.2.18.Final.jar\nbe48ee5b8a2328a1f4f2160270344175612dd9567787727de0dbaecb694beb51  netty-transport-classes-kqueue-4.2.18.Final.jar\n15efbb26cde751e9bab669cc52da5e909f41626f9e04378e2c4cd61202d1359e  netty-transport-native-epoll-4.2.18.Final.jar\n4ee651cdac49aedac42d0d22e726cb4a578f0c02286fc041153ec58925cac818  netty-transport-native-kqueue-4.2.18.Final.jar\ncada7023d09136af128511ca94421d69dc84d0f1f64c9e1f127a1271bb62932a  netty-transport-native-unix-common-4.2.18.Final.jar\n6e0e4cc2d8cae902084f8a2b18728b073a6fd9d1f87c9d8bff8f298c18185b93  postgresql-42.7.13.jar\n6d17aa775222690c13a17a8bb7d930f15fef45448b67dfb0e07b1428de9d70d3  protocol.jar\n2135b43b2bd7c75dc5a713031f92fc4c5757c39324e2c7a56e74fdd285b20e1b  server.jar\ne91ff6d720609e7a194ffe758c3ed5c84e798617ae07b0a0f6a4fe229741b4bb  slf4j-api-2.0.19.jar\n",
+    "stage": "completed",
+    "waves": [
+        {
+            "wave": 1,
+            "purchaseStartEpochMs": 1790518593153,
+            "purchaseEndEpochMs": 1790518596797,
+            "tables": 40,
+            "allRefundsAndReceiptReplaysVerified": true,
+            "streamsObservedBeforeCancellation": 320,
+            "purchaseRoundTripMs": {
+                "count": 320,
+                "p50": 2310.5065,
+                "p95": 3358.4293,
+                "p99": 3454.9485,
+                "max": 3468.8235
+            }
+        },
+        {
+            "wave": 2,
+            "purchaseStartEpochMs": 1790518599670,
+            "purchaseEndEpochMs": 1790518601201,
+            "tables": 40,
+            "allRefundsAndReceiptReplaysVerified": true,
+            "streamsObservedBeforeCancellation": 320,
+            "purchaseRoundTripMs": {
+                "count": 320,
+                "p50": 845.1826,
+                "p95": 1367.2942,
+                "p99": 1468.8515,
+                "max": 1510.9338
+            }
+        }
+    ],
+    "serverPid": 14812,
+    "passed": true,
+    "cleanupComplete": true,
+    "capacityAcceptance": false
+}
