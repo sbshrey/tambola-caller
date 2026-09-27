@@ -247,7 +247,13 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             while (true) {
                 check(SystemClock.elapsedRealtime() - roundStarted < 540_000) { "Round exceeded real-time limit" }
                 if (find("coin-winnings") != null) break
-                val shownCall = description(find("current-call"))
+                val shownCall = try { description(find("current-call")) } catch (_: StaleObjectException) {
+                    // Results can remove this node between the lookup and read. Only
+                    // retry this observation; never repeat a dab or claim action here.
+                    report.put("callReadRetries", report.optInt("callReadRetries") + 1)
+                    SystemClock.sleep(80)
+                    continue
+                }
                 if (shownCall.isBlank() || shownCall == lastCallDescription) { SystemClock.sleep(200); continue }
                 lastCallDescription = shownCall
                 var room = snapshot()

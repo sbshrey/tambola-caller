@@ -41,6 +41,11 @@ function run(...command) {
   return result.stdout.trim();
 }
 assert.match(run('emu', 'avd', 'name').split(/\r?\n/)[0], /^tambola_full_game_/);
+if (benchmark) {
+  // ResultWriter queries driver compilation state after the round. Probe it before
+  // creating any QA wallets so a stalled emulator package service fails early.
+  run('shell', 'cmd', 'package', 'dump', 'io.github.sbshrey.tambola.benchmark');
+}
 if (online) {
   assert.match(run('reverse', '--list'), /\btcp:8080\s+tcp:8080\b/, 'Map this emulator port 8080 to the isolated room service before online tests');
   const health = await fetch('http://127.0.0.1:8080/health/ready', { signal: AbortSignal.timeout(3_000) });
