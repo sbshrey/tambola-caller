@@ -22,3 +22,11 @@ APK SHA-256: `e8263baa7df93e99a8d076a288d67576e67bb18b4cacfff85e046f212d8264f2`,
 The APK can upgrade the earlier Internet Betas without uninstalling. The PC game service and databases are unchanged. Alpha29's earlier full-round evidence remains scoped to that APK; this alpha30 run is a focused lobby recovery and refund check, not a repeated full round or capacity test.
 
 The physical-phone cellular/browser-intent, touch/audio, TalkBack and frame-time checks remain open, as do production signing, editable design updates and high-load purchase latency. Availability depends on the PC staying awake, signed in and online. The broader product goal remains active.
+
+## Publication and host verification
+
+[Alpha30 is published](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha30-table-reconnect) from `9a5c624254bf70cdda8007ab53e6bd7efb954fa0`. GitHub's asset digest and an anonymous HTTP 200 download match the tested APK's hash and byte count. [Publication verification](published-release.json).
+
+A read-only inventory found zero unfinished unexpired rooms before updating the invitation download destination. The previous invitation helper is retained in the protected host's upgrades folder. Restarting the public bridge rotated the Quick Tunnel address; the normal minute-keyed directory request reached the new address at 12:46 UTC. Health, invitation availability, blocked internal routes and unauthenticated-purchase rejection all passed. Both English/Hindi pages and their encoded Android-intent fallback point to alpha30. [Deployment](gateway-update.json), [public entry](public-entry.json), [landing links](deployed-landing.json).
+
+The PC game service stayed ready on protocol 4, with its installed server JAR hash unchanged; the deployed invitation helper matches repository source. [Host verification](host-verification.json). The owned QA emulator was stopped after both test profiles were deleted and its original network settings restored. The PC host remains online.

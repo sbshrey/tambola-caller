@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-09-27T12:45:36.738Z",
+  "sourceCommit": "9a5c624254bf70cdda8007ab53e6bd7efb954fa0",
+  "release": "https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha30-table-reconnect",
+  "prerelease": true,
+  "asset": "https://github.com/sbshrey/tambola-caller/releases/download/full-game-alpha30-table-reconnect/Tambola-Internet-Beta-0.30.0.apk",
+  "apiDigest": "sha256:e8263baa7df93e99a8d076a288d67576e67bb18b4cacfff85e046f212d8264f2",
+  "anonymousDownloadStatus": 200,
+  "bytes": 29142085,
+  "sha256": "e8263baa7df93e99a8d076a288d67576e67bb18b4cacfff85e046f212d8264f2"
+}

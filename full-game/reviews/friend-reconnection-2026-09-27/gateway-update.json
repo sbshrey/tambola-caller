@@ -1,0 +1,7 @@
+{
+  "backup": "C:\\Users\\sbshr\\AppData\\Local\\TambolaTogetherPublicHost\\upgrades\\alpha30-20260927-181547",
+  "observedAt": "2026-09-27T12:45:59.7078716+00:00",
+  "installedSha256": "8f7009dee46aa9f3c90af37328968ead04ddabba99d3d23e3134618582de4538",
+  "unfinishedRooms": 0,
+  "changed": "public-invite.mjs download fallback only"
+}
