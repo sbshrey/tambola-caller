@@ -1,0 +1,24 @@
+{
+  "hosting": {
+    "site": "tambola-together-beta-sbshrey",
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "https://sbshrey.github.io/tambola-caller/friends/",
+        "type": 302
+      }
+    ],
+    "headers": [
+      {
+        "source": "/app-ads.txt",
+        "headers": [
+          {"key": "Content-Type", "value": "text/plain; charset=utf-8"},
+          {"key": "Cache-Control", "value": "public, max-age=3600"},
+          {"key": "X-Content-Type-Options", "value": "nosniff"}
+        ]
+      }
+    ]
+  }
+}

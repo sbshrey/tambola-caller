@@ -8,7 +8,7 @@ The new evidence is preserved separately in [`published-0857Z/publisher-consent-
 
 After verification, the exact published alpha39 APK was restored: version code 39, version `0.39.0-alpha39-internet-beta`, SHA-256 `94eeb08414986517c652285acaa6070068720076183c4a17aad9a0952d70826c`. The temporary emulator was stopped. No server, tunnel or public APK changes were needed.
 
-The remaining gates are the exact AdMob app readiness status and a completed rewarded-ad flow with a valid server callback and exactly 1,000 credited coins. Live ads remain disabled in the published alpha39 APK. A consent form passing this check does not establish app approval or reward delivery.
+The user subsequently confirmed the exact AdMob status is **Requires review** and that they have **no Play Console account yet**. Store publication/linking and ownership verification are the next account prerequisites; a completed rewarded-ad flow with a valid server callback and exactly 1,000 credited coins also remains unverified. See the [publisher website and store handoff](../../publisher-site/README.md). Live ads remain disabled in the published alpha39 APK. A consent form passing this check does not establish app approval or reward delivery.
 
 ## Earlier configuration failure
 
@@ -32,4 +32,4 @@ The privacy page was published at `https://sbshrey.github.io/tambola-caller/priv
 
 That URL was supplied for publishing a European regulations message for the matching app in AdMob. The user subsequently reported publication and the native check above now passes. Publishing the page or message does not approve the app for advertising.
 
-For app readiness, **Requires review** needs a supported store listing linked and submitted; **Getting ready** means Google's review/account verification is underway. The exact label remains to be distinguished. Do not call the overall advertising activation complete while account readiness and completed-ad wallet delivery remain unverified.
+For app readiness, the user has now confirmed **Requires review**. AdMob needs a public supported-store listing and, when requested, app ownership verification before review. **Getting ready** would mean Google's review/account verification is underway. Do not call the overall advertising activation complete while account readiness and completed-ad wallet delivery remain unverified.
