@@ -6,7 +6,7 @@ await mkdir(output, { recursive: true });
 for (const name of ['.nojekyll', 'index.html', 'styles.css', 'icon.svg', 'manifest.webmanifest', 'sw.js']) {
   await copyFile(new URL(name, root), new URL(name, output));
 }
-for (const name of ['src', 'icons', 'friends']) await cp(new URL(name, root), new URL(name, output), { recursive: true });
+for (const name of ['src', 'icons', 'friends', 'privacy']) await cp(new URL(name, root), new URL(name, output), { recursive: true });
 // Require every supported voice pack; never offer an incomplete language.
 for (const { folder } of Object.values(LANGUAGES)) {
   await mkdir(new URL(`audio/${folder}numbers/`, output), { recursive: true });

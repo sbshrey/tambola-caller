@@ -1,0 +1,9 @@
+{
+  "stage": "consent_update",
+  "formLoaded": false,
+  "errorCode": 3,
+  "category": "publisher_misconfiguration",
+  "emulatorOnly": true,
+  "forcedGeography": "EEA",
+  "adRequested": false
+}

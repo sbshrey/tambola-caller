@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="How Tambola Together handles game data, optional diagnostics, rewards and deletion requests.">
+  <title>Privacy policy · Tambola Together</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header><a href="../friends/">Tambola Together</a><span>Internet Beta</span></header>
+  <main>
+    <p class="eyebrow">Your game data</p>
+    <h1>Privacy policy</h1>
+    <p class="intro">This page explains the data used to run Tambola Together and the choices available to you.</p>
+    <p><strong>Publisher:</strong> sbshrey<br><strong>Support and privacy:</strong> <a href="mailto:sbshrey@gmail.com">sbshrey@gmail.com</a><br><strong>Effective date:</strong> 28 September 2026</p>
+
+    <section aria-labelledby="about">
+      <h2 id="about">About the beta</h2>
+      <p>Tambola Together is an online social game with free virtual coins. Coins have no cash value and cannot be bought for money, transferred or redeemed. Simulated practice personas are labelled in the game. The beta server runs on the publisher’s PC and is available while that computer is online.</p>
+      <p>The published alpha39 APK includes optional Firebase diagnostics, off by default. Live rewarded advertising is currently disabled. The advertising section below describes builds in which that optional feature is enabled.</p>
+    </section>
+
+    <section aria-labelledby="device">
+      <h2 id="device">Data on your device</h2>
+      <p>The app stores settings and your guest profile’s session/device credentials, cached online games, ticket marks and pending requests. Online credentials and cached game data use Android Keystore-backed encryption. App data is excluded from Android cloud backup and device transfer. Older offline saves remain until you remove them in Settings.</p>
+      <p>There is no email/password account or cross-device wallet recovery. Resetting app data, uninstalling or losing the device can lose access to your guest wallet.</p>
+    </section>
+
+    <section aria-labelledby="game">
+      <h2 id="game">Data used for online play</h2>
+      <p>The service assigns a random guest-profile identifier and stores your nickname, avatar, room membership, tickets, marks and power-ups, called numbers, claims, results, coin balance and transaction records. Request receipts let the app retry interrupted actions without duplicate charges or rewards. Session and device credentials are stored on the server as one-way hashes.</p>
+      <p>Players at your table can see names, avatars, wins and results. Each player receives only their own ticket numbers. Avoid putting personal information in your nickname or any custom text.</p>
+      <p>The service processes network addresses to operate connections and uses short-lived request-limit records. Aggregate health counts and timings exclude nicknames, profile identifiers, room codes and ticket contents. Service diagnostic logs are designed to exclude credentials and request bodies; these local logs currently have no automatic expiry.</p>
+    </section>
+
+    <section aria-labelledby="diagnostics">
+      <h2 id="diagnostics">Optional crash and performance reports</h2>
+      <p>You choose whether to share diagnostics in the app. Sharing is off by default. When enabled, Google Firebase Crashlytics and Performance Monitoring may receive crash traces, app/device and operating-system information, installation identifiers and performance measurements. Custom game traces report operation names, durations and outcomes without attaching your nickname, profile ID, room code, tickets, URLs or credentials.</p>
+      <p>Turning sharing off stops future collection in the app and deletes unsent crash reports. It does not retract reports already delivered. Google states that Crashlytics retains crash traces and associated identifiers for 90 days before beginning deletion; Performance Monitoring retains IP-associated events for 30 days and installation-associated or de-identified performance data for 60 days. See <a href="https://firebase.google.com/support/privacy">Firebase’s privacy information</a>.</p>
+    </section>
+
+    <section aria-labelledby="ads">
+      <h2 id="ads">Optional rewarded videos</h2>
+      <p>Where enabled, you may choose to watch a Google AdMob video for 1,000 virtual coins, up to five completed rewards per UTC day. Dismissing a video does not block normal play or free coin refills. Google’s consent system presents relevant privacy choices, with an ad-privacy options entry in the app when required.</p>
+      <p>Google’s advertising SDK may process network addresses, device/app identifiers, ad interactions and diagnostics to deliver ads, prevent fraud and operate its services. The app removes the Android Advertising ID permission; this does not prevent every other identifier from being processed. Read <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from partner services</a> and the <a href="https://developers.google.com/admob/android/privacy/play-data-disclosure">Mobile Ads SDK data disclosures</a>.</p>
+      <p>The game supplies a random reference for an individual reward, rather than your nickname, game profile ID, room code or tickets. A signed callback from Google links a completed video to that reference. The server verifies it and prevents duplicate credits. Reward intents and receipts are deleted with the game profile. AdMob console setup tests never grant coins.</p>
+    </section>
+
+    <section aria-labelledby="providers">
+      <h2 id="providers">Service providers</h2>
+      <p>The game databases run on the publisher’s PC. Cloudflare Tunnel carries HTTPS connections to it. GitHub hosts APK downloads, the invitation website and the server-location directory. Google provides the optional diagnostics and advertising services described above. These providers process connection/service information and may process it in different countries. See <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare’s privacy policy</a>, <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s privacy statement</a> and the Google links above.</p>
+      <p>This privacy page uses no scripts, analytics, advertising or contact form. Its hosting provider still processes the information needed to serve the page.</p>
+    </section>
+
+    <section aria-labelledby="retention">
+      <h2 id="retention">Retention and backups</h2>
+      <p>Rooms close 24 hours after creation; game records are scheduled for removal 30 days after that expiry. Seven-day game sessions renew on the same installation. Profiles with an enabled device credential and their wallets currently have no automatic expiry. Unenrolled or revoked profiles are scheduled for removal 30 days after session expiry. Scheduled removal depends on the server’s retention worker running.</p>
+      <p>Routine backups retain the latest seven complete database pairs. Additional archives retained for service upgrades currently have no automatic expiry. Deleting a profile does not immediately rewrite older archives.</p>
+      <p>A separate recovery record prevents an older backup from restoring deleted or signed-out access. It contains a random profile ID and the time of deletion/sign-out; deletion also stores a one-way confirmation proof and its expiry. It contains no nickname, avatar or sign-in secret. Recovery records currently have no automatic expiry. A deletion request can confirm its result for 30 days while the recovery protection remains.</p>
+    </section>
+
+    <section aria-labelledby="deletion">
+      <h2 id="deletion">Delete your profile or request help</h2>
+      <p>In the app, tap your coin balance, choose <strong>Delete online profile</strong> and read the confirmation. This removes the guest profile, credentials, wallet and owned transaction/reward records, leaves its rooms, and replaces the profile name and avatar in shared service records with “Deleted player” and the default avatar. Other players can finish an active game.</p>
+      <p>Shared tickets, calls, scores, custom prize text and results remain until room retention expires. Copies already saved or shared by others are not removed. After confirmation, this installation clears its online data; older offline saves can be removed separately. Signing out revokes access but is not the same as deleting the profile. A local reset only clears this device.</p>
+      <p>You can also email <a href="mailto:sbshrey@gmail.com?subject=Tambola%20privacy%20or%20deletion%20request">sbshrey@gmail.com</a> with a privacy or deletion request without reinstalling the app. We need to identify the relevant profile and verify that you control it before acting. A nickname or room code alone is not proof of ownership. If you no longer have the installation or credentials, identifying and verifying the profile may not be possible. Do not email passwords, session tokens, device credentials or recovery proofs.</p>
+      <p>Deleting a game profile does not automatically remove information already sent to Google through optional diagnostics or ads. Contact the privacy address for assistance; provider retention and privacy controls are described above.</p>
+    </section>
+
+    <section aria-labelledby="permissions">
+      <h2 id="permissions">Permissions, sound and updates</h2>
+      <p>The game uses internet access and vibration. It does not request camera, microphone, contacts or location permissions. Number voices were generated with OpenAI and are played from recordings bundled with the app; gameplay does not call OpenAI or send game data to it.</p>
+      <p>When these practices change, this page will be updated with a new effective date. Send privacy or support questions to <a href="mailto:sbshrey@gmail.com">sbshrey@gmail.com</a>.</p>
+    </section>
+  </main>
+  <footer><a href="../friends/">Back to Tambola Together</a></footer>
+</body>
+</html>

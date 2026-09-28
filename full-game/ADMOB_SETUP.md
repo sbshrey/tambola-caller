@@ -13,6 +13,8 @@ Live requests require `-PtambolaLiveAds=true`. Account readiness, the published 
 1. The AdMob account and app/unit IDs are already supplied. Complete any identity/payment details requested by [AdMob](https://admob.google.com/) yourself.
 2. Open rewarded unit `9960291000`. Set reward amount **1000**, reward item **coins**. The server validates both values; a differently configured reward cannot be credited.
 3. Configure privacy messages in AdMob's Privacy & messaging section. The app uses UMP before requesting live ads and offers the privacy-options entry when required. Advertising ID permission is removed. Review Google's current SDK data disclosures when preparing the store's Data safety form.
+   - Select Tambola's app, create a European regulations message, and use the public privacy URL `https://sbshrey.github.io/tambola-caller/privacy/`. The publisher's supplied support/privacy contact is `sbshrey@gmail.com`.
+   - The emulator check on 28 September received UMP error 3: no forms configured for the supplied app ID. Create/publish the message in the console, then rerun the private publisher-consent check below; local SDK compilation does not establish console configuration.
 4. Link a supported app-store listing and complete app readiness/ownership verification. A GitHub APK download by itself does not satisfy app readiness. For applicable stores, publish the account's exact app-ads.txt line on the developer website used by the store listing. Do not invent a publisher ID or use Google's sample line.
 
 See [app readiness](https://support.google.com/admob/answer/10564477?hl=en-GB) and [app-ads.txt verification](https://support.google.com/admob/answer/14538460?hl=en).
@@ -34,6 +36,8 @@ For a rejected console test, the server response and running server log include 
 ## Development preview
 
 `./gradlew.bat :app:assembleDebug -PtambolaAdTest=true` enables Google's official test app/unit in debug only. Test previews never request a reward intent or award server coins. Public-beta ad requests remain disabled unless `tambolaLiveAds=true`; other release variants stay disabled. Never click live ads while testing.
+
+For a private **consent-only** check of the publisher app, build `:app:assembleDebug :app:assembleDebugAndroidTest -I tools/publisher-consent.init.gradle`, install both APKs only on the owned emulator, and run `PublisherConsentConfigurationTest` with instrumentation argument `tambolaPublisherConsent=true`. The opt-in check requires a debuggable beta package, validates the publisher app ID, resets only the emulator's consent state, forces EEA test geography and attempts to load the configured form. It never requests or displays an ad. Its JSON reports only fixed categories, an SDK error code and form availability. Restore the exact published APK afterward. This init script is a diagnostic override, not a distributable advertising build.
 
 ## Rewarded policy review (28 September 2026)
 

@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 
-// Publish only the invitation assets and compatible worker routing to the existing Pages branch.
+// Publish only the beta invitation/privacy assets and compatible worker routing to the existing Pages branch.
 // The rest of main's tree is retained; --expected-base prevents silently overwriting newer work.
 const root = fileURLToPath(new URL('../', import.meta.url));
 const gh = process.env.TAMBOLA_GH || 'gh';
@@ -20,7 +20,7 @@ assert.equal(pages.source.branch, 'main'); assert.equal(pages.source.path, '/');
 const ref = api('git/ref/heads/main');
 assert.equal(ref.object.sha, expected, 'Main changed; inspect it before publishing');
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', windowsHide: true }).trim();
-const paths = ['friends/index.html', 'friends/invite.js', 'friends/styles.css', 'sw.js'];
+const paths = ['friends/index.html', 'friends/invite.js', 'friends/styles.css', 'sw.js', 'privacy/index.html', 'privacy/styles.css'];
 const files = await Promise.all(paths.map(async path => ({ path, content: await readFile(new URL('../' + path, import.meta.url), 'utf8') })));
 const publishedWorker = Buffer.from(api(`contents/sw.js?ref=${expected}`).content, 'base64').toString('utf8');
 const manifest = value => value.replaceAll('\r\n', '\n').split("self.addEventListener('install'")[0].trim();
@@ -39,10 +39,11 @@ if (!process.argv.includes('--apply')) {
   const entries = files.map(({ path, content }) => ({ path, mode: '100644', type: 'blob',
     sha: api('git/blobs', { content: Buffer.from(content.replaceAll('\r\n', '\n')).toString('base64'), encoding: 'base64' }).sha }));
   const nextTree = api('git/trees', { base_tree: tree, tree: entries }).sha;
-  const commit = api('git/commits', { message: 'Update Tambola friend invitation page', tree: nextTree, parents: [expected] }).sha;
+  const commit = api('git/commits', { message: 'Update Tambola beta invitation and privacy pages', tree: nextTree, parents: [expected] }).sha;
   assert.equal(api('git/refs/heads/main', { sha: commit, force: false }, 'PATCH').object.sha, commit);
   const result = { publishedAt: new Date().toISOString(), base: expected, sourceCommit, mainCommit: commit, files: entries,
-    site: 'https://sbshrey.github.io/tambola-caller/friends/', scope: 'Main changes are limited to the four allowed paths; Pages build and public checks still required.' };
+    site: 'https://sbshrey.github.io/tambola-caller/friends/', privacy: 'https://sbshrey.github.io/tambola-caller/privacy/',
+    scope: 'Main changes are limited to the six allowed paths; Pages build and public checks still required.' };
   await writeFile(publicationRecord, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));
 }

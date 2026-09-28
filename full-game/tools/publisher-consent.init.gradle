@@ -1,0 +1,15 @@
+// Private emulator diagnostic only. Does not enable ad requests or alter the publicBeta build.
+// Use with PublisherConsentConfigurationTest and -e tambolaPublisherConsent true.
+// Restore the published APK on the owned emulator after the check.
+gradle.beforeProject { project ->
+    if (project.path == ':app') {
+        project.pluginManager.withPlugin('com.android.application') {
+            project.extensions.getByName('androidComponents').finalizeDsl { android ->
+                def debug = android.buildTypes.getByName('debug')
+                debug.applicationIdSuffix = '.beta'
+                debug.versionNameSuffix = '-private-consent-check'
+                debug.manifestPlaceholders['admobAppId'] = 'ca-app-pub-1312548197553464~7883782841'
+            }
+        }
+    }
+}
