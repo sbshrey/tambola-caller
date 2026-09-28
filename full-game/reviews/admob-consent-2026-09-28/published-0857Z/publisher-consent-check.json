@@ -1,0 +1,8 @@
+{
+  "stage": "form_load",
+  "formLoaded": true,
+  "consentRequired": true,
+  "emulatorOnly": true,
+  "forcedGeography": "EEA",
+  "adRequested": false
+}
