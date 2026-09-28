@@ -12,6 +12,10 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.Bundle
+import android.os.SystemClock
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import io.github.sbshrey.tambola.game.data.Preferences
 import io.github.sbshrey.tambola.game.TambolaApplication
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +30,7 @@ enum class SoundPause(val message: String) {
     ERROR("A sound could not play. You can keep playing with the numbers on screen."),
 }
 
-/** One main-thread mixer and focus owner for the entire app. All assets are packaged offline. */
+/** One main-thread mixer and focus owner. Number clips are packaged; prize speech uses an offline device voice. */
 class GameAudio internal constructor(private val context: Application) {
     companion object {
         fun get(context: Context): GameAudio = (context.applicationContext as TambolaApplication).audio
@@ -42,6 +46,12 @@ class GameAudio internal constructor(private val context: Application) {
     private var voice: Slot? = null
     private var music: Slot? = null
     private var effect: Slot? = null
+    private data class PrizeSpeech(val owner: Any, val text: String, val language: String, val at: Long = SystemClock.elapsedRealtime())
+    private val speechQueue = ArrayDeque<PrizeSpeech>()
+    private var speech: PrizeSpeech? = null
+    private var speechId = 0L
+    private var tts: TextToSpeech? = null
+    private var ttsReady = false
     private var focus: AudioFocusRequest? = null
     private var hasFocus = false
     private var foreground = false
@@ -64,7 +74,7 @@ class GameAudio internal constructor(private val context: Application) {
         val old = preferences
         preferences = value.copy(voiceVolume = value.voiceVolume.coerceIn(0, 100),
             musicVolume = value.musicVolume.coerceIn(0, 100), effectsVolume = value.effectsVolume.coerceIn(0, 100))
-        if ((!value.voice && old.voice) || preferences.voiceVolume == 0) releaseVoice()
+        if ((!value.voice && old.voice) || preferences.voiceVolume == 0) { releaseVoice(); releaseSpeech() }
         if (!effectsAudible) releaseEffect()
         updateGains(); reconcile()
     }
@@ -95,7 +105,60 @@ class GameAudio internal constructor(private val context: Application) {
         mutablePause.value = SoundPause.HEADPHONES
         releaseAll(); abandonFocus()
     }
-    internal fun isAnnouncing(owner: Any): Boolean { assertMain(); return voice?.owner === owner }
+    internal fun isAnnouncing(owner: Any): Boolean { assertMain(); return voice?.owner === owner || speech?.owner === owner }
+
+    internal fun announcePrize(owner: Any, text: String, language: String) {
+        assertMain()
+        if (!foreground || !preferences.voice || preferences.voiceVolume == 0 || mutablePause.value != null) return
+        if (speechQueue.size >= 8) speechQueue.removeFirst()
+        speechQueue.addLast(PrizeSpeech(owner, text.take(400), language))
+        if (tts == null) {
+            tts = TextToSpeech(context) { status -> main.post {
+                ttsReady = status == TextToSpeech.SUCCESS
+                if (ttsReady) {
+                    tts?.setAudioAttributes(speechAttributes)
+                    tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                        override fun onStart(id: String?) = Unit
+                        override fun onDone(id: String?) = completed(id)
+                        @Deprecated("Deprecated in Java") override fun onError(id: String?) = completed(id)
+                        private fun completed(id: String?) { main.post {
+                            if (id == speechId.toString()) { speech = null; drainSpeech(); reconcile() }
+                        } }
+                    })
+                    drainSpeech()
+                } else speechQueue.clear()
+            } }
+        }
+        drainSpeech()
+    }
+
+    private fun drainSpeech() {
+        if (!ttsReady || voice != null || effect != null || speech != null || !foreground || !preferences.voice || preferences.voiceVolume == 0 || mutablePause.value != null) return
+        while (speechQueue.isNotEmpty()) {
+            val item = speechQueue.removeFirst()
+            if (SystemClock.elapsedRealtime() - item.at > 10_000) continue
+            val language = if (item.language == "en") "en" else "hi"
+            // Never send names or prize announcements to a network speech service.
+            val offline = runCatching { tts?.voices?.firstOrNull { !it.isNetworkConnectionRequired && it.locale.language == language } }.getOrNull() ?: continue
+            if (tts?.setVoice(offline) != TextToSpeech.SUCCESS || !ensureFocus()) continue
+            speech = item; speechId++
+            val result = tts?.speak(item.text, TextToSpeech.QUEUE_FLUSH,
+                Bundle().apply { putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, preferences.voiceVolume / 100f) }, speechId.toString())
+            if (result == TextToSpeech.SUCCESS) {
+                val currentId = speechId
+                main.postDelayed({
+                    if (speech != null && speechId == currentId) { speechId++; speech = null; tts?.stop(); reconcile() }
+                }, 8_000)
+                updateGains(); return
+            }
+            speech = null
+        }
+    }
+
+    private fun releaseSpeech(owner: Any? = null) {
+        if (owner == null) speechQueue.clear() else speechQueue.removeAll { it.owner === owner }
+        if (owner == null || speech?.owner === owner) { speechId++; speech = null; tts?.stop() }
+    }
 
     internal fun announce(owner: Any, number: Int, language: String, celebration: Boolean, explicit: Boolean, onFailure: () -> Unit) {
         assertMain()
@@ -104,6 +167,8 @@ class GameAudio internal constructor(private val context: Application) {
         if (explicit) resumeSound()
         if (mutablePause.value != null) return
         releaseVoice(); releaseEffect()
+        // Current ball always takes priority over a prize sentence.
+        if (speech != null) { speechId++; speech = null; tts?.stop() }
         if ((preferences.voice || explicit) && preferences.voiceVolume > 0) {
             if (!ensureFocus()) return
             val slot = Slot(MediaPlayer(), owner, after = SoundCue.WIN.takeIf { celebration }, failure = onFailure)
@@ -118,7 +183,7 @@ class GameAudio internal constructor(private val context: Application) {
         assertMain()
         if (!foreground || !effectsAudible || mutablePause.value != null) return
         // Marks must not mask an announcement or replace a winning moment.
-        if (voice != null || (effect?.cue == SoundCue.WIN && cue == SoundCue.MARK)) return
+        if (voice != null || speech != null || (effect?.cue == SoundCue.WIN && cue == SoundCue.MARK)) return
         releaseEffect()
         if (!ensureFocus()) return
         val slot = Slot(MediaPlayer(), owner, cue)
@@ -130,6 +195,7 @@ class GameAudio internal constructor(private val context: Application) {
         assertMain()
         if (voice?.owner === owner) releaseVoice()
         if (effect?.owner === owner) releaseEffect()
+        releaseSpeech(owner)
         reconcile()
     }
 
@@ -168,6 +234,7 @@ class GameAudio internal constructor(private val context: Application) {
         }
     }
     private fun reconcile() {
+        drainSpeech()
         if (!wantsMusic || mutablePause.value != null) releaseMusic()
         else if (music == null && ensureFocus()) {
             val slot = Slot(MediaPlayer())
@@ -175,7 +242,7 @@ class GameAudio internal constructor(private val context: Application) {
             prepare(slot, "sound/game-night.wav", loop = true)
         }
         updateGains()
-        if (voice == null && music == null && effect == null && !(wantsMusic && mutablePause.value == SoundPause.WAITING)) {
+        if (voice == null && speech == null && music == null && effect == null && !(wantsMusic && mutablePause.value == SoundPause.WAITING)) {
             // Muting music during an interruption removes our focus request. No later gain
             // callback can arrive, so expose an explicit resume action instead of waiting forever.
             if (mutablePause.value == SoundPause.WAITING) mutablePause.value = SoundPause.INTERRUPTED
@@ -216,7 +283,7 @@ class GameAudio internal constructor(private val context: Application) {
     }
     private fun updateGains() {
         appliedMusicGain = if (music == null) 0f else preferences.musicVolume / 100f * when {
-            voice != null -> .15f
+            voice != null || speech != null -> .15f
             effect?.cue == SoundCue.WIN -> .5f
             else -> 1f
         }
@@ -228,7 +295,7 @@ class GameAudio internal constructor(private val context: Application) {
     private fun releaseVoice() { val old = voice; voice = null; old?.player?.release() }
     private fun releaseEffect() { val old = effect; effect = null; old?.player?.release() }
     private fun releaseMusic() { val old = music; music = null; old?.player?.release(); appliedMusicGain = 0f }
-    private fun releaseAll() { releaseVoice(); releaseEffect(); releaseMusic() }
+    private fun releaseAll() { releaseVoice(); releaseEffect(); releaseMusic(); releaseSpeech() }
     private fun abandonFocus() {
         val old = focus
         focus = null; hasFocus = false

@@ -71,7 +71,7 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
     val nextGame = next.round
     val sameRound = previousGame != null && previousGame.id == nextGame?.id
     if (sameRound && nextGame!!.called.take(previousGame!!.called.size) != previousGame.called) throw InvalidRoomResponse()
-    val nextMarks = if (!sameRound) emptyMap() else marks.filterKeys { key -> nextGame!!.ownTickets.any { it.id == key } }
+    val nextMarks = nextGame?.powers?.marks ?: if (!sameRound) emptyMap() else marks.filterKeys { key -> nextGame!!.ownTickets.any { it.id == key } }
     val finished = next.round?.status in setOf(RoundStatus.COMPLETED, RoundStatus.CANCELLED)
     val archive = if (finished) (listOf(next) + history.filterNot { it.round?.id == next.round?.id }).take(50) else history
     val number = if (live && !update.resyncRequired && sameRound && nextGame!!.called.size == previousGame!!.called.size + 1)
@@ -90,6 +90,7 @@ fun OnlineSaved.badgeProgress(): BadgeProgress = history.fold(badges) { progress
 
 fun OnlineSaved.mark(ticketId: String, number: Int): OnlineSaved {
     val game = room?.round ?: return this
+    if (game.powers != null || number !in game.called) return this
     if (game.status !in setOf(RoundStatus.PLAYING, RoundStatus.PAUSED) || room.options.game.assistedMarking) return this
     if (game.ownTickets.none { it.id == ticketId && number in it.numbers }) return this
     val old = marks[ticketId].orEmpty()
@@ -116,6 +117,7 @@ fun RoomView.validateFor(playerId: String) {
     try {
         // Version-one cached receipts/snapshots predate round avatars; Player defaults them to zero.
         require(protocolVersion in 1..PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
+        require(!options.powersEnabled || protocolVersion >= 6)
         require(protocolVersion >= 3 || (!options.game.manualClaims && options.computerPlayers == 0))
         require(protocolVersion >= 4 || (!options.coinGame && coins == null && wallet == null))
         require(options.coinGame == (coins != null))
@@ -126,7 +128,7 @@ fun RoomView.validateFor(playerId: String) {
             require(economy.bonusCoins in 0..7_500L)
             require(options.coinRulesVersion == 2 || (economy.powerUp == PowerUp.NONE && economy.bonusCoins == 0L))
             require(economy.pool == economy.tickets * COIN_TICKET_PRICE)
-            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED || (economy.friendTable && phase == RoomPhase.LOBBY))
+            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED || ((economy.friendTable || options.powersEnabled) && phase == RoomPhase.LOBBY))
             if (economy.tickets >= 2) require(economy.prizes == CoinPool(economy.tickets, options.coinRulesVersion).prizes)
             if (economy.tickets < 2) require(economy.prizes.isEmpty())
             require(phase != RoomPhase.LOBBY || economy.friendTable || economy.startsAt != null)
@@ -159,9 +161,19 @@ fun RoomView.validateFor(playerId: String) {
                     PowerUp.TICKET_INSURANCE -> if (economy.settledWinnings > 0) 0L else
                         (economy.ownTickets * COIN_TICKET_PRICE - economy.returnedCoins).coerceAtLeast(0)
                 }
-                require(economy.bonusCoins == expectedBonus)
+                require(economy.bonusCoins == expectedBonus + matchPowerBonus(game.powers, game.awards, economy.prizes, game.status == RoundStatus.COMPLETED))
             }
             require(game.ownTickets.map { it.id }.distinct().size == game.ownTickets.size)
+            require((game.powers != null) == options.powersEnabled)
+            game.powers?.let { powers ->
+                val owned = game.ownTickets.associateBy { it.id }
+                require(powers.correctMarks in 0..90 && powers.inventory.size <= 2 && powers.noticeSequence in 0..100)
+                require(powers.marks.all { (id, marked) -> owned[id]?.let { marked.all { n -> n in it.numbers && n in game.called } } == true })
+                require(powers.correctMarks <= powers.marks.values.sumOf { it.size })
+                require(powers.discarded.all { it in owned } && powers.used.keys.all { it in owned })
+                require(powers.armedBonus.all { it in owned } && powers.autoUntil.all { it.key in owned && it.value > 0 })
+                require(powers.bonusPrizes.all { (prize, ticket) -> ticket in owned && game.awards.any { it.prize == prize && ticket in it.ticketIds } })
+            }
             require(game.called.size <= 90 && game.called.distinct() == game.called && game.called.all { it in 1..90 })
             require(game.status != RoundStatus.READY)
             val finished = game.status in setOf(RoundStatus.COMPLETED, RoundStatus.CANCELLED)

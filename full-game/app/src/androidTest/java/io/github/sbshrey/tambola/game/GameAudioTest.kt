@@ -171,12 +171,13 @@ class GameAudioTest {
         val prize = CustomPrize("custom_first", "First matching number", 10,
             TicketPattern(listOf(listOf(RuleCondition(NumberSelection.All, 1)))))
         val before = model.state.value.round?.id
-        main { model.updateSetup(SetupDraft(bots = 0, playAllNumbers = true, customPrizes = listOf(prize))); model.create() }
+        main { model.updateSetup(SetupDraft(bots = 0, playAllNumbers = true, customPrizes = listOf(prize), manualClaims = false)); model.create() }
         until { model.state.value.round?.id != before && !model.state.value.saving && snapshot().effectPlaying }
         assertEquals(SoundCue.DEAL, snapshot().effect)
         until { snapshot().effect == null }
         while (model.state.value.round!!.customAwards.isEmpty()) {
             val count = model.state.value.round!!.called.size
+            assertTrue("Automatic custom prize must be awarded before the draw is exhausted", count < 90)
             main { model.draw() }
             until { model.state.value.round!!.called.size == count + 1 && snapshot().effectPlaying }
             assertEquals(if (model.state.value.round!!.customAwards.isEmpty()) SoundCue.CALL else SoundCue.WIN, snapshot().effect)

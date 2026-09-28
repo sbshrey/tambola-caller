@@ -72,6 +72,10 @@ class NumberBoardUiTest {
         compose.onNodeWithTag("tickets-down").performClick()
         val pageBefore = compose.onNodeWithTag("ticket-page").fetchSemanticsNode().config[SemanticsProperties.Text]
         compose.onNodeWithTag("open-call-history").assertHeightIsAtLeast(androidx.compose.ui.unit.Dp(48f)).performClick()
+        compose.onNodeWithTag("number-board-numbers-tab").assertIsSelected()
+        (1..90).forEach { compose.onNodeWithTag("board-number-$it").assertIsDisplayed() }
+        compose.onNodeWithTag("number-board-grid").assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.VerticalScrollAxisRange))
+        compose.onNodeWithTag("number-board-history-tab").performClick()
         compose.onNodeWithTag("number-board-history-tab").assertIsSelected()
         compose.onNodeWithTag("call-history-89").assertIsDisplayed().assertContentDescriptionEquals(words(R.string.board_history_entry, 89, called.last()))
         compose.onNodeWithTag("number-board-count").assertTextEquals(words(R.string.ui_called_to_go, 89, 1))
@@ -96,7 +100,7 @@ class NumberBoardUiTest {
                 words(if (number == called.last()) R.string.board_latest_at else R.string.board_called_at, position)))
             assertFits(compose.onNode(hasText(number.toString()) and hasAnyAncestor(hasTestTag("board-number-$number")), useUnmergedTree = true), scale)
         }
-        compose.onNodeWithTag("board-number-90").performScrollTo().assertIsDisplayed()
+        (1..90).forEach { compose.onNodeWithTag("board-number-$it").assertIsDisplayed() }
         compose.onNodeWithTag("dismiss-number-board").assertIsDisplayed().assertWidthIsAtLeast(androidx.compose.ui.unit.Dp(48f)).performClick()
         compose.onNodeWithTag("number-board-dialog").assertDoesNotExist()
         assertEquals(pageBefore, compose.onNodeWithTag("ticket-page").fetchSemanticsNode().config[SemanticsProperties.Text])

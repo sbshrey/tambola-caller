@@ -32,17 +32,17 @@ internal fun CalledNumberDialog(called: List<Int>, initiallyHistory: Boolean = f
     val density = LocalDensity.current
     var history by rememberSaveable { mutableStateOf(initiallyHistory) }
     val historyScroll = rememberLazyListState()
-    val boardScroll = rememberScrollState()
     Dialog(onDismissRequest = dismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         CompositionLocalProvider(LocalDensity provides density) {
-        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().padding(12.dp), contentAlignment = Alignment.Center) {
-            Surface(Modifier.widthIn(max = 680.dp).fillMaxWidth().heightIn(max = maxHeight)
+        Box(Modifier.fillMaxSize().safeDrawingPadding().padding(12.dp), contentAlignment = Alignment.Center) {
+            Surface(Modifier.widthIn(max = 920.dp).fillMaxWidth().fillMaxHeight()
                 .testTag("number-board-dialog").semantics { testTagsAsResourceId = true },
                 shape = RoundedCornerShape(24.dp), color = colors.surface) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(words(R.string.ui_number_board), Modifier.weight(1f).semantics { heading() },
-                            style = MaterialTheme.typography.titleLarge)
+                            style = MaterialTheme.typography.titleLarge, maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                         IconButton(onClick = dismiss, modifier = Modifier.size(48.dp).testTag("dismiss-number-board")
                             .semantics { contentDescription = words(R.string.ui_back_to_game) }) {
                             Text("×", fontSize = 28.sp)
@@ -62,7 +62,7 @@ internal fun CalledNumberDialog(called: List<Int>, initiallyHistory: Boolean = f
                         modifier = Modifier.fillMaxWidth().testTag("number-board-count"))
                     Text(called.lastOrNull()?.let { words(R.string.board_latest, it) } ?: words(R.string.play_waiting),
                         color = colors.primary, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth().testTag("number-board-latest"))
-                    Box(Modifier.weight(1f, fill = false).fillMaxWidth()) {
+                    Box(Modifier.weight(1f).fillMaxWidth()) {
                         if (history) {
                             LazyColumn(state = historyScroll, modifier = Modifier.fillMaxWidth().testTag("number-board-history"),
                                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -82,9 +82,7 @@ internal fun CalledNumberDialog(called: List<Int>, initiallyHistory: Boolean = f
                                     }
                                 }
                             }
-                        } else Column(Modifier.fillMaxWidth().verticalScroll(boardScroll).testTag("number-board-scroll")) {
-                            CalledNumberGrid(called, words)
-                        }
+                        } else CalledNumberGrid(called, words)
                     }
                 }
             }
@@ -98,18 +96,23 @@ private fun CalledNumberGrid(called: List<Int>, words: GameText) {
     val colors = MaterialTheme.colorScheme
     val fontScale = LocalDensity.current.fontScale
     val positions = called.withIndex().associate { it.value to it.index + 1 }
-    BoxWithConstraints(Modifier.fillMaxWidth()) {
-        val columns = ((maxWidth.value + 6) / (40 * fontScale.coerceAtLeast(1f) + 6)).toInt().coerceIn(2, 10)
+    BoxWithConstraints(Modifier.fillMaxSize().testTag("number-board-grid")) {
+        val columns = if (maxWidth > maxHeight * 1.5f) 15 else 10
         val rows = (1..90).toList().chunked(columns)
-        Column(Modifier.semantics { collectionInfo = CollectionInfo(rows.size, columns) }, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        val cellWidth = (maxWidth - 3.dp * (columns - 1)) / columns
+        val cellHeight = (maxHeight - 3.dp * (rows.size - 1)) / rows.size
+        // This read-only overview fits every number. History retains full-size text;
+        // each overview cell also exposes its number and call state to TalkBack.
+        val textSize = minOf(18f * fontScale, cellWidth.value * .62f, cellHeight.value * .62f) / fontScale
+        Column(Modifier.fillMaxSize().semantics { collectionInfo = CollectionInfo(rows.size, columns) }, verticalArrangement = Arrangement.spacedBy(3.dp)) {
             rows.forEachIndexed { rowIndex, row ->
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                     row.forEachIndexed { columnIndex, number ->
                         val position = positions[number]
                         val foreground = if (position != null) colors.onSecondaryContainer else colors.onSurfaceVariant
                         val state = if (number == called.lastOrNull()) words(R.string.board_latest_at, position!!)
                             else position?.let { words(R.string.board_called_at, it) } ?: words(R.string.ui_not_called)
-                        Box(Modifier.weight(1f).aspectRatio(1f)
+                        Box(Modifier.weight(1f).fillMaxHeight()
                             .background(if (position != null) colors.secondaryContainer else colors.surfaceContainer, RoundedCornerShape(10.dp))
                             .border(if (number == called.lastOrNull()) 2.dp else 1.dp,
                                 if (number == called.lastOrNull()) colors.primary else colors.outlineVariant, RoundedCornerShape(10.dp))
@@ -118,8 +121,9 @@ private fun CalledNumberGrid(called: List<Int>, words: GameText) {
                                 collectionItemInfo = CollectionItemInfo(rowIndex, 1, columnIndex, 1)
                             }, contentAlignment = Alignment.Center) {
                             Text(number.toString(), Modifier.fillMaxWidth(), textAlign = TextAlign.Center,
-                                fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = foreground)
-                            if (position != null) Canvas(Modifier.align(Alignment.TopEnd).padding(4.dp).size(8.dp)) {
+                                fontSize = textSize.sp, lineHeight = (textSize * 1.1f).sp,
+                                maxLines = 1, fontWeight = FontWeight.SemiBold, color = foreground)
+                            if (position != null && cellHeight >= 34.dp && cellWidth >= 32.dp) Canvas(Modifier.align(Alignment.TopEnd).padding(3.dp).size(5.dp)) {
                                 drawLine(foreground, Offset(0f, size.height * .5f), Offset(size.width * .35f, size.height), 1.5.dp.toPx())
                                 drawLine(foreground, Offset(size.width * .35f, size.height), Offset(size.width, 0f), 1.5.dp.toPx())
                             }

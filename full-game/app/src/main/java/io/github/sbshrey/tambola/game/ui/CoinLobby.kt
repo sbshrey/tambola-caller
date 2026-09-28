@@ -123,6 +123,13 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         Text(words(R.string.coin_pool, coins?.pool ?: 0), fontSize = 24.sp, fontWeight = FontWeight.Black)
                         Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("resume-match")) { Text(words(R.string.coin_resume)) }
                     } else {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            listOf(false to R.string.power_classic_room, true to R.string.power_room).forEach { (value, label) ->
+                                FilterChip(selected = state.powersEnabled == value, onClick = { model.choosePowerRoom(value) }, enabled = enabled,
+                                    label = { Text(words(label)) }, modifier = Modifier.testTag("power-room-$value"))
+                            }
+                        }
+                        Text(words(if (state.powersEnabled) R.string.power_room_summary else R.string.power_classic_summary), style = MaterialTheme.typography.bodySmall)
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(words(R.string.coin_tickets), fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                             Text(words(R.string.coin_price), fontSize = 12.sp, color = GameNightPalette.muted)
@@ -181,9 +188,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         }
                     }
                     if (!active && !waiting) {
-                        TextButton(onClick = { powerUps = true }, enabled = enabled, modifier = Modifier.testTag("choose-powerup")) {
-                            Text(words(R.string.powerup_selected, words.powerUpTitle(state.chosenPowerUp)))
-                        }
+                        TextButton(onClick = { powerUps = true }, modifier = Modifier.testTag("choose-powerup")) { Text(words(R.string.powerup_title)) }
                         if (state.name != null) RewardedCoins(enabled, model)
                     }
                     if (state.sessionExpired || state.storageFailure) TextButton(onClick = { reset = true }) { Text(words(R.string.ui_reset_online_data)) }
@@ -233,20 +238,11 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     if (friendDialog) FriendEntryDialog(tickets, cost, enabled,
         enter = { code -> friendDialog = false; friends(tickets, code) }, close = { friendDialog = false })
     if (powerUps) ArenaDialog(words(R.string.powerup_title), { powerUps = false }) {
-        Text(words(R.string.powerup_beta_free))
-        PowerUp.entries.forEach { powerUp ->
-            OutlinedButton(onClick = { model.choosePowerUp(powerUp); powerUps = false }, enabled = enabled,
-                modifier = Modifier.fillMaxWidth().testTag("powerup-${powerUp.name}")) {
-                Column(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(words.powerUpTitle(powerUp), fontWeight = FontWeight.Bold)
-                    Text(words(when (powerUp) {
-                        PowerUp.NONE -> R.string.powerup_none_detail
-                        PowerUp.TICKET_INSURANCE -> R.string.powerup_insurance_detail
-                        PowerUp.PRIZE_BOOST -> R.string.powerup_boost_detail
-                    }), fontSize = 12.sp)
-                }
-            }
-        }
+        Text(words(R.string.power_drop_rules))
+        Text(words(R.string.power_shield_detail))
+        Text(words(R.string.power_auto_detail))
+        Text(words(R.string.power_bonus_detail))
+        Text(words(R.string.practice_disclosure))
     }
     }
 }

@@ -7,7 +7,7 @@
     <string name="ui_keep_current_avatar">"Keep current avatar"</string>
     <string name="ui_current_number">"Current number %1$s"</string>
     <string name="ui_ready_to_call_numbers">"Ready to call numbers"</string>
-    <string name="ui_computer">" · computer"</string>
+    <string name="ui_computer">" · practice"</string>
     <string name="ui_top_row">"Top row"</string>
     <string name="ui_middle_row">"Middle row"</string>
     <string name="ui_bottom_row">"Bottom row"</string>
@@ -100,7 +100,7 @@
     <string name="ui_the_whole_line_has_been_called_the_game">"The whole line has been called. The game verifies wins from calls, so a missed dab cannot take away a prize. Players qualifying on the same call tie and each receive full points."</string>
     <string name="ui_read_the_prizes_before_you_ready_up_full">"Read the prizes before you ready up. Full house means all 15 numbers; a custom prize can use a different agreed pattern."</string>
     <string name="ui_choose_your_table">"Choose your table"</string>
-    <string name="ui_solo_take_your_time_with_optional_computer_players">"Solo: take your time, with optional computer players.\n\nOne device: pass the phone around for family tickets.\n\nOnline: join a private room with a code; everyone sees their own tickets."</string>
+    <string name="ui_solo_take_your_time_with_optional_computer_players">"Solo: take your time, with optional practice opponents.\n\nOne device: pass the phone around for family tickets.\n\nOnline: join a private room with a code; everyone sees their own tickets."</string>
     <string name="ui_keep_the_good_moments">"Keep the good moments"</string>
     <string name="ui_completed_rounds_earn_badges_ending_early_saves_a">"Completed rounds earn badges. Ending early saves a cancelled result. Results show verified prizes and points; sharing asks you what to include. A rematch keeps the rules and deals fresh tickets."</string>
     <string name="ui_use_how_to_play_any_time_to_try">"Use How to play any time to try this lesson again."</string>
@@ -269,11 +269,11 @@
     <string name="ui_your_name">"Your name"</string>
     <string name="ui_2_8_players_up_to_40_characters_per">"2–8 players, up to 40 characters per name"</string>
     <string name="ui_up_to_40_characters">"Up to 40 characters"</string>
-    <string name="ui_computer_players">"Computer players"</string>
+    <string name="ui_computer_players">"Practice opponents"</string>
     <string name="ui_just_me">"Just me"</string>
-    <string name="ui_computer_players_get_the_same_calls_and_rules">"Computer players get the same calls and rules as you."</string>
+    <string name="ui_computer_players_get_the_same_calls_and_rules">"Practice opponents get the same calls and rules as you."</string>
     <string name="ui_a_face_for_every_place">"A face for every place"</string>
-    <string name="ui_choose_each_player_s_avatar_before_dealing_computer">"Choose each player\'s avatar before dealing. Computer players keep their own characters."</string>
+    <string name="ui_choose_each_player_s_avatar_before_dealing_computer">"Choose each player\'s avatar before dealing. Practice opponents keep their own characters."</string>
     <string name="ui_dealing_your_tickets">"Dealing your tickets…"</string>
     <string name="ui_deal_the_tickets">"Deal the tickets"</string>
     <string name="ui_start_a_fresh_round">"Start a fresh round?"</string>
@@ -322,7 +322,7 @@
     <string name="ui_resume_round">"Resume round"</string>
     <string name="ui_play_your_way">"PLAY YOUR WAY"</string>
     <string name="ui_a_little_me_time">"A little me time"</string>
-    <string name="ui_practice_at_your_pace_or_invite_some_friendly">"Practice at your pace, or invite some friendly computer players."</string>
+    <string name="ui_practice_at_your_pace_or_invite_some_friendly">"Practice at your pace, or invite some friendly practice opponents."</string>
     <string name="ui_play_solo">"Play solo"</string>
     <string name="ui_bring_everyone_together">"Bring everyone together"</string>
     <string name="ui_pass_one_phone_around_every_player_gets_their">"Pass one phone around. Every player gets their own digital tickets."</string>
@@ -347,7 +347,7 @@
     <string name="ui_that_was_a_lovely_round">"THAT WAS A LOVELY ROUND"</string>
     <string name="ui_until_next_time">"Until next time."</string>
     <string name="ui_a_round_of_applause_2">"A round of applause!"</string>
-    <string name="ui_computer_player">"Computer player"</string>
+    <string name="ui_computer_player">"Practice opponent"</string>
     <string name="ui_the_winning_moments">"The winning moments"</string>
     <string name="ui_another_good_memory">"Another good memory"</string>
     <string name="ui_this_completed_round_counts_toward_badges_reopening_it">"This completed round counts toward %1$s badges. Reopening it won\'t count it twice."</string>
@@ -409,7 +409,7 @@
     <string name="ui_winners_are_verified_from_called_numbers_even_if">"Winners are verified from called numbers, even if someone forgets to mark. Tickets completing a prize on the same call tie."</string>
     <string name="ui_assisted_marking_is_on_for_everyone">"Assisted marking is on for everyone."</string>
     <string name="ui_manual_marking_mark_your_own_called_numbers">"Manual marking · mark your own called numbers."</string>
-    <string name="ui_manual_marking_computer_tickets_mark_automatically">"Manual marking · computer tickets mark automatically."</string>
+    <string name="ui_manual_marking_computer_tickets_mark_automatically">"Manual marking · practice tickets mark automatically."</string>
     <string name="ui_back_to_game">"Back to game"</string>
     <string name="ui_a_verified_win">"A VERIFIED WIN"</string>
     <string name="ui_good_times_shared">"Good times, shared."</string>

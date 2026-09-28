@@ -46,11 +46,11 @@
     <string name="badge_first_house_detail">"पूरे हुए दौर में फ़ुल हाउस या क्रम वाला हाउस जीतें।"</string>
     <string name="badge_five_rounds_detail">"इस तरीके से पाँच अलग-अलग दौर पूरे करें।"</string>
     <string name="badge_mode_solo">"अकेले अभ्यास"</string>
-    <string name="badge_mode_computer">"कंप्यूटर के साथ खेल"</string>
+    <string name="badge_mode_computer">"अभ्यास के साथ खेल"</string>
     <string name="badge_mode_family">"परिवार का खेल"</string>
     <string name="badge_mode_online">"ऑनलाइन प्रोफ़ाइल"</string>
     <string name="badge_mode_solo_detail">"इस डिवाइस पर आपके अकेले खेले गए दौर।"</string>
-    <string name="badge_mode_computer_detail">"कंप्यूटर खिलाड़ियों के साथ आपके दौर। कंप्यूटर की जीत से आपको हाउस बैज नहीं मिलता।"</string>
+    <string name="badge_mode_computer_detail">"अभ्यास खिलाड़ियों के साथ आपके दौर। अभ्यास की जीत से आपको हाउस बैज नहीं मिलता।"</string>
     <string name="badge_mode_family_detail">"इस डिवाइस पर परिवार के खेल की साझा उपलब्धियाँ। किसी भी इंसानी खिलाड़ी का जीता हाउस गिना जाता है।"</string>
     <string name="badge_mode_online_detail">"इस डिवाइस पर आपकी मौजूदा ऑनलाइन प्रोफ़ाइल की उपलब्धियाँ।"</string>
     <string name="prize_early_five">"अर्ली फ़ाइव"</string>
@@ -110,5 +110,5 @@
     <string name="language_english">"English"</string>
     <string name="language_hindi">"हिन्दी"</string>
     <string name="seconds_short">"%1$s सेकंड"</string>
-    <string name="computer_suffix">" · कंप्यूटर"</string>
+    <string name="computer_suffix">" · अभ्यास"</string>
 </resources>

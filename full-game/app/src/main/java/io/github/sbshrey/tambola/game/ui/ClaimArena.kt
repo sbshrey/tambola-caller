@@ -41,7 +41,7 @@ internal fun ClaimArena(
     table: TableRound, ownerId: String, preferences: Preferences, status: String,
     markNumber: (String, Int) -> Unit, claim: (ClaimSelection) -> Unit, claimMessage: String?, repeatCall: () -> Unit,
     back: () -> Unit, win: WinMoment?, dismissWin: () -> Unit, markEnabled: Boolean, claimEnabled: Boolean, expandedFooter: Boolean,
-    extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit, footer: @Composable () -> Unit,
+    extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit, usePower: ((String, MatchPower) -> Unit)? = null, footer: @Composable () -> Unit,
 ) {
     val words = gameText()
     val hand = table.copy(tickets = table.tickets.filter { it.playerId == ownerId }.take(6))
@@ -59,8 +59,22 @@ internal fun ClaimArena(
     var history by remember(table.id) { mutableStateOf(false) }
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
+    var powerFeedback by remember(table.id) { mutableStateOf<String?>(null) }
+    var powerSequence by remember(table.id) { mutableIntStateOf(table.powers?.noticeSequence ?: 0) }
+    LaunchedEffect(table.powers?.noticeSequence) {
+        val powers = table.powers
+        if (powers != null && powers.noticeSequence > powerSequence) {
+            powerSequence = powers.noticeSequence
+            powerFeedback = powerNoticeText(powers, words)
+            delay(3400)
+            powerFeedback = null
+        }
+    }
     LaunchedEffect(table.finished, claimEnabled) {
         if (table.finished || !claimEnabled) claimTicketId = null
+    }
+    LaunchedEffect(table.powers?.discarded) {
+        if (claimTicketId in table.powers?.discarded.orEmpty()) claimTicketId = null
     }
     LaunchedEffect(win?.id) { if (win != null) { delay(3400); dismissWin() } }
     val winText = win?.lines?.joinToString(" · ") { line ->
@@ -119,8 +133,8 @@ internal fun ClaimArena(
                         Box(Modifier.weight(1f)) { footer() }
                     } else {
                     BoxWithConstraints(Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
-                        .clickable(role = Role.Button) { history = true; board = true }
-                        .testTag("open-call-history").semantics(mergeDescendants = true) { contentDescription = words(R.string.board_history) }, contentAlignment = Alignment.CenterStart) {
+                        .clickable(role = Role.Button) { history = false; board = true }
+                        .testTag("open-call-history").semantics(mergeDescendants = true) { contentDescription = words(R.string.ui_number_board) }, contentAlignment = Alignment.CenterStart) {
                         val ballSize = if (landscape) 34.dp else 28.dp
                         val count = ((maxWidth - 15.dp) / (ballSize + 5.dp)).toInt().coerceIn(0, if (landscape) 4 else 2)
                         Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -162,11 +176,12 @@ internal fun ClaimArena(
                         }
                         // Reserve two scaled lines even when quiet, so feedback never moves a ticket.
                         Box(Modifier.fillMaxWidth().padding(vertical = 2.dp).testTag("win-slot"), contentAlignment = Alignment.Center) {
-                            Text(claimMessage ?: winText ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else "",
+                            Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else "",
                                 fontSize = 12.sp, lineHeight = 16.sp, textAlign = TextAlign.Center,
                                 color = if (win != null && dark) gold else muted, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
+                                modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null || powerFeedback != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
                         }
+                        if (table.powers != null && usePower != null && !table.finished) PowerDock(hand, claimEnabled, usePower)
                         if (!landscape || table.finished) Box(Modifier.fillMaxWidth().heightIn(min = 48.dp)) { footer() }
                     }
                 }
@@ -218,8 +233,15 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 visible.forEach { ticket -> key(ticket.id) {
-                    CompactTicket(ticket, table, Modifier.fillMaxWidth().weight(1f), reducedMotion, mark, markEnabled,
-                        claimTicket = { choose(ticket.id) }, claimEnabled = claimEnabled)
+                    val discarded = ticket.id in table.powers?.discarded.orEmpty()
+                    Box(Modifier.fillMaxWidth().weight(1f)) {
+                        CompactTicket(ticket, table, Modifier.fillMaxSize(), reducedMotion, mark, markEnabled && !discarded,
+                            claimTicket = { choose(ticket.id) }, claimEnabled = claimEnabled && !discarded)
+                        if (discarded) Surface(Modifier.align(Alignment.Center).testTag("discarded-${ticket.id}"),
+                            color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(8.dp)) {
+                            Text(words(R.string.power_ticket_out), Modifier.padding(8.dp), color = MaterialTheme.colorScheme.onErrorContainer)
+                        }
+                    }
                 } }
                 if (visible.size < pageSize) Spacer(Modifier.weight(1f))
             }

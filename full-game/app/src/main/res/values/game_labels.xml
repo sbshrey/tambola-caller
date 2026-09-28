@@ -46,11 +46,11 @@
     <string name="badge_first_house_detail">"Win a full house or a ranked house in a completed round."</string>
     <string name="badge_five_rounds_detail">"Complete five different rounds in this mode."</string>
     <string name="badge_mode_solo">"Solo practice"</string>
-    <string name="badge_mode_computer">"Computer games"</string>
+    <string name="badge_mode_computer">"Practice games"</string>
     <string name="badge_mode_family">"Family table"</string>
     <string name="badge_mode_online">"Online profile"</string>
     <string name="badge_mode_solo_detail">"Your solo games on this device."</string>
-    <string name="badge_mode_computer_detail">"Your games against computer players. Computer wins do not earn your house badge."</string>
+    <string name="badge_mode_computer_detail">"Your games against practice opponents. Persona wins do not earn your house badge."</string>
     <string name="badge_mode_family_detail">"Shared milestones for this device's family table. A house won by any human player counts."</string>
     <string name="badge_mode_online_detail">"Milestones for your current online profile on this device."</string>
     <string name="prize_early_five">"Early five"</string>
@@ -110,5 +110,5 @@
     <string name="language_english">"English"</string>
     <string name="language_hindi">"हिन्दी"</string>
     <string name="seconds_short">"%1$ss"</string>
-    <string name="computer_suffix">" · computer"</string>
+    <string name="computer_suffix">" · practice"</string>
 </resources>

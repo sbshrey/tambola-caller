@@ -5,7 +5,7 @@
     <string name="privacy_device_title">On this device</string>
     <string name="privacy_device_body">Online profile credentials, cached games and marks are encrypted on this device. The app excludes its data from Android backup and device transfer. Older offline saves remain on this device and can be removed in Settings.</string>
     <string name="privacy_online_title">In online games</string>
-    <string name="privacy_online_body">The service stores your nickname, avatar, tickets, calls, results, coin balance and transaction records. Other players see names, avatars and wins, and only their own ticket numbers. Computers are labelled. Coins are free game currency with no cash value.</string>
+    <string name="privacy_online_body">The service stores your nickname, avatar, tickets, calls, results, coin balance and transaction records. Other players see names, avatars and wins, and only their own ticket numbers. Practice personas are simulated and labelled. Coins are free game currency with no cash value.</string>
     <string name="privacy_retention_title">How long online records stay</string>
     <string name="privacy_retention_body">Rooms close 24 hours after creation. Their game records are scheduled for removal 30 days after expiry. Profiles with an enabled device credential and their coin wallets have no automatic expiry. Seven-day game sessions renew on this installation without changing your wallet. Unenrolled or revoked profiles are scheduled for removal 30 days after session expiry. Local cached results remain until reset, profile deletion or replacement by newer results. Backup recovery records have a separate lifetime, explained below.</string>
     <string name="privacy_deletion_title">Deleting an online profile</string>

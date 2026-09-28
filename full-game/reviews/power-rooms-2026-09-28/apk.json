@@ -1,0 +1,18 @@
+{
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "versionCode": 38,
+  "versionName": "0.38.0-alpha38-internet-beta",
+  "bytes": 31549050,
+  "sha256": "dde513977d1fa1d52474651c2c9df99881fc6290b5e875fda3e300ca0a159207",
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "firebaseConfigured": true,
+  "rewardedIdsConfigured": true,
+  "liveAdFlag": false,
+  "diagnosticCollectionDefault": false,
+  "debuggable": false,
+  "probeActivityAbsent": true,
+  "adIdPermissionsAbsent": true,
+  "status": "Gameplay release; live ads disabled pending console and signed callback verification",
+  "sourceBase": "b132c43144b872a6c6ba242316be08e032625a01",
+  "sourceDescription": "Built from the implementation working tree captured by this review commit; exact commit is recorded after committing."
+}

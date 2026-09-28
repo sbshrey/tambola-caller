@@ -7,7 +7,7 @@
     <string name="ui_keep_current_avatar">"मौजूदा अवतार रखें"</string>
     <string name="ui_current_number">"मौजूदा नंबर %1$s"</string>
     <string name="ui_ready_to_call_numbers">"नंबर पुकारने के लिए तैयार"</string>
-    <string name="ui_computer">" · कंप्यूटर"</string>
+    <string name="ui_computer">" · अभ्यास"</string>
     <string name="ui_top_row">"ऊपरी पंक्ति"</string>
     <string name="ui_middle_row">"बीच की पंक्ति"</string>
     <string name="ui_bottom_row">"निचली पंक्ति"</string>
@@ -100,7 +100,7 @@
     <string name="ui_the_whole_line_has_been_called_the_game">"पूरी पंक्ति के नंबर पुकारे जा चुके हैं। खेल पुकारों से जीत जाँचता है, इसलिए निशान लगाना भूलने से इनाम नहीं छिनता। एक ही पुकार पर जीतने वाले सभी खिलाड़ियों को पूरे अंक मिलते हैं।"</string>
     <string name="ui_read_the_prizes_before_you_ready_up_full">"तैयार होने से पहले इनाम पढ़ें। फ़ुल हाउस के लिए सभी 15 नंबर चाहिए; अपने इनाम के लिए कोई दूसरा तय पैटर्न हो सकता है।"</string>
     <string name="ui_choose_your_table">"खेलने का तरीका चुनें"</string>
-    <string name="ui_solo_take_your_time_with_optional_computer_players">"अकेले: अपनी गति से खेलें, चाहें तो कंप्यूटर खिलाड़ियों के साथ।\n\nएक डिवाइस: परिवार के टिकटों के लिए बारी-बारी से फ़ोन लें।\n\nऑनलाइन: कोड से निजी रूम में जुड़ें; हर खिलाड़ी अपने टिकट देखता है।"</string>
+    <string name="ui_solo_take_your_time_with_optional_computer_players">"अकेले: अपनी गति से खेलें, चाहें तो अभ्यास खिलाड़ियों के साथ।\n\nएक डिवाइस: परिवार के टिकटों के लिए बारी-बारी से फ़ोन लें।\n\nऑनलाइन: कोड से निजी रूम में जुड़ें; हर खिलाड़ी अपने टिकट देखता है।"</string>
     <string name="ui_keep_the_good_moments">"अच्छे पलों को सँजोएँ"</string>
     <string name="ui_completed_rounds_earn_badges_ending_early_saves_a">"पूरे हुए दौर से बैज मिलते हैं। जल्दी खत्म करने पर दौर रद्द परिणाम के रूप में सहेजा जाता है। परिणाम में जाँची गई जीत और अंक दिखते हैं; साझा करते समय आप तय करते हैं कि क्या भेजना है। दोबारा खेलने पर नियम वही रहते हैं और नए टिकट मिलते हैं।"</string>
     <string name="ui_use_how_to_play_any_time_to_try">"यह पाठ फिर आज़माने के लिए कभी भी कैसे खेलें खोलें।"</string>
@@ -269,11 +269,11 @@
     <string name="ui_your_name">"आपका नाम"</string>
     <string name="ui_2_8_players_up_to_40_characters_per">"2–8 खिलाड़ी, हर नाम में अधिकतम 40 अक्षर"</string>
     <string name="ui_up_to_40_characters">"अधिकतम 40 अक्षर"</string>
-    <string name="ui_computer_players">"कंप्यूटर खिलाड़ी"</string>
+    <string name="ui_computer_players">"अभ्यास खिलाड़ी"</string>
     <string name="ui_just_me">"सिर्फ़ मैं"</string>
-    <string name="ui_computer_players_get_the_same_calls_and_rules">"कंप्यूटर खिलाड़ियों को भी वही पुकारें और नियम मिलते हैं जो आपको।"</string>
+    <string name="ui_computer_players_get_the_same_calls_and_rules">"अभ्यास खिलाड़ियों को भी वही पुकारें और नियम मिलते हैं जो आपको।"</string>
     <string name="ui_a_face_for_every_place">"हर खिलाड़ी की अपनी पहचान"</string>
-    <string name="ui_choose_each_player_s_avatar_before_dealing_computer">"टिकट बाँटने से पहले हर खिलाड़ी का अवतार चुनें। कंप्यूटर खिलाड़ी अपने तय अवतार रखते हैं।"</string>
+    <string name="ui_choose_each_player_s_avatar_before_dealing_computer">"टिकट बाँटने से पहले हर खिलाड़ी का अवतार चुनें। अभ्यास खिलाड़ी अपने तय अवतार रखते हैं।"</string>
     <string name="ui_dealing_your_tickets">"आपके टिकट बाँट रहे हैं…"</string>
     <string name="ui_deal_the_tickets">"टिकट बाँटें"</string>
     <string name="ui_start_a_fresh_round">"नया दौर शुरू करें?"</string>
@@ -322,7 +322,7 @@
     <string name="ui_resume_round">"दौर फिर खोलें"</string>
     <string name="ui_play_your_way">"अपने तरीके से खेलें"</string>
     <string name="ui_a_little_me_time">"थोड़ा समय अपने लिए"</string>
-    <string name="ui_practice_at_your_pace_or_invite_some_friendly">"अपनी गति से अभ्यास करें, या कंप्यूटर खिलाड़ियों को साथ लें।"</string>
+    <string name="ui_practice_at_your_pace_or_invite_some_friendly">"अपनी गति से अभ्यास करें, या अभ्यास खिलाड़ियों को साथ लें।"</string>
     <string name="ui_play_solo">"अकेले खेलें"</string>
     <string name="ui_bring_everyone_together">"सबको साथ लाएँ"</string>
     <string name="ui_pass_one_phone_around_every_player_gets_their">"एक फ़ोन बारी-बारी से लें। हर खिलाड़ी को अपने डिजिटल टिकट मिलते हैं।"</string>
@@ -347,7 +347,7 @@
     <string name="ui_that_was_a_lovely_round">"कितना प्यारा दौर था"</string>
     <string name="ui_until_next_time">"फिर मिलेंगे।"</string>
     <string name="ui_a_round_of_applause_2">"ज़ोरदार तालियाँ!"</string>
-    <string name="ui_computer_player">"कंप्यूटर खिलाड़ी"</string>
+    <string name="ui_computer_player">"अभ्यास खिलाड़ी"</string>
     <string name="ui_the_winning_moments">"जीत के पल"</string>
     <string name="ui_another_good_memory">"एक और अच्छी याद"</string>
     <string name="ui_this_completed_round_counts_toward_badges_reopening_it">"यह पूरा हुआ दौर %1$s बैज में गिना जाएगा। दोबारा खोलने से यह दो बार नहीं गिना जाता।"</string>
@@ -409,7 +409,7 @@
     <string name="ui_winners_are_verified_from_called_numbers_even_if">"कोई निशान लगाना भूल जाए, तब भी पुकारे गए नंबरों से विजेताओं की पुष्टि होती है। एक ही पुकार पर इनाम पूरा करने वाले टिकट साथ जीतते हैं।"</string>
     <string name="ui_assisted_marking_is_on_for_everyone">"सभी के लिए अपने आप निशान लगाना चालू है।"</string>
     <string name="ui_manual_marking_mark_your_own_called_numbers">"खुद निशान लगाएँ · अपने पुकारे गए नंबर चुनें।"</string>
-    <string name="ui_manual_marking_computer_tickets_mark_automatically">"खुद निशान लगाएँ · कंप्यूटर के टिकट अपने आप निशान लगाते हैं।"</string>
+    <string name="ui_manual_marking_computer_tickets_mark_automatically">"खुद निशान लगाएँ · अभ्यास के टिकट अपने आप निशान लगाते हैं।"</string>
     <string name="ui_back_to_game">"खेल पर वापस"</string>
     <string name="ui_a_verified_win">"जीत पक्की हुई"</string>
     <string name="ui_good_times_shared">"खुशियाँ साथ बाँटें।"</string>

@@ -31,6 +31,6 @@
     <string name="coin_unavailable">इस बिल्ड में ऑनलाइन खेल उपलब्ध नहीं है।</string>
     <string name="coin_ties">एक ही कॉल पर सही दावेदार इनाम बाँटते हैं। बचे हुए सिक्के अंत में वापस मिलते हैं।</string>
     <string name="coin_choose_count">%1$d टिकट</string>
-    <string name="coin_players">%1$d खिलाड़ी · %2$d कंप्यूटर</string>
+    <string name="coin_players">%1$d खिलाड़ी · %2$d अभ्यास</string>
     <string name="coin_reset_warning">इस डिवाइस से साइन-इन, सहेजे टिकट और लंबित अनुरोध हट जाएँगे। इस अतिथि खाते के सिक्कों तक आपकी पहुँच खो जाएगी। सर्वर की प्रोफ़ाइल नहीं मिटेगी। लंबित कार्रवाई की पुष्टि के लिए पहले जुड़कर फिर कोशिश करें।</string>
 </resources>

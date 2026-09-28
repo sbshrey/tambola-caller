@@ -48,8 +48,8 @@ android {
         buildConfigField("boolean", "REWARDED_ADS_ENABLED", "false")
         buildConfigField("boolean", "REWARDED_ADS_TEST", "false")
         buildConfigField("String", "ADMOB_REWARD_UNIT", "\"\"")
-        versionCode = 37
-        versionName = "0.37.0-alpha37"
+        versionCode = 38
+        versionName = "0.38.0-alpha38"
         buildConfigField("String", "ROOM_DISCOVERY_URL", "\"\"")
         buildConfigField("boolean", "TELEMETRY_CONFIGURED", "false")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

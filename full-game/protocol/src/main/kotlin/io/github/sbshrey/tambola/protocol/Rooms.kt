@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 5
+const val PROTOCOL_VERSION = 6
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -28,10 +28,12 @@ val WireJson = Json { encodeDefaults = true }
     val computerPlayers: Int = 0,
     val coinGame: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val coinRulesVersion: Int = 1,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val powersEnabled: Boolean = false,
 ) {
     init {
         require(game.mode == GameMode.ONLINE && capacity in 2..50 && intervalSeconds in 5..30)
         require(coinRulesVersion in 1..2)
+        require(!powersEnabled || (coinGame && coinRulesVersion == 2))
         require(computerPlayers in 0..5 && computerPlayers < capacity)
         require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
             game.customPrizes.isEmpty() && automaticCalling && intervalSeconds == (if (coinRulesVersion == 1) 5 else 10)))
@@ -57,6 +59,7 @@ val WireJson = Json { encodeDefaults = true }
     val players: List<Player> = emptyList(),
     val winningTickets: List<WinningTicket> = emptyList(),
     val ticketCounts: Map<String, Int> = emptyMap(),
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val powers: MatchPowers? = null,
 )
 @Serializable data class RoomEvent(val revision: Long, val type: String, val at: Long, val roundId: String? = null)
 @Serializable data class RoomView(
@@ -81,6 +84,12 @@ val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class CommandRequest(val id: String, val expectedRevision: Long, val action: RoomAction)
 @Serializable sealed class RoomAction {
+    @Serializable @SerialName("mark") data class Mark(val roundId: String, val ticketId: String, val number: Int) : RoomAction() {
+        init { require(roundId.length in 1..64 && ticketId.length in 1..100 && number in 1..90) }
+    }
+    @Serializable @SerialName("use_power") data class UsePower(val roundId: String, val ticketId: String, val power: MatchPower) : RoomAction() {
+        init { require(roundId.length in 1..64 && ticketId.length in 1..100) }
+    }
     @Serializable @SerialName("buy_tickets") data class BuyTickets(val quantity: Int) : RoomAction() {
         init { require(quantity in 1..6) }
     }

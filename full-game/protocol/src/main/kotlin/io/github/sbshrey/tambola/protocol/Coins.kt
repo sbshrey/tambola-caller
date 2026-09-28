@@ -27,11 +27,13 @@ import kotlinx.serialization.EncodeDefault
     @EncodeDefault(EncodeDefault.Mode.NEVER) val previousFriendRound: String? = null,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val rulesVersion: Int = 1,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val powerUp: PowerUp = PowerUp.NONE,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val powersEnabled: Boolean = false,
 ) {
     init {
         require(tickets in 1..6)
         require(rulesVersion in 1..2)
         require(powerUp == PowerUp.NONE || rulesVersion == 2)
+        require(!powersEnabled || (rulesVersion == 2 && powerUp == PowerUp.NONE))
         require(friendCode == null || (friendTable && friendCode.matches(Regex("[A-HJ-NP-Z2-9]{8}"))))
         require(previousFriendRound == null || (friendTable && friendCode != null && previousFriendRound.isNotBlank()))
     }

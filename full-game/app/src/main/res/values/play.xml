@@ -1,7 +1,7 @@
 <resources>
     <string name="play_quick">Quick play</string>
     <string name="play_tagline">A little luck. A lot of fun.</string>
-    <string name="play_quick_details">3 tickets · 2 computer players · 10s calls</string>
+    <string name="play_quick_details">3 tickets · 2 practice opponents · 10s calls</string>
     <string name="play_free">Free play · Works offline</string>
     <string name="play_custom">Custom game</string>
     <string name="play_customize">Avatars &amp; prizes</string>

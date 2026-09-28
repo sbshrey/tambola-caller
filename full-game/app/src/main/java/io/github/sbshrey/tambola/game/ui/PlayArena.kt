@@ -56,12 +56,13 @@ fun PlayArena(
     extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit = {},
     markNumber: ((String, Int) -> Unit)? = null, claim: ((ClaimSelection) -> Unit)? = null,
     claimMessage: String? = null, claimEnabled: Boolean = enabled, expandedFooter: Boolean = false,
+    usePower: ((String, MatchPower) -> Unit)? = null,
     footer: @Composable () -> Unit,
 ) {
     if (table.settings.manualClaims && markNumber != null && claim != null) {
         MaterialTheme(colorScheme = if (table.coins != null) GameNightPalette.colors else MaterialTheme.colorScheme) {
             ClaimArena(table, ownerId, preferences, status, markNumber, claim, claimMessage, repeatCall, back,
-                win, dismissWin, enabled, claimEnabled, expandedFooter, extraMenu, footer)
+                win, dismissWin, enabled, claimEnabled, expandedFooter, extraMenu, usePower, footer)
         }
         return
     }
@@ -288,7 +289,7 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                         (0..8).forEach { col ->
                             val number = ticket.cells[row * 9 + col]
                             val dabbed = number in marked
-                            val canMark = markEnabled && markNumber != null && number != 0 && !table.finished && !table.settings.assistedMarking
+                            val canMark = markEnabled && markNumber != null && number != 0 && !table.finished && !table.settings.assistedMarking && !(table.powers != null && dabbed)
                             val stamp = remember(ticket.id, number) { Animatable(if (dabbed) 1f else 0f) }
                             LaunchedEffect(dabbed, reducedMotion) {
                                 if (!dabbed || reducedMotion) stamp.snapTo(if (dabbed) 1f else 0f)
@@ -309,7 +310,7 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                                     .pointerInput(ticket.id, number, canMark) { detectTapGestures { if (canMark) markNumber(ticket.id, number) } }
                                     .semantics(mergeDescendants = true) {
                                         role = Role.Button
-                                        contentDescription = words(if (dabbed) R.string.play_unmark_number else R.string.play_mark_number, number)
+                                        contentDescription = words(if (dabbed && table.powers != null) R.string.power_marked_number else if (dabbed) R.string.play_unmark_number else R.string.play_mark_number, number)
                                         if (!canMark) disabled()
                                         onClick { if (canMark) { markNumber(ticket.id, number); true } else false }
                                     } else Modifier), contentAlignment = Alignment.Center) {
@@ -485,8 +486,9 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
     // A saved deadline is not a live countdown while the stream is disconnected.
     val displayed = if (state.connection == Connection.LIVE) table else table.copy(nextDrawAt = null)
     PlayArena(displayed, state.playerId.orEmpty(), preferences, status, model::dabCalled, model::repeatCall, back,
-        state.winMoment, model::dismissWin, enabled = !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
+        state.winMoment, model::dismissWin, enabled = if (table.powers != null) enabled else !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
         markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled,
+        usePower = model::usePower,
         expandedFooter = recovering, extraMenu = { close ->
             DropdownMenuItem(text = { Text(words(R.string.play_room)) }, onClick = { close(); roomDetails() })
         }) {

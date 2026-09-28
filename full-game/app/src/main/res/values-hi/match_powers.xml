@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="power_marked_number">%1$d पर निशान लगा है</string>
+    <string name="power_wrong_mark">यह नंबर अभी नहीं पुकारा गया — निशान अस्वीकार।</string>
+    <string name="power_shield">शील्ड</string>
+    <string name="power_auto">ऑटो-डैब</string>
+    <string name="power_bonus">इनाम बोनस</string>
+    <string name="power_drop">पाँच सही निशान! मुफ़्त पावर तैयार है।</string>
+    <string name="power_full">पाँच सही निशान। आपके दोनों पावर स्लॉट भरे हैं।</string>
+    <string name="power_shield_saved">गलत दावा — शील्ड इस्तेमाल हुई। टिकट खेल में बना रहेगा।</string>
+    <string name="power_discarded">गलत दावा — यह टिकट इस दौर से बाहर है।</string>
+    <string name="power_ticket_out">टिकट बाहर</string>
+    <string name="power_active">पावर चालू है।</string>
+    <string name="power_progress">%1$d/5 सही\nमुफ़्त पावर</string>
+    <string name="power_use_ticket">टिकट %1$d पर इस्तेमाल करें</string>
+    <string name="power_auto_remaining">टिकट %1$d · %2$d सेकंड बाकी</string>
+    <string name="power_shield_detail">शील्ड एक गलत इनाम दावा माफ़ करती है। हर टिकट को एक दौर में एक बार बचा सकती है। उपलब्ध शील्ड न होने पर गलत दावे वाला टिकट बाहर हो जाता है; पहले की जीत मान्य रहती है।</string>
+    <string name="power_auto_detail">ऑटो-डैब एक टिकट पर पहले और नए पुकारे नंबरों को 15 सेकंड तक निशान लगाती है। हर टिकट पर एक बार। अपने आप लगे निशानों से पावर नहीं मिलती।</string>
+    <string name="power_bonus_detail">दावा करने से पहले एक टिकट पर 25% बोनस लगाएँ। उसके अगले सफल इनाम के अंतिम हिस्से पर अतिरिक्त आभासी सिक्के मिलेंगे, पूर्णांक तक नीचे गोल करके। हर टिकट पर एक बार। दूसरे विजेताओं का हिस्सा नहीं घटेगा।</string>
+    <string name="power_drop_rules">पावर रूम: आपके टिकटों पर हर पाँच नए सही हाथ से लगाए निशानों पर एक मुफ़्त पावर मिलेगी: शील्ड, ऑटो-डैब या इनाम बोनस; हर एक की संभावना बराबर (तीन में एक)। अधिकतम दो रखें। स्लॉट भरे होने पर उस बार पावर नहीं मिलेगी। पावर दौर के साथ समाप्त होगी। गलत निशान अस्वीकार हैं। देर से या दोबारा हुए दावे टिकट नहीं हटाते। कोई नकद मूल्य नहीं।</string>
+    <string name="power_classic_room">क्लासिक</string>
+    <string name="power_room">पावर रूम</string>
+    <string name="power_room_summary">हर 5 सही निशानों पर मुफ़्त पावर। गलत दावे वाला टिकट बाहर होगा, जब तक शील्ड उसे बचा न ले।</string>
+    <string name="power_classic_summary">कोई पावर नहीं। गलत दावे पर चेतावनी; सभी टिकट खेल में रहेंगे।</string>
+    <string name="practice_disclosure">अभ्यास पात्र स्वचालित प्रतिद्वंद्वी हैं। दोस्तों की टेबल में केवल आमंत्रित खिलाड़ी होते हैं।</string>
+</resources>

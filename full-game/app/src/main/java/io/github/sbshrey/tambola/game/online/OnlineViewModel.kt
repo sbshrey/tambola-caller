@@ -11,6 +11,8 @@ import io.github.sbshrey.tambola.domain.GameMode
 import io.github.sbshrey.tambola.domain.Prize
 import io.github.sbshrey.tambola.domain.PowerUp
 import io.github.sbshrey.tambola.domain.ClaimSelection
+import io.github.sbshrey.tambola.domain.MatchPower
+import io.github.sbshrey.tambola.domain.PowerNotice
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.audio.CallAudio
@@ -39,6 +41,7 @@ data class OnlineUiState(
     val loginRewards: LoginRewards? = null,
     val preferredTickets: Int = 3,
     val chosenPowerUp: PowerUp = PowerUp.NONE,
+    val powersEnabled: Boolean = true,
     val serverTime: ServerTime? = null,
     val marks: Map<String, Set<Int>> = emptyMap(),
     val history: List<RoomView> = emptyList(),
@@ -188,7 +191,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         if (tickets !in 1..6 || api == null || mutable.value.adActive || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
-        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2, powerUp = mutable.value.chosenPowerUp)
+        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2, powersEnabled = mutable.value.powersEnabled)
         if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {
@@ -236,11 +239,14 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun choosePowerUp(powerUp: PowerUp) {
         if (!mutable.value.busy && !mutable.value.pending) mutable.update { it.copy(chosenPowerUp = powerUp) }
     }
+    fun choosePowerRoom(enabled: Boolean) {
+        if (!mutable.value.busy && !mutable.value.pending) mutable.update { it.copy(powersEnabled = enabled, chosenPowerUp = PowerUp.NONE) }
+    }
     fun replayFriends(tickets: Int) {
         val room = saved?.room ?: return
         if (tickets !in 1..6 || room.phase != RoomPhase.FINISHED || room.coins?.friendTable != true) return
         val round = room.round ?: return
-        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id, rulesVersion = 2, powerUp = mutable.value.chosenPowerUp)))
+        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id, rulesVersion = 2, powersEnabled = room.options.powersEnabled)))
     }
     fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = false, manualClaims = true,
         prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 10, computerPlayers = 2)) =
@@ -257,6 +263,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             readyAgreement = if (action is RoomAction.Ready) room.readyAgreement() else null))
     }
     fun claim(selection: ClaimSelection) { saved?.claimAction(selection)?.let(::command) }
+    fun usePower(ticketId: String, power: MatchPower) {
+        saved?.room?.round?.let { command(RoomAction.UsePower(it.id, ticketId, power)) }
+    }
     fun logout() = begin(PendingOperation.Logout)
     fun deleteProfile() = begin(PendingOperation.DeleteProfile(DeleteProfileRequest(UUID.randomUUID().toString())))
     private fun begin(pending: PendingOperation) {
@@ -324,9 +333,15 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         allowRoomChange = pending is PendingOperation.Create || pending is PendingOperation.Join || pending is PendingOperation.Match)
                     persist(accepted.saved.copy(pending = null))
                     announceAccepted(latest, accepted)
+                    if ((pending as? PendingOperation.Command)?.request?.action is RoomAction.Mark) mutable.update { it.copy(claimMessage = null) }
                     val claim = (pending as? PendingOperation.Command)?.request?.action as? RoomAction.Claim
                     if (claim != null) {
-                        val message = verifiedClaimFeedback(claim.selection,
+                        val powers = result.snapshot.round?.powers
+                        val penalty = powers != null && result.snapshot.round?.awards.orEmpty().none {
+                            it.prize.name == claim.selection.prizeId && claim.selection.ticketId in it.ticketIds
+                        }
+                        val message = if (penalty) UiMessage(if (powers?.notice == PowerNotice.SHIELD_SAVED) R.string.power_shield_saved else R.string.power_discarded)
+                        else verifiedClaimFeedback(claim.selection,
                             result.snapshot.round?.ownTickets.orEmpty(), result.snapshot.options.game)
                         mutable.update { it.copy(claimMessage = message) }
                     }
@@ -442,10 +457,18 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             audio.play(number, preferences.language, celebration = moment != null)
         }
         if (accepted.announcement == null && moment != null) audio.effect(SoundCue.WIN)
+        if (moment != null) audio.prizes(moment, preferences.language)
+        if (accepted.announcement == null && moment == null && accepted.saved.marks != previous.marks) audio.effect(SoundCue.MARK)
     }
     fun reconnect() { stream?.cancel(); stream = null; connect() }
     fun mark(ticketId: String, number: Int) {
         if (saved?.pending is PendingOperation.DeleteProfile) return
+        val game = saved?.room?.round ?: return
+        if (number !in game.called) { mutable.update { it.copy(claimMessage = UiMessage(R.string.power_wrong_mark)) }; return }
+        if (game.powers != null) {
+            if (number !in game.powers!!.marks[ticketId].orEmpty()) command(RoomAction.Mark(game.id, ticketId, number))
+            return
+        }
         viewModelScope.launch {
             try { mutex.withLock { saved?.let {
                 val next = it.mark(ticketId, number)
@@ -457,6 +480,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     fun dabCalled() {
         if (saved?.pending is PendingOperation.DeleteProfile) return
+        if (saved?.room?.options?.powersEnabled == true) return
         viewModelScope.launch {
             try { mutex.withLock { saved?.let { current ->
                 val room = current.room ?: return@let

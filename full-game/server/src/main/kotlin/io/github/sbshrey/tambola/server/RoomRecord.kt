@@ -49,6 +49,8 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
     // Internal only: old results and receipts stay immutable; a replay gets its own purchases.
     @EncodeDefault(EncodeDefault.Mode.NEVER) val nextFriendCode: String? = null,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val powerUps: Map<String, PowerUp> = emptyMap(),
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val matchPowers: Map<String, MatchPowers> = emptyMap(),
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val practiceSeats: Int = 0,
 ) {
     fun coinView(actor: String): CoinTableView? {
         if (!options.coinGame) return null
@@ -59,10 +61,11 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
         val allocations = round?.let(pool::allocations).orEmpty().filter { it.playerId == actor }
         return CoinTableView(pool.soldTickets, pool.coins, pool.prizes, purchases[actor] ?: 0, startsAt,
             allocations.filter { it.prize != null }.sumOf { it.coins }, allocations.filter { it.prize == null }.sumOf { it.coins }, friendTable,
-            powerUp, round?.let { pool.powerUpBonus(it, actor, powerUp) } ?: 0)
+            powerUp, round?.let { pool.powerUpBonus(it, actor, powerUp) +
+                matchPowerBonus(matchPowers[actor], it.awards, pool.prizes, it.status == RoundStatus.COMPLETED) } ?: 0)
     }
     fun view(actor: String, now: Long): RoomView = RoomView(
-        protocolVersion = if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
+        protocolVersion = if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,
         options = options, members = members.map { MemberView(it.id, it.name, it.avatar, it.ready, it.connected && now - it.lastSeen < PRESENCE_TIMEOUT) },
         round = round?.let { game -> PublicRound(game.id, game.status, game.called,
@@ -74,7 +77,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
                 game.tickets.filter { it.playerId == player.id }.mapIndexedNotNull { index, ticket ->
                     if (ticket.id in awarded) WinningTicket(ticket.id, player.id, index + 1) else null
                 }
-            }, game.ticketCounts) },
+            }, game.ticketCounts, (matchPowers[actor] ?: MatchPowers()).takeIf { options.powersEnabled }) },
         nextDrawAt = nextDrawAt, expiresAt = expiresAt, serverTime = now,
         coins = coinView(actor),
     )

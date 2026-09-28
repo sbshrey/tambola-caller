@@ -15,6 +15,7 @@ internal const val OPEN_COIN_LOBBY_SQL = """SELECT payload FROM rooms WHERE matc
 internal const val OPEN_EXPANDED_LOBBY_SQL = """SELECT payload FROM rooms WHERE matchable AND phase = 'LOBBY' AND expires_at > ?
     AND coin_starts_at > ? AND coin_human_seats < 50
     AND (payload::jsonb->'options'->>'coinRulesVersion')::integer = 2
+    AND coalesce((payload::jsonb->'options'->>'powersEnabled')::boolean, false) = false
     ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
 
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
@@ -156,6 +157,7 @@ class RoomService(
                 AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
                 ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
             val saved = if (existing != null) {
+                demand(request.powersEnabled || !existing.options.powersEnabled, 409, "update_required", "Rejoin this Power room with the updated app.")
                 demand(request.rulesVersion >= existing.options.coinRulesVersion, 409, "update_required", "Update the app to rejoin this table.")
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
@@ -178,15 +180,20 @@ class RoomService(
                 val joinCode = if (previous != null) previous.nextFriendCode else request.friendCode
                 val waiting = when {
                     joinCode != null -> load(connection, joinCode).also {
+                        demand(it.options.powersEnabled == request.powersEnabled, 409, "power_room_mismatch", "Choose the same Classic or Power mode as your friends.")
                         demand(it.options.coinRulesVersion == request.rulesVersion, 409, "update_required", "Everyone at a friends table needs the same game rules. Update the app and create a new table.")
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
                         demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
                     }
                     request.friendTable -> null
-                    else -> connection.query(if (request.rulesVersion == 2) OPEN_EXPANDED_LOBBY_SQL else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
+                    else -> connection.query(if (request.rulesVersion == 2) OPEN_EXPANDED_LOBBY_SQL.let {
+                        if (request.powersEnabled) it.replace("= false", "= true") else it
+                    } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
-                    coinOptions(rulesVersion = request.rulesVersion).let { if (request.friendTable) it.copy(computerPlayers = 0) else it }, emptyList(),
+                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled).let {
+                        if (request.friendTable || request.powersEnabled) it.copy(computerPlayers = 0) else it
+                    }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
                     startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
                     connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
@@ -461,7 +468,7 @@ class RoomService(
             demand(room.expiresAt > clock() && room.phase != RoomPhase.CLOSED, 410, "room_closed", "This room has closed or expired.")
             // A claim is tied to a round/call, not to unrelated readiness/presence or
             // another same-call winner. Future revisions are still invalid.
-            demand(room.revision == request.expectedRevision || (request.action is RoomAction.Claim && request.expectedRevision < room.revision),
+            demand(room.revision == request.expectedRevision || ((request.action is RoomAction.Claim || request.action is RoomAction.Mark || request.action is RoomAction.UsePower) && request.expectedRevision < room.revision),
                 409, "stale_revision", "The room changed. Refresh before trying again.")
             val now = clock()
             room = room.copy(members = room.members.map { if (it.id == guest.id) it.copy(lastSeen = now, connected = true) else it })
@@ -492,6 +499,10 @@ class RoomService(
                         room = room.copy(hostId = it.id)
                         event = "host_changed"
                     }
+                }
+                if (room.phase == RoomPhase.LOBBY && room.options.powersEnabled && !room.friendTable) {
+                    val joined = ((now - (requireNotNull(room.startsAt) - MATCH_COUNTDOWN)) / 3_000L).toInt().coerceIn(0, 3)
+                    if (joined > room.practiceSeats) { room = room.copy(practiceSeats = joined).coinLobby(); event = "practice_joined" }
                 }
                 if (room.phase == RoomPhase.LOBBY && room.options.coinGame && room.startsAt?.let { it <= now } == true) {
                     // A long host outage refunds the queue instead of spending
@@ -532,9 +543,36 @@ class RoomService(
         fun host() = demand(room.hostId == actor, 403, "host_only", "Only the host can do that.")
         fun lobby() = demand(room.phase == RoomPhase.LOBBY, 409, "not_lobby", "Settings and membership are locked during a round.")
         fun active() = demand(room.phase == RoomPhase.ACTIVE, 409, "not_active", "There is no active round.")
-        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.BuyTickets || action == RoomAction.Leave || (room.friendTable && action == RoomAction.Start),
+        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.Mark || action is RoomAction.UsePower || action is RoomAction.BuyTickets || action == RoomAction.Leave || (room.friendTable && action == RoomAction.Start),
             403, "automatic_coin_round", "Coin rounds are managed by the server.")
         return when (action) {
+            is RoomAction.Mark -> {
+                active()
+                val game = requireNotNull(room.round)
+                demand(room.options.powersEnabled && game.id == action.roundId && game.status == RoundStatus.PLAYING,
+                    409, "power_round_changed", "Check the current round before marking.")
+                val ticket = game.tickets.firstOrNull { it.id == action.ticketId && it.playerId == actor }
+                demand(ticket != null && action.number in ticket.numbers && action.number in game.called,
+                    422, "number_not_called", "That ticket number has not been called.")
+                val powers = room.matchPowers[actor] ?: MatchPowers()
+                demand(action.ticketId !in powers.discarded, 409, "ticket_discarded", "This ticket was discarded for this round.")
+                val next = powers.mark(requireNotNull(ticket), action.number, game.called) {
+                    MatchPower.entries[java.security.SecureRandom().nextInt(MatchPower.entries.size)]
+                }
+                room.copy(matchPowers = room.matchPowers + (actor to next))
+            }
+            is RoomAction.UsePower -> {
+                active()
+                val game = requireNotNull(room.round)
+                demand(room.options.powersEnabled && game.id == action.roundId && game.status == RoundStatus.PLAYING,
+                    409, "power_round_changed", "Check the current round before using a power.")
+                val ticket = game.tickets.firstOrNull { it.id == action.ticketId && it.playerId == actor }
+                val powers = room.matchPowers[actor] ?: MatchPowers()
+                demand(ticket != null && action.ticketId !in powers.discarded && action.power != MatchPower.SHIELD &&
+                    action.power in powers.inventory && action.power !in powers.used[action.ticketId].orEmpty(),
+                    409, "power_unavailable", "That power cannot be used on this ticket.")
+                room.copy(matchPowers = room.matchPowers + (actor to powers.activate(requireNotNull(ticket), action.power, game.called, now)))
+            }
             is RoomAction.BuyTickets -> {
                 lobby()
                 demand(room.options.coinGame && (room.friendTable || now < requireNotNull(room.startsAt)), 409, "sales_closed", "Ticket sales have closed.")
@@ -586,6 +624,7 @@ class RoomService(
                 demand(game.tickets.any { it.id == action.selection.ticketId && it.playerId == actor } &&
                     (game.settings.prizes.any { it.name == action.selection.prizeId } || game.settings.customPrizes.any { it.id == action.selection.prizeId }),
                     400, "invalid_claim_selection", "Choose an owned ticket and an enabled prize.")
+                if (room.options.powersEnabled) return room.powerClaim(actor, action)
                 val claimed = game.claim(actor, action.markedNumbers, action.selection)
                 demand(claimed != game, 422, "no_valid_claim", "No new prize matches your marked numbers yet.")
                 room.copy(round = claimed)
@@ -624,6 +663,9 @@ class RoomService(
     private fun draw(room: RoomRecord, now: Long): RoomRecord {
         val game = requireNotNull(room.round).draw()
         return room.copy(round = game, phase = if (game.finished) RoomPhase.FINISHED else RoomPhase.ACTIVE,
+            matchPowers = room.matchPowers.mapValues { (actor, powers) ->
+                if (game.finished) powers else powers.autoMark(game.tickets.filter { it.playerId == actor }, game.called, now)
+            },
             nextDrawAt = (now + room.options.intervalSeconds * 1000).takeIf { !game.finished && room.options.automaticCalling },
             computerClaimsAt = game.computerClaimDelays().mapValues { now + it.value })
     }
@@ -718,6 +760,8 @@ class RoomService(
         })
     }
     private fun actionName(action: RoomAction): String = when (action) {
+        is RoomAction.Mark -> "marked"
+        is RoomAction.UsePower -> "power_used"
         is RoomAction.BuyTickets -> "tickets_bought"
         is RoomAction.ChooseAvatar -> "avatar_changed"
         is RoomAction.Claim -> "claimed"

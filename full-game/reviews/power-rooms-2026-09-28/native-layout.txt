@@ -1,0 +1,6 @@
+io.github.sbshrey.tambola.game.NumberBoardUiTest:.......
+io.github.sbshrey.tambola.game.MatchPowersUiTest:.
+
+Time: 87.452
+
+OK (8 tests)

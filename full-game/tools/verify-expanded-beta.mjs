@@ -22,7 +22,7 @@ async function api(...args) {
   return result.body;
 }
 try {
-  assert.equal((await api('/health/ready')).protocolVersion, 5);
+  assert.ok([5, 6].includes((await api('/health/ready')).protocolVersion));
   for (const name of ['Expanded beta QA A', 'Expanded beta QA B']) guests.push(await api('/v1/guests', 'POST', { displayName: name }));
   for (const actor of guests) {
     const grants = await Promise.all([1, 2].map(() => api('/v1/wallet/login-rewards', 'POST', undefined, actor)));

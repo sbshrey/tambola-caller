@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="power_marked_number">%1$d marked</string>
+    <string name="power_wrong_mark">Not called yet — mark rejected.</string>
+    <string name="power_shield">Shield</string>
+    <string name="power_auto">Auto-Dab</string>
+    <string name="power_bonus">Prize bonus</string>
+    <string name="power_drop">Five correct marks! A free power is ready.</string>
+    <string name="power_full">Five correct marks. Your two power slots are full.</string>
+    <string name="power_shield_saved">False claim — Shield used. Your ticket stays in play.</string>
+    <string name="power_discarded">False claim — this ticket is out for this round.</string>
+    <string name="power_ticket_out">Ticket discarded</string>
+    <string name="power_active">Power activated.</string>
+    <string name="power_progress">%1$d/5 correct\nFree power</string>
+    <string name="power_use_ticket">Use on ticket %1$d</string>
+    <string name="power_auto_remaining">Ticket %1$d · %2$d seconds left</string>
+    <string name="power_shield_detail">Shield automatically forgives one false prize claim. It can protect each ticket once per round. Without an available Shield, a false claim discards only that ticket; earlier wins remain valid.</string>
+    <string name="power_auto_detail">Auto-Dab marks already called and newly called numbers on one ticket for 15 seconds. Use once per ticket. Automatic marks do not earn powers.</string>
+    <string name="power_bonus_detail" formatted="false">Arm a 25% bonus on one ticket before claiming. Its next successful prize earns extra virtual coins after the final pool split, rounded down. Use once per ticket. Other winners keep their full share.</string>
+    <string name="power_drop_rules">Power rooms: every five new correct manual marks across your tickets earns one free random power: Shield, Auto-Dab or Prize bonus, each equally likely (1 in 3). Hold at most two. A full inventory skips that drop. Powers expire with the round. Wrong taps are rejected. Late and duplicate claims do not discard tickets. No cash value.</string>
+    <string name="power_classic_room">Classic</string>
+    <string name="power_room">Power room</string>
+    <string name="power_room_summary">Every 5 correct marks earns a free power. False claims discard that ticket unless a Shield saves it.</string>
+    <string name="power_classic_summary">No powers. False claims receive a warning; all tickets stay in play.</string>
+    <string name="practice_disclosure">Practice personas are simulated opponents. Friends tables contain invited players only.</string>
+</resources>

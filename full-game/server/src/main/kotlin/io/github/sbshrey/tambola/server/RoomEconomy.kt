@@ -9,9 +9,7 @@ internal const val FRIEND_LOBBY_LIFETIME = 15 * 60_000L
 internal const val COMPUTER_TICKETS = 3
 
 // Fictional game handles; computer identity stays explicit in the public player record.
-private val computerHandles = listOf("ChaiChamp", "NeonNinja", "LuckyMango", "PixelRaja", "DiceDiva", "MoonMaverick", "TurboTikka", "LotusLegend")
-internal fun computerPlayer(roomId: String, index: Int): Player = Player("computer-$roomId-$index",
-    computerHandles[Math.floorMod(roomId.hashCode() + index - 1, computerHandles.size)], computer = true, avatar = index)
+internal fun computerPlayer(roomId: String, index: Int): Player = practicePersona(roomId, index)
 
 internal fun coinOptions(humans: Int = 1, rulesVersion: Int = 1) = RoomOptions(
     game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6, manualClaims = true,
@@ -25,6 +23,7 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
     if (!options.coinGame || phase != RoomPhase.LOBBY) return this
     require(purchases.keys == members.map { it.id }.toSet() && purchases.values.all { it in 1..6 })
     val computers = if (friendTable) 0 else (4 - members.size).coerceAtLeast(0)
+        .coerceAtMost(if (options.powersEnabled) practiceSeats else 3)
     val tickets = purchases.values.sum() + computers * COMPUTER_TICKETS
     val prizes = CoinPool(tickets.coerceAtLeast(2), options.coinRulesVersion).prizes.map { it.prize }
     val players = (members.size + computers).coerceAtLeast(1)
@@ -35,7 +34,7 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
 
 internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
     check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable || members.size >= 2))
-    val lobby = coinLobby()
+    val lobby = copy(practiceSeats = 3).coinLobby()
     val computers = (1..lobby.options.computerPlayers).map { index ->
         computerPlayer(id, index)
     }
@@ -76,6 +75,12 @@ internal object RoomEconomy {
             if (round.players.any { it.id == player && !it.computer }) {
                 val bonus = pool.powerUpBonus(round, player, powerUp)
                 if (bonus > 0) CoinLedger.credit(connection, player, "round:${round.id}:powerup", bonus, now)
+            }
+        }
+        room.matchPowers.forEach { (player, powers) ->
+            if (round.players.any { it.id == player && !it.computer }) {
+                val bonus = matchPowerBonus(powers, round.awards, pool.prizes, round.status == RoundStatus.COMPLETED)
+                if (bonus > 0) CoinLedger.credit(connection, player, "round:${round.id}:earned-power", bonus, now)
             }
         }
     }

@@ -114,6 +114,7 @@ data class Round(
         require(status != RoundStatus.READY && !finished) { "This round is not active" }
         val ticket = tickets.firstOrNull { it.id == ticketId } ?: error("Unknown ticket")
         require(number in ticket.numbers) { "Only numbers on this ticket can be marked" }
+        if (number !in called) return this
         require(!settings.assistedMarking && !players.first { it.id == ticket.playerId }.computer) { "This ticket is automatically marked" }
         val marked = marks[ticketId].orEmpty()
         return copy(marks = marks + (ticketId to if (number in marked) marked - number else marked + number))

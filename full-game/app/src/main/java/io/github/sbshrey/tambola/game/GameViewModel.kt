@@ -159,7 +159,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
                 try {
                     val settings = draft.settings()
                     val players = draft.playerNames.mapIndexed { i, name -> Player("p$i", name, avatar = draft.avatar(i)) } +
-                        if (draft.mode == GameMode.PRACTICE) (1..draft.bots).map { Player("bot$it", listOf("Mango", "Chai", "Peacock", "Lotus", "Ladoo")[it - 1], true, it) } else emptyList()
+                        if (draft.mode == GameMode.PRACTICE) java.util.UUID.randomUUID().toString().let { seed -> (1..draft.bots).map { practicePersona(seed, it) } } else emptyList()
                     val round = withContext(Dispatchers.Default) { Round.create(players, settings).start() }
                     // Keep any previous in-progress round as a cancelled history entry.
                     repository.replaceActive(mutable.value.round, round)
@@ -188,6 +188,7 @@ class GameViewModel(application: Application, private val savedState: SavedState
                         claimMessage = if (next.called != previous.called || next.marks != previous.marks) null else it.claimMessage) }
                     if (liveCall) audio.play(next.latest!!, mutable.value.preferences.language, celebration = moment != null)
                     else if (moment != null) audio.effect(SoundCue.WIN)
+                    if (moment != null) audio.prizes(moment, mutable.value.preferences.language)
                     if (foreground && markSound && next.marks != previous.marks) audio.effect(SoundCue.MARK)
                     if (next.finished) stopTimer()
                     if (next.called.size != previous.called.size) scheduleComputers()
@@ -204,7 +205,12 @@ class GameViewModel(application: Application, private val savedState: SavedState
         lastDrawAt = now
         mutate(speak = true) { it.draw() }
     }
-    fun toggleMark(ticketId: String, number: Int) = mutate(markSound = true) { it.toggleMark(ticketId, number) }
+    fun toggleMark(ticketId: String, number: Int) {
+        if (number !in mutable.value.round?.called.orEmpty()) {
+            mutable.update { it.copy(claimMessage = UiMessage(R.string.power_wrong_mark)) }; return
+        }
+        mutate(markSound = true) { it.toggleMark(ticketId, number) }
+    }
     fun claim(playerId: String, selection: ClaimSelection) = mutate(
         afterSave = { mutable.update { state -> state.copy(claimMessage = state.round?.let { round ->
             verifiedClaimFeedback(selection, round.tickets.filter { it.playerId == playerId }, round.settings)
