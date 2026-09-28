@@ -1,0 +1,47 @@
+{
+  "publishedAt": "2026-09-28T08:36:21.344Z",
+  "base": "f2035ea9597a86707345a4250c9e2b06a84af2bd",
+  "sourceCommit": "5c0c073be5fe95f5c8cbea44c62f5214ac6946c7",
+  "mainCommit": "f04a54718da41e31452ff1f049a36aa598a811c5",
+  "files": [
+    {
+      "path": "friends/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f98bcfb572f3c31baa82e63f30a618c706f91876"
+    },
+    {
+      "path": "friends/invite.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f4fbdbe83d1d11f13f0c4eb4820b1c59301b56e"
+    },
+    {
+      "path": "friends/styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75aed6da01fba0f512cf589f49f2718272034c50"
+    },
+    {
+      "path": "sw.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d030a504c828504b6894fc1b89bb3ef91b8eec4c"
+    },
+    {
+      "path": "privacy/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9f70e388caf6b72ceb9c70daf0f02f3bad6d07c"
+    },
+    {
+      "path": "privacy/styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce11793b80a3115330f73523b4c86b223eecbcea"
+    }
+  ],
+  "site": "https://sbshrey.github.io/tambola-caller/friends/",
+  "privacy": "https://sbshrey.github.io/tambola-caller/privacy/",
+  "scope": "Main changes are limited to the six allowed paths; Pages build and public checks still required."
+}

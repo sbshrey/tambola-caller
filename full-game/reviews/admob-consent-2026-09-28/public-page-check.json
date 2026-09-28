@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-09-28T08:37:13.330Z",
+  "mainCommit": "f04a54718da41e31452ff1f049a36aa598a811c5",
+  "checks": [
+    {
+      "path": "privacy/index.html",
+      "status": 200,
+      "contentMatches": true,
+      "sha256": "d901374187596c60c0929ddccb1542c0bf0e082d187e730dcabcf5600bbfa33b"
+    },
+    {
+      "path": "privacy/styles.css",
+      "status": 200,
+      "contentMatches": true,
+      "sha256": "1d53e7e686b633e6bbebfea75cd4ef6f2f26c200970c1513ec1f471fa8c14c7f"
+    },
+    {
+      "path": "friends/index.html",
+      "status": 200,
+      "contentMatches": true,
+      "sha256": "b4b1cc0570034acfb7a9834d81ffc41697c1e7729ad5f56cd198cb3f0c5982ad"
+    },
+    {
+      "path": "friends/invite.js",
+      "status": 200,
+      "contentMatches": true,
+      "sha256": "c864942af5d06c35105202735faf1ac62e11f52a7ef8b40ed7607e832fd25667"
+    }
+  ],
+  "passed": true
+}

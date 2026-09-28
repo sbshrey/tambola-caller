@@ -16,6 +16,8 @@ The private test uses the real beta package and publisher app ID, only on a debu
 
 The user supplied the public support/privacy address `sbshrey@gmail.com`; the publisher name uses the existing public handle `sbshrey`. The new static privacy page covers the current Internet Beta, opt-in Firebase diagnostics, conditional rewarded ads, actual local retention/backup limitations and in-app/email deletion requests. It contains no scripts or form collection.
 
-Publish the page at `https://sbshrey.github.io/tambola-caller/privacy/`, then use that URL when publishing a European regulations message for the matching app in AdMob. Rerun the same consent check after the console update. Publishing the page alone does not create an AdMob message or approve the app.
+The privacy page was published at `https://sbshrey.github.io/tambola-caller/privacy/`. Pages run `36398350298` completed successfully for main commit `f04a54718da41e31452ff1f049a36aa598a811c5`. Anonymous HTTPS reads of both privacy assets and both changed invitation assets returned HTTP 200 and matched the reviewed local contents. The main-branch comparison changed only those four files, preserving the rest of the website. See `page-publication.json` and `public-page-check.json`.
+
+Use that URL when publishing a European regulations message for the matching app in AdMob. Rerun the same consent check after the console update. Publishing the page alone does not create an AdMob message or approve the app.
 
 For app readiness, **Requires review** needs a supported store listing linked and submitted; **Getting ready** means Google's review/account verification is underway. The exact label remains to be distinguished. Do not call the overall advertising activation complete while the consent assertion, account readiness and completed-ad wallet delivery remain unverified.
