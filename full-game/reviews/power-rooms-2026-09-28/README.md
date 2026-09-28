@@ -33,3 +33,9 @@ The corrected native audio regression suite passed all five tests (`native-audio
 A final settings inspection found that new power feedback did not check the Vibration preference. Alpha39 passes that preference into the power dock before generating feedback. It retains the alpha38 game rules and server build. Release lint and exact-APK checks are recorded separately for this small client correction.
 
 Alpha39 release lint and the exact-APK public purchase/refund/restart/profile-deletion acceptance pass. Its signing identity is unchanged, its SHA-256 is `94eeb08414986517c652285acaa6070068720076183c4a17aad9a0952d70826c`, and live ads remain disabled. See `apk39.json` and `native-public39-*`.
+
+## Publication
+
+[Download alpha39](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha39-power-rooms). The anonymous APK download matches the tested SHA-256. The [friends page](https://sbshrey.github.io/tambola-caller/friends/) HTML and script both select alpha39; publishing preserved every other file on main. The installed public supervisor accepts protocol 6 and serves the alpha39 invitation download. Its current directory entry and public-route checks pass (`public-entry39.json`). The PC game host and login startup remain enabled.
+
+The public tunnel rotated while updating the invitation download. Future AdMob console verification must use the current directory origin plus `/admob/reward`; older prepared callback URLs are stale. At publication it is `https://thing-receptors-claims-recorders.trycloudflare.com/admob/reward`. Recheck the directory before activation because this temporary URL can change. No live ad activation or verified Google callback is claimed.

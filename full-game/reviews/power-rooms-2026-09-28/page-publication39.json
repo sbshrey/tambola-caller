@@ -1,0 +1,34 @@
+{
+  "publishedAt": "2026-09-28T04:02:41.473Z",
+  "base": "5d9e55e1a947fc3b90481bb2df32ec88995b567d",
+  "sourceCommit": "87c4e54e6f6a5805de02b01239c6b78d66b2378c",
+  "mainCommit": "f2035ea9597a86707345a4250c9e2b06a84af2bd",
+  "files": [
+    {
+      "path": "friends/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b70a5058718c182533d52dd7086fdf783cc9a09a"
+    },
+    {
+      "path": "friends/invite.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c11f76e5a137cccde42de4fb7aca093d875bfd62"
+    },
+    {
+      "path": "friends/styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75aed6da01fba0f512cf589f49f2718272034c50"
+    },
+    {
+      "path": "sw.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d030a504c828504b6894fc1b89bb3ef91b8eec4c"
+    }
+  ],
+  "site": "https://sbshrey.github.io/tambola-caller/friends/",
+  "scope": "Main changes are limited to the four allowed paths; Pages build and public checks still required."
+}
