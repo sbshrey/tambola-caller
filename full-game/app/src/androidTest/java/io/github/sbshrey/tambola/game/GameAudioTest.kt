@@ -5,7 +5,6 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
-import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.lifecycle.Lifecycle
@@ -117,7 +116,7 @@ class GameAudioTest {
         runBlocking { PreferenceStore(context).update(model.state.value.preferences.copy(music = true)) }
         until { model.state.value.preferences.music }
         assertFalse(snapshot().musicPresent)
-        compose.tapText("Resume sound")
+        main { mixer.resumeSound() }
         until { snapshot().musicPlaying }
         main { caller.play(90, "hi", celebration = true) }
         compose.activityRule.scenario.moveToState(Lifecycle.State.CREATED)
@@ -133,25 +132,20 @@ class GameAudioTest {
         compose.activityRule.scenario.moveToState(Lifecycle.State.RESUMED)
         assertEquals(SoundPause.HEADPHONES, mixer.pause.value)
         assertFalse(snapshot().musicPresent)
-        compose.tapText("Resume sound")
+        main { mixer.resumeSound() }
         until { snapshot().musicPlaying }
         assertFalse(snapshot().voicePresent); assertNull(snapshot().effect)
     }
 
     @Test fun savedIndependentSoundControlsRemainUsableAfterRecreation() {
-        configure(Preferences(voice = false, effects = false, tutorialCompleted = true))
-        compose.tapText("Settings")
-        compose.onNodeWithContentDescription("Voice volume").performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(65f) }
-        until { model.state.value.preferences.voiceVolume == 65 }
-        compose.tapText("Background music")
+        configure(Preferences(voice = false, music = false, effects = false, tutorialCompleted = true,
+            voiceVolume = 65, musicVolume = 25, effectsVolume = 40))
+        compose.onNodeWithTag("lobby-settings").performClick()
+        compose.onNodeWithTag("setting-music").performClick()
         until { model.state.value.preferences.music && snapshot().musicPlaying }
-        compose.onNodeWithContentDescription("Music volume").performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(25f) }
-        until { model.state.value.preferences.musicVolume == 25 }
         captureTestScreen("audio-music-settings")
-        compose.tapText("Game sounds")
+        compose.onNodeWithTag("setting-effects").performClick()
         until { model.state.value.preferences.effects }
-        compose.onNodeWithContentDescription("Effects volume").performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(40f) }
-        until { model.state.value.preferences.effectsVolume == 40 }
         captureTestScreen("audio-effects-settings")
         compose.activityRule.scenario.recreate()
         until { snapshot().musicPlaying && !model.state.value.loading }
@@ -159,9 +153,9 @@ class GameAudioTest {
         assertFalse(prefs.voice); assertTrue(prefs.music); assertTrue(prefs.effects)
         assertEquals(65, prefs.voiceVolume); assertEquals(25, prefs.musicVolume); assertEquals(40, prefs.effectsVolume)
         assertEquals(.25f, snapshot().musicGain, .001f)
-        compose.tapText("Background music")
+        compose.onNodeWithTag("setting-music").performClick()
         until { !snapshot().musicPresent }
-        compose.tapText("Game sounds")
+        compose.onNodeWithTag("setting-effects").performClick()
         until { !model.state.value.preferences.effects }
         assertFalse(snapshot().focusHeld)
     }

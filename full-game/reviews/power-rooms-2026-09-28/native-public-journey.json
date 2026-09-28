@@ -1,0 +1,16 @@
+{
+  "completed": true,
+  "scope": "External native UI purchase\/cancellation\/refund and cold wallet recovery over public HTTPS; no full round in this focused test",
+  "expectedRounds": 1,
+  "roundReports": [],
+  "memorySamples": [],
+  "stage": "purchase-refund-verified",
+  "elapsedMs": 24661,
+  "purchaseCoins": 300,
+  "walletAfterPurchase": 50200,
+  "walletAfterRefund": 50500,
+  "walletAfterColdRestart": 50500,
+  "rememberedThreeTickets": true,
+  "nativeProfileDeleted": true,
+  "deletedQaPeers": 0
+}

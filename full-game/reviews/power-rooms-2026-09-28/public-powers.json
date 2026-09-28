@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-28T03:51:45.545Z",
+  "origin": "https://farmer-outlets-routines-story.trycloudflare.com",
+  "sampledPower": "PRIZE_BONUS",
+  "checks": [
+    "six private tickets",
+    "five authoritative dabs and one drop",
+    "identical mark receipts on retry",
+    "peer power state stays private",
+    "no future draw order",
+    "wrong marks rejected",
+    "activation or shield use",
+    "false-claim receipts cannot punish twice",
+    "selected ticket discarded",
+    "QA profiles deleted"
+  ],
+  "scope": "Real public HTTPS API and ten-second calls; UI and full settlement covered separately"
+}

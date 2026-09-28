@@ -14,5 +14,5 @@
   "adIdPermissionsAbsent": true,
   "status": "Gameplay release; live ads disabled pending console and signed callback verification",
   "sourceBase": "b132c43144b872a6c6ba242316be08e032625a01",
-  "sourceDescription": "Built from the implementation working tree captured by this review commit; exact commit is recorded after committing."
+  "sourceCommit": "2bf58269a5dad26faeb7c390aad8e025aac290e4"
 }
