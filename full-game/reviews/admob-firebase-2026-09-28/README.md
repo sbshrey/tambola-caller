@@ -19,8 +19,12 @@ Consent is shared per activity, refreshed at launch and required before initiali
 
 The dedicated AdMob callback-test profile remains available for the user's console test. Its credential record is encrypted under ignored `.test-workspace/admob-ssv-probe.secrets`. Use `tools/verify-admob-callback.ps1 -Action Check`, then `-Action Delete` after recording verification. At preparation the wallet gained zero ad coins, as intended. Real signed callback delivery and deduplication have not yet been confirmed. The reward amount/item, published UMP message, app-store/readiness review and any app-ads.txt requirements need account-console verification. Browser control returned `unsupported Codex auth method: apikey`; no console state was inferred.
 
-Alpha36 remains the public APK. Do not publish the alpha37 live-ad candidate until its reward path and AdMob readiness are verified. A quick-tunnel restart changes the callback hostname and requires updating Google's saved URL.
+Alpha36 was public at the time of this candidate review; [alpha39](../power-rooms-2026-09-28/README.md) was subsequently published with live ads disabled. Do not publish an ad-enabled candidate until its reward path and AdMob readiness are verified. A quick-tunnel restart changes the callback hostname and requires updating Google's saved URL.
 
 ## Probe history and limits
 
 The first disposable Firebase probe declared its activity but did not include the added Kotlin source directory, causing an activity-not-found crash before opting in. A subsequent init-script attempt used the wrong Groovy overload. The corrected Android variant Kotlin-source registration built successfully and produced the verified intentional crash. These were probe-build failures; the normal application source has no test-crash entry point. Raw diagnostic logs remain ignored locally. No physical-phone/mobile-data test or real ad impression is claimed.
+
+## Current callback follow-up
+
+After alpha39 publication, browser inspection still reports `unsupported Codex auth method: apikey`. The callback helper now resolves the same validated publisher directory as the APK for Prepare, Check and Delete, so a tunnel rotation no longer strands the encrypted QA probe. The existing probe was recovered through the new origin without creating a new profile or intent. A second Check confirms the saved origin is current; no Google callback or ad credit is present. See `callback-recheck.json`. The user has been given the exact console test fields and asked for app readiness/consent status. Live ads remain incomplete and disabled.
