@@ -16,6 +16,7 @@ private const val DELIVERY_GRACE = DAY
 /** Account configuration is deliberately absent until a real rewarded unit is activated. */
 class RewardedAds private constructor(val adUnit: String, private val verify: (String) -> Unit) {
     private val lastRejectionLog = AtomicLong(0)
+    private val lastConsoleLog = AtomicLong(0)
 
     /** Only fixed reason labels are recorded, never callback values, identifiers or signatures. */
     private fun reject(reason: String, status: Int = 400, code: String = "invalid_ad"): Nothing {
@@ -51,7 +52,7 @@ class RewardedAds private constructor(val adUnit: String, private val verify: (S
     }
 
     /** Verify before opening a transaction. Never trust the Android onUserEarnedReward callback. */
-    internal fun verified(query: String, now: Long): VerifiedAd {
+    internal fun verified(query: String, now: Long): VerifiedAd? {
         if (query.length !in 1..4096) reject("query_length")
         val url = "https://ssv.invalid/?$query"
         val fields = try {
@@ -65,18 +66,29 @@ class RewardedAds private constructor(val adUnit: String, private val verify: (S
         val timestamp = fields["timestamp"]?.toLongOrNull()
         val transaction = fields["transaction_id"].orEmpty()
         val intent = fields["custom_data"].orEmpty()
+        // AdMob's Verify URL tool signs these fixed sample IDs, not the configured ad unit.
+        // A signed console probe proves delivery only: it must never create a reward receipt.
+        val consoleProbe = fields["ad_unit"] == "1234567890" && transaction == "123456789"
         // Keep all mismatches in one safe diagnostic, so console setup does not require one retry per field.
         val mismatches = buildList {
-            if (fields["ad_unit"] != adUnit.substringAfter('/')) add(if (fields["ad_unit"] == adUnit) "ad_unit_full_id" else "ad_unit")
+            if (!consoleProbe && fields["ad_unit"] != adUnit.substringAfter('/')) add(if (fields["ad_unit"] == adUnit) "ad_unit_full_id" else "ad_unit")
             if (fields["reward_amount"] != AD_REWARD_COINS.toString()) add("reward_amount")
             if (fields["reward_item"] != "coins") add("reward_item")
-            if (!transaction.matches(Regex("[a-fA-F0-9]{16,128}"))) add("transaction_id")
-            if (!intent.matches(Regex("[a-f0-9-]{36}"))) add("custom_data")
+            if (!consoleProbe && !transaction.matches(Regex("[a-fA-F0-9]{16,128}"))) add("transaction_id")
+            if (!consoleProbe && !intent.matches(Regex("[a-f0-9-]{36}"))) add("custom_data")
             if (timestamp == null || timestamp !in (now - 2 * DAY)..(now + 60_000)) {
                 add(if (timestamp != null && timestamp / 1000 in (now - 2 * DAY)..(now + 60_000)) "timestamp_microseconds" else "timestamp")
             }
         }
         if (mismatches.isNotEmpty()) reject(mismatches.joinToString(","))
+        if (consoleProbe) {
+            val loggedAt = System.currentTimeMillis()
+            val previous = lastConsoleLog.get()
+            if (loggedAt - previous >= 5_000 && lastConsoleLog.compareAndSet(previous, loggedAt)) {
+                LoggerFactory.getLogger(RewardedAds::class.java).info("AdMob signed console verification accepted; no reward granted")
+            }
+            return null
+        }
         return VerifiedAd(intent, transaction, timestamp!!)
     }
 

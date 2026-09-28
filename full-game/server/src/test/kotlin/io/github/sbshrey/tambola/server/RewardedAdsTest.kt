@@ -88,6 +88,35 @@ class RewardedAdsTest : PostgresTest() {
         assertEquals(1500L, service.wallet(actor.token).balance)
     }
 
+    @Test fun `signed console probes acknowledge delivery without crediting or consuming real intents`() {
+        setup(); val actor = guest(); val intent = service.prepareAd(actor.token)
+        val probe = callback(intent.id, tx = "123456789", adUnit = "1234567890")
+        repeat(2) { service.verifyAd(probe) }
+        // User ID and Custom data are optional in the console; neither may turn a probe into a reward.
+        service.verifyAd(callback("", tx = "123456789", adUnit = "1234567890"))
+        assertFalse(service.adStatus(actor.token, intent.id).confirmed)
+        assertEquals(intent, service.prepareAd(actor.token))
+        assertEquals(1500L, service.wallet(actor.token).balance)
+        assertEquals(0L, database.transaction { it.query("SELECT count(*) FROM reward_ad_receipts") { row -> row.getLong(1) }.single() })
+        service.verifyAd(callback(intent.id))
+        assertTrue(service.adStatus(actor.token, intent.id).confirmed)
+        assertEquals(2500L, service.wallet(actor.token).balance)
+    }
+
+    @Test fun `console probe handling cannot bypass signature reward timestamp or real unit checks`() {
+        setup(); val actor = guest(); val intent = service.prepareAd(actor.token)
+        val probe = callback(intent.id, tx = "123456789", adUnit = "1234567890")
+        listOf(
+            probe.replace("reward_amount=1000", "reward_amount=2000"),
+            callback(intent.id, tx = "123456789", adUnit = "1234567890", amount = 7),
+            callback(intent.id, tx = "123456789", adUnit = "1234567890", timestamp = now.get() + 120_000),
+            callback(intent.id, tx = "123456789", adUnit = "9999999999"),
+            callback(intent.id, adUnit = "9999999999"),
+        ).forEach { assertThrows(ApiFailure::class.java) { service.verifyAd(it) } }
+        assertFalse(service.adStatus(actor.token, intent.id).confirmed)
+        assertEquals(1500L, service.wallet(actor.token).balance)
+    }
+
     @Test fun `deleted profiles and default disabled deployment cannot receive rewards`() {
         assertEquals("ads_disabled", assertThrows(ApiFailure::class.java) { service.prepareAd(guest().token) }.code)
         setup(); val actor = guest(); val intent = service.prepareAd(actor.token); val query = callback(intent.id)

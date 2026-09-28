@@ -32,7 +32,7 @@ if ($Action -eq 'Prepare') {
     if ($record.intent.adUnit -ne 'ca-app-pub-1312548197553464/9960291000' -or $record.intent.coins -ne 1000) { throw 'Unexpected server reward configuration.' }
     Save-Record
     [pscustomobject]@{callback=$record.origin+'/admob/reward';customData=$record.intent.id;rewardAmount=1000;rewardItem='coins';expiresAt=[DateTimeOffset]::FromUnixTimeMilliseconds($record.intent.expiresAt).ToString('o')}
-    Write-Output 'Use this custom data in the AdMob SSV test twice, then run -Action Check. No ad impression or click is needed.'
+    Write-Output 'Use this custom data in the AdMob SSV test, then run -Action Check. A signed console probe confirms delivery but must add zero coins. A completed real ad must confirm exactly 1000 coins. No live ad impression or click is needed for the console check.'
     exit
 }
 if (!(Test-Path -LiteralPath $recordPath)) { throw 'No saved callback verification exists. Run -Action Prepare first.' }
@@ -61,3 +61,4 @@ if ($status.confirmed -and $delta -ne 1000) { throw 'Confirmed reward has an une
 [pscustomobject]@{confirmed=$status.confirmed;coinsAdded=$delta;expectedCoins=1000;customData=$record.intent.id;
     callback=$record.origin+'/admob/reward';callbackChanged=$callbackChanged;
     expiresAt=[DateTimeOffset]::FromUnixTimeMilliseconds($record.intent.expiresAt).ToString('o')}
+Write-Output 'Confirmed refers to a completed real ad reward. The AdMob console test uses sample IDs: its expected wallet delta is zero, and its signed acceptance is recorded in the server log.'

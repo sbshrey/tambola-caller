@@ -41,7 +41,7 @@ class RoomService(
     fun verifyAd(query: String) {
         val rewards = ads ?: fail(503, "ads_disabled", "Rewarded ads are not available yet.")
         rate("ad_callback", 300)
-        val verified = rewards.verified(query, clock())
+        val verified = rewards.verified(query, clock()) ?: return // Signed console probe; never touch a wallet.
         recoveryHealthy()
         database.transaction { rewards.credit(it, verified, clock()) }
     }
