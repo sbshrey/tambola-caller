@@ -1,0 +1,10 @@
+{
+  "completed": true,
+  "purchaseCoins": 300,
+  "walletAfterPurchase": 50200,
+  "walletAfterRefund": 50500,
+  "walletAfterColdRestart": 50500,
+  "rememberedThreeTickets": true,
+  "nativeProfileDeleted": true,
+  "elapsedMs": 23750
+}

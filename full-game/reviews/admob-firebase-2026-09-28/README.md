@@ -6,13 +6,14 @@ Consent is shared per activity, refreshed at launch and required before initiali
 
 ## Verified
 
-- The configured optimized alpha37 build compiled, lint passed and the Crashlytics release mapping uploaded. Final candidate identity is recorded separately after the final build.
+- The final optimized alpha37 candidate compiled, lint passed and the Crashlytics release mapping uploaded. [Candidate identity](candidate.json): source `5a193a194a83adf3933092e9df41f5077e9edc93`, SHA-256 `7d79f8b290a4a4f015f9343997f7fbff0103ce02a7c70804cb3429f57b7e8a4b`, 31,611,442 bytes. APK inspection confirmed both supplied ad IDs, the real Firebase app resource, non-debuggable packaging, the existing upgrade-compatible signing certificate, collection disabled by default, both Advertising ID permissions absent and no probe activity/code/logging flag.
 - App unit tests: 18 passed. Native API 30 emulator: two privacy/disclosure tests plus Google's official test-video load/display/dismiss flow passed, [3 tests](native-tests.txt). No live ad was clicked. This test does not assert a full rewarded completion or real SSV credit.
 - Firebase project `tambola-together-beta-sbshrey` and its beta Android registration were created through the refreshed CLI session. Configuration stays in ignored `app/src/publicBeta/google-services.json`; no billing account or paid backend was enabled.
 - The [Crashlytics reporting API](crashlytics-api.json) confirmed exactly one intentional fatal event from a separate `alpha37-firebase-probe` build.
 - The [Performance check](performance-delivery.json) logged `online_request`, `join_table`, `claim_prize`, and `login_rewards`, observed HTTP 200 from Firebase's logging endpoint, and verified no new custom traces after opting out. These were synthetic actions through the app wrapper, not a completed multiplayer session. Individual Performance dashboard trace visibility remains uninspected.
 - The PC reward configuration helper initially refused to restart an unfinished table. After it closed, the helper backed up encrypted settings, configured the supplied unit, restarted the idle game service and passed health checks. The quick tunnel stayed running at `https://farmer-outlets-routines-story.trycloudflare.com`.
 - [Public HTTPS economy checks](public-economy.json) passed after configuration, including reward-intent retries without credit, expanded prize pools, purchases/refunds and deletion of those two QA profiles.
+- The exact optimized candidate passed the [public Internet purchase/refund smoke test](public-candidate-smoke/validation.json) in 24.301 seconds, including cold restart and deletion of its owned profile. This used the stable app directory and real public HTTPS without adb reverse. The emulator and build daemons were stopped after verification.
 
 ## Remaining external checks
 

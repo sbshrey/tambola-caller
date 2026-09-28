@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "5a193a194a83adf3933092e9df41f5077e9edc93",
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "versionCode": 37,
+  "versionName": "0.37.0-alpha37-internet-beta",
+  "bytes": 31611442,
+  "sha256": "7d79f8b290a4a4f015f9343997f7fbff0103ce02a7c70804cb3429f57b7e8a4b",
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "firebaseConfigured": true,
+  "rewardedIdsConfigured": true,
+  "liveAdFlag": true,
+  "diagnosticCollectionDefault": false,
+  "debuggable": false,
+  "probeActivityAbsent": true,
+  "adIdPermissionsAbsent": true,
+  "status": "Candidate only; awaiting AdMob console and callback verification"
+}
