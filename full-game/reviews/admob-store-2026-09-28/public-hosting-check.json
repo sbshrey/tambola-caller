@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-09-28T09:04:22.324Z",
+  "origin": "https://tambola-together-beta-sbshrey.web.app",
+  "checks": [
+    {
+      "path": "/app-ads.txt",
+      "status": 200,
+      "type": "text/plain; charset=utf-8",
+      "location": null,
+      "matchesLocal": true,
+      "sha256": "ca0227c2d45aa7f5914516edb33a1f214021e87ee1320423a593e346b90525d5"
+    },
+    {
+      "path": "/",
+      "status": 302,
+      "type": "text/plain; charset=utf-8",
+      "location": "https://sbshrey.github.io/tambola-caller/friends/"
+    },
+    {
+      "path": "/firebase.json",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "location": null
+    }
+  ],
+  "admobCrawlVerified": false,
+  "appReadiness": "Requires review",
+  "playConsoleAccount": false,
+  "sourceCommit": "75e30471bb81d8d06811586a203e5ffd5b1d5fce",
+  "hostingRelease": {
+    "name": "projects/tambola-together-beta-sbshrey/sites/tambola-together-beta-sbshrey/channels/live/releases/1790586237176000",
+    "version": "projects/tambola-together-beta-sbshrey/sites/tambola-together-beta-sbshrey/versions/c5391e19b694603c",
+    "status": "FINALIZED",
+    "releasedAt": "2026-09-28T09:03:57.176Z"
+  }
+}

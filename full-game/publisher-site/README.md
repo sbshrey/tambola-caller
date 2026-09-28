@@ -11,6 +11,12 @@ The public publisher ID is taken from the supplied AdMob app/unit IDs. The line 
 
 The existing GitHub project page lives below `/tambola-caller/`. Placing an ownership file only below that path would not provide the hostname-root `/app-ads.txt` that AdMob looks for. Firebase supplies a dedicated root without needing a custom domain. [AdMob hosting and crawl guidance](https://support.google.com/admob/answer/9363762).
 
+## Verified publication
+
+Published from commit `75e3047` at **09:03 UTC on 28 September 2026** to the existing default site, which previously had no live release. Anonymous HTTPS checks confirmed the ownership file returns HTTP 200 as plain text and matches the local bytes, the homepage returns the configured HTTP 302 redirect, and `/firebase.json` returns HTTP 404. Ownership-file SHA-256: `ca0227c2d45aa7f5914516edb33a1f214021e87ee1320423a593e346b90525d5`. See [publication evidence](../reviews/admob-store-2026-09-28/public-hosting-check.json).
+
+Only the one static file and redirect/header configuration were deployed. No paid plan was enabled and no PC host, tunnel, Android APK or app consent choices were changed. AdMob crawl acceptance and store review remain unverified until the store listing and console steps below are completed.
+
 ## Publishing
 
 Run from this directory, with the existing Firebase login:
