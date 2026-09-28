@@ -1,0 +1,12 @@
+{
+  "verifiedAt": "2026-09-28T02:58:57.8312474Z",
+  "project": "tambola-together-beta-sbshrey",
+  "app": "io.github.sbshrey.tambola.game.beta",
+  "version": "0.37.0-alpha37-firebase-probe",
+  "title": "java.lang.IllegalStateException - Tambola alpha37 synthetic delivery verification",
+  "errorType": "FATAL",
+  "events": "1",
+  "issueId": "b69771b81ba35a7065e0d32f9d86191e",
+  "console": "https://console.firebase.google.com/v1/appid/project/tambola-together-beta-sbshrey/crashlytics/app/1:759172862735:android:0062dcf7dd9f49ba23a47a/issues/b69771b81ba35a7065e0d32f9d86191e?&time=1789948800000:1790639999000",
+  "scope": "Intentional crash from an emulator-only probe. No crash trigger is included in distributable source sets."
+}

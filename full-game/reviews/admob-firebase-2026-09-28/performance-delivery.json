@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-09-28T03:01:54.1166923Z",
+  "traces": [
+    "online_request",
+    "join_table",
+    "claim_prize",
+    "login_rewards"
+  ],
+  "backend": "firebaselogging-pa.googleapis.com",
+  "transportStatus": 200,
+  "customTraceAttribute": "outcome=success",
+  "optOutStopsNewCustomTraces": true,
+  "scope": "Synthetic actions use the application telemetry wrapper on a disposable emulator. SDK logging and HTTP acceptance verified; individual trace visibility in the Performance dashboard was not inspected."
+}

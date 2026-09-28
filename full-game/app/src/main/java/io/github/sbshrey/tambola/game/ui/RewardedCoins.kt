@@ -1,40 +1,24 @@
 package io.github.sbshrey.tambola.game.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.R
-import io.github.sbshrey.tambola.game.ads.RewardedAdsController
+import io.github.sbshrey.tambola.game.ads.LocalRewardedAds
 import io.github.sbshrey.tambola.game.online.OnlineViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
-private tailrec fun Context.activity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.activity()
-    else -> null
-}
-
 @Composable internal fun RewardedCoins(enabled: Boolean, model: OnlineViewModel) {
     if (!BuildConfig.REWARDED_ADS_ENABLED) return
     val words = gameText()
-    val activity = LocalContext.current.activity() ?: return
-    val controller = remember(activity) { RewardedAdsController(activity) }
+    val controller = LocalRewardedAds.current ?: return
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }
     var message by remember { mutableIntStateOf(0) }
-    LaunchedEffect(controller) {
-        try { controller.updateConsent() }
-        catch (error: CancellationException) { throw error }
-        catch (_: Exception) { /* Watch action can retry. */ }
-    }
     Column {
         OutlinedButton(enabled = enabled && !busy, modifier = Modifier.fillMaxWidth().testTag("rewarded-coins"), onClick = {
             if (!model.beginAd()) return@OutlinedButton

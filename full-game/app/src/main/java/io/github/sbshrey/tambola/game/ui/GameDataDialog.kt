@@ -23,6 +23,7 @@ import io.github.sbshrey.tambola.game.BuildConfig
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.data.PreferenceStore
 import io.github.sbshrey.tambola.game.data.Preferences
+import io.github.sbshrey.tambola.game.ads.LocalRewardedAds
 import kotlinx.coroutines.launch
 
 /** Available before creating a profile and from settings, without a network request. */
@@ -33,6 +34,7 @@ fun GameDataDialog(dismiss: () -> Unit) {
     val store = remember(context) { PreferenceStore(context.applicationContext) }
     val preferences by store.values.collectAsState(initial = Preferences())
     val scope = rememberCoroutineScope()
+    val ads = LocalRewardedAds.current
     val sections = listOf(
         R.string.privacy_device_title to R.string.privacy_device_body,
         R.string.privacy_online_title to R.string.privacy_online_body,
@@ -47,6 +49,9 @@ fun GameDataDialog(dismiss: () -> Unit) {
         title = { Text(words(R.string.privacy_title)) },
         text = {
             Column(Modifier.testTag("game-data-content").verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                if (ads?.privacyRequired == true) {
+                    TextButton(onClick = ads::privacyOptions, modifier = Modifier.testTag("ad-privacy-choices")) { Text(words(R.string.ad_privacy)) }
+                }
                 if (BuildConfig.TELEMETRY_CONFIGURED) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(words(R.string.diagnostics_title), modifier = Modifier.weight(1f))

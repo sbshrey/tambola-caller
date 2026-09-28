@@ -1,6 +1,6 @@
 # Beta expansion — alpha36
 
-[Alpha36 is published](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha36-expanded-multiplayer). The anonymous APK download matches the tested optimized build. Firebase and AdMob account activation remain pending.
+[Alpha36 is published](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha36-expanded-multiplayer). The anonymous APK download matches the tested optimized build. Alpha37 integration work now has real AdMob IDs and a registered Firebase project; delivery and account readiness must be verified before the next ad-enabled publication.
 
 Confirmed requirements: PC-hosted internet multiplayer, ten-second calls, two tickets per page, no called-number hints on tickets, claim choices stay open across calls, 50,000 beta coins including an existing-user upgrade, seven increasing daily rewards, rewarded ads, power-ups, 30–50-player tables, and several winners sharing each of six fixed prize pools.
 
@@ -23,4 +23,4 @@ Implementation and verification checklist:
 - [ ] Firebase project/account configuration and real console verification (user chose to sign in later).
 - [x] Regression checks, native playtest, backup/migration validation, PC-host deployment, APK publication and anonymous download verification. See the review for the resolved index/runtime issues and the test-driver cleanup failure, recovered and covered by a focused passing check.
 
-Firebase account creation is waiting for the user to run `firebase login --reauth`; they chose to sign in later. AdMob has no account yet: prepare test integration, then guide activation. Do not claim telemetry or live ad rewards are active before their external setup and verification succeed. Power-ups are open to our recommendation and must not reveal called ticket numbers or reduce another winner's prize share.
+On 28 September the user supplied the AdMob app/rewarded-unit IDs and reauthenticated Firebase. Project `tambola-together-beta-sbshrey` and its beta Android app are created; the configured optimized APK compiles and its Crashlytics mapping upload succeeds. AdMob console reward/consent/readiness settings and a real signed callback still require verification. After the unfinished table closed, the PC reward server was configured successfully without restarting its public tunnel. A dedicated callback-test intent is prepared. Do not claim live ad rewards are active before setup and verification succeed. Power-ups must not reveal called ticket numbers or reduce another winner's prize share.

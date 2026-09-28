@@ -25,12 +25,14 @@ dependencies {
     implementation("com.google.firebase:firebase-perf")
 }
 val adTest = providers.gradleProperty("tambolaAdTest").map(String::toBoolean).getOrElse(false)
-val adApp = providers.gradleProperty("tambolaAdMobAppId").getOrElse("")
-val adUnit = providers.gradleProperty("tambolaAdMobRewardUnit").getOrElse("")
-val adLive = adApp.isNotEmpty() && adUnit.isNotEmpty()
-require(!adTest || !adLive) { "Choose live IDs or test mode, not both" }
-require((adApp.isEmpty() && adUnit.isEmpty()) || (adApp.matches(Regex("ca-app-pub-[0-9]{16}~[0-9]{10}")) && adUnit.matches(Regex("ca-app-pub-[0-9]{16}/[0-9]{10}"))))
-require(!adLive || (!adApp.startsWith("ca-app-pub-3940256099942544") && adApp.substringBefore('~') == adUnit.substringBefore('/')))
+// Public identifiers for io.github.sbshrey.tambola.game.beta; never used by debug or Wi-Fi builds.
+val adApp = providers.gradleProperty("tambolaAdMobAppId").getOrElse("ca-app-pub-1312548197553464~7883782841")
+val adUnit = providers.gradleProperty("tambolaAdMobRewardUnit").getOrElse("ca-app-pub-1312548197553464/9960291000")
+// Enable only after the matching unit's reward, consent and SSV settings are verified.
+val adLive = providers.gradleProperty("tambolaLiveAds").map(String::toBooleanStrict).getOrElse(false)
+require(!adTest || !adLive) { "Choose live public-beta ads or debug test mode, not both" }
+require(adApp.matches(Regex("ca-app-pub-[0-9]{16}~[0-9]{10}")) && adUnit.matches(Regex("ca-app-pub-[0-9]{16}/[0-9]{10}")))
+require(!adApp.startsWith("ca-app-pub-3940256099942544") && adApp.substringBefore('~') == adUnit.substringBefore('/'))
 dependencies {
     implementation("com.google.android.gms:play-services-ads:25.5.0")
     implementation("com.google.android.ump:user-messaging-platform:4.0.0")
@@ -42,14 +44,14 @@ android {
         applicationId = "io.github.sbshrey.tambola.game"
         minSdk = 26
         targetSdk = 36
-        manifestPlaceholders["admobAppId"] = adApp.ifEmpty { "ca-app-pub-3940256099942544~3347511713" }
-        buildConfigField("boolean", "REWARDED_ADS_ENABLED", adLive.toString())
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+        buildConfigField("boolean", "REWARDED_ADS_ENABLED", "false")
         buildConfigField("boolean", "REWARDED_ADS_TEST", "false")
-        buildConfigField("String", "ADMOB_REWARD_UNIT", "\"$adUnit\"")
-        versionCode = 36
-        versionName = "0.36.0-alpha36"
+        buildConfigField("String", "ADMOB_REWARD_UNIT", "\"\"")
+        versionCode = 37
+        versionName = "0.37.0-alpha37"
         buildConfigField("String", "ROOM_DISCOVERY_URL", "\"\"")
-        buildConfigField("boolean", "TELEMETRY_CONFIGURED", firebaseConfigured.toString())
+        buildConfigField("boolean", "TELEMETRY_CONFIGURED", "false")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -97,6 +99,10 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             isDebuggable = false
             // Stable saved-profile identity; actual transport is resolved through the publisher directory.
+            manifestPlaceholders["admobAppId"] = adApp
+            buildConfigField("String", "ADMOB_REWARD_UNIT", "\"$adUnit\"")
+            buildConfigField("boolean", "REWARDED_ADS_ENABLED", adLive.toString())
+            buildConfigField("boolean", "TELEMETRY_CONFIGURED", firebaseConfigured.toString())
             buildConfigField("String", "ROOM_API_URL", "\"https://sbshrey.github.io\"")
             buildConfigField("String", "ROOM_DISCOVERY_URL", "\"https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json\"")
             manifestPlaceholders["inviteHost"] = "disabled.invalid"

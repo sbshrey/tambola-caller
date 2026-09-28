@@ -1,0 +1,6 @@
+io.github.sbshrey.tambola.game.GameDataTest:..
+io.github.sbshrey.tambola.game.RewardedAdPreviewTest:.
+
+Time: 52.47
+
+OK (3 tests)

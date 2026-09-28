@@ -9,6 +9,11 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import io.github.sbshrey.tambola.game.ads.LocalRewardedAds
+import io.github.sbshrey.tambola.game.ads.RewardedAdsController
+import kotlinx.coroutines.CancellationException
 import androidx.compose.foundation.isSystemInDarkTheme
 import io.github.sbshrey.tambola.game.data.Appearance
 import androidx.lifecycle.Lifecycle
@@ -34,6 +39,12 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.rgb(18, 29, 43)))
         setContent {
+            val ads = remember { if (BuildConfig.REWARDED_ADS_ENABLED) RewardedAdsController(this) else null }
+            LaunchedEffect(ads) {
+                try { ads?.updateConsent() }
+                catch (error: CancellationException) { throw error }
+                catch (_: Exception) { /* The optional watch action retries consent when needed. */ }
+            }
             val state by model.state.collectAsStateWithLifecycle()
             val onlineState by online.state.collectAsStateWithLifecycle()
             val inviteState by invitations.state.collectAsStateWithLifecycle()
@@ -73,7 +84,9 @@ class MainActivity : AppCompatActivity() {
                     navigationBarStyle = if (gameLobby) SystemBarStyle.dark(android.graphics.Color.rgb(25, 22, 47)) else if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
                 )
             }
-            TambolaTheme(dark) { TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss) }
+            CompositionLocalProvider(LocalRewardedAds provides ads) {
+                TambolaTheme(dark) { TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss) }
+            }
         }
     }
     override fun onNewIntent(intent: Intent) {

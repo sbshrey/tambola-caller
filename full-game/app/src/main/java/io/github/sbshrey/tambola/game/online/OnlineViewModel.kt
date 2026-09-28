@@ -216,7 +216,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun prepareAd(): RewardAdIntent {
         check(BuildConfig.REWARDED_ADS_ENABLED && !BuildConfig.REWARDED_ADS_TEST)
         check(!mutable.value.busy && !mutable.value.pending && mutable.value.room?.phase !in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE))
-        return authorized { requireNotNull(api).prepareAd(it) }.also { check(it.adUnit == BuildConfig.ADMOB_REWARD_UNIT) }
+        return authorized { requireNotNull(api).prepareAd(it) }.also {
+            check(it.adUnit == BuildConfig.ADMOB_REWARD_UNIT && it.coins == AD_REWARD_COINS)
+        }
     }
     suspend fun confirmAd(id: String): Boolean {
         val player = saved?.credentials?.playerId ?: return false

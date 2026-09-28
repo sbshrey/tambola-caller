@@ -9,6 +9,7 @@ assert.equal(entry.service, 'tambola-together-public-beta-v1');
 assert.ok(entry.expiresAt > Date.now());
 assert.match(entry.origin, /^https:\/\/[a-z0-9]+(?:-[a-z0-9]+)*\.trycloudflare\.com$/);
 const guests = [];
+const adsEnabled = process.argv.includes('--ads-enabled');
 async function request(path, method = 'GET', body, actor) {
   const response = await fetch(entry.origin + path, { method, redirect: 'error', signal: AbortSignal.timeout(15000),
     headers: { ...(body ? { 'content-type': 'application/json' } : {}), ...(actor ? { authorization: `Bearer ${actor.token}` } : {}) },
@@ -51,14 +52,24 @@ try {
     assert.deepEqual(receipt, await api(`${path}/commands`, 'POST', leave, actor));
     assert.equal((await api('/v1/wallet', 'GET', undefined, actor)).balance, 50500);
   }
-  assert.equal((await request('/v1/wallet/ad-intents', 'POST', undefined, guests[0])).body.code, 'ads_disabled');
+  if (adsEnabled) {
+    const intent = await api('/v1/wallet/ad-intents', 'POST', undefined, guests[0]);
+    assert.equal(intent.adUnit, 'ca-app-pub-1312548197553464/9960291000');
+    assert.equal(intent.coins, 1000);
+    assert.deepEqual(intent, await api('/v1/wallet/ad-intents', 'POST', undefined, guests[0]));
+    const status = await api(`/v1/wallet/ad-intents/${intent.id}`, 'GET', undefined, guests[0]);
+    assert.equal(status.confirmed, false);
+    assert.equal(status.wallet.balance, 50500); // A prepared intent alone must never award coins.
+  } else {
+    assert.equal((await request('/v1/wallet/ad-intents', 'POST', undefined, guests[0])).body.code, 'ads_disabled');
+  }
 } finally {
   for (const actor of guests) await api('/v1/guests/me/delete', 'POST', { id: randomUUID() }, actor);
 }
 const evidence = { passed: true, observedAt: new Date().toISOString(), origin: entry.origin,
   checks: ['concurrent 50000 starter plus day-one reward exactly once', 'two friends with rules v2 and ten-second calls',
     '50-seat capacity and two winners per category', 'six fixed category pools', 'persisted power-up selections',
-    'exact purchase/leave retry and full refund', 'live ads disabled pending activation', 'QA profiles deleted'],
+    'exact purchase/leave retry and full refund', adsEnabled ? 'configured reward intent retries without unverified credit' : 'live ads disabled pending activation', 'QA profiles deleted'],
   scope: 'Public HTTPS from the host PC, lobby and economy checks; no physical-phone acceptance or completed round claim' };
 await mkdir(resolve('.test-workspace/internet-beta'), { recursive: true });
 await writeFile(resolve('.test-workspace/internet-beta/expanded-entry.json'), JSON.stringify(evidence, null, 2) + '\n');
