@@ -15,7 +15,7 @@ assert.equal(invitation.status, 200);
 assert.equal(invitation.headers.get('referrer-policy'), 'no-referrer');
 const invitationHtml = await invitation.text();
 assert.match(invitationHtml, /intent:\/\/friends\/ABCDEFG2#Intent;scheme=tambola-beta;package=io.github.sbshrey.tambola.game.beta;/);
-assert.ok(invitationHtml.includes('https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha38-power-rooms'));
+assert.ok(invitationHtml.includes('https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha39-power-rooms'));
 for (const path of ['/internal/metrics', '/health/live', '/.env', '/invite/ABCD2345']) assert.equal((await request(path)).status, 404);
 assert.equal((await request('/v1/matches', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"id":"00000000-0000-4000-8000-000000000001","tickets":1}' })).status, 401);
 const evidence = { passed: true, observedAt: new Date().toISOString(), origin: entry.origin,

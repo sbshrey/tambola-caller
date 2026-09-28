@@ -28,14 +28,14 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
     PowerNotice.ACTIVATED -> R.string.power_active
 }) }
 
-@Composable internal fun PowerDock(table: TableRound, enabled: Boolean, activate: (String, MatchPower) -> Unit) {
+@Composable internal fun PowerDock(table: TableRound, enabled: Boolean, hapticsEnabled: Boolean, activate: (String, MatchPower) -> Unit) {
     val powers = requireNotNull(table.powers)
     val words = gameText()
     var selected by remember(table.id) { mutableStateOf<MatchPower?>(null) }
     val haptic = LocalHapticFeedback.current
     var previousNotice by remember(table.id) { mutableIntStateOf(powers.noticeSequence) }
     LaunchedEffect(powers.noticeSequence) {
-        if (powers.noticeSequence > previousNotice) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        if (hapticsEnabled && powers.noticeSequence > previousNotice) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         previousNotice = powers.noticeSequence
     }
     Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("power-dock"), verticalAlignment = Alignment.CenterVertically) {

@@ -27,3 +27,7 @@ Legacy Classic/rules-v2 lobby and economy checks also passed over public HTTPS, 
 The exact release APK passed native public purchase/cancellation/refund, cold-restart wallet recovery and profile deletion on API30, with no adb forwarding. Its SHA-256 is `dde513977d1fa1d52474651c2c9df99881fc6290b5e875fda3e300ca0a159207`. See `native-public-validation.json`, `native-public-journey.json` and `native-public.txt`.
 
 The corrected native audio regression suite passed all five tests (`native-audio.txt`). The final debug build also reran the eight board/power tests successfully; only the separately corrected obsolete audio fixtures failed in that intermediate combined run.
+
+## Alpha39 follow-up
+
+A final settings inspection found that new power feedback did not check the Vibration preference. Alpha39 passes that preference into the power dock before generating feedback. It retains the alpha38 game rules and server build. Release lint and exact-APK checks are recorded separately for this small client correction.
