@@ -28,6 +28,8 @@ See [app readiness](https://support.google.com/admob/answer/10564477?hl=en-GB) a
 
 The server uses Google's Tink rewarded-ads verifier, bounded HTTPS key downloads, six-hour key refreshes and a one-minute retry throttle. An authenticated opaque intent links the video to a wallet; the client's completion callback never grants coins. Failed loads reuse an uncredited slot. Five slots per UTC date, transaction/intent uniqueness and atomic ledger credits prevent duplicate rewards. Verification may arrive after app closure: reopening the profile refreshes the wallet. Deleted profiles and their reward records are removed together. Callbacks more than one day after the intent's UTC-date boundary are rejected.
 
+For a rejected console test, the server response and running server log include fixed reason labels such as `reward_amount`, `custom_data`, or `timestamp`. Signed callbacks report all mismatches together; unsigned callbacks never reach these field checks. No callback values, signatures, user IDs or transaction IDs are logged. Log entries are limited to one per five seconds. The Windows host allows its logs to be read while running, without restarting the public tunnel.
+
 ## Development preview
 
 `./gradlew.bat :app:assembleDebug -PtambolaAdTest=true` enables Google's official test app/unit in debug only. Test previews never request a reward intent or award server coins. Public-beta ad requests remain disabled unless `tambolaLiveAds=true`; other release variants stay disabled. Never click live ads while testing.

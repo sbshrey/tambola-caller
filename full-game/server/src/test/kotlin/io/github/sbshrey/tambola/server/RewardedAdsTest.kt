@@ -74,6 +74,20 @@ class RewardedAdsTest : PostgresTest() {
         assertEquals(7500L, service.wallet(actor.token).balance)
     }
 
+    @Test fun `callback diagnostics identify all signed mismatches without echoing callback data`() {
+        setup(); val actor = guest(); val intent = service.prepareAd(actor.token)
+        val query = callback("private-marker", tx = "private-transaction", amount = 7, timestamp = now.get() * 1000, adUnit = unit)
+        val error = assertThrows(ApiFailure::class.java) { service.verifyAd(query) }
+        assertEquals(400, error.status)
+        assertEquals("invalid_ad", error.code)
+        assertEquals("Ad verification failed: ad_unit_full_id,reward_amount,transaction_id,custom_data,timestamp_microseconds.", error.message)
+        val tampered = assertThrows(ApiFailure::class.java) { service.verifyAd(query.replace("reward_amount=7", "reward_amount=8")) }
+        assertEquals("ad_unverified", tampered.code)
+        assertEquals("Ad verification failed: signature_or_keys.", tampered.message)
+        assertFalse(service.adStatus(actor.token, intent.id).confirmed)
+        assertEquals(1500L, service.wallet(actor.token).balance)
+    }
+
     @Test fun `deleted profiles and default disabled deployment cannot receive rewards`() {
         assertEquals("ads_disabled", assertThrows(ApiFailure::class.java) { service.prepareAd(guest().token) }.code)
         setup(); val actor = guest(); val intent = service.prepareAd(actor.token); val query = callback(intent.id)

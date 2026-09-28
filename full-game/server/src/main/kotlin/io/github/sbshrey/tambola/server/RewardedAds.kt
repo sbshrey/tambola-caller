@@ -6,13 +6,27 @@ import java.net.URI
 import java.net.URL
 import java.sql.Connection
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicLong
 import javax.net.ssl.HttpsURLConnection
+import org.slf4j.LoggerFactory
 
 private const val DAY = 86_400_000L
 private const val DELIVERY_GRACE = DAY
 
 /** Account configuration is deliberately absent until a real rewarded unit is activated. */
 class RewardedAds private constructor(val adUnit: String, private val verify: (String) -> Unit) {
+    private val lastRejectionLog = AtomicLong(0)
+
+    /** Only fixed reason labels are recorded, never callback values, identifiers or signatures. */
+    private fun reject(reason: String, status: Int = 400, code: String = "invalid_ad"): Nothing {
+        val now = System.currentTimeMillis()
+        val previous = lastRejectionLog.get()
+        if (now - previous >= 5_000 && lastRejectionLog.compareAndSet(previous, now)) {
+            LoggerFactory.getLogger(RewardedAds::class.java).warn("AdMob callback rejected: {}", reason)
+        }
+        fail(status, code, "Ad verification failed: $reason.")
+    }
+
     internal fun prepare(connection: Connection, player: String, now: Long): RewardAdIntent {
         val day = now / DAY
         val pending = connection.query("""SELECT i.id, i.ad_unit, i.expires_at FROM reward_ad_intents i
@@ -38,7 +52,7 @@ class RewardedAds private constructor(val adUnit: String, private val verify: (S
 
     /** Verify before opening a transaction. Never trust the Android onUserEarnedReward callback. */
     internal fun verified(query: String, now: Long): VerifiedAd {
-        demand(query.length in 1..4096, 400, "invalid_ad", "Invalid ad verification.")
+        if (query.length !in 1..4096) reject("query_length")
         val url = "https://ssv.invalid/?$query"
         val fields = try {
             // Tink verifies URI.getQuery(); parse that same representation, without a second decode.
@@ -46,15 +60,23 @@ class RewardedAds private constructor(val adUnit: String, private val verify: (S
             require(parts.map { it[0] }.distinct().size == parts.size)
             require(parts.takeLast(2).map { it[0] } == listOf("signature", "key_id"))
             parts.associate { it[0] to it[1] }
-        } catch (_: Exception) { fail(400, "invalid_ad", "Invalid ad verification.") }
-        try { verify(url) } catch (_: Exception) { fail(503, "ad_unverified", "Ad verification unavailable. Retry later.") }
+        } catch (_: Exception) { reject("query_format") }
+        try { verify(url) } catch (_: Exception) { reject("signature_or_keys", 503, "ad_unverified") }
         val timestamp = fields["timestamp"]?.toLongOrNull()
         val transaction = fields["transaction_id"].orEmpty()
         val intent = fields["custom_data"].orEmpty()
-        demand(fields["ad_unit"] == adUnit.substringAfter('/') && fields["reward_amount"] == AD_REWARD_COINS.toString() &&
-            fields["reward_item"] == "coins" && transaction.matches(Regex("[a-fA-F0-9]{16,128}")) &&
-            intent.matches(Regex("[a-f0-9-]{36}")) && timestamp != null && timestamp in (now - 2 * DAY)..(now + 60_000),
-            400, "invalid_ad", "Invalid ad verification.")
+        // Keep all mismatches in one safe diagnostic, so console setup does not require one retry per field.
+        val mismatches = buildList {
+            if (fields["ad_unit"] != adUnit.substringAfter('/')) add(if (fields["ad_unit"] == adUnit) "ad_unit_full_id" else "ad_unit")
+            if (fields["reward_amount"] != AD_REWARD_COINS.toString()) add("reward_amount")
+            if (fields["reward_item"] != "coins") add("reward_item")
+            if (!transaction.matches(Regex("[a-fA-F0-9]{16,128}"))) add("transaction_id")
+            if (!intent.matches(Regex("[a-f0-9-]{36}"))) add("custom_data")
+            if (timestamp == null || timestamp !in (now - 2 * DAY)..(now + 60_000)) {
+                add(if (timestamp != null && timestamp / 1000 in (now - 2 * DAY)..(now + 60_000)) "timestamp_microseconds" else "timestamp")
+            }
+        }
+        if (mismatches.isNotEmpty()) reject(mismatches.joinToString(","))
         return VerifiedAd(intent, transaction, timestamp!!)
     }
 
@@ -64,8 +86,8 @@ class RewardedAds private constructor(val adUnit: String, private val verify: (S
         }.singleOrNull() ?: return // Deleted profiles stay deleted, including delayed callbacks.
         val player = intent.player
         if (connection.query("SELECT id FROM guests WHERE id = ? FOR UPDATE", player) { true }.isEmpty()) return
-        demand(intent.adUnit == adUnit && ad.timestamp in (intent.createdAt - 60_000) until intent.expiresAt &&
-            now < intent.expiresAt + DELIVERY_GRACE, 400, "ad_expired", "This ad reward has expired.")
+        if (intent.adUnit != adUnit || ad.timestamp !in (intent.createdAt - 60_000) until intent.expiresAt ||
+            now >= intent.expiresAt + DELIVERY_GRACE) reject("intent_expired", 400, "ad_expired")
         val inserted = connection.execute("INSERT INTO reward_ad_receipts VALUES (?, ?, ?) ON CONFLICT DO NOTHING", ad.transaction, ad.intent, now)
         if (inserted == 1) check(CoinLedger.credit(connection, player, "ad:${ad.intent}", AD_REWARD_COINS, now))
     }

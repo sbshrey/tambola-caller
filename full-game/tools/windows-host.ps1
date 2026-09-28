@@ -76,8 +76,10 @@ function Start-Owned([string]$role, [string]$executable, [string[]]$arguments, [
     foreach ($key in $variables.Keys) { $info.Environment[$key] = [string]$variables[$key] }
     $process = [Diagnostics.Process]::new(); $process.StartInfo = $info
     if (!$process.Start()) { throw "Could not start $role" }
-    $output = [IO.File]::Create((Join-Path $hostDirectory "logs/$role-$timestamp.log"))
-    $errorLog = [IO.File]::Create((Join-Path $hostDirectory "logs/$role-$timestamp.err.log"))
+    # Allow diagnostics to be read while the service is running. Disable the extra file buffer
+    # so short callback failures are visible immediately, without restarting the game server.
+    $output = [IO.FileStream]::new((Join-Path $hostDirectory "logs/$role-$timestamp.log"), 'Create', 'Write', 'Read', 1)
+    $errorLog = [IO.FileStream]::new((Join-Path $hostDirectory "logs/$role-$timestamp.err.log"), 'Create', 'Write', 'Read', 1)
     $streams = @($process.StandardOutput.BaseStream.CopyToAsync($output), $process.StandardError.BaseStream.CopyToAsync($errorLog))
     return @{process=$process; output=$output; errorLog=$errorLog; streams=$streams; role=$role;
         pid=$process.Id; path=$executable; startedAt=$process.StartTime.ToUniversalTime().ToString('o')}
