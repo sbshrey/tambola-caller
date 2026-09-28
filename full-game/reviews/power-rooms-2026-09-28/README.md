@@ -31,3 +31,5 @@ The corrected native audio regression suite passed all five tests (`native-audio
 ## Alpha39 follow-up
 
 A final settings inspection found that new power feedback did not check the Vibration preference. Alpha39 passes that preference into the power dock before generating feedback. It retains the alpha38 game rules and server build. Release lint and exact-APK checks are recorded separately for this small client correction.
+
+Alpha39 release lint and the exact-APK public purchase/refund/restart/profile-deletion acceptance pass. Its signing identity is unchanged, its SHA-256 is `94eeb08414986517c652285acaa6070068720076183c4a17aad9a0952d70826c`, and live ads remain disabled. See `apk39.json` and `native-public39-*`.

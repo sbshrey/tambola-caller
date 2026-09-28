@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "c6db9779484d5ed1f87c3fb3b1d92fc7185dfe38",
+  "package": "io.github.sbshrey.tambola.game.beta",
+  "versionCode": 39,
+  "versionName": "0.39.0-alpha39-internet-beta",
+  "bytes": 31549050,
+  "sha256": "94eeb08414986517c652285acaa6070068720076183c4a17aad9a0952d70826c",
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "firebaseConfigured": true,
+  "rewardedIdsConfigured": true,
+  "liveAdFlag": false,
+  "diagnosticCollectionDefault": false,
+  "debuggable": false,
+  "probeActivityAbsent": true,
+  "adIdPermissionsAbsent": true,
+  "status": "Gameplay release; live ads disabled pending console and signed callback verification"
+}
