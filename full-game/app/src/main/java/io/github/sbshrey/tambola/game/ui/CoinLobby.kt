@@ -199,8 +199,6 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                 Box(Modifier.weight(if (waiting) 2f else .85f)) { hero() }
                 if (showControls) Box(Modifier.weight(1.15f)) { controls() }
             } else Column(Modifier.weight(1f).testTag("lobby-content"), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)) { hero(); controls() }
-            if (!waiting && !active) Text(words(R.string.lobby_practice_short), color = GameNightPalette.muted, fontSize = 11.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("lobby-practice-disclosure"))
         }
       }
     }
@@ -242,7 +240,6 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
         Text(words(R.string.power_shield_detail))
         Text(words(R.string.power_auto_detail))
         Text(words(R.string.power_bonus_detail))
-        Text(words(R.string.practice_disclosure))
     }
     if (resultDetails && finished) ArenaDialog(words(R.string.coin_results), { resultDetails = false }) {
         val ownWins = ownCoinWins(coins?.prizes.orEmpty(), room?.round?.awards.orEmpty(), room?.round?.ownTickets.orEmpty().map { it.id }.toSet())

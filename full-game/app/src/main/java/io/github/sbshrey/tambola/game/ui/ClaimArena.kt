@@ -212,7 +212,6 @@ internal fun ClaimArena(
                 AvatarBadge(player.avatar, size = 32.dp, modifier = Modifier.clearAndSetSemantics {})
                 Column(Modifier.weight(1f)) {
                     Text(player.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    if (player.computer) Text(words(R.string.play_computer_short), style = MaterialTheme.typography.bodySmall)
                 }
             }
         }
@@ -327,8 +326,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                 drawLine(muted, Offset(size.width / 2, 6.dp.toPx()), Offset(size.width / 2 + 4.dp.toPx(), 2.dp.toPx()), 1.5.dp.toPx())
             }
         }
-        val playerSummary = if (table.coins != null) words(R.string.coin_players, table.players.size, table.players.count { it.computer })
-            else words(R.string.play_players_short, table.players.size)
+        val playerSummary = words(R.string.play_players_short, table.players.size)
         val playerControl = Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .clickable(role = Role.Button, onClick = openPlayers).testTag("table-players")
             .semantics(mergeDescendants = true) { contentDescription = playerSummary }

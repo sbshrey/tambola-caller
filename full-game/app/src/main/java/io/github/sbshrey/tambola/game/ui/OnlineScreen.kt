@@ -134,7 +134,6 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                             if (host && member.playerId != state.playerId) TextButton(onClick = { model.command(RoomAction.Remove(member.playerId)) }, enabled = enabled && state.connection == Connection.LIVE) { Text(words(R.string.ui_remove)) }
                         }
                     }
-                    if (room.options.computerPlayers > 0) Text("${words(R.string.ui_computer_players)} · ${room.options.computerPlayers}", color = Muted)
                 }
                 GameCard {
                     Text(room.options.game.prizes.joinToString(" · ") { words.prizeTitle(it) }, maxLines = 2, overflow = TextOverflow.Ellipsis,

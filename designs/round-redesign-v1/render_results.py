@@ -5,10 +5,12 @@ from html import escape
 import subprocess
 import json
 
-PLAYERS = [('You', 'Early five · Top line', 200), ('Player 2', 'Full house', 500),
-           ('Computer 1', 'Full house', 500), ('Player 4', 'Full house', 500),
-           ('Player 5', 'Corners · Middle line', 200), ('Computer 2', 'Bottom line', 100)]
-PLAYERS += [(f'Player {n}', 'No prizes this round', 0) for n in range(7, 25)]
+PLAYERS = [('You', 'Early five · Top line', 200), ('Tara Rao', 'Full house', 500),
+           ('Aarav Mehta', 'Full house', 500), ('Kabir Shah', 'Full house', 500),
+           ('Noor Sen', 'Corners · Middle line', 200), ('Mira Nair', 'Bottom line', 100)]
+PLAYERS += [(name, 'No prizes this round', 0) for name in ['Dev Sethi','Rohan Patel','Isha Joshi',
+    'Arjun Bose','Leela Suri','Neel Verma','Anaya Bhat','Vihaan Das','Diya Sinha','Samar Rana',
+    'Riya Mehta','Tara Shah','Kabir Sen','Noor Nair','Mira Rao','Dev Patel','Rohan Joshi','Isha Suri']]
 PLAYERS.sort(key=lambda player: -player[2])  # Stable tie order; equal totals share rank.
 RANKS = [1 + sum(other[2] > player[2] for other in PLAYERS) for player in PLAYERS]
 OWN_INDEX = next(i for i, player in enumerate(PLAYERS) if player[0] == 'You')
@@ -77,4 +79,5 @@ if __name__ == '__main__':
         assert ImageChops.difference(results().crop((0,68,284,446)),results(scroll).crop((0,68,284,446))).getbbox() is None
     assert len(PLAYERS)==24 and all(PLAYERS[i][2]>=PLAYERS[i+1][2] for i in range(23))
     assert 0 <= OWN_INDEX*69-OWN_SCROLL <= 337-61
-    (ROOT/'results-validation.json').write_text(json.dumps({'passed':True,'scope':'Illustrative geometry, not native settlement or replay validation','checks':['24 players sorted by descending winnings with shared ranks for ties','Initial scroll reveals highlighted own row without reordering ranks','Replay and lobby actions remain fixed','Personal result remains fixed while scrolling','Computer players explicitly labelled']},indent=2))
+    assert len({player[0] for player in PLAYERS}) == 24
+    (ROOT/'results-validation.json').write_text(json.dumps({'passed':True,'scope':'Illustrative geometry, not native settlement or replay validation','checks':['24 players sorted by descending winnings with shared ranks for ties','Initial scroll reveals highlighted own row without reordering ranks','Replay and lobby actions remain fixed','Personal result remains fixed while scrolling','Unique fictional names in the sample roster']},indent=2))

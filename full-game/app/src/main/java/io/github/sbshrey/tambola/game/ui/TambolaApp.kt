@@ -115,7 +115,7 @@ private fun Results(round: Round, model: GameViewModel) {
             val leading = topScore > 0 && round.score(player.id) == topScore
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 AvatarBadge(player.avatar, if (leading) Modifier.border(2.dp, Saffron, CircleShape) else Modifier, size = 42.dp)
-                Column(Modifier.weight(1f).padding(horizontal = 12.dp)) { Text(player.name, style = MaterialTheme.typography.titleMedium); if (player.computer) Text(words(R.string.ui_computer_player), color = Muted, fontSize = 12.sp) }
+                Column(Modifier.weight(1f).padding(horizontal = 12.dp)) { Text(player.name, style = MaterialTheme.typography.titleMedium) }
                 Text(words(R.string.ui_pts, round.score(player.id)), color = Jade, fontWeight = FontWeight.Bold)
             }
         }

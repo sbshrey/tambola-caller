@@ -66,7 +66,6 @@ internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boo
                             Text(if (member == null) words(R.string.table_joining) else if (member.playerId == ownerId) words(R.string.table_you) else member.displayName,
                                 color = if (member == null) GameNightPalette.muted else GameNightPalette.cream,
                                 fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            if (personas.any { it.id == member?.playerId }) Text(words(R.string.play_computer_short), fontSize = 10.sp)
                         }
                     }
                 }
@@ -75,7 +74,6 @@ internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boo
         Text(members.lastOrNull { it.playerId != ownerId }?.let { words(R.string.table_joined, it.displayName) }
             ?: words(R.string.table_tickets_ready), color = GameNightPalette.mint, fontSize = 12.sp,
             maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(words(R.string.coin_players, members.size, personas.size), fontSize = 12.sp, modifier = Modifier.testTag("joining-count"))
-        Text(words(R.string.practice_disclosure), fontSize = 11.sp, color = GameNightPalette.muted)
+        Text(words(R.string.play_players_short, members.size), fontSize = 12.sp, modifier = Modifier.testTag("joining-count"))
     }
 }

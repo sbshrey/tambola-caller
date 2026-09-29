@@ -2,7 +2,7 @@
 
 New clients opt into `largeMatch` for public quick play, in both Power and Classic modes. Each room derives a stable target of 30–50 players from its random room ID. That target is independent of tickets and the committed draw order. Computer seats fill progressively over the first ten seconds of the existing twelve-second countdown. Real players replace computer seats before the start, and additional real players can grow a room to the capacity of 50. The final roster, ticket pool and winner counts lock when the round starts; no opponents appear halfway through play.
 
-Each computer uses three legal tickets and the existing delayed, eligibility-checked claims. There are no invented prize wins, adjusted draws or guaranteed human losses/wins. The public player record retains `computer = true`; the app labels these opponents **Computer**. Countdown avatars show the owner and four recent arrivals while the total reports every seat. Friends rooms remain invitation-only.
+Each computer uses three legal tickets and the existing delayed, eligibility-checked claims. There are no invented prize wins, adjusted draws or guaranteed human losses/wins. The public player record retains `computer = true` for game logic. Following the user's updated design preference, names appear without a Computer suffix or repeated disclosure. Each simulated roster has up to 49 unique fictional full names, stable across reconnects, with consistent avatars. Countdown avatars show the owner and four recent arrivals while the total reports every seat. Friends rooms remain invitation-only.
 
 ## Compatibility and rollout
 
