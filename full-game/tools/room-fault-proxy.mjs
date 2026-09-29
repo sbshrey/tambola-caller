@@ -14,6 +14,7 @@ let refillsDropped = 0;
 let sessionArmed = false;
 let sessionsDropped = 0;
 let rejectWallet = false;
+let commandDelayMs = 0;
 const proxy = http.createServer((request, response) => {
   if (rejectWallet && request.method === 'GET' && request.url === '/v1/wallet') {
     rejectWallet = false; request.resume();
@@ -27,6 +28,8 @@ const proxy = http.createServer((request, response) => {
     const match = matchArmed && request.method === 'POST' && request.url === '/v1/matches';
     const session = sessionArmed && request.method === 'POST' && request.url === '/v1/guests/me/session';
     const refill = refillArmed && request.method === 'POST' && request.url === '/v1/wallet/refill';
+    const commandPath = request.method === 'POST' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/commands$/.test(request.url);
+    const deliver = () => {
     if ((deletion || command || match || session || refill) && result.statusCode === 200) {
       // The upstream transaction has committed; discard its entire response before disconnecting.
       result.resume();
@@ -35,6 +38,8 @@ const proxy = http.createServer((request, response) => {
       response.writeHead(result.statusCode, result.headers);
       result.pipe(response);
     }
+    };
+    if (commandPath && commandDelayMs > 0) setTimeout(deliver, commandDelayMs); else deliver();
     result.on('error', () => response.destroy());
   });
   upstream.on('error', () => { if (!response.headersSent) response.writeHead(502); response.end(); });
@@ -79,11 +84,15 @@ const control = http.createServer((request, response) => {
     sessionArmed = false;
   } else if (request.method === 'POST' && request.url === '/reject-next-wallet') {
     rejectWallet = true;
+  } else if (request.method === 'POST' && request.url === '/delay-commands') {
+    commandDelayMs = 1500;
+  } else if (request.method === 'POST' && request.url === '/undelay-commands') {
+    commandDelayMs = 0;
   } else if (request.method !== 'GET' || request.url !== '/status') {
     response.writeHead(404); response.end(); return;
   }
   response.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
-  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, matchArmed, matchesDropped, refillArmed, refillsDropped, sessionArmed, sessionsDropped, rejectWallet }));
+  response.end(JSON.stringify({ fixture: 'tambola-delete-drop-v1', armed, dropped, commandArmed, commandsDropped, commandDelayMs, matchArmed, matchesDropped, refillArmed, refillsDropped, sessionArmed, sessionsDropped, rejectWallet }));
 });
 for (const server of [proxy, control]) server.on('error', error => { console.error(`Fixture listener failed: ${error.code}`); process.exit(1); });
 proxy.listen(8080, '127.0.0.1', () => console.log('Test proxy listening on loopback 8080; upstream 8081.'));
