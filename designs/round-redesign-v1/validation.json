@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "Both tickets obey 3x9, 15 unique numbers, five per row and valid sorted column ranges",
+    "Only the fifth-mark cell changes within Ticket 1; Ticket 2 is pixel-identical",
+    "Claim sheet persists across the eight-second call; prize count changes only after confirmation",
+    "Shield and bonus arm without automatically marking ticket numbers",
+    "Six decoded MP4 frames match intended scene states within compression tolerance"
+  ],
+  "scope": "Design preview only; not native layout, Android performance or server behavior"
+}

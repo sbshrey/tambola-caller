@@ -14,11 +14,11 @@ Status: concept and motion preview only. Native gameplay is unchanged. The full 
 
 1. Persistent number board on the left. Current call and continuously draining countdown above it, with five recent calls in a small strip.
 2. Two compact tickets stacked on the right. No full-card re-entry animation after a mark. Only the touched number responds; confirmed marks and ticket positions remain stable.
-3. Top-right power slot shows the next server-selected random power and progress toward five distinct correct manual marks. At five marks it glows; one tap applies it to the last-played eligible ticket, named explicitly in the button. The concept illustrates Auto-Dab; Shield and bonus need equivalent states. No power chooser or bottom power/HP section.
+3. Top-right power slot shows the next server-selected random power and progress toward five distinct correct manual marks. At five marks it glows; one tap applies it to the last-played eligible ticket, named explicitly in the button. The motion example illustrates Auto-Dab; additional Shield and bonus SVG/PNG states show ready and armed behavior. No power chooser or bottom power/HP section.
 4. Header shows player and remaining-prize counts. Details stay optional.
 5. Per-ticket Claim opens a compact six-choice panel with scheme patterns and amounts. The board and call clock remain visible. Claim panel state persists across calls; patterns are explanatory, not eligibility hints.
 6. Proposed cadence: eight seconds per call, down from ten, with a smooth deadline-based countdown. This is a design proposal, not a change to current server timing. A reduced-motion state must retain readable numeric timing and static ready emphasis.
-7. No automatic payout claim is depicted: the final preview state says the claim was sent and is awaiting server confirmation.
+7. The preview distinguishes claim sent from later server confirmation. The remaining-prize count stays at six while pending and decreases only at confirmation.
 
 ## Prize recommendation
 
@@ -28,7 +28,7 @@ Current version-2 pool allocates 10% to each of Early Five, Corners and the thre
 
 - `ClaimArena.kt` currently places powers in the existing dock and opens the number board separately. The desired permanent board and top-right power layout require restructuring this screen.
 - `MatchPowers.kt` currently draws a random power only when the fifth correct mark lands, stores up to two powers, and consumes Shield automatically on a false claim. Showing a known next power in advance and single-tap behavior require a deliberate server-authoritative rules/protocol change, not just changing the icon.
-- `OnlineViewModel.mark` routes Power-room marks through `command(RoomAction.Mark(...))`. `OnlineArena` derives enabled state from broad `pending/busy` flags and expands its recovery footer for pending actions. This is a plausible cause of the perceived refresh. Confirm with frame/recomposition and latency measurements; preserve durable retry, exactly-once marks and server authority while isolating mark feedback.
+- `OnlineViewModel.mark` routes Power-room marks through `command(RoomAction.Mark(...))`. `OnlineArena` derives enabled state from broad `pending/busy` flags. In `ClaimArena` landscape, the recovery content replaces the recent-call header while a command is pending; it does not resize the ticket area. The hand and Claim controls are disabled in that interval. This header replacement and interaction interruption are plausible contributors to the perceived refresh; actual ticket remounting has not been demonstrated. Confirm with frame/recomposition and latency measurements; preserve durable retry, exactly-once marks and server authority while isolating mark feedback.
 
 ## Figma access blocker
 
@@ -44,3 +44,9 @@ The first read confirmed the existing pages and Roboto fonts. Subsequent compone
 - Implement stable per-cell marking and profile its behavior under latency, reconnection and rapid taps.
 - Implement server-authoritative new power preview/activation and approved call cadence with replay, retry and claim fairness coverage.
 - Native playtests, actual server/client integration, APK upgrade validation, and GitHub source/APK publication. Respect ongoing host sessions during any server rollout.
+
+## Design validation follow-up
+
+`validate_preview.py` passes five groups of checks: legal ticket structure; isolated fifth-cell change with the entire second ticket pixel-identical; persistent claim geometry across the new call at eight seconds; prize count only changing after confirmation; Shield/bonus arming without Auto-Dab behavior; and six decoded-video snapshots matching the intended scenes. See `validation.json` and `validated-contact-sheet.png`. These prove the illustrative design, not native performance.
+
+Figma access was rechecked on the next goal continuation and still returns the same Starter-plan tool-limit error. No retry loop or alternative account was used. Native implementation remains behind the user's explicit Figma-and-video-first sequence. Restoring Figma tool allowance is the outstanding external dependency.
