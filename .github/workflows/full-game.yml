@@ -230,6 +230,8 @@ jobs:
           node-version: '24'
       - name: Verify original sound assets
         run: node full-game/tools/compose-sounds.mjs --check
+      - name: Verify public host recovery and gateway
+        run: node --test full-game/tools/test-public-health.mjs full-game/tools/test-public-gateway.mjs
       - name: Verify English and Hindi resources
         run: python3 full-game/tools/check-localization.py
       - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'

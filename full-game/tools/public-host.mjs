@@ -3,6 +3,7 @@ import { mkdir, writeFile, rename, readFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { setTimeout as pause } from 'node:timers/promises';
 import { createGateway } from './public-gateway.mjs';
+import { probeReady, healthDecision } from './public-health.mjs';
 
 const directory = resolve(process.argv[2] || '.test-workspace/public-host');
 const repo = 'sbshrey/tambola-caller';
@@ -33,9 +34,14 @@ const gateway = createGateway();
 await new Promise((resolve, reject) => { gateway.once('error', reject); gateway.listen(18081, '127.0.0.1', resolve); });
 let stopping = false;
 let child;
+async function stopRequested() {
+  try { return (await readFile(join(directory, 'stop.request'), 'utf8')).trim() === 'stop'; }
+  catch { return false; }
+}
 for (const signal of ['SIGTERM', 'SIGINT']) process.on(signal, () => { stopping = true; child?.kill(); gateway.close(); });
 try {
   while (!stopping) {
+    if (await stopRequested()) break;
     try {
       await state({ status: 'connecting' });
       let origin;
@@ -52,22 +58,27 @@ try {
       const until = Date.now() + 120_000;
       let ready = false;
       while (!stopping && !exited && Date.now() < until) {
+        if (await stopRequested()) { stopping = true; break; }
         if (origin) {
-          try {
-            const response = await fetch(origin + '/health/ready', { redirect: 'error', signal: AbortSignal.timeout(8000) });
-            const body = await response.json();
-            // Readiness advertises the newest server protocol, including v41's round summary.
-            ready = response.ok && body.status === 'ready' && [4, 5, 6, 7, 8, 9].includes(body.protocolVersion);
-          } catch { }
+          ready = await probeReady(origin);
           if (ready) break;
         }
         await pause(2000);
       }
       if (!ready || exited || stopping) throw Error('public_connection_unavailable');
-      let expiresAt = await publish(origin);
-      let nextPublishAttempt = expiresAt - 12 * 60 * 60 * 1000;
-      let renewalPending = false;
+      // Even initial publication failure must not discard an otherwise healthy tunnel.
+      let expiresAt = null;
+      let nextPublishAttempt = 0;
+      let renewalPending = true;
+      let publicFailures = 0;
       while (!stopping && !exited) {
+        if (await stopRequested()) { stopping = true; break; }
+        const [backendReady, publicReady] = await Promise.all([
+          probeReady('http://127.0.0.1:18080'), probeReady(origin),
+        ]);
+        const health = healthDecision(publicFailures, backendReady, publicReady);
+        publicFailures = health.failures;
+        if (health.restart) throw Error('public_connection_unavailable');
         if (Date.now() > nextPublishAttempt) {
           try {
             expiresAt = await publish(origin);
@@ -79,9 +90,11 @@ try {
             renewalPending = true;
           }
         }
-        await state({ status: 'online', origin, expiresAt, renewalPending, tunnelPid: child.pid, directory: `https://raw.githubusercontent.com/${repo}/${branch}/server.json` });
+        await state({ status: health.status === 'online' && renewalPending ? 'directory_pending' : health.status,
+          origin, expiresAt, renewalPending, backendReady, publicReady, publicFailures,
+          tunnelPid: child.pid, directory: `https://raw.githubusercontent.com/${repo}/${branch}/server.json` });
         await pause(15_000);
-        try { if ((await readFile(join(directory, 'stop.request'), 'utf8')).trim() === 'stop') stopping = true; } catch { }
+        stopping ||= await stopRequested();
       }
     } catch (error) {
       await state({ status: 'retrying', reason: ['directory_publish_failed', 'public_connection_unavailable'].includes(error.message) ? error.message : 'host_unavailable' });
