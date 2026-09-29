@@ -28,24 +28,24 @@ import io.github.sbshrey.tambola.game.presentation.prizeAvailability
 /** Ticket-specific choices; availability follows the same call-boundary and house rules as the table. */
 @Composable
 internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, enabled: Boolean,
-    dismiss: () -> Unit, claim: (ClaimSelection) -> Unit) {
+    dismiss: () -> Unit, embedded: Boolean = false, claim: (ClaimSelection) -> Unit) {
     val words = gameText()
     val colors = MaterialTheme.colorScheme
     val density = LocalDensity.current
     val choices = table.settings.prizes.map { it.name to words.prizeTitle(it) } + table.settings.customPrizes.map { it.id to it.title }
     val closedHouses = table.awards.filter { it.prize.isRankedHouse && it.drawIndex < table.called.size }
     val nextHouse = table.settings.prizes.filter { it.isRankedHouse && closedHouses.none { award -> award.prize == it } }.minByOrNull { it.ordinal }
-    Dialog(onDismissRequest = dismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+    val content: @Composable () -> Unit = {
         CompositionLocalProvider(LocalDensity provides density) {
-        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().padding(12.dp), contentAlignment = Alignment.Center) {
-            Surface(Modifier.widthIn(max = 680.dp).fillMaxWidth().heightIn(max = maxHeight).testTag("ticket-prize-picker")
+        BoxWithConstraints(if (embedded) Modifier.fillMaxSize() else Modifier.fillMaxSize().safeDrawingPadding().padding(12.dp), contentAlignment = Alignment.Center) {
+            Surface((if (embedded) Modifier.fillMaxSize() else Modifier.widthIn(max = 680.dp).fillMaxWidth().heightIn(max = maxHeight)).testTag("ticket-prize-picker")
                 .semantics { testTagsAsResourceId = true }, shape = RoundedCornerShape(24.dp), color = colors.surface) {
-                BoxWithConstraints(Modifier.padding(16.dp)) {
-                    val columns = if (maxWidth > 420.dp) 3 else 2
+                BoxWithConstraints(Modifier.padding(if (embedded) 8.dp else 16.dp)) {
+                    val columns = if (embedded && density.fontScale > 1.3f) 2 else if (maxWidth > 420.dp) 3 else 2
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(words(R.string.play_choose_prize, ordinal), modifier = Modifier.weight(1f).semantics { heading() },
-                                fontSize = 19.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold)
+                                fontSize = if (embedded) 13.sp else 19.sp, lineHeight = if (embedded) 16.sp else 24.sp, fontWeight = FontWeight.Bold)
                             IconButton(onClick = dismiss, modifier = Modifier.size(48.dp).testTag("dismiss-claim")
                                 .semantics { contentDescription = words(R.string.ui_back_to_game) }) { Text("×", fontSize = 28.sp) }
                         }
@@ -53,10 +53,10 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                         // remaining height to prizes while keeping the close action fixed.
                         // Current coin rooms have six prizes, all visible together. Older
                         // custom/ranked rooms retain their longer list without losing choices.
-                        val prizeGrid = Modifier.weight(1f, fill = false).testTag("claim-prize-grid")
+                        val prizeGrid = Modifier.weight(1f, fill = embedded).testTag("claim-prize-grid")
                         Column(if (choices.size <= 6) prizeGrid else prizeGrid.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             choices.chunked(columns).forEach { row ->
-                                Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row((if (embedded) Modifier.weight(1f) else Modifier.height(IntrinsicSize.Min)).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     row.forEach { (id, label) ->
                                         val award = table.awards.firstOrNull { it.prize.name == id }
                                         val custom = table.customAwards.firstOrNull { it.prizeId == id }
@@ -90,14 +90,27 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                                 },
                                             shape = RoundedCornerShape(14.dp), color = if (active) colors.surfaceContainerHigh else colors.background,
                                             border = BorderStroke(1.dp, if (active) colors.secondary.copy(alpha = .65f) else colors.outlineVariant)) {
-                                            Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                                                if (standardPrize != null && density.fontScale <= 1.3f) PrizePattern(standardPrize, active)
-                                                Text(if (taken) "✓ $label" else label, modifier = Modifier.weight(1f), fontSize = 13.sp, lineHeight = 16.sp,
+                                            Column(Modifier.padding(horizontal = if (embedded) 6.dp else 10.dp, vertical = if (embedded) 4.dp else 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                                                if (standardPrize != null && density.fontScale <= 1.3f && !embedded) PrizePattern(standardPrize, active)
+                                                Text(if (taken) "✓ $label" else label, modifier = Modifier.weight(1f), fontSize = if (embedded) 11.sp else 13.sp, lineHeight = if (embedded) 13.sp else 16.sp,
                                                     fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
+                                                if (embedded) {
+                                                    val places = availability?.let {
+                                                        when (it.state) {
+                                                            PrizePlaceState.OPEN -> words(R.string.prize_places_compact, it.remaining, it.total)
+                                                            PrizePlaceState.TIES_OPEN -> words(R.string.prize_ties_compact)
+                                                            PrizePlaceState.FULL -> words(R.string.prize_places_full)
+                                                            PrizePlaceState.OWNED -> words(R.string.prize_owned_compact)
+                                                        }
+                                                    }
+                                                    Text(listOfNotNull(coins?.toString(), places).joinToString(" \u00b7 "), fontSize = 10.sp, lineHeight = 12.sp,
+                                                        color = if (active) GameNightPalette.gold else colors.onSurfaceVariant)
+                                                } else {
                                                 coins?.let { Text(words(R.string.prize_coin_pool, it), fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Bold,
                                                     color = if (active) GameNightPalette.gold else colors.onSurfaceVariant) }
                                                 availabilityLabel?.let { Text(it, fontSize = 10.sp, lineHeight = 12.sp,
                                                     color = colors.onSurfaceVariant) }
+                                                }
                                             }
                                         }
                                     }
@@ -111,6 +124,7 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
         }
         }
     }
+    if (embedded) content() else Dialog(onDismissRequest = dismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) { content() }
 }
 
 /** Schematic numbered positions, never the player's ticket or current called/marked state. */

@@ -1,5 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
+import androidx.activity.compose.BackHandler
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -60,6 +62,8 @@ internal fun ClaimArena(
     var history by remember(table.id) { mutableStateOf(false) }
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
+    val claimTicket = hand.tickets.firstOrNull { it.id == claimTicketId }
+    BackHandler(claimTicket != null) { claimTicketId = null }
     var visiblePowerTickets by remember(table.id, ownerId) { mutableStateOf(hand.tickets.take(2).map { it.id }) }
     var lastPowerTicket by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
     var powerFeedback by remember(table.id) { mutableStateOf<String?>(null) }
@@ -107,11 +111,15 @@ internal fun ClaimArena(
             val landscape = maxWidth > maxHeight
             val largeText = LocalDensity.current.fontScale > 1.3f
             if (gameNight && landscape) {
+                val claimPanel: (@Composable () -> Unit)? = claimTicket?.let { ticket -> {
+                    TicketPrizePicker(table, ticket, hand.tickets.indexOf(ticket) + 1, claimEnabled,
+                        dismiss = { claimTicketId = null }, embedded = true, claim = claim)
+                } }
                 CoinRoundLayout(table, remaining, status, optionsContent,
                     players = { players = true }, prizes = { details = true },
                     board = { history = false; board = true }, repeatCall = repeatCall,
                     power = { if (table.powers != null && usePower != null && !table.finished)
-                        TopPowerControl(hand, visiblePowerTickets, lastPowerTicket, claimEnabled, preferences.reducedMotion, usePower) },
+                        TopPowerControl(hand, visiblePowerTickets, lastPowerTicket, claimEnabled && claimTicket == null, preferences.reducedMotion, usePower) },
                     clock = footer, showCountdown = !expandedFooter, reducedMotion = preferences.reducedMotion,
                     tickets = {
                         TicketPages(hand, ownerId, preferences.reducedMotion,
@@ -125,8 +133,12 @@ internal fun ClaimArena(
                                 if (winText != null || claimMessage != null || powerFeedback != null) liveRegion = LiveRegionMode.Polite
                             }, minLines = 2, maxLines = 2, fontSize = 12.sp, lineHeight = 16.sp,
                             textAlign = TextAlign.Center, color = muted, overflow = TextOverflow.Ellipsis)
-                    })
+                    }, claimPanel = claimPanel)
             } else {
+            claimTicket?.let { ticket ->
+                TicketPrizePicker(table, ticket, hand.tickets.indexOf(ticket) + 1, claimEnabled,
+                    dismiss = { claimTicketId = null }, claim = claim)
+            }
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(Modifier.fillMaxWidth().height(62.dp).then(if (gameNight) Modifier.background(GameNightPalette.panel, RoundedCornerShape(16.dp)).padding(horizontal = 4.dp) else Modifier), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                     optionsContent()
@@ -215,10 +227,6 @@ internal fun ClaimArena(
             }
         }
     }
-    }
-    hand.tickets.firstOrNull { it.id == claimTicketId }?.let { ticket ->
-        TicketPrizePicker(table, ticket, hand.tickets.indexOf(ticket) + 1, claimEnabled,
-            dismiss = { claimTicketId = null }, claim = claim)
     }
     if (details) ArenaDialog(words(R.string.play_prizes), { details = false }) {
         if (table.coins != null) {

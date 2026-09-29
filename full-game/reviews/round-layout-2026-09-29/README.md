@@ -7,7 +7,7 @@ Feedback and recovery have reserved space so they do not move the ticket grid.
 The current-number ring uses the existing server deadline and hides during
 recovery. This checkpoint does not change the server call interval.
 
-The power control applies a ready Auto-Dab or prize bonus in one tap to an
+The initial power control applied a ready Auto-Dab or prize bonus in one tap to an
 eligible visible ticket, preferring the most recently marked visible ticket.
 It pulses when available and respects reduced-motion preferences. Existing
 Shield behavior is still passive. Server-selected upcoming-power previews and
@@ -31,8 +31,24 @@ The screenshots are native emulator fixtures, not public multiplayer evidence.
 They show fictional data with tickets 5 and 6 selected. The fixture timer text
 is illustrative; it is not evidence that the server cadence has changed.
 
-Release gates still include server power preview/activation, pending-mark
-latency behavior, the compact claim panel, native round-summary integration,
+The later protocol-8 source change adds server power previews and one-tap
+Shield activation; see `../../POWER_ROOMS.md` for its separate validation.
+
+The compact claim-panel follow-up keeps the board visible and overlays only
+the right-hand ticket area. It retains page and marks underneath, suppresses
+hidden controls, and restores the same ticket geometry on dismiss/submission.
+The existing availability/claim logic is shared with the standalone picker.
+Six prizes fit without scrolling, with amount and remaining/total shown on
+each card. Large text uses two columns; normal text uses three. Accessibility
+keeps the full prize explanation and availability state.
+
+Eight native layout/recovery/legacy tests passed after integration. The two
+layout tests also passed after checking text clipping in open, ties-open,
+full and owned states at English 1x/Hindi 2x and suppressing the hidden ticket
+layer. `coin-round-claim-*.png` are native fixtures, visually inspected.
+Debug app/instrumentation builds and parity for 897 resources passed.
+
+Release gates still include pending-mark latency behavior, native round-summary integration,
 cadence validation, public server deployment and a compatible signed APK.
 The Figma export remains blocked by its previously observed quota; saved local
 design/video artifacts remain the implementation reference.

@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.test.*
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.Density
 import io.github.sbshrey.tambola.domain.*
@@ -40,13 +42,14 @@ class CoinRoundLayoutTest {
             coins = CoinTableView(12, 1200, pool.prizes, 6, null), powers = MatchPowers()))
         var pending by mutableStateOf(false)
         var activation: Pair<String, MatchPower>? = null
+        var claimed: ClaimSelection? = null
         compose.setContent {
             CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources,
                 LocalConfiguration provides config, LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { MaterialTheme(colorScheme = GameNightPalette.colors) {
                     ClaimArena(table, "me", Preferences(reducedMotion = true), "Live",
                         markNumber = { ticket, value -> table = table.copy(marks = table.marks + (ticket to (table.marks[ticket].orEmpty() + value))) },
-                        claim = {}, claimMessage = null, repeatCall = {}, back = {}, win = null, dismissWin = {},
+                        claim = { claimed = it }, claimMessage = null, repeatCall = {}, back = {}, win = null, dismissWin = {},
                         markEnabled = !pending, claimEnabled = !pending, expandedFooter = pending, extraMenu = {},
                         usePower = { ticket, power -> activation = ticket to power }) {
                         Text(if (pending) "Reconnecting" else "8s")
@@ -77,6 +80,40 @@ class CoinRoundLayoutTest {
         compose.runOnIdle { assertEquals(own[4].id to MatchPower.AUTO_DAB, activation) }
         compose.onNodeWithTag("power-dock").assertDoesNotExist()
         captureTestScreen("coin-round-six-$language-${scale.toInt()}")
+        val fifth = compose.onNodeWithTag("hand-ticket-5").getUnclippedBoundsInRoot()
+        compose.onNodeWithTag("claim-ticket-5").performClick()
+        val panel = compose.onNodeWithTag("ticket-prize-picker").assertIsDisplayed().getUnclippedBoundsInRoot()
+        assertTrue("Claim panel must leave the board visible", board.right <= panel.left)
+        compose.onNodeWithTag("persistent-call-board").assertIsDisplayed()
+        pool.prizes.forEach { prize -> compose.onNodeWithTag("claim-prize-${prize.prize.name}").assertIsDisplayed().assertIsEnabled() }
+        fun claimTextFits() {
+        compose.onAllNodes(hasAnyAncestor(hasTestTag("ticket-prize-picker")) and
+            SemanticsMatcher.keyIsDefined(SemanticsActions.GetTextLayoutResult), useUnmergedTree = true).fetchSemanticsNodes().forEach { node ->
+            val layouts = mutableListOf<TextLayoutResult>()
+            node.config[SemanticsActions.GetTextLayoutResult].action!!.invoke(layouts)
+            layouts.forEach { text ->
+                assertFalse("Clipped claim text: ${text.layoutInput.text}", (0 until text.lineCount).any { line ->
+                    text.isLineEllipsized(line) || text.getLineLeft(line) < -1f || text.getLineRight(line) > text.size.width + 1f || text.getLineBottom(line) > text.size.height + 1f
+                })
+            }
+        }
+        }
+        claimTextFits()
+        captureTestScreen("coin-round-claim-$language-${scale.toInt()}")
+        compose.runOnIdle { table = table.copy(awards = listOf(Award(Prize.TOP_LINE, table.called.size, listOf("peer-ticket"), listOf("peer")))) }
+        compose.onNodeWithTag("claim-prize-TOP_LINE").assertIsEnabled()
+        claimTextFits()
+        compose.runOnIdle { table = table.copy(called = table.called + own.first().numbers[6]) }
+        compose.onNodeWithTag("ticket-prize-picker").assertIsDisplayed()
+        compose.onNodeWithTag("claim-prize-TOP_LINE").assertIsNotEnabled()
+        claimTextFits()
+        compose.runOnIdle { table = table.copy(awards = table.awards + Award(Prize.CORNERS, table.called.size, listOf(own[4].id), listOf("me"))) }
+        compose.onNodeWithTag("claim-prize-CORNERS").assertIsNotEnabled()
+        claimTextFits()
+        compose.onNodeWithTag("claim-prize-BOTTOM_LINE").performClick()
+        compose.runOnIdle { assertEquals(ClaimSelection(own[4].id, Prize.BOTTOM_LINE.name), claimed) }
+        compose.onNodeWithTag("ticket-prize-picker").assertDoesNotExist()
+        assertEquals(fifth, compose.onNodeWithTag("hand-ticket-5").getUnclippedBoundsInRoot())
         repeat(2) { compose.onNodeWithTag("tickets-up").performClick() }
         compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
         compose.runOnIdle { assertTrue(number in table.marks[own.first().id].orEmpty()) }

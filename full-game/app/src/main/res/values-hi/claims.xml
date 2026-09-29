@@ -1,4 +1,7 @@
 <resources>
+    <string name="prize_ties_compact">बराबरी खुली</string>
+    <string name="prize_owned_compact">जीता</string>
+    <string name="prize_places_compact">%1$d/%2$d बाकी</string>
     <string name="play_claim">दावा करें</string>
     <string name="play_claim_confirmed">दावा सही है!</string>
     <string name="play_claim_confirmed_for">टिकट %1$d · %2$s का दावा सही है</string>

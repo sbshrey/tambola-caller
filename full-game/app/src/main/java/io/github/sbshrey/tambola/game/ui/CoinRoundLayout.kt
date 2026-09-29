@@ -7,6 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
@@ -23,6 +26,7 @@ internal fun CoinRoundLayout(
     players: () -> Unit, prizes: () -> Unit, board: () -> Unit, repeatCall: () -> Unit,
     power: @Composable () -> Unit, clock: @Composable () -> Unit, showCountdown: Boolean, reducedMotion: Boolean,
     tickets: @Composable () -> Unit, feedback: @Composable () -> Unit,
+    claimPanel: (@Composable () -> Unit)? = null,
 ) {
     val words = gameText()
     val largeText = LocalDensity.current.fontScale > 1.3f
@@ -76,9 +80,18 @@ internal fun CoinRoundLayout(
                         color = GameNightPalette.muted, modifier = Modifier.testTag("play-status"))
                 }
             }
-            Column(Modifier.weight(.70f).fillMaxHeight()) {
+            Box(Modifier.weight(.70f).fillMaxHeight()) {
+            Column(Modifier.fillMaxSize().then(if (claimPanel != null) Modifier
+                .graphicsLayer { alpha = 0f }.clearAndSetSemantics {}
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) awaitPointerEvent(PointerEventPass.Initial).changes.forEach { it.consume() }
+                    }
+                } else Modifier)) {
                 Box(Modifier.weight(1f).fillMaxWidth()) { tickets() }
                 feedback()
+            }
+            claimPanel?.invoke()
             }
         }
     }
