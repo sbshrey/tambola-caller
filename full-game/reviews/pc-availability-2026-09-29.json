@@ -1,0 +1,31 @@
+{
+  "checkedUtc": "2026-09-29T17:43:53.7515137+00:00",
+  "sourceCommit": "87ec82d",
+  "publicStatus": {
+    "checkedAt": "2026-09-29T17:43:39.169Z",
+    "pid": 13776,
+    "status": "online",
+    "origin": "https://prize-governing-publishing-factor.trycloudflare.com",
+    "expiresAt": 1790790156742,
+    "renewalPending": false,
+    "backendReady": true,
+    "publicReady": true,
+    "publicFailures": 0,
+    "tunnelPid": 5212,
+    "directory": "https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json"
+  },
+  "scheduledTaskLastResult": 0,
+  "deployedFilesMatch": {
+    "public-health.mjs": true,
+    "host-watchdog.ps1": true,
+    "public-host.ps1": true,
+    "public-host.mjs": true
+  },
+  "nodeTestsPassed": 4,
+  "watchdogFixturePassed": true,
+  "limits": [
+    "Windows sign-in, power and internet required",
+    "No reboot or power-loss test",
+    "No new APK"
+  ]
+}
