@@ -30,8 +30,12 @@ import java.security.MessageDigest
     val wallet: WalletView? = null,
     val deviceIdentity: DeviceIdentity? = null,
     val preferredTickets: Int? = null,
+    val queuedMarks: List<RoomAction.Mark> = emptyList(),
 ) {
-    init { require(preferredTickets == null || preferredTickets in 1..6) }
+    init {
+        require(preferredTickets == null || preferredTickets in 1..6)
+        require(queuedMarks.size <= 90 && queuedMarks.distinct().size == queuedMarks.size)
+    }
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }
 
@@ -79,7 +83,7 @@ fun OnlineSaved.accept(update: RoomUpdate, live: Boolean, allowRoomChange: Boole
     val progress = badgeProgress().let { current -> nextGame?.let { current.record(it.id, it.status,
         it.awards.hasHouseFor(setOf(credentials.playerId))) } ?: current }
     return AcceptedRoom(withWallet.copy(room = next, marks = nextMarks, history = archive, badges = progress,
-        avatar = next.members.firstOrNull { it.playerId == credentials.playerId }?.avatar ?: avatar), number,
+        avatar = next.members.firstOrNull { it.playerId == credentials.playerId }?.avatar ?: avatar).pruneQueuedMarks(), number,
         live && !update.resyncRequired && sameRound)
 }
 

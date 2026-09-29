@@ -290,7 +290,8 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                         (0..8).forEach { col ->
                             val number = ticket.cells[row * 9 + col]
                             val dabbed = number in marked
-                            val canMark = markEnabled && markNumber != null && number != 0 && !table.finished && !table.settings.assistedMarking && !(table.powers != null && dabbed)
+                            val sending = number in table.pendingMarks[ticket.id].orEmpty()
+                            val canMark = markEnabled && !sending && markNumber != null && number != 0 && !table.finished && !table.settings.assistedMarking && !(table.powers != null && dabbed)
                             val stamp = remember(ticket.id, number) { Animatable(if (dabbed) 1f else 0f) }
                             LaunchedEffect(dabbed, reducedMotion) {
                                 if (!dabbed || reducedMotion) stamp.snapTo(if (dabbed) 1f else 0f)
@@ -304,6 +305,7 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                                 .drawBehind { drawRect(fill.value) }
                                 .drawWithContent {
                                     drawContent()
+                                    if (sending) drawCircle(GameNightPalette.gold, radius = size.minDimension * .4f, style = Stroke(2.dp.toPx()))
                                     if (dabbed && !reducedMotion && stamp.value < 1f) drawCircle((if (gameNight) GameNightPalette.ticketEdge else BallGold).copy(alpha = 1f - stamp.value),
                                         radius = size.minDimension * (.15f + stamp.value * .45f), style = Stroke(2.dp.toPx()))
                                 }
@@ -312,6 +314,7 @@ private fun TicketBody(ticket: Ticket, table: TableRound, modifier: Modifier, re
                                     .semantics(mergeDescendants = true) {
                                         role = Role.Button
                                         contentDescription = words(if (dabbed && table.powers != null) R.string.power_marked_number else if (dabbed) R.string.play_unmark_number else R.string.play_mark_number, number)
+                                        if (sending) stateDescription = words(R.string.power_mark_sending)
                                         if (!canMark) disabled()
                                         onClick { if (canMark) { markNumber(ticket.id, number); true } else false }
                                     } else Modifier), contentAlignment = Alignment.Center) {
@@ -471,15 +474,18 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
     retry: () -> Unit = model::retry, reconnect: () -> Unit = model::reconnect) {
     val words = gameText()
     val room = state.room ?: return
-    val table = room.toTable(state.marks) ?: return
+    val table = room.toTable(state.marks)?.copy(pendingMarks = state.pendingMarks) ?: return
     val enabled = state.connection == Connection.LIVE && !state.pending && !state.busy && !state.sessionExpired && !state.storageFailure
+    val sendingMarks = state.markSending && state.busy && state.connection == Connection.LIVE
+    val marksEnabled = state.connection == Connection.LIVE && (!state.pending || sendingMarks) && (!state.busy || sendingMarks) &&
+        !state.sessionExpired && !state.storageFailure && !state.deletingProfile
     val host = state.playerId == room.hostId
     val iconControls = table.settings.manualClaims || LocalDensity.current.fontScale > 1.3f
     val recovering = room.options.coinGame && !table.finished && !state.sessionExpired && !state.storageFailure &&
-        !state.deletingProfile && (state.pending || state.connection != Connection.LIVE)
+        !state.deletingProfile && ((state.pending && !sendingMarks) || state.connection != Connection.LIVE)
     val status = when {
         state.sessionExpired -> words(R.string.ui_your_online_session_has_expired)
-        state.pending -> words(R.string.ui_an_action_is_waiting_for_confirmation)
+        state.pending && !sendingMarks -> words(R.string.ui_an_action_is_waiting_for_confirmation)
         state.connection != Connection.LIVE -> words(R.string.play_reconnecting)
         table.status == RoundStatus.PAUSED -> words(R.string.play_paused)
         else -> words(R.string.play_live)
@@ -487,7 +493,7 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
     // A saved deadline is not a live countdown while the stream is disconnected.
     val displayed = if (state.connection == Connection.LIVE) table else table.copy(nextDrawAt = null)
     PlayArena(displayed, state.playerId.orEmpty(), preferences, status, model::dabCalled, model::repeatCall, back,
-        state.winMoment, model::dismissWin, enabled = if (table.powers != null) enabled else !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
+        state.winMoment, model::dismissWin, enabled = if (table.powers != null) marksEnabled else !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
         markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled,
         usePower = model::usePower,
         reactionMessage = if (state.connection == Connection.LIVE) state.reactionNotice?.let(words::message) ?: friendReactionCaption(state.reactions, room, state.reactionClock) else null,
@@ -500,7 +506,7 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
         Row(Modifier.fillMaxWidth().heightIn(min = if (room.options.coinGame) 56.dp else 52.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             if (table.finished) ArenaPrimaryAction(words(R.string.ui_see_round_results)) { roomDetails() }
             else if (recovering) RoundRecoveryControls(state, retry, reconnect)
-            else if (state.pending) ArenaPrimaryAction(words(R.string.ui_retry_pending_action), enabled = !state.busy && !state.storageFailure) { model.retry() }
+            else if (state.pending && !sendingMarks) ArenaPrimaryAction(words(R.string.ui_retry_pending_action), enabled = !state.busy && !state.storageFailure) { model.retry() }
             else if (room.options.coinGame) CoinCallClock(room, state.connection, model::reconnect)
             else if (host && !table.finished) {
                 if (!room.options.automaticCalling && table.status != RoundStatus.PAUSED) FilledTonalButton(

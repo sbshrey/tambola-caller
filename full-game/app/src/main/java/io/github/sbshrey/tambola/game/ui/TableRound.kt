@@ -21,6 +21,7 @@ data class TableRound(
     val serverTime: Long? = null,
     val callIntervalSeconds: Int = 10,
     val powers: MatchPowers? = null,
+    val pendingMarks: Map<String, Set<Int>> = emptyMap(),
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED

@@ -50,6 +50,8 @@ data class OnlineUiState(
     val busy: Boolean = false,
     val adActive: Boolean = false,
     val pending: Boolean = false,
+    val markSending: Boolean = false,
+    val pendingMarks: Map<String, Set<Int>> = emptyMap(),
     val deletingProfile: Boolean = false,
     val sessionExpired: Boolean = false,
     val storageFailure: Boolean = false,
@@ -98,7 +100,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 restored?.room?.validateFor(restored.credentials.playerId)
                 restored?.wallet?.validate()
                 restored?.deviceIdentity?.validate()
-                saved = restored?.acceptWallet(restored.room?.wallet)?.let { it.copy(preferredTickets = it.ticketPreference()) }
+                saved = restored?.acceptWallet(restored.room?.wallet)?.let { it.copy(preferredTickets = it.ticketPreference()).pruneQueuedMarks() }
                 publish()
             } catch (_: Exception) {
                 mutable.update { it.copy(storageFailure = true, error = UiMessage(R.string.error_online_restore)) }
@@ -114,7 +116,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             room = value?.room, wallet = value?.wallet, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
             loginRewards = it.loginRewards.takeIf { _ -> value?.credentials?.playerId == it.playerId && value != null },
             preferredTickets = value?.ticketPreference() ?: 3, serverTime = api?.serverTime,
-            badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null,
+            badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null || value?.queuedMarks?.isNotEmpty() == true,
+            pendingMarks = value?.pendingMarkNumbers().orEmpty(),
             deletingProfile = value?.pending is PendingOperation.DeleteProfile,
             reactions = it.reactions.takeIf { snapshot -> snapshot?.roomId == value?.room?.roomId && snapshot?.roundId == value?.room?.round?.id && value?.room?.phase == RoomPhase.ACTIVE },
             reactionClock = it.reactionClock.takeIf { _ -> it.reactions?.roomId == value?.room?.roomId && it.reactions?.roundId == value?.room?.round?.id && value?.room?.phase == RoomPhase.ACTIVE },
@@ -125,10 +128,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 ?.refreshPlayers(value?.room?.round?.players.orEmpty())) }
     }
     private suspend fun persist(value: OnlineSaved?) {
-        try { store.write(value) }
+        val clean = value?.pruneQueuedMarks()
+        try { store.write(clean) }
         catch (error: CancellationException) { throw error }
         catch (_: Exception) { mutable.update { it.copy(storageFailure = true) }; throw LocalStorageFailure() }
-        saved = value
+        saved = clean
         publish()
     }
     /** Reuse the exact game operation after a server-confirmed session rejection. */
@@ -305,14 +309,18 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     fun retry() {
-        if (mutable.value.busy || saved?.pending == null || mutable.value.storageFailure) return
+        if (mutable.value.busy || mutable.value.storageFailure) return
+        if (saved?.pending == null) { startMarkDrain(force = true); return }
         if (saved?.pending.pausesRoomStream()) { stream?.cancel(); stream = null; audio.stop() }
-        mutable.update { it.copy(busy = true, error = null) }
+        mutable.update { it.copy(busy = true, error = null, markSending = saved?.pending.isMark()) }
         operation = viewModelScope.launch {
             try { performPending() }
             catch (error: CancellationException) { throw error }
             catch (error: Exception) { showFailure(error) }
-            finally { mutable.update { it.copy(busy = false) }; connect() }
+            finally {
+                mutable.update { it.copy(busy = false, markSending = false) }; connect()
+                startMarkDrain()
+            }
         }
     }
     private suspend fun performPending(readyRetries: Int = 3, friendModeRetry: Boolean = true) {
@@ -438,6 +446,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         if (firstSnapshot || mutable.value.reactions != null || update.events.any { it.type == "reacted" || it.type == "started" }) {
                             refreshReactions(show = !firstSnapshot && !update.resyncRequired)
                         }
+                        startMarkDrain()
                     }
                 } catch (error: CancellationException) { throw error }
                 catch (error: RoomApiFailure) {
@@ -538,12 +547,57 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     fun reconnect() { stream?.cancel(); stream = null; connect() }
+    private fun startMarkDrain(force: Boolean = false) {
+        val ui = mutable.value
+        val current = saved ?: return
+        if (!active || ui.connection != Connection.LIVE || ui.busy || ui.storageFailure || ui.sessionExpired ||
+            current.pending != null || current.queuedMarks.isEmpty() || (!force && ui.error != null)) return
+        mutable.update { it.copy(busy = true, markSending = true, error = null) }
+        operation = viewModelScope.launch {
+            try {
+                while (active && mutable.value.connection == Connection.LIVE) {
+                    val send = mutex.withLock {
+                        val latest = saved ?: return@withLock false
+                        if (latest.pending != null) return@withLock false
+                        val promoted = latest.promoteMark(UUID.randomUUID().toString())
+                        persist(promoted)
+                        promoted.pending.isMark()
+                    }
+                    if (!send) break
+                    performPending()
+                }
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { showFailure(error) }
+            finally {
+                mutable.update { it.copy(busy = false, markSending = false) }
+                connect()
+                startMarkDrain()
+            }
+        }
+    }
     fun mark(ticketId: String, number: Int) {
         if (saved?.pending is PendingOperation.DeleteProfile) return
         val game = saved?.room?.round ?: return
         if (number !in game.called) { mutable.update { it.copy(claimMessage = UiMessage(R.string.power_wrong_mark)) }; return }
         if (game.powers != null) {
-            if (number !in game.powers!!.marks[ticketId].orEmpty()) command(RoomAction.Mark(game.id, ticketId, number))
+            val ui = mutable.value
+            if (ui.connection != Connection.LIVE || ui.storageFailure || ui.sessionExpired ||
+                (ui.busy && !ui.markSending) || (ui.pending && !ui.markSending)) return
+            viewModelScope.launch {
+                try {
+                    mutex.withLock {
+                        val current = saved ?: return@withLock
+                        val next = current.queueMark(ticketId, number)
+                        if (next != current) {
+                            persist(next)
+                            mutable.update { it.copy(claimMessage = null) }
+                            if (active) audio.effect(SoundCue.MARK)
+                        }
+                    }
+                    startMarkDrain()
+                } catch (error: CancellationException) { throw error }
+                catch (error: Exception) { showFailure(error) }
+            }
             return
         }
         viewModelScope.launch {
