@@ -1,5 +1,7 @@
 # Tambola Jalsa beta v41
 
+Current scope, 2026-09-29: the user explicitly instructed "ignore the design and continue the implementation". Figma publication is therefore waived and no longer a completion gate. The implemented round redesign is released in beta v41 with the validation below. Historical Figma quota notes remain as records, not pending work.
+
 Status: v41 APK published to GitHub and the real app updater verified on the owned emulator. The hosted backend is running protocol 9 from source `0f08ad9`.
 
 ## Changes
