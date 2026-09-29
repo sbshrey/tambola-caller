@@ -104,6 +104,13 @@ class BetaUpgradeTest {
             assertEquals("com.android.settings", device.currentPackageName)
             if (!allow.isChecked) allow.click()
             device.pressBack()
+            // Android may recreate the app after changing package-install permission.
+            // Its update offer is intentionally in memory; restart the verified download.
+            device.wait(Until.hasObject(By.text("Install update")), 3000)
+            if (device.hasObject(By.text("Download"))) {
+                button("Download")
+                assertTrue(device.wait(Until.hasObject(By.text("Install update")), 240000))
+            }
             button("Install update")
         }
         val install = checkNotNull(device.wait(Until.findObject(By.text(Pattern.compile("(?i)install|update"))), 15000))
@@ -115,7 +122,11 @@ class BetaUpgradeTest {
             check(SystemClock.elapsedRealtime() < end) { "Android did not finish the update" }
             SystemClock.sleep(500)
         }
+        // Package metadata changes before the installer completes its activity cleanup.
+        assertTrue(device.wait(Until.hasObject(By.text(Pattern.compile("(?i)done"))), 60000))
+        button(device.findObject(By.text(Pattern.compile("(?i)done"))).text)
         device.pressHome()
+        device.waitForIdle()
         start(41)
         wallet(50000)
         File(instrumentation.context.filesDir, "beta-v41-public-updater.txt").writeText(

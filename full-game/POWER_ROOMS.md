@@ -1,6 +1,6 @@
 # Power rooms
 
-## Upcoming power and one-tap activation (protocol 8, awaiting release)
+## Upcoming power and one-tap activation (included in v41)
 
 New clients opt into `previewPowers`. At round start the server independently
 chooses and persists each human player's next power. The fifth new correct
@@ -27,9 +27,7 @@ integration tests, 33 app unit tests, and 3 native UI tests passed with no
 failures or skips. Native checks include preview at zero/four marks, fifth-mark
 unlock, one-tap Shield activation, the following preview, and English/Hindi
 six-ticket layout. English/Hindi parity passed for 894 resources. Debug app and
-instrumentation APKs built successfully. This is source validation, not a
-public server deployment or signed APK release. Deploy the compatible server
-before publishing the upgraded client.
+instrumentation APKs built successfully. These were source validation checks. The compatible protocol 9 server and signed v41 APK have since been released; see RELEASE_41.md for hosted and release acceptance evidence.
 
 ## Historical alpha38 behavior
 
