@@ -91,7 +91,7 @@ try {
 }
 const evidence = { passed: true, observedAt: new Date().toISOString(), origin: entry.origin, sampledPower: power,
   checks: ['six private tickets', 'visible preview matches power granted at five authoritative dabs', 'identical mark receipts on retry',
-    'peer power state stays private', 'no future draw order', 'wrong marks rejected', 'single activation including explicit shield arming',
+    'peer power state stays private', 'no future draw order', 'wrong marks rejected', 'single activation of the sampled power',
     'false-claim receipts cannot punish twice', 'selected ticket discarded', 'QA profiles deleted'],
   scope: 'Real public HTTPS API and eight-second calls; UI and full settlement covered separately' };
 await mkdir('.test-workspace/power-beta', { recursive: true });

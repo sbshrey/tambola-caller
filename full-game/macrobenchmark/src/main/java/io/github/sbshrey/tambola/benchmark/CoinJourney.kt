@@ -211,6 +211,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         expectedAggregate = balanceBefore + peerWallets.sumOf { it.balance }
         report.put("peerTicketQuantities", JSONArray(quantities)).put("expectedPool", expectedPool).put("balanceBefore", balanceBefore)
         if (expectedRounds > 1) recordMemory("entry")
+        // The app defaults to Power rooms; this settlement fixture uses Classic rules.
+        tap("power-room-false")
         tap("buy-tickets-6")
         if (friendTable) {
             tap("play-friends")
@@ -273,6 +275,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         Configurator.getInstance().waitForIdleTimeout = 100
         checkpoint("connection-empty-profile")
         node("coin-play"); verifyEmptyProfile()
+        tap("power-room-false")
         val wifi = device.executeShellCommand("settings get global wifi_on").trim()
         val data = device.executeShellCommand("settings get global mobile_data").trim()
         check(wifi in setOf("0", "1") && data in setOf("0", "1")) { "Cannot safely restore unknown network settings" }
@@ -332,6 +335,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         Configurator.getInstance().waitForIdleTimeout = 100
         checkpoint("invitation-empty-profile")
         node("coin-play"); verifyEmptyProfile()
+        tap("power-room-false")
         runBlocking {
             peers += api.guest(GuestRequest("Invitation QA host", 2))
             code = api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 3, true, rulesVersion = 2, roundSummary = true)).snapshot.code

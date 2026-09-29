@@ -1,0 +1,1 @@
+PASS: v40 to v41 install -r retained wallet, six-ticket preference and authenticated session; purchase refunded; owned profile deleted.
