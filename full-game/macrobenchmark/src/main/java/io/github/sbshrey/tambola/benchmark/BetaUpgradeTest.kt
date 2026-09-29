@@ -7,6 +7,7 @@ import org.junit.Assert.*
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import java.io.File
+import java.util.regex.Pattern
 
 /** Two explicit stages around adb install -r; never clears installed app data. */
 class BetaUpgradeTest {
@@ -86,5 +87,38 @@ class BetaUpgradeTest {
         marker.delete()
         File(instrumentation.context.filesDir, "beta-v41-upgrade.txt").writeText(
             "PASS: v40 to v41 install -r retained wallet, six-ticket preference and authenticated session; purchase refunded; owned profile deleted.\n")
+    }
+
+    @Test fun installPublishedV41ThroughUpdater() {
+        start(40)
+        check(!marker.exists()) { "Finish the owned profile upgrade before checking the public updater" }
+        assertTrue(device.wait(Until.hasObject(By.text("Download")), 60000))
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v41-update-offer.png"))
+        button("Download")
+        assertTrue(device.wait(Until.hasObject(By.text("Install update")), 240000))
+        assertEquals(40L, instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode)
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v41-update-ready.png"))
+        button("Install update")
+        val allow = device.wait(Until.findObject(By.clazz("android.widget.Switch")), 5000)
+        if (allow != null) {
+            assertEquals("com.android.settings", device.currentPackageName)
+            if (!allow.isChecked) allow.click()
+            device.pressBack()
+            button("Install update")
+        }
+        val install = checkNotNull(device.wait(Until.findObject(By.text(Pattern.compile("(?i)install|update"))), 15000))
+        assertTrue(device.currentPackageName.endsWith("packageinstaller"))
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v41-android-confirmation.png"))
+        button(install.text)
+        val end = SystemClock.elapsedRealtime() + 60000
+        while (instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode != 41L) {
+            check(SystemClock.elapsedRealtime() < end) { "Android did not finish the update" }
+            SystemClock.sleep(500)
+        }
+        device.pressHome()
+        start(41)
+        wallet(50000)
+        File(instrumentation.context.filesDir, "beta-v41-public-updater.txt").writeText(
+            "PASS: v40 detected the published GitHub update, downloaded and validated it, requested Android confirmation, and installed v41 through the app updater.\n")
     }
 }

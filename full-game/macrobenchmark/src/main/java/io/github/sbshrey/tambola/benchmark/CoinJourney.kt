@@ -393,7 +393,11 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         node("coin-play")
         verifyEmptyProfile()
         assertEquals(if (createdMain) 50500L else 50000L, balance())
+        tap("buy-tickets-6")
+        assertEquals("600 coins", textOf(node("lobby-ticket-cost")))
+        assertTrue(node("coin-play").isEnabled)
         tap("buy-tickets-3")
+        assertEquals("300 coins", textOf(node("lobby-ticket-cost")))
         createdMain = true
         tap("coin-play")
         until { find("cancel-match")?.isEnabled == true }
@@ -634,7 +638,8 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             report.put("finishedCalls", result.round!!.called.size).put("settledWinnings", ownWinnings).put("finalBalance", finalBalance)
             // Compose exposes a selected non-tab choice as Android's checked state.
             (1..6).forEach { assertEquals("Ticket choice $it", it == 6, node("buy-tickets-$it").isChecked) }
-            assertTrue(textOf(node(if (friendTable) "friend-replay" else "coin-play")).contains("600"))
+            assertEquals("600 coins", textOf(node("lobby-ticket-cost")))
+            assertTrue(node(if (friendTable) "friend-replay" else "coin-play").isEnabled)
             report.put("rememberedSixTickets", true)
             if (friendTable) verifyFriendsReplay(result, finalBalance)
             tap("buy-tickets-3"); tap("coin-play"); node("cancel-match")
@@ -659,7 +664,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private fun verifyFriendsReplay(previous: RoomView, finalBalance: Long) {
         checkpoint("friends-replay")
         tap("buy-tickets-3")
-        assertTrue(textOf(node("friend-replay")).contains("300"))
+        assertEquals("300 coins", textOf(node("lobby-ticket-cost")))
         tap("friend-replay"); node("cancel-match")
         until { balance() == finalBalance - 300 }
         val peer = peers.first()
