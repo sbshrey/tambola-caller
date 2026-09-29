@@ -19,6 +19,6 @@
     <string name="play_players_short">%1$d खिलाड़ी</string>
     <string name="play_tickets_short">आपके %1$d टिकट</string>
     <string name="play_calls_short">%1$d / 90</string>
-    <string name="play_computer_short">अभ्यास</string>
+    <string name="play_computer_short">कंप्यूटर</string>
     <string name="play_final_claims">आखिरी कॉल — अपने दावे जाँचें</string>
 </resources>

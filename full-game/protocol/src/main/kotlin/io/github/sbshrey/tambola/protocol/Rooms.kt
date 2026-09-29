@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 6
+const val PROTOCOL_VERSION = 7
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -29,12 +29,14 @@ val WireJson = Json { encodeDefaults = true }
     val coinGame: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val coinRulesVersion: Int = 1,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val powersEnabled: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
 ) {
     init {
         require(game.mode == GameMode.ONLINE && capacity in 2..50 && intervalSeconds in 5..30)
         require(coinRulesVersion in 1..2)
         require(!powersEnabled || (coinGame && coinRulesVersion == 2))
-        require(computerPlayers in 0..5 && computerPlayers < capacity)
+        require(!largeMatch || (coinGame && coinRulesVersion == 2 && capacity == 50))
+        require(computerPlayers in 0..(if (largeMatch) 49 else 5) && computerPlayers < capacity)
         require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
             game.customPrizes.isEmpty() && automaticCalling && intervalSeconds == (if (coinRulesVersion == 1) 5 else 10)))
     }

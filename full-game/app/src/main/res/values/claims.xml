@@ -19,6 +19,6 @@
     <string name="play_players_short">%1$d players</string>
     <string name="play_tickets_short">%1$d tickets · yours</string>
     <string name="play_calls_short">%1$d / 90</string>
-    <string name="play_computer_short">Practice</string>
+    <string name="play_computer_short">Computer</string>
     <string name="play_final_claims">Last call — check your claims</string>
 </resources>

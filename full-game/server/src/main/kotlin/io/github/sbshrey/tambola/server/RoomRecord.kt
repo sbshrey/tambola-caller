@@ -66,7 +66,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
                 matchPowerBonus(matchPowers[actor], it.awards, pool.prizes, it.status == RoundStatus.COMPLETED) } ?: 0)
     }
     fun view(actor: String, now: Long): RoomView = RoomView(
-        protocolVersion = if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
+        protocolVersion = if (options.largeMatch) 7 else if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,
         options = options, members = members.map { MemberView(it.id, it.name, it.avatar, it.ready, it.connected && now - it.lastSeen < PRESENCE_TIMEOUT) },
         round = round?.let { game -> PublicRound(game.id, game.status, game.called,

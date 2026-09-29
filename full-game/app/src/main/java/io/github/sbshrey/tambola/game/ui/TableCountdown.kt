@@ -27,7 +27,9 @@ internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boo
     val words = gameText()
     val personas = (1..room.options.computerPlayers).map { practicePersona(room.roomId, it) }
     val members = room.members.sortedBy { it.playerId != ownerId } + personas.map { MemberView(it.id, it.name, it.avatar, true, true) }
-    val slots = maxOf(4, members.size).coerceAtMost(8)
+    // Keep the owner and recent arrivals readable as a large table fills.
+    val visibleMembers = if (room.options.largeMatch) members.take(1) + members.drop(1).takeLast(4) else members
+    val slots = maxOf(4, visibleMembers.size).coerceAtMost(8)
     val remaining = remainingCoinTime(room.coins?.startsAt, room.serverTime, room.roomId)
     val seconds by countdownSeconds(remaining)
     Column(Modifier.fillMaxWidth().testTag("table-countdown"), horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,7 +45,7 @@ internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boo
             }
             Row(Modifier.weight(1f), horizontalArrangement = Arrangement.SpaceEvenly) {
                 repeat(slots) { index ->
-                    val member = members.getOrNull(index)
+                    val member = visibleMembers.getOrNull(index)
                     key(member?.playerId ?: "empty-$index") {
                         val entrance = remember { Animatable(if (reducedMotion) 1f else 0f) }
                         LaunchedEffect(member?.playerId, reducedMotion) {

@@ -118,6 +118,7 @@ fun RoomView.validateFor(playerId: String) {
         // Version-one cached receipts/snapshots predate round avatars; Player defaults them to zero.
         require(protocolVersion in 1..PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
         require(!options.powersEnabled || protocolVersion >= 6)
+        require(!options.largeMatch || (protocolVersion >= 7 && coins?.friendTable == false))
         require(protocolVersion >= 3 || (!options.game.manualClaims && options.computerPlayers == 0))
         require(protocolVersion >= 4 || (!options.coinGame && coins == null && wallet == null))
         require(options.coinGame == (coins != null))
@@ -128,7 +129,7 @@ fun RoomView.validateFor(playerId: String) {
             require(economy.bonusCoins in 0..7_500L)
             require(options.coinRulesVersion == 2 || (economy.powerUp == PowerUp.NONE && economy.bonusCoins == 0L))
             require(economy.pool == economy.tickets * COIN_TICKET_PRICE)
-            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED || ((economy.friendTable || options.powersEnabled) && phase == RoomPhase.LOBBY))
+            require(economy.tickets >= 2 || phase == RoomPhase.CLOSED || ((economy.friendTable || options.powersEnabled || options.largeMatch) && phase == RoomPhase.LOBBY))
             if (economy.tickets >= 2) require(economy.prizes == CoinPool(economy.tickets, options.coinRulesVersion).prizes)
             if (economy.tickets < 2) require(economy.prizes.isEmpty())
             require(phase != RoomPhase.LOBBY || economy.friendTable || economy.startsAt != null)

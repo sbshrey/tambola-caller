@@ -203,7 +203,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         if (tickets !in 1..6 || api == null || mutable.value.adActive || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
-        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2, powersEnabled = mutable.value.powersEnabled)
+        val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2,
+            powersEnabled = mutable.value.powersEnabled, largeMatch = !friendTable)
         if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {

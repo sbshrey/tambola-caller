@@ -16,6 +16,7 @@ internal const val OPEN_EXPANDED_LOBBY_SQL = """SELECT payload FROM rooms WHERE 
     AND coin_starts_at > ? AND coin_human_seats < 50
     AND (payload::jsonb->'options'->>'coinRulesVersion')::integer = 2
     AND coalesce((payload::jsonb->'options'->>'powersEnabled')::boolean, false) = false
+    AND coalesce((payload::jsonb->'options'->>'largeMatch')::boolean, false) = false
     ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
 
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
@@ -158,6 +159,7 @@ class RoomService(
                 ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
             val saved = if (existing != null) {
                 demand(request.powersEnabled || !existing.options.powersEnabled, 409, "update_required", "Rejoin this Power room with the updated app.")
+                demand(request.largeMatch || !existing.options.largeMatch, 409, "update_required", "Rejoin this larger room with the updated app.")
                 demand(request.rulesVersion >= existing.options.coinRulesVersion, 409, "update_required", "Update the app to rejoin this table.")
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
@@ -187,12 +189,13 @@ class RoomService(
                     }
                     request.friendTable -> null
                     else -> connection.query(if (request.rulesVersion == 2) OPEN_EXPANDED_LOBBY_SQL.let {
-                        if (request.powersEnabled) it.replace("= false", "= true") else it
+                        it.replace("'powersEnabled')::boolean, false) = false", "'powersEnabled')::boolean, false) = ${request.powersEnabled}")
+                            .replace("'largeMatch')::boolean, false) = false", "'largeMatch')::boolean, false) = ${request.largeMatch}")
                     } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
-                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled).let {
-                        if (request.friendTable || request.powersEnabled) it.copy(computerPlayers = 0) else it
+                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch).let {
+                        if (request.friendTable || request.powersEnabled || request.largeMatch) it.copy(computerPlayers = 0) else it
                     }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
                     startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
@@ -519,8 +522,8 @@ class RoomService(
                         event = "host_changed"
                     }
                 }
-                if (room.phase == RoomPhase.LOBBY && room.options.powersEnabled && !room.friendTable) {
-                    val joined = ((now - (requireNotNull(room.startsAt) - MATCH_COUNTDOWN)) / 3_000L).toInt().coerceIn(0, 3)
+                if (room.phase == RoomPhase.LOBBY && (room.options.powersEnabled || room.options.largeMatch) && !room.friendTable) {
+                    val joined = room.progressiveSeats(now)
                     if (joined > room.practiceSeats) { room = room.copy(practiceSeats = joined).coinLobby(); event = "practice_joined" }
                 }
                 if (room.phase == RoomPhase.LOBBY && room.options.coinGame && room.startsAt?.let { it <= now } == true) {

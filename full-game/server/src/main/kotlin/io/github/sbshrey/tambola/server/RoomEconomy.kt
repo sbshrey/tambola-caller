@@ -8,6 +8,14 @@ internal const val MATCH_COUNTDOWN = 12_000L
 internal const val FRIEND_LOBBY_LIFETIME = 15 * 60_000L
 internal const val COMPUTER_TICKETS = 3
 
+/** Stable across restarts, unrelated to the draw order or anyone's chance of winning. */
+internal fun RoomRecord.matchPopulation(): Int = 30 + Math.floorMod(id.hashCode(), 21)
+
+internal fun RoomRecord.progressiveSeats(now: Long): Int = if (options.largeMatch) {
+    val elapsed = (now - (requireNotNull(startsAt) - MATCH_COUNTDOWN)).coerceIn(0L, 10_000L)
+    ((matchPopulation() - 1) * elapsed / 10_000L).toInt()
+} else ((now - (requireNotNull(startsAt) - MATCH_COUNTDOWN)) / 3_000L).toInt().coerceIn(0, 3)
+
 // Fictional game handles; computer identity stays explicit in the public player record.
 internal fun computerPlayer(roomId: String, index: Int): Player = practicePersona(roomId, index)
 
@@ -22,8 +30,11 @@ internal fun coinOptions(humans: Int = 1, rulesVersion: Int = 1) = RoomOptions(
 internal fun RoomRecord.coinLobby(): RoomRecord {
     if (!options.coinGame || phase != RoomPhase.LOBBY) return this
     require(purchases.keys == members.map { it.id }.toSet() && purchases.values.all { it in 1..6 })
-    val computers = if (friendTable) 0 else (4 - members.size).coerceAtLeast(0)
-        .coerceAtMost(if (options.powersEnabled) practiceSeats else 3)
+    val computers = when {
+        friendTable -> 0
+        options.largeMatch -> (1 + practiceSeats.coerceAtMost(matchPopulation() - 1) - members.size).coerceAtLeast(0)
+        else -> (4 - members.size).coerceAtLeast(0).coerceAtMost(if (options.powersEnabled) practiceSeats else 3)
+    }
     val tickets = purchases.values.sum() + computers * COMPUTER_TICKETS
     val prizes = CoinPool(tickets.coerceAtLeast(2), options.coinRulesVersion).prizes.map { it.prize }
     val players = (members.size + computers).coerceAtLeast(1)
@@ -34,7 +45,7 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
 
 internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
     check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable || members.size >= 2))
-    val lobby = copy(practiceSeats = 3).coinLobby()
+    val lobby = copy(practiceSeats = if (options.largeMatch) matchPopulation() - 1 else 3).coinLobby()
     val computers = (1..lobby.options.computerPlayers).map { index ->
         computerPlayer(id, index)
     }
