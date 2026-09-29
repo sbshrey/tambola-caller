@@ -21,4 +21,9 @@
         <item quantity="one">%d इनाम</item>
         <item quantity="other">%d इनाम</item>
     </plurals>
+    <string name="prize_places_left">%2$d में से %1$d स्थान बाकी</string>
+    <string name="prize_ties_open">बराबरी के दावे खुले हैं</string>
+    <string name="prize_places_full">स्थान भर गए</string>
+    <string name="prize_already_claimed">आप दावा जीत चुके हैं</string>
+    <string name="prize_coin_pool">%1$d सिक्कों का पुरस्कार पूल</string>
 </resources>

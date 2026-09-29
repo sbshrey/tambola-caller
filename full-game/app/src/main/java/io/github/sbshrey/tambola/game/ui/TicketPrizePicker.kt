@@ -22,6 +22,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.game.presentation.PrizePlaceState
+import io.github.sbshrey.tambola.game.presentation.prizeAvailability
 
 /** Ticket-specific choices; availability follows the same call-boundary and house rules as the table. */
 @Composable
@@ -69,12 +71,22 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                         val taken = wonByTicket || closed
                                         val coins = table.coins?.prizes?.firstOrNull { it.prize.name == id }?.coins
                                         val standardPrize = table.settings.prizes.firstOrNull { it.name == id }
+                                        val availability = standardPrize?.let { prizeAvailability(award, table.settings, table.called.size, wonByTicket) }
+                                        val availabilityLabel = availability?.let {
+                                            when (it.state) {
+                                                PrizePlaceState.OPEN -> words(R.string.prize_places_left, it.remaining, it.total)
+                                                PrizePlaceState.TIES_OPEN -> words(R.string.prize_ties_open)
+                                                PrizePlaceState.FULL -> words(R.string.prize_places_full)
+                                                PrizePlaceState.OWNED -> words(R.string.prize_already_claimed)
+                                            }
+                                        }
                                         Surface(onClick = { dismiss(); claim(ClaimSelection(ticket.id, id)) }, enabled = active,
                                             modifier = Modifier.weight(1f).heightIn(min = 60.dp).fillMaxHeight().testTag("claim-prize-$id")
                                                 .semantics(mergeDescendants = true) {
                                                     val title = coins?.let { words(R.string.coin_prize_amount, label, it) } ?: label
                                                     contentDescription = standardPrize?.let { "$title. ${words.prizeExplanation(it)}" } ?: title
                                                     if (taken && draw != null) stateDescription = words(R.string.ui_verified_call_n, draw)
+                                                    availabilityLabel?.let { stateDescription = it }
                                                 },
                                             shape = RoundedCornerShape(14.dp), color = if (active) colors.surfaceContainerHigh else colors.background,
                                             border = BorderStroke(1.dp, if (active) colors.secondary.copy(alpha = .65f) else colors.outlineVariant)) {
@@ -82,8 +94,10 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                                 if (standardPrize != null && density.fontScale <= 1.3f) PrizePattern(standardPrize, active)
                                                 Text(if (taken) "✓ $label" else label, modifier = Modifier.weight(1f), fontSize = 13.sp, lineHeight = 16.sp,
                                                     fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
-                                                coins?.let { Text("$it", fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Bold,
+                                                coins?.let { Text(words(R.string.prize_coin_pool, it), fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Bold,
                                                     color = if (active) GameNightPalette.gold else colors.onSurfaceVariant) }
+                                                availabilityLabel?.let { Text(it, fontSize = 10.sp, lineHeight = 12.sp,
+                                                    color = colors.onSurfaceVariant) }
                                             }
                                         }
                                     }

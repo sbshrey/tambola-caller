@@ -1,6 +1,6 @@
 # Playing round redesign — design review v1
 
-Status: concept and motion preview only. Native gameplay is unchanged. The full goal remains active: Figma and video first, then validation, implementation, tests, server/client compatibility and GitHub release.
+Status: saved concept and motion previews, with native implementation in progress after the user resumed from the saved design. The full goal remains active: finish design, validation, implementation, tests, server/client compatibility and GitHub release. Figma publication remains externally blocked as recorded below; it is not claimed complete.
 
 ## Review artifacts
 
@@ -60,3 +60,13 @@ Claim cards now show remaining winning places out of the total, e.g. `2 of 3 pla
 The server's current-call tie window can admit additional qualifying claimants after the nominal target is reached. Required native labels: remaining/total while below target; `Ties still open` when at/above target but not closed; `Full` only when closed; `You already claimed` for the owning player when applicable. Count unique awarded players, not ticket count or unconfirmed local submissions. The remaining-category count decreases when a category closes, not whenever any claim succeeds.
 
 Native implementation must preserve page and ticket identity across calls, retries and marking; use server-confirmed availability, and retain the chosen ticket/prize panel during new calls. New calls must not auto-page or add off-page marking hints. Six-ticket play also needs a rapid-mark/latency check against the proposed eight-second interval before that cadence is accepted.
+
+## Round results continuation
+
+The user proposed an end-of-round summary with all players, their prizes, Play again and Back to lobby. `results-preview.mp4` and `results-your-rank.svg`, `results-leaders.svg`, and `results-rest.svg` preview this in the saved visual style. The user explicitly prefers a scrolling ranked list for results, superseding the paged-list proposal. Personal winnings stay visible on the left; the right list scrolls to reveal the owning player in their actual rank position, with a mint-highlighted row. Players are sorted by descending total prize winnings; equal totals share rank with stable ordering within ties. Both actions remain fixed. The example roster and amounts are fictional; these previews do not demonstrate live settlement.
+
+Native requirements: enter the results surface when the round ends, retain a finalising state until settlement is confirmed, distinguish cancellation/refunds from winnings, show actual allocated prize shares and power bonuses separately, retain explicit computer labels, and keep every player reachable by scrolling within the ranked list. Do not pin or move the owning player out of rank order. Auto-scroll to their row once when confirmed results first appear, preserving manual scroll position on subsequent updates. Long names and multiple prizes need accessible detail without obscuring rank and total winnings. Play again retains the last ticket count but requires a visible cost confirmation before entering a paid round. Friends replay must follow existing host/room authority, not promise an unsupported automatic rematch.
+
+`render_results.py` validates all 24 sample players are represented and personal results/actions stay pixel-identical while scrolling. Native result rendering, settlement integration and replay are still pending.
+
+The first native slice adds per-prize availability to `TicketPrizePicker` in English and Hindi, including open ties and already-won states. It uses confirmed awards and does not modify claims, prize amounts or settlement. Unit coverage exercises partial quotas, oversubscribed same-call ties, subsequent closure and ownership. This source change is not a new APK release; native layout validation remains required before release.

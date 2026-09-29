@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "scope": "Illustrative geometry, not native settlement or replay validation",
+  "checks": [
+    "24 players sorted by descending winnings with shared ranks for ties",
+    "Initial scroll reveals highlighted own row without reordering ranks",
+    "Replay and lobby actions remain fixed",
+    "Personal result remains fixed while scrolling",
+    "Computer players explicitly labelled"
+  ]
+}

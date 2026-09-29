@@ -21,4 +21,9 @@
         <item quantity="one">%d prize</item>
         <item quantity="other">%d prizes</item>
     </plurals>
+    <string name="prize_places_left">%1$d of %2$d places left</string>
+    <string name="prize_ties_open">Ties still open</string>
+    <string name="prize_places_full">Full</string>
+    <string name="prize_already_claimed">You already claimed</string>
+    <string name="prize_coin_pool">%1$d coin pool</string>
 </resources>
