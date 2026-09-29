@@ -19,11 +19,11 @@ async function api(path, method = 'GET', body, actor, expected = 200) {
 }
 let power;
 try {
-  assert.equal((await api('/health/ready')).protocolVersion, 6);
+  assert.equal((await api('/health/ready')).protocolVersion, 9);
   for (const name of ['Power room QA A', 'Power room QA B']) guests.push(await api('/v1/guests', 'POST', { displayName: name }));
   const [a,b] = guests;
-  let first = (await api('/v1/matches', 'POST', { id: randomUUID(), tickets: 6, friendTable: true, rulesVersion: 2, powersEnabled: true }, a)).snapshot;
-  await api('/v1/matches', 'POST', { id: randomUUID(), tickets: 1, friendTable: true, friendCode: first.code, rulesVersion: 2, powersEnabled: true }, b);
+  let first = (await api('/v1/matches', 'POST', { id: randomUUID(), tickets: 6, friendTable: true, rulesVersion: 2, powersEnabled: true, previewPowers: true, roundSummary: true }, a)).snapshot;
+  await api('/v1/matches', 'POST', { id: randomUUID(), tickets: 1, friendTable: true, friendCode: first.code, rulesVersion: 2, powersEnabled: true, previewPowers: true, roundSummary: true }, b);
   const path = `/v1/rooms/${first.code}`;
   const read = async actor => (await api(path, 'GET', undefined, actor)).snapshot;
   async function command(actor, action, fixed) {
@@ -31,8 +31,11 @@ try {
     return api(`${path}/commands`, 'POST', request, actor);
   }
   first = (await command(a, { type: 'start' })).snapshot;
-  assert.equal(first.protocolVersion, 6);
+  assert.equal(first.protocolVersion, 9);
   assert.equal(first.options.computerPlayers, 0);
+  assert.equal(first.options.intervalSeconds, 8);
+  const preview = first.round.powers.nextPower;
+  assert.ok(['SHIELD', 'AUTO_DAB', 'PRIZE_BONUS'].includes(preview));
   assert.equal(first.round.ownTickets.flatMap(it => it.cells.filter(Boolean)).length, 90);
   const until = Date.now() + 100000;
   const marked = new Set();
@@ -54,6 +57,7 @@ try {
   assert.equal(current.round.powers.correctMarks, 5);
   assert.equal(current.round.powers.inventory.length, 1);
   power = current.round.powers.inventory[0];
+  assert.equal(power, preview);
   const peer = await read(b);
   assert.deepEqual(peer.round.powers.marks, {});
   assert.equal(peer.round.powers.correctMarks, 0);
@@ -63,7 +67,7 @@ try {
   const number = ticket.cells.find(n => n && !current.round.called.includes(n));
   assert.equal((await api(`${path}/commands`, 'POST', { id: randomUUID(), expectedRevision: current.revision,
     action: { type: 'mark', roundId: current.round.id, ticketId: ticket.id, number } }, a, 422)).code, 'number_not_called');
-  if (power !== 'SHIELD') {
+  {
     current = (await command(a, { type: 'use_power', roundId: current.round.id, ticketId: ticket.id, power })).snapshot;
     assert.equal(current.round.powers.inventory.length, 0);
     assert.ok(current.round.powers.used[ticket.id].includes(power));
@@ -86,10 +90,10 @@ try {
   for (const actor of guests) await api('/v1/guests/me/delete', 'POST', { id: randomUUID() }, actor);
 }
 const evidence = { passed: true, observedAt: new Date().toISOString(), origin: entry.origin, sampledPower: power,
-  checks: ['six private tickets', 'five authoritative dabs and one drop', 'identical mark receipts on retry',
-    'peer power state stays private', 'no future draw order', 'wrong marks rejected', 'activation or shield use',
+  checks: ['six private tickets', 'visible preview matches power granted at five authoritative dabs', 'identical mark receipts on retry',
+    'peer power state stays private', 'no future draw order', 'wrong marks rejected', 'single activation including explicit shield arming',
     'false-claim receipts cannot punish twice', 'selected ticket discarded', 'QA profiles deleted'],
-  scope: 'Real public HTTPS API and ten-second calls; UI and full settlement covered separately' };
+  scope: 'Real public HTTPS API and eight-second calls; UI and full settlement covered separately' };
 await mkdir('.test-workspace/power-beta', { recursive: true });
 await writeFile('.test-workspace/power-beta/public-powers.json', JSON.stringify(evidence, null, 2) + '\n');
 console.log(JSON.stringify(evidence));

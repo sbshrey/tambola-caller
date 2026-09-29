@@ -19,7 +19,7 @@ import java.util.regex.Pattern
 internal class CoinJourney(private val context: Context, private val device: UiDevice, private val expectedRounds: Int = 1,
     private val computerOpponents: Boolean = false,
     private val target: String = "io.github.sbshrey.tambola.game",
-    private val friendTable: Boolean = false,
+    private val friendTable: Boolean = !computerOpponents,
     private val checkCallHistory: Boolean = false,
     private val checkRoundRecovery: Boolean = false,
     discoveryUrl: String? = null) : AutoCloseable {
@@ -32,7 +32,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private val marks = mutableSetOf<Int>()
     private val report = JSONObject().put("completed", false)
         .put("scope", "Non-debuggable optimized app; external UI actions; real HTTPS/WSS round; " +
-            if (computerOpponents) "one passive HTTP QA peer and two labelled computer opponents" else "three passive HTTP QA peers")
+            if (computerOpponents) "one passive HTTP QA peer in a 30-50 player round" else "three passive HTTP QA peers")
     private val started = SystemClock.elapsedRealtime()
     private var roundStarted = started
     private var roundNumber = 0
@@ -40,6 +40,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
     private var expectedPool = 0L
     private var expectedAggregate = 0L
     private var expectedPrizeCount = 0
+    private var computerFundedCoins = 0L
     private var previousBalance: Long? = null
     private val roundReports = JSONArray()
     private val memorySamples = JSONArray()
@@ -206,7 +207,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         } }
         val quantities = peerWallets.map { (it.balance / 100).coerceAtMost(6).toInt().also { count -> check(count in 1..6) } }
         if (computerOpponents) assertEquals(1500L, peerWallets.single().balance)
-        expectedPool = 600 + quantities.sum() * 100L + if (computerOpponents) 600 else 0
+        expectedPool = 600 + quantities.sum() * 100L
         expectedAggregate = balanceBefore + peerWallets.sumOf { it.balance }
         report.put("peerTicketQuantities", JSONArray(quantities)).put("expectedPool", expectedPool).put("balanceBefore", balanceBefore)
         if (expectedRounds > 1) recordMemory("entry")
@@ -225,7 +226,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         assertEquals(balanceBefore - 600, balance())
         runBlocking {
             for ((index, peer) in peers.withIndex()) {
-                val request = MatchRequest(UUID.randomUUID().toString(), quantities[index], friendTable, code.takeIf { friendTable }, rulesVersion = 2)
+                val request = MatchRequest(UUID.randomUUID().toString(), quantities[index], friendTable, code.takeIf { friendTable }, rulesVersion = 2, largeMatch = !friendTable, roundSummary = true)
                 val purchase = api.match(peer.token, request)
                 assertEquals(purchase, api.match(peer.token, request))
                 val room = purchase.snapshot
@@ -234,14 +235,15 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         }
         val lobby = snapshot()
         assertEquals(if (computerOpponents) 2 else 4, lobby.members.size)
-        assertEquals(if (computerOpponents) 2 else 0, lobby.options.computerPlayers)
+        if (!computerOpponents) assertEquals(0, lobby.options.computerPlayers)
         val currentMain = lobby.members.single { member -> peers.none { it.playerId == member.playerId } }.playerId
         if (mainId == null) mainId = currentMain else assertEquals("Same identity across rounds", mainId, currentMain)
-        assertEquals(expectedPool, lobby.coins!!.pool)
+        if (!computerOpponents) assertEquals(expectedPool, lobby.coins!!.pool)
         expectedPrizeCount = lobby.coins!!.prizes.size
         assertEquals(6, expectedPrizeCount)
-        assertEquals(10, lobby.options.intervalSeconds)
-        assertEquals(2, lobby.options.game.winnersPerPrize)
+        assertEquals(8, lobby.options.intervalSeconds)
+        assertTrue(lobby.options.roundSummary)
+        if (!computerOpponents) assertEquals(2, lobby.options.game.winnersPerPrize)
         if (friendTable) {
             assertTrue(lobby.coins!!.friendTable)
             assertNull(lobby.coins!!.startsAt)
@@ -251,11 +253,16 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         node("play-arena", 20_000)
         if (computerOpponents) {
             val round = snapshot().round!!
-            assertEquals(4, round.players.size)
-            assertEquals(2, round.players.count { it.computer })
-            assertTrue(round.players.filter { it.computer }.all { round.ticketCounts[it.id] == 3 })
-            assertTrue(description(node("table-players")).contains("2 computer"))
-            report.put("labelledComputers", 2).put("computerFundedCoins", 600)
+            assertTrue(round.players.size in 30..50)
+            assertEquals(round.players.size - 2, round.players.count { it.computer })
+            assertTrue(round.ticketCounts.values.all { it in 1..6 })
+            assertEquals(6, round.ticketCounts.getValue(requireNotNull(mainId)))
+            computerFundedCoins = round.players.filter { it.computer }.sumOf { round.ticketCounts.getValue(it.id) * 100L }
+            expectedPool = 600 + quantities.sum() * 100L + computerFundedCoins
+            assertEquals(expectedPool, snapshot().coins!!.pool)
+            assertEquals(round.ticketCounts.values.sum() * 100L, expectedPool)
+            report.put("players", round.players.size).put("computerFundedCoins", computerFundedCoins)
+                .put("expectedPool", expectedPool).put("ticketCounts", JSONArray(round.ticketCounts.values.toList()))
         }
         checkpoint("playing")
     }
@@ -275,7 +282,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         createdMain = true
         create.click(); node("friend-waiting", 30_000)
         code = textOf(node("friend-code")).replace(" ", "").also { check(it.matches(Regex("[A-HJ-NP-Z2-9]{8}"))) }
-        runBlocking { api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 2, true, code, rulesVersion = 2)) }
+        runBlocking { api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 2, true, code, rulesVersion = 2, roundSummary = true)) }
         until(30_000) { find("friend-start")?.isEnabled == true && find("waiting-connection") == null }
         val before = snapshot()
         assertEquals(2, before.members.size); assertEquals(500L, before.coins!!.pool); assertEquals(50200L, balance())
@@ -327,7 +334,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         node("coin-play"); verifyEmptyProfile()
         runBlocking {
             peers += api.guest(GuestRequest("Invitation QA host", 2))
-            code = api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 3, true, rulesVersion = 2)).snapshot.code
+            code = api.match(peers.first().token, MatchRequest(UUID.randomUUID().toString(), 3, true, rulesVersion = 2, roundSummary = true)).snapshot.code
         }
         fun open(inviteCode: String) {
             check(inviteCode.matches(Regex("[A-HJ-NP-Z2-9]{8}")))
@@ -450,7 +457,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         return null
     }
 
-    /** A ten-second call must keep the selected ticket's claim menu open. */
+    /** A call boundary must keep the selected ticket's claim menu open. */
     fun verifyPickerCallBoundary() = captureFailure {
         checkpoint("picker-boundary")
         until(15_000, 250) { find("claim-ticket-1")?.isEnabled == true }
@@ -491,7 +498,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             var restoredMarks = 0
             while (true) {
                 check(SystemClock.elapsedRealtime() - roundStarted < 1_050_000) { "Round exceeded real-time limit" }
-                if (find("coin-winnings") != null) break
+                if (find("round-summary") != null || find("coin-winnings") != null) break
                 val shownCall = try { description(find("current-call")) } catch (_: StaleObjectException) {
                     // Results can remove this node between the lookup and read. Only
                     // retry this observation; never repeat a dab or claim action here.
@@ -593,7 +600,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             assertEquals(expectedPrizeCount, result.round!!.awards.size)
             if (checkRoundRecovery) assertTrue(report.optBoolean("activeRoundRecoveryVerified"))
             if (checkCallHistory) assertTrue(report.optBoolean("callHistoryVerified") && report.optBoolean("restoredCallHistoryVerified"))
-            assertTrue("A server-confirmed claim must identify its ticket and prize", report.optBoolean("contextualClaimVerified"))
+            if (!computerOpponents) assertTrue("A server-confirmed claim must identify its ticket and prize", report.optBoolean("contextualClaimVerified"))
             if (!computerOpponents) assertTrue(result.round!!.awards.all { it.playerIds == listOf(mainId) })
             val winnings = verifiedWinnings(result)
             val ownWinnings = winnings.getOrDefault(requireNotNull(mainId), 0L)
@@ -601,8 +608,20 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             if (computerOpponents) {
                 report.put("computerWinnings", computerWinnings).put("humanWinnings", expectedPool - computerWinnings)
                 // Computers fund their virtual tickets, then retain their own winnings; no human wallet owns those coins.
-                expectedAggregate += 600 - computerWinnings
+                expectedAggregate += computerFundedCoins - computerWinnings
             }
+            node("round-summary")
+            val ownRow = node("summary-player-${requireNotNull(mainId)}")
+            assertTrue("Own result must be highlighted", ownRow.isSelected || ownRow.isChecked)
+            assertTrue(textOf(ownRow).contains(ownWinnings.toString()))
+            assertEquals(ownWinnings, result.round!!.winnings.getValue(requireNotNull(mainId)).total)
+            tap("summary-replay")
+            assertTrue(device.wait(Until.hasObject(By.text("Play with 6 tickets for 600 coins?")), 5000))
+            textButton("Cancel").click()
+            node("round-summary")
+            device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
+            report.put("rankedSummaryVerified", true).put("sixTicketReplayConfirmationVerified", true)
+            tap("summary-lobby")
             node("coin-winnings")
             assertEquals("$ownWinnings coins won", textOf(node("coin-winnings")))
             val finalBalance = balanceBefore - 600 + ownWinnings
@@ -613,7 +632,6 @@ internal class CoinJourney(private val context: Context, private val device: UiD
             (1..6).forEach { assertEquals("Ticket choice $it", it == 6, node("buy-tickets-$it").isChecked) }
             assertTrue(textOf(node(if (friendTable) "friend-replay" else "coin-play")).contains("600"))
             report.put("rememberedSixTickets", true)
-            device.takeScreenshot(File(context.filesDir, "coin-release-results.png"))
             if (friendTable) verifyFriendsReplay(result, finalBalance)
             tap("buy-tickets-3"); tap("coin-play"); node("cancel-match")
             assertEquals(finalBalance - 300, balance())
@@ -642,7 +660,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
         until { balance() == finalBalance - 300 }
         val peer = peers.first()
         val before = runBlocking { api.wallet(peer.token).balance }
-        val request = MatchRequest(UUID.randomUUID().toString(), 2, true, previous.code, previous.round!!.id, rulesVersion = 2)
+        val request = MatchRequest(UUID.randomUUID().toString(), 2, true, previous.code, previous.round!!.id, rulesVersion = 2, roundSummary = true)
         val receipt = runBlocking { api.match(peer.token, request) }
         val next = receipt.snapshot
         assertEquals(receipt, runBlocking { api.match(peer.token, request) })
@@ -746,7 +764,7 @@ internal class CoinJourney(private val context: Context, private val device: UiD
                 // Macrobenchmark can stop the measured app before this finally block.
                 device.executeShellCommand("am start -n $target/io.github.sbshrey.tambola.game.MainActivity")
                 if (find("friend-invitation-dismiss") != null) tap("friend-invitation-dismiss")
-                until(20_000) { find("coin-wallet") != null || find("play-arena") != null }
+                until(20_000) { find("coin-wallet") != null || find("play-arena") != null || find("round-summary") != null }
                 repeat(4) { if (find("coin-wallet") == null) { device.pressBack(); SystemClock.sleep(150) } }
                 tap("coin-wallet")
                 repeat(8) {

@@ -157,6 +157,11 @@ class ProfileDeletionTest : PostgresTest() {
     }
 
     @Test fun `migration backfills former members from archived rounds and verifies immutable checksums`() {
+        // Migration 002 uses PostgreSQL's wall clock to revoke already-expired sessions.
+        // Seed this migration fixture against that same clock, not the fixed gameplay clock.
+        now.set(database.transaction { connection ->
+            connection.query("SELECT (extract(epoch FROM clock_timestamp()) * 1000)::bigint") { it.getLong(1) }.single()
+        })
         val host = guest("Migration Asha"); val peer = guest("Bina")
         val code = room(host, peer).code
         start(host, peer, code); command(host, code, RoomAction.End); command(host, code, RoomAction.Rematch)
