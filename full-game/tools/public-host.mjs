@@ -56,7 +56,8 @@ try {
           try {
             const response = await fetch(origin + '/health/ready', { redirect: 'error', signal: AbortSignal.timeout(8000) });
             const body = await response.json();
-            ready = response.ok && body.status === 'ready' && [4, 5, 6].includes(body.protocolVersion);
+            // Readiness advertises the newest server protocol, including v41's round summary.
+            ready = response.ok && body.status === 'ready' && [4, 5, 6, 7, 8, 9].includes(body.protocolVersion);
           } catch { }
           if (ready) break;
         }
