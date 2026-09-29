@@ -1,4 +1,4 @@
-name: Tambola Together Android
+name: Tambola Jalsa Android
 on:
   push:
     paths: ['full-game/**', 'audio/**', '.github/workflows/full-game.yml']

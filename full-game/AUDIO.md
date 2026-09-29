@@ -1,6 +1,6 @@
 # Offline game audio
 
-Tambola Together packages its number voices, an original instrumental loop and four short effects. Playback never calls an AI service, needs no microphone and carries no developer API key. Android's media volume still applies on top of the three app volumes.
+Tambola Jalsa packages its number voices, an original instrumental loop and four short effects. Playback never calls an AI service, needs no microphone and carries no developer API key. Android's media volume still applies on top of the three app volumes.
 
 ## Controls and event rules
 

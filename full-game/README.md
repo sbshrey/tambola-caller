@@ -1,4 +1,6 @@
-# Tambola Together
+# Tambola Jalsa
+
+The full native game is now named **Tambola Jalsa**. All new full-game changes are committed and pushed to **`shrey/tambola-jalsa`**. See [branding and branch conventions](BRAND.md). The display-name update will appear in the next released APK; older published versions retain their original names.
 
 **Internet beta:** alpha39 includes Classic/Power room selection, free powers every five correct manual marks, ticket-specific false-claim penalties with Shields, staggered practice seats with Player IDs, prize announcements and a fitted 1–90 board. It retains ten-second calls, two-ticket pages, fifty-player tables, six shared prize pools, 50,000 starting coins and daily rewards. [Download the prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha39-power-rooms) · [Power-room rules](POWER_ROOMS.md) · [Internet host guide](../docs/INTERNET_BETA.md). Install over the existing beta to retain your profile. Firebase is configured with optional diagnostics; live ads remain disabled pending AdMob verification. The PC must remain awake, signed in and online.
 

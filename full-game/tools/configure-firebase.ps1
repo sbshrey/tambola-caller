@@ -18,12 +18,12 @@ try {
     $projects = Invoke-FirebaseJson -Arguments @('projects:list')
     if (-not (@($projects) | Where-Object projectId -eq $ProjectId)) {
         if (-not $CreateProject) { throw 'Project is not available. Use -CreateProject for a new free Firebase project.' }
-        $null = Invoke-FirebaseJson -Arguments @('projects:create', $ProjectId, '--display-name', 'Tambola Together Beta')
+        $null = Invoke-FirebaseJson -Arguments @('projects:create', $ProjectId, '--display-name', 'Tambola Jalsa Beta')
     }
     $apps = Invoke-FirebaseJson -Arguments @('apps:list', 'ANDROID', '--project', $ProjectId)
     $app = @($apps) | Where-Object packageName -eq 'io.github.sbshrey.tambola.game.beta' | Select-Object -First 1
     if (-not $app) {
-        $app = Invoke-FirebaseJson -Arguments @('apps:create', 'ANDROID', 'Tambola Together Beta', '--package-name', 'io.github.sbshrey.tambola.game.beta', '--project', $ProjectId)
+        $app = Invoke-FirebaseJson -Arguments @('apps:create', 'ANDROID', 'Tambola Jalsa Beta', '--package-name', 'io.github.sbshrey.tambola.game.beta', '--project', $ProjectId)
     }
     $target = Join-Path $projectRoot 'app/src/publicBeta/google-services.json'
     $staging = Join-Path $projectRoot ('.test-workspace/firebase-' + [guid]::NewGuid().ToString('N') + '.json')

@@ -1,6 +1,6 @@
 # Internet beta hosted on this PC
 
-The `publicBeta` Android variant uses public HTTPS/WSS through a Cloudflare Quick Tunnel to the existing PC game service. It has package `io.github.sbshrey.tambola.game.beta`, label **Tambola Internet Beta**, and its own local profile. It can coexist with the Wi-Fi app. It uses the existing development signing key, not a production/Store identity. Do not uninstall it to fix a connection: reinstalling loses its local wallet credentials.
+The `publicBeta` Android variant uses public HTTPS/WSS through a Cloudflare Quick Tunnel to the existing PC game service. It has package `io.github.sbshrey.tambola.game.beta`, label **Tambola Jalsa** in the next app update, and its own local profile. It can coexist with the Wi-Fi app. It uses the existing development signing key, not a production/Store identity. Do not uninstall it to fix a connection: reinstalling loses its local wallet credentials.
 
 ## How players connect
 

@@ -45,7 +45,7 @@ def scene(t,svg=False,power="AUTO-DAB",page=0,ticket_count=2,show_claim=True):
   d.line((x1,y1,x2,y2),fill=fill,width=width);elements.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{fill}" stroke-width="{width}"/>')
  ready=t>=3.0; active=t>=5.2; claimed=show_claim and t>=13.4; confirmed=show_claim and t>=15.2
  rect(16,14,928,48,C['panel'],16)
- txt(30,23,'TAMBOLA',19,bold=True);txt(170,28,'24 players',13,C['muted']);circle(265,38,2,C['muted']);txt(280,28,'6 prizes left',13,C['muted'])
+ txt(30,26,'Tambola Jalsa',16,bold=True);txt(170,28,'24 players',13,C['muted']);circle(265,38,2,C['muted']);txt(280,28,'6 prizes left',13,C['muted'])
  # Next / active power occupies the top right only.
  glow=ready and not active
  if glow:

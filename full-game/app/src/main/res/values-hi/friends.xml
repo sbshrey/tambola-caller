@@ -27,7 +27,7 @@
     <string name="friend_invite">दोस्तों को बुलाएं</string>
     <string name="friend_copy">कोड कॉपी करें</string>
     <string name="friend_copied">कोड कॉपी हो गया</string>
-    <string name="friend_share_text">मेरी तंबोला टेबल से जुड़ें!\nकोड: %1$s\nनए Internet Beta में दोस्तों के साथ खेलें → कोड से जुड़ें चुनें।\nऐप पाएं: https://github.com/sbshrey/tambola-caller/releases\nसभी के आने पर होस्ट शुरू करेगा। केवल मुफ्त वर्चुअल सिक्के।</string>
+    <string name="friend_share_text">मेरी तंबोला जलसा टेबल से जुड़ें!\nकोड: %1$s\nनए Internet Beta में दोस्तों के साथ खेलें → कोड से जुड़ें चुनें।\nऐप पाएं: https://github.com/sbshrey/tambola-caller/releases\nसभी के आने पर होस्ट शुरू करेगा। केवल मुफ्त वर्चुअल सिक्के।</string>
     <string name="friend_people">%1$d / %2$d दोस्त</string>
     <string name="friend_host">होस्ट · तैयार</string>
     <string name="friend_ready">खेलने को तैयार</string>

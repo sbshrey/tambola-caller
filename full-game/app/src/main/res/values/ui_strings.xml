@@ -252,7 +252,7 @@
     <string name="ui_number_2">"Number %1$s, %2$s"</string>
     <string name="ui_verification_uses_the_official_calls_independent_of_marks">"Verification uses the official calls, independent of marks. A matching pattern after another ticket won does not change that earlier result."</string>
     <string name="ui_back_to_prizes">"Back to prizes"</string>
-    <string name="ui_tambola_together_n_calls_n">"Tambola Together · %1$s\n%2$s calls\n"</string>
+    <string name="ui_tambola_together_n_calls_n">"Tambola Jalsa · %1$s\n%2$s calls\n"</string>
     <string name="ui_points_n">"%1$s: %2$s points\n"</string>
     <string name="ui_choose_what_to_share">"Choose what to share"</string>
     <string name="ui_include_player_names">"Include player names"</string>
@@ -308,7 +308,7 @@
     <string name="ui_music_softens_under_spoken_numbers_sound_stops_when">"Music softens under spoken numbers. Sound stops when you leave the app; after an audio device disconnects, choose Resume sound when you\'re ready."</string>
     <string name="ui_music_and_effects_are_original_synthesized_sounds_packaged">"Music and effects are original synthesized sounds, packaged for offline play."</string>
     <string name="ui_home">"‹ Home"</string>
-    <string name="ui_tambola_together">"  tambola together"</string>
+    <string name="ui_tambola_together">"  Tambola Jalsa"</string>
     <string name="ui_settings">"Settings"</string>
     <string name="ui_a_quick_heads_up">"A quick heads-up"</string>
     <string name="ui_good_company_great_numbers">"GOOD COMPANY. GREAT NUMBERS."</string>
@@ -385,7 +385,7 @@
     <string name="ui_your_games_and_privacy">"Your games and privacy"</string>
     <string name="ui_solo_and_family_rounds_stay_on_this_device">"Offline rounds stay on this device. Private rooms save online data on the room service; members see names and wins, and only their own ticket numbers. Read how storage, deletion and backup recovery work."</string>
     <string name="ui_delete_all_saved_rounds">"Delete all saved rounds"</string>
-    <string name="ui_build_status">"Tambola Together · %1$s\nHosted online release is still in development."</string>
+    <string name="ui_build_status">"Tambola Jalsa · %1$s\nHosted online release is still in development."</string>
     <string name="ui_delete_saved_rounds">"Delete saved rounds?"</string>
     <string name="ui_this_removes_your_offline_current_game_player_names">"This removes your offline current game, player names, offline history and offline badges. This cannot be undone. Online data and sound and display settings will stay."</string>
     <string name="ui_delete_rounds">"Delete rounds"</string>

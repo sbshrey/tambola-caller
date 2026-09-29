@@ -76,13 +76,13 @@ class InviteSite private constructor(val origin: String, private val fingerprint
         val install = installUrl?.let { "<p><a class=\"button\" href=\"${escape(it)}\" rel=\"noreferrer\">Get the Android app · ऐप लें</a></p>" }
             ?: "<p class=\"note\">Ask your host for the Android app, then enter this room code.<br><span lang=\"hi\">होस्ट से Android ऐप लें, फिर यह रूम कोड दर्ज करें।</span></p>"
         return """<!doctype html>
-            <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>Your room invitation · Tambola Together</title><style>$css</style></head>
-            <body><main><div class="brandline"><span class="ball" aria-hidden="true">90</span><span class="brand">Tambola Together</span></div>
+            <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>Your room invitation · Tambola Jalsa</title><style>$css</style></head>
+            <body><main><div class="brandline"><span class="ball" aria-hidden="true">90</span><span class="brand">Tambola Jalsa</span></div>
             <header class="hero"><p class="eyebrow">A seat at the table</p><h1>Your next game<br>starts together.</h1><p>You have a private room invitation. Bring your lucky number.</p></header>
             <section class="card" aria-labelledby="invite-heading"><h2 id="invite-heading">${if (fallback) "Get ready to join" else "Join your friends"}</h2><p class="note">Room code · <span lang="hi">रूम कोड</span></p><code class="code">$code</code>
             <a class="button" href="${escape(intent)}">Open Android app · <span lang="hi">ऐप खोलें</span></a>
             <p class="note">Already have the app? You can also select and copy the code above, then use Play online → Join room.</p>
-            <hr><h2>${if (fallback) "App did not open?" else "New to Tambola Together?"}</h2>$install
+            <hr><h2>${if (fallback) "App did not open?" else "New to Tambola Jalsa?"}</h2>$install
             <ol class="steps"><li>Choose a nickname and avatar in the app.</li><li>Review the invitation and tap Join invitation.</li><li>Get ready in the lobby. Your host starts the game.</li></ol>
             <p class="note">Opening this page does not join a room or create a profile. The app checks whether the room is still open when you join. Your nickname and avatar are visible to room members.</p>
             <div class="hindi" lang="hi"><h2>दोस्तों के साथ तम्बोला</h2><p>ऐप में अपना नाम और अवतार चुनें। निमंत्रण देखकर “निमंत्रण से जुड़ें” दबाएँ। फिर लॉबी में तैयार हों; होस्ट खेल शुरू करेगा।</p><p class="note">यह पेज खोलने से आप रूम में नहीं जुड़ते और प्रोफ़ाइल नहीं बनती। जुड़ते समय ऐप रूम की उपलब्धता जाँचता है। आपका नाम और अवतार रूम के खिलाड़ियों को दिखेगा।</p></div>

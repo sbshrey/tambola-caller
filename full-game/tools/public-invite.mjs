@@ -29,8 +29,8 @@ export function invitationPage(path) {
     headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'referrer-policy': 'no-referrer',
       'x-content-type-options': 'nosniff', 'x-robots-tag': 'noindex, nofollow',
       'content-security-policy': `default-src 'none'; style-src 'sha256-${styleHash}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'` },
-    body: `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>Join your friends · Tambola Together</title><style>${css}</style></head><body>
-<header><strong>Tambola Together</strong><nav aria-label="Language"><a href="/friends/${code}?lang=en" lang="en" ${!hi ? 'aria-current="page"' : ''}>English</a><a href="/friends/${code}?lang=hi" lang="hi" ${hi ? 'aria-current="page"' : ''}>हिन्दी</a></nav></header>
+    body: `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>Join your friends · Tambola Jalsa</title><style>${css}</style></head><body>
+<header><strong>Tambola Jalsa</strong><nav aria-label="Language"><a href="/friends/${code}?lang=en" lang="en" ${!hi ? 'aria-current="page"' : ''}>English</a><a href="/friends/${code}?lang=hi" lang="hi" ${hi ? 'aria-current="page"' : ''}>हिन्दी</a></nav></header>
 <main><section><div class="eyebrow">${words.eyebrow}</div><h1>${words.title}</h1><p>${words.intro}</p><p class="small">${words.note}</p></section>
 <section class="ticket" aria-label="${words.code}"><p class="label">${words.code}</p><code class="code">${code.slice(0, 4)} ${code.slice(4)}</code><a class="button" href="${intent}">${words.open}</a><a class="button secondary" href="${download}">${words.download}</a><p class="small">${words.review}</p><div class="rule"><h2>${words.how}</h2><ol class="small">${words.steps.map(step => `<li>${step}</li>`).join('')}</ol></div></section></main>
 <footer class="foot">${words.foot}</footer></body></html>`

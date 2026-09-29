@@ -252,7 +252,7 @@
     <string name="ui_number_2">"नंबर %1$s, %2$s"</string>
     <string name="ui_verification_uses_the_official_calls_independent_of_marks">"जाँच आधिकारिक पुकारों से होती है, निशानों से नहीं। दूसरे टिकट के जीतने के बाद पैटर्न पूरा होने से पुराना परिणाम नहीं बदलता।"</string>
     <string name="ui_back_to_prizes">"इनामों पर वापस"</string>
-    <string name="ui_tambola_together_n_calls_n">"Tambola Together · %1$s\n%2$s पुकारें\n"</string>
+    <string name="ui_tambola_together_n_calls_n">"Tambola Jalsa · %1$s\n%2$s पुकारें\n"</string>
     <string name="ui_points_n">"%1$s: %2$s अंक\n"</string>
     <string name="ui_choose_what_to_share">"क्या साझा करना है, चुनें"</string>
     <string name="ui_include_player_names">"खिलाड़ियों के नाम शामिल करें"</string>
@@ -308,7 +308,7 @@
     <string name="ui_music_softens_under_spoken_numbers_sound_stops_when">"नंबर सुनाते समय संगीत धीमा हो जाता है। ऐप छोड़ने पर आवाज़ रुक जाती है; ऑडियो डिवाइस का कनेक्शन टूटने के बाद तैयार होने पर आवाज़ फिर चालू करें चुनें।"</string>
     <string name="ui_music_and_effects_are_original_synthesized_sounds_packaged">"संगीत और प्रभाव मौलिक कृत्रिम ध्वनियाँ हैं, जो ऑफ़लाइन खेल के लिए ऐप में शामिल हैं।"</string>
     <string name="ui_home">"‹ मुख्य पृष्ठ"</string>
-    <string name="ui_tambola_together">"  तंबोला टुगेदर"</string>
+    <string name="ui_tambola_together">"  तंबोला जलसा"</string>
     <string name="ui_settings">"सेटिंग्स"</string>
     <string name="ui_a_quick_heads_up">"एक ज़रूरी बात"</string>
     <string name="ui_good_company_great_numbers">"अच्छा साथ। मज़ेदार नंबर।"</string>
@@ -385,7 +385,7 @@
     <string name="ui_your_games_and_privacy">"आपके खेल और गोपनीयता"</string>
     <string name="ui_solo_and_family_rounds_stay_on_this_device">"ऑफ़लाइन दौर इसी डिवाइस पर रहते हैं। निजी रूम का ऑनलाइन डेटा रूम सेवा पर सहेजा जाता है; सदस्य नाम और जीत देखते हैं, और टिकट के नंबर केवल अपने देखते हैं। डेटा सहेजने, मिटाने और बैकअप से बहाली के बारे में पढ़ें।"</string>
     <string name="ui_delete_all_saved_rounds">"सभी सहेजे दौर मिटाएँ"</string>
-    <string name="ui_build_status">"Tambola Together · %1$s\nसार्वजनिक ऑनलाइन सेवा अभी विकास में है।"</string>
+    <string name="ui_build_status">"Tambola Jalsa · %1$s\nसार्वजनिक ऑनलाइन सेवा अभी विकास में है।"</string>
     <string name="ui_delete_saved_rounds">"सहेजे दौर मिटाएँ?"</string>
     <string name="ui_this_removes_your_offline_current_game_player_names">"इससे आपका मौजूदा ऑफ़लाइन खेल, खिलाड़ियों के नाम, ऑफ़लाइन इतिहास और ऑफ़लाइन बैज मिट जाएँगे। इसे वापस नहीं लिया जा सकता। ऑनलाइन डेटा, आवाज़ और डिस्प्ले सेटिंग रहेंगी।"</string>
     <string name="ui_delete_rounds">"दौर मिटाएँ"</string>

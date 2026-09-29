@@ -4,7 +4,7 @@ Updated 28 September 2026 against the published alpha39 Internet Beta and the cu
 
 ## Store listing copy
 
-**App name:** Tambola Together
+**App name:** Tambola Jalsa
 
 **Short description:** Fast online Tambola. Pick tickets, dab numbers and claim free-coin prizes.
 
@@ -30,7 +30,7 @@ Reconnect to your purchased tickets and saved marks on the same installation. Yo
 
 ## Privacy page copy to complete before publication
 
-**Tambola Together — Privacy policy**
+**Tambola Jalsa — Privacy policy**
 
 **Operator:** sbshrey
 
@@ -38,7 +38,7 @@ Reconnect to your purchased tickets and saved marks on the same installation. Yo
 
 **Effective date:** [PUBLICATION DATE — REQUIRED]
 
-Tambola Together is an online social Tambola game with free virtual coins. Coins buy tickets and are awarded for verified claims and daily rewards; they have no cash value and cannot be purchased for money, transferred or redeemed. Practice personas are simulated and identified in the game. The current published beta has no live advertising. Optional rewarded-video integration is described below for builds in which it is enabled; it does not block ordinary play or free refills.
+Tambola Jalsa is an online social Tambola game with free virtual coins. Coins buy tickets and are awarded for verified claims and daily rewards; they have no cash value and cannot be purchased for money, transferred or redeemed. Practice personas are simulated and identified in the game. The current published beta has no live advertising. Optional rewarded-video integration is described below for builds in which it is enabled; it does not block ordinary play or free refills.
 
 ### Data on your device
 
@@ -86,7 +86,7 @@ Contact sbshrey@gmail.com with privacy questions. Publish updates here with a ne
 
 ## Support page draft
 
-**Tambola Together support — sbshrey@gmail.com**
+**Tambola Jalsa support — sbshrey@gmail.com**
 
 Include your app version, Android version and a short description of what happened. For a connection or coin problem, include approximately when it happened, the ticket quantity and the visible amount. Do not send sign-in secrets, device credentials or recovery proofs.
 

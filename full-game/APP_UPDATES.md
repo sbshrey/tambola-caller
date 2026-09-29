@@ -1,5 +1,7 @@
 # Internet Beta APK updates
 
+Product name: **Tambola Jalsa**. All full-game updates are committed and pushed to **`shrey/tambola-jalsa`**. Use release titles like `Tambola Jalsa · Beta vN — short change description`; retain the asset naming contract below for updater compatibility. See [BRAND.md](BRAND.md).
+
 The publicBeta variant (starting at version 40) checks the public GitHub releases API on its first eligible lobby visit per process. Settings offers a manual check. No push-notification service or game-server change is required. Existing installations must manually install version 40 once to gain this feature.
 
 Only published (including prerelease) releases in `sbshrey/tambola-caller` with an asset named exactly `tambola-beta-v<versionCode>.apk` participate. Draft releases and legacy APK attachment names are ignored. The highest newer version among the most recent 20 releases is offered. GitHub must provide its SHA-256 asset digest. If there is no newer opted-in asset, the current version remains installed. Failures are quiet for automatic checks and visible for manual checks.

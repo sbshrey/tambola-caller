@@ -12,5 +12,5 @@
     <string name="invite_join">Join invitation</string>
     <string name="invite_dismiss">Dismiss invitation</string>
     <string name="invite_share">Share invitation</string>
-    <string name="invite_share_message">Join my private Tambola Together room:\n%1$s\n\nRoom code: %2$s\nOpen the app, review the invitation and join. Free social play with points and badges.</string>
+    <string name="invite_share_message">Join my private Tambola Jalsa room:\n%1$s\n\nRoom code: %2$s\nOpen the app, review the invitation and join. Free social play with points and badges.</string>
 </resources>

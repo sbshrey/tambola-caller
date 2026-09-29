@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Tambola Jalsa</string>
     <string name="your_ticket">Your ticket</string>
     <string name="named_ticket">%1$s\'s ticket</string>
     <plurals name="numbers_called">
