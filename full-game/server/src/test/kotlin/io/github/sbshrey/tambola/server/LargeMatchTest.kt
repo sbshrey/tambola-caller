@@ -24,12 +24,18 @@ class LargeMatchTest : PostgresTest() {
         assertTrue(target in 30..50)
         assertEquals(0, initial.snapshot.options.computerPlayers)
         var previous = 0
+        var priorTickets = emptyMap<String, Int>()
         repeat(10) {
             now.addAndGet(1_000); service.tick()
             val view = service.read(owner.token, code).snapshot
             view.validateFor(owner.playerId)
             assertTrue(view.options.computerPlayers > previous)
             previous = view.options.computerPlayers
+            val counts = stored(code).computerTicketCounts()
+            assertEquals(priorTickets, counts.filterKeys { it in priorTickets })
+            assertEquals(6 + counts.values.sum(), view.coins!!.tickets)
+            assertEquals(view.coins!!.tickets * COIN_TICKET_PRICE, view.coins!!.pool)
+            priorTickets = counts
             if (it == 4) service = RoomService(database, now::get)
         }
         assertEquals(target-1, previous)
@@ -40,7 +46,12 @@ class LargeMatchTest : PostgresTest() {
         assertEquals(7, active.protocolVersion)
         assertEquals(target, active.round!!.players.size)
         assertEquals(target-1, active.round!!.players.count { it.computer })
-        assertEquals(6 + (target-1)*3, active.coins!!.tickets)
+        val started = stored(code).round!!
+        assertEquals(priorTickets, started.ticketCounts.filterKeys { it != owner.playerId })
+        assertTrue(priorTickets.values.all { it in 1..6 })
+        assertTrue(priorTickets.values.distinct().size > 1)
+        assertEquals(started.tickets.size, active.coins!!.tickets)
+        started.ticketCounts.forEach { (player, count) -> assertEquals(count, started.tickets.count { it.playerId == player }) }
         assertEquals((target+9)/10, active.options.game.winnersPerPrize)
         assertEquals(6, active.round!!.ownTickets.size)
         assertNull(active.round!!.revealedOrder)
@@ -97,6 +108,32 @@ class LargeMatchTest : PostgresTest() {
             assertEquals(49, players.map { it.id }.distinct().size)
             assertTrue(players.all { it.computer })
         }
+    }
+
+    @Test fun `new rooms vary population and ticket mix while restored rooms retain both`() {
+        val owner = guest()
+        val template = stored(service.match(owner.token, request()).snapshot.code)
+        val populations = mutableSetOf<Int>()
+        val ticketAmounts = mutableSetOf<Int>()
+        val mixes = mutableSetOf<List<Int>>()
+        repeat(200) { index ->
+            val room = template.copy(id = "population-test-$index")
+            val count = room.matchPopulation()
+            assertTrue(count in 30..50)
+            populations += count
+            val tickets = room.computerTicketCounts(count - 1)
+            assertEquals(count - 1, tickets.size)
+            assertTrue(tickets.values.all { it in 1..6 })
+            val restored = WireJson.decodeFromString<RoomRecord>(WireJson.encodeToString(room))
+            assertEquals(count, restored.matchPopulation())
+            assertEquals(tickets, restored.computerTicketCounts(count - 1))
+            ticketAmounts += tickets.values
+            mixes += tickets.values.toList()
+        }
+        assertEquals((30..50).toSet(), populations)
+        assertEquals((1..6).toSet(), ticketAmounts)
+        assertTrue(mixes.size > 100)
+        assertTrue(template.copy(options = template.options.copy(largeMatch = false)).computerTicketCounts(3).values.all { it == 3 })
     }
 
     @Test fun `classic quick play also fills and never mixes with power mode`() {

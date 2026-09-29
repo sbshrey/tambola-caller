@@ -11,6 +11,14 @@ internal const val COMPUTER_TICKETS = 3
 /** Stable across restarts, unrelated to the draw order or anyone's chance of winning. */
 internal fun RoomRecord.matchPopulation(): Int = 30 + Math.floorMod(id.hashCode(), 21)
 
+/** Stable per-seat purchases, chosen independently of the hidden draw and player tickets. */
+internal fun RoomRecord.computerTicketCounts(count: Int = options.computerPlayers): Map<String, Int> =
+    (1..count).associate { index ->
+        val tickets = if (options.largeMatch) 1 + (digest("$id:ticket-count:$index").take(8).toLong(16) % 6).toInt()
+            else COMPUTER_TICKETS
+        computerPlayer(id, index).id to tickets
+    }
+
 internal fun RoomRecord.progressiveSeats(now: Long): Int = if (options.largeMatch) {
     val elapsed = (now - (requireNotNull(startsAt) - MATCH_COUNTDOWN)).coerceIn(0L, 10_000L)
     ((matchPopulation() - 1) * elapsed / 10_000L).toInt()
@@ -35,7 +43,7 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
         options.largeMatch -> (1 + practiceSeats.coerceAtMost(matchPopulation() - 1) - members.size).coerceAtLeast(0)
         else -> (4 - members.size).coerceAtLeast(0).coerceAtMost(if (options.powersEnabled) practiceSeats else 3)
     }
-    val tickets = purchases.values.sum() + computers * COMPUTER_TICKETS
+    val tickets = purchases.values.sum() + computerTicketCounts(computers).values.sum()
     val prizes = CoinPool(tickets.coerceAtLeast(2), options.coinRulesVersion).prizes.map { it.prize }
     val players = (members.size + computers).coerceAtLeast(1)
     val winners = if (options.coinRulesVersion == 1) 1 else ((players + 9) / 10).coerceAtLeast(2).coerceAtMost(players)
@@ -49,7 +57,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
     val computers = (1..lobby.options.computerPlayers).map { index ->
         computerPlayer(id, index)
     }
-    val counts = purchases + computers.associate { it.id to COMPUTER_TICKETS }
+    val counts = purchases + lobby.computerTicketCounts()
     val pool = CoinPool(counts.values.sum(), options.coinRulesVersion)
     val settings = lobby.options.game.copy(prizes = pool.prizes.map { it.prize })
     val game = Round.create(members.map { Player(it.id, it.name, avatar = it.avatar) } + computers,

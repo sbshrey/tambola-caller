@@ -55,7 +55,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
 ) {
     fun coinView(actor: String): CoinTableView? {
         if (!options.coinGame) return null
-        val tickets = purchases.values.sum() + options.computerPlayers * COMPUTER_TICKETS
+        val tickets = coinPool?.soldTickets ?: (purchases.values.sum() + computerTicketCounts().values.sum())
         val powerUp = powerUps[actor] ?: PowerUp.NONE
         if (coinPool == null && tickets < 2) return CoinTableView(tickets, tickets * COIN_TICKET_PRICE, emptyList(), purchases[actor] ?: 0, startsAt, friendTable = friendTable, powerUp = powerUp)
         val pool = coinPool ?: CoinPool(tickets, options.coinRulesVersion)
