@@ -21,8 +21,8 @@ change=ImageChops.difference(before.crop((308,76,945,283)),after.crop((308,76,94
 assert change and change[0]>=148 and change[2]<=214 and change[1]>=93 and change[3]<=142
 checks.append('Only the fifth-mark cell changes within Ticket 1; Ticket 2 is pixel-identical')
 assert ImageChops.difference(scene(7.8).crop((308,76,945,501)),scene(8.2).crop((308,76,945,501))).getbbox() is None
-assert '6 prizes left' in scene(14,True) and '5 prizes left' in scene(15.5,True)
-checks.append('Claim sheet persists across the eight-second call; prize count changes only after confirmation')
+assert '6 prizes left' in scene(14,True) and '6 prizes left' in scene(15.5,True) and '2 of 3 places left · server confirmed' in scene(15.5,True)
+checks.append('Claim sheet persists across the eight-second call; prize category stays available until its winning places close')
 for power in ['SHIELD','BONUS']:
     assert 'Armed for Ticket 1' in scene(6,True,power)
     assert ImageChops.difference(scene(4,power=power).crop((320,118,933,274)),scene(6,power=power).crop((320,118,933,274))).getbbox() is None

@@ -18,7 +18,7 @@ Status: concept and motion preview only. Native gameplay is unchanged. The full 
 4. Header shows player and remaining-prize counts. Details stay optional.
 5. Per-ticket Claim opens a compact six-choice panel with scheme patterns and amounts. The board and call clock remain visible. Claim panel state persists across calls; patterns are explanatory, not eligibility hints.
 6. Proposed cadence: eight seconds per call, down from ten, with a smooth deadline-based countdown. This is a design proposal, not a change to current server timing. A reduced-motion state must retain readable numeric timing and static ready emphasis.
-7. The preview distinguishes claim sent from later server confirmation. The remaining-prize count stays at six while pending and decreases only at confirmation.
+7. The preview distinguishes claim sent from later server confirmation. The remaining-prize count stays at six: one confirmed winner does not close a category with three winning places. Per-prize availability updates after confirmation.
 
 ## Prize recommendation
 
@@ -47,6 +47,16 @@ The first read confirmed the existing pages and Roboto fonts. Subsequent compone
 
 ## Design validation follow-up
 
-`validate_preview.py` passes five groups of checks: legal ticket structure; isolated fifth-cell change with the entire second ticket pixel-identical; persistent claim geometry across the new call at eight seconds; prize count only changing after confirmation; Shield/bonus arming without Auto-Dab behavior; and six decoded-video snapshots matching the intended scenes. See `validation.json` and `validated-contact-sheet.png`. These prove the illustrative design, not native performance.
+`validate_preview.py` passes five groups of checks: legal ticket structure; isolated fifth-cell change with the entire second ticket pixel-identical; persistent claim geometry across the new call at eight seconds; per-prize availability only changing after confirmation; Shield/bonus arming without Auto-Dab behavior; and six decoded-video snapshots matching the intended scenes. See `validation.json` and `validated-contact-sheet.png`. These prove the illustrative design, not native performance.
 
 Figma access was rechecked on the next goal continuation and still returns the same Starter-plan tool-limit error. No retry loop or alternative account was used. Native implementation remains behind the user's explicit Figma-and-video-first sequence. Restoring Figma tool allowance is the outstanding external dependency.
+
+## Resumed design: six tickets and prize availability
+
+The user resumed from the saved design and explicitly requested easy play with six tickets, plus pagination arrows. Preferred placement: a 48-unit-wide right rail. At the concept size this preserves the full 48-unit ticket-row height, while a bottom rail would remove ticket height. Three pages show 1–2, 3–4 and 5–6 of 6; arrows are disabled at the boundaries. No calls or marks automatically change the visible page. See `six-ticket-preview.mp4`, three `six-tickets-page-N.svg` files and `six-ticket-validation.json`. The video shows next, next, previous, previous and preserved marks on return. This is a layout preview, not a released APK change.
+
+Claim cards now show remaining winning places out of the total, e.g. `2 of 3 places left`, and label the amount as a shared coin pool. Current rules derive target winners from the room size: version 2 uses ceil(players/10), at least two and no more than players. Thus the fictional 24-player room uses three places per category. Do not hardcode two in the native implementation.
+
+The server's current-call tie window can admit additional qualifying claimants after the nominal target is reached. Required native labels: remaining/total while below target; `Ties still open` when at/above target but not closed; `Full` only when closed; `You already claimed` for the owning player when applicable. Count unique awarded players, not ticket count or unconfirmed local submissions. The remaining-category count decreases when a category closes, not whenever any claim succeeds.
+
+Native implementation must preserve page and ticket identity across calls, retries and marking; use server-confirmed availability, and retain the chosen ticket/prize panel during new calls. New calls must not auto-page or add off-page marking hints. Six-ticket play also needs a rapid-mark/latency check against the proposed eight-second interval before that cadence is accepted.

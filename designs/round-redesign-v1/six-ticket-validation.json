@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "Six distinct legal 3x9 tickets",
+    "All ticket counts 1 through 6 paginate without nonexistent tickets",
+    "Board and call clock remain pixel-identical across page changes",
+    "Three pages retain unique ticket identity; returning to page one retains marked cells",
+    "48x48 arrow controls; full 48-unit number-row height retained"
+  ],
+  "scope": "Illustrative design geometry, not native device validation"
+}
