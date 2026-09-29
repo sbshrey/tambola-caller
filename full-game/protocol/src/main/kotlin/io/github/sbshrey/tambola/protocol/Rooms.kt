@@ -42,7 +42,8 @@ val WireJson = Json { encodeDefaults = true }
         require(!largeMatch || (coinGame && coinRulesVersion == 2 && capacity == 50))
         require(computerPlayers in 0..(if (largeMatch) 49 else 5) && computerPlayers < capacity)
         require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
-            game.customPrizes.isEmpty() && automaticCalling && intervalSeconds == (if (coinRulesVersion == 1) 5 else 10)))
+            game.customPrizes.isEmpty() && automaticCalling &&
+            (intervalSeconds == (if (coinRulesVersion == 1) 5 else 10) || (roundSummary && intervalSeconds == 8))))
     }
 }
 @Serializable data class CreateRoomRequest(val id: String, val options: RoomOptions = RoomOptions())

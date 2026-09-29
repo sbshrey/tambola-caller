@@ -202,7 +202,11 @@ class RoomService(
                     } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
-                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch, previewPowers = request.previewPowers, roundSummary = request.roundSummary).let {
+                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch, previewPowers = request.previewPowers,
+                        roundSummary = request.roundSummary,
+                        // Protocol 9 opts into the redesigned round, including its faster pace.
+                        // Existing rooms retain their persisted interval; older clients require 10s.
+                        intervalSeconds = if (request.roundSummary) 8 else if (request.rulesVersion == 2) 10 else 5).let {
                         if (request.friendTable || request.powersEnabled || request.largeMatch) it.copy(computerPlayers = 0) else it
                     }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,

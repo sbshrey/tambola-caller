@@ -2,6 +2,8 @@
 
 Completed coin rounds created with the protocol 9 `roundSummary` capability open a dedicated results screen. The ranked player list scrolls; the header and Lobby / Play again actions stay in place. It initially opens at the current player's highlighted row without moving that player ahead of higher winners. My rank returns to that row and respects reduced motion.
 
+New protocol 9 rounds use an eight-second call interval. The redesign capability opts clients into this pace; older clients still receive ten-second version 2 rounds (five seconds for version 1). Persisted ten-second rooms remain readable and keep their existing deadlines. The UI uses the server's interval and deadline rather than a hardcoded local countdown. RoundSummaryTest checks no early draw, one draw at the exact deadline, the next eight-second deadline, six owned tickets, and deadline retention after service restart.
+
 Ranks sort by prize coins plus bonus coins, descending. Equal totals share competition ranks (1, 1, 3); names and player IDs break display-order ties. Returned entry coins do not count as winnings and appear separately for the current player. Each row lists the prizes won and any bonus.
 
 The server derives every player's totals from the same calculation used for settlement. Totals are exposed only after the round finishes. Active rounds do not expose this map or other players' private power state. The client validates the complete roster and checks its own summary against its coin settlement. Older rooms omit the new fields; matchmaking separates incompatible clients, and friends receive an update-required response before a purchase when capabilities differ.

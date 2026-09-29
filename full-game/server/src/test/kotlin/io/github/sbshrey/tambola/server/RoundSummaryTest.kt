@@ -21,6 +21,8 @@ class RoundSummaryTest : PostgresTest() {
         assertNotEquals(room.code, legacy.code)
         assertEquals(9, room.protocolVersion)
         assertEquals(7, legacy.protocolVersion)
+        assertEquals(8, room.options.intervalSeconds)
+        assertEquals(10, legacy.options.intervalSeconds)
         assertFalse(WireJson.encodeToString(legacy).contains("roundSummary"))
         assertEquals("update_required", assertThrows(ApiFailure::class.java) {
             service.match(owner.token, request.copy(id = id(), roundSummary = false))
@@ -30,6 +32,18 @@ class RoundSummaryTest : PostgresTest() {
         active.validateFor(owner.playerId)
         assertTrue(active.round!!.winnings.isEmpty())
         assertFalse(WireJson.encodeToString(active.round!!).contains("winnings"))
+        val firstDeadline = requireNotNull(active.nextDrawAt)
+        assertEquals(now.get() + 8000L, firstDeadline)
+        assertEquals(6, active.round!!.ownTickets.size)
+        val beforeCalls = active.round!!.called
+        now.set(firstDeadline - 1); service.tick()
+        assertEquals(beforeCalls, service.read(owner.token, room.code).snapshot.round!!.called)
+        now.set(firstDeadline); service.tick()
+        val next = service.read(owner.token, room.code).snapshot
+        assertEquals(beforeCalls.size + 1, next.round!!.called.size)
+        assertEquals(firstDeadline + 8000L, next.nextDrawAt)
+        service = RoomService(database, now::get)
+        assertEquals(next.nextDrawAt, service.read(owner.token, room.code).snapshot.nextDrawAt)
         repeat(90) {
             stored(room.code).nextDrawAt?.let { now.set(it); service.tick(); now.addAndGet(3000); service.tick() }
         }

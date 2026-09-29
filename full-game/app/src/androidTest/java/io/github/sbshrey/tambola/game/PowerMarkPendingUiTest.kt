@@ -29,10 +29,11 @@ class PowerMarkPendingUiTest {
         val game = Round.create(listOf(Player("me", "Mira"), Player("peer", "Noor")), settings, Random(28)).start()
         val ticket = game.tickets.first()
         val room = RoomView(code = "ABCD2345", roomId = "mark-fixture", revision = 30, phase = RoomPhase.ACTIVE,
-            hostId = "me", locked = true, options = RoomOptions(game = settings, capacity = 50, coinGame = true, coinRulesVersion = 2, powersEnabled = true),
+            hostId = "me", locked = true, options = RoomOptions(game = settings, capacity = 50, coinGame = true, coinRulesVersion = 2, powersEnabled = true,
+                roundSummary = true, intervalSeconds = 8),
             members = game.players.map { MemberView(it.id, it.name, 0, true, true) },
             round = PublicRound(game.id, game.status, ticket.numbers.take(5), game.tickets.filter { it.playerId == "me" }, emptyList(), emptyList(), emptyMap(), "0".repeat(64),
-                players = game.players, powers = MatchPowers()), nextDrawAt = 20000, serverTime = 10000, expiresAt = 900000,
+                players = game.players, powers = MatchPowers()), nextDrawAt = 18000, serverTime = 10000, expiresAt = 900000,
             coins = CoinTableView(12, 1200, pool.prizes, 6, null))
         var state by mutableStateOf(OnlineUiState(loading = false, available = true, name = "Mira", playerId = "me", room = room, connection = Connection.LIVE))
         val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]

@@ -1,5 +1,13 @@
 # Native implementation progress
 
+## Current implementation checkpoint, 2026-09-29
+
+The saved design has now been implemented in native landscape play: persistent left board, two tickets with right-side six-ticket pagination, compact claim panel, server-selected power preview and one-tap activation, and durable queued marks. End-of-round standings scroll to the highlighted player's true rank and confirm replay purchases. New protocol 9 rounds call every eight seconds; persisted rounds keep their existing interval. Earlier sections below describe historical checkpoints, not the current remaining scope.
+
+Evidence is in `full-game/ROUND_SUMMARY.md`, `full-game/MARKING.md`, `full-game/POWER_ROOMS.md`, and the native review directories. The cadence follow-up passed 14 focused PostgreSQL tests, 47 client tests, and 34 Android JVM tests. Release validation still needs the production-style acceptance driver updated for the new results screen, hosted server rollout, compatible signed APK build and upgrade testing, and GitHub APK publication. Figma publication remains externally unavailable; the user authorized resuming from the saved design and video.
+
+The final cadence build also passed three native tests in 17.228 seconds: pending-mark recovery with an eight-second server clock, six-ticket bounds across marks/calls/recovery, and Hindi 200% text navigation. These are emulator fixtures, not a live release journey.
+
 ## Claim availability and results concept
 
 Implemented the claim-card remaining/total label using confirmed awards, plus ties-open, full and already-claimed labels. English and Hindi strings label amounts as prize pools. No server rules, timing, balances or claim decisions changed.
