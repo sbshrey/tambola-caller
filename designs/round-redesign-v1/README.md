@@ -1,6 +1,8 @@
 # Playing round redesign — design review v1
 
-Status: saved concept and motion previews, with native implementation in progress after the user resumed from the saved design. The full goal remains active: finish design, validation, implementation, tests, server/client compatibility and GitHub release. Figma publication remains externally blocked as recorded below; it is not claimed complete.
+Status: implemented and published as Tambola Jalsa beta v41. Hosted protocol 9, native acceptance, data-preserving upgrade and the real GitHub updater checks are recorded in [RELEASE_41.md](../../full-game/RELEASE_41.md). The user authorized implementation from these saved designs and videos. Figma publication alone remains unfinished: the latest read-only access check on 2026-09-29 again returned the Starter-plan MCP tool quota error. No nodes were created by that check.
+
+The sections below preserve the original concept, findings and staged implementation history. Statements that native work is pending describe those earlier checkpoints, not current release status. Current remaining work is to compose and visually validate the editable round, powers, claims, six-ticket pages and results in the existing Figma file once tool access is restored. The saved SVG/PNG/video files are available now; they do not constitute a completed Figma publication.
 
 ## Review artifacts
 
