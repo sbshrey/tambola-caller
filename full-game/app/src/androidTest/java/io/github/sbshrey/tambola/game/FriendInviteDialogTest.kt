@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.Density
@@ -26,29 +27,37 @@ class FriendInviteDialogTest {
     }
 
     @Test fun openingCostsNothingAndOnlyExplicitConfirmationBuysSelectedTickets() = review("en", 1f)
-    @Test fun hindiLargeTextRetainsTicketChoiceAndConfirmation() = review("hi", 1.5f)
+    @Test fun hindiLargeTextRetainsTicketChoiceAndConfirmation() = review("hi", 2f)
+    @Test fun englishLargeTextRetainsTicketChoiceAndConfirmation() = review("en", 2f)
+    @Test fun englishPortraitDoesNotScroll() = review("en", 2f, false)
+    @Test fun hindiPortraitDoesNotScroll() = review("hi", 2f, false)
 
-    private fun review(language: String, scale: Float) {
+    private fun review(language: String, scale: Float, landscape: Boolean = true) {
+        if (!landscape) {
+            compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
+            compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
+        }
         var purchases = 0; var quantity = 0
         val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)); fontScale = scale }
         val context = compose.activity.createConfigurationContext(config)
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { FriendInviteDialog("ABCDEFG2", OnlineUiState(loading = false, available = true),
                     { quantity = it; purchases++ }, {}, {}) }
             }
         }
         compose.waitForIdle(); assertEquals(0, purchases)
-        if (scale == 1f) {
-            (1..6).forEach { compose.onNodeWithTag("invite-tickets-$it").assertIsDisplayed() }
-            compose.onNodeWithTag("friend-invitation-code").assertIsDisplayed()
-            compose.onNodeWithTag("friend-invitation-join").assertIsDisplayed()
+        compose.onNodeWithTag("friend-invitation-content").assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.VerticalScrollAxisRange))
+        val window = compose.onNodeWithTag("friend-invitation-window").getUnclippedBoundsInRoot()
+        ((1..6).map { "invite-tickets-$it" } + listOf("friend-invitation-code", "friend-invitation-cost", "friend-invitation-join", "friend-invitation-dismiss")).forEach { tag ->
+            val bounds = compose.onNodeWithTag(tag).assertIsDisplayed().getUnclippedBoundsInRoot()
+            assertTrue("$tag fits the invitation", bounds.top >= window.top && bounds.bottom <= window.bottom && bounds.left >= window.left && bounds.right <= window.right)
         }
-        compose.onNodeWithTag("invite-tickets-6").performScrollTo().performClick()
-        compose.onNodeWithTag("friend-invitation-cost").performScrollTo().assertTextContains("600", substring = true)
+        compose.onNodeWithTag("invite-tickets-6").performClick()
+        compose.onNodeWithTag("friend-invitation-cost").assertTextContains("600", substring = true)
         compose.onNodeWithTag("friend-invitation-join").assertIsDisplayed().assertIsEnabled()
-        captureTestScreen("friend-invitation-$language")
+        captureTestScreen("friend-invitation-$language-${(scale * 100).toInt()}-${if (landscape) "landscape" else "portrait"}")
         compose.onNodeWithTag("friend-invitation-join").performClick()
         assertEquals(1, purchases); assertEquals(6, quantity)
     }

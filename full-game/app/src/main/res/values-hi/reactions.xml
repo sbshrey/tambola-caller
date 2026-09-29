@@ -1,0 +1,10 @@
+<resources>
+    <string name="reaction_title">कुछ कहें</string>
+    <string name="reaction_good_luck">शुभकामनाएँ!</string>
+    <string name="reaction_nice_win">शानदार जीत!</string>
+    <string name="reaction_well_played">बहुत अच्छा खेले!</string>
+    <string name="reaction_thanks">धन्यवाद!</string>
+    <string name="reaction_from">%1$s: %2$s</string>
+    <string name="reaction_wait">%1$d सेकंड में तैयार</string>
+    <string name="reaction_not_sent">संदेश की पुष्टि नहीं हुई। थोड़ी देर में फिर कोशिश करें।</string>
+</resources>

@@ -1,0 +1,9 @@
+09-28 19:54:09.669  4404  4427 I TestRunner: finished: laterDismissesWithoutDownloading(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:54:09.676  4404  4427 I TestRunner: run finished: 3 tests, 0 failed, 0 ignored
+09-28 19:55:19.574  4613  4636 I TestRunner: started: downloadAndInstallRequireSeparateExplicitActions(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:55:22.296  4613  4636 I TestRunner: finished: downloadAndInstallRequireSeparateExplicitActions(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:55:22.302  4613  4636 I TestRunner: started: installedBetaChecksLiveReleaseFeedFromSettings(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:55:28.618  4613  4636 I TestRunner: finished: installedBetaChecksLiveReleaseFeedFromSettings(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:55:28.620  4613  4636 I TestRunner: started: laterDismissesWithoutDownloading(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:55:30.208  4613  4636 I TestRunner: finished: laterDismissesWithoutDownloading(io.github.sbshrey.tambola.game.AppUpdateUiTest)
+09-28 19:55:30.212  4613  4636 I TestRunner: run finished: 3 tests, 0 failed, 0 ignored

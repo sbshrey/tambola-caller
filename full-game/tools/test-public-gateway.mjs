@@ -72,6 +72,9 @@ test('public ingress bounds routes and bodies, strips forwarded headers and carr
     assert.equal((await fetch(origin + '/v1/wallet/ad-intents', { method: 'POST' })).status, 200);
     assert.equal((await fetch(origin + '/v1/wallet/ad-intents/01234567-1234-1234-1234-0123456789ab')).status, 200);
     assert.equal((await fetch(origin + '/v1/wallet/ad-intents/01234567-1234-1234-1234-0123456789ab?player=x')).status, 404);
+    assert.equal((await fetch(origin + '/v1/rooms/ABCD2345/reactions')).status, 200);
+    assert.equal((await fetch(origin + '/v1/rooms/ABCD2345/reactions', { method: 'POST' })).status, 200);
+    assert.equal((await fetch(origin + '/v1/rooms/ABCD2345/reactions?player=x')).status, 404);
     for (let player = 0; player < 50; player++) {
     const socket = createConnection(gateway.address().port, '127.0.0.1');
     await once(socket, 'connect');

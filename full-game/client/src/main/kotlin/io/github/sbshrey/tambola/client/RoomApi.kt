@@ -39,6 +39,8 @@ fun checkedEndpoint(value: String, allowLocalHttp: Boolean = false): String {
 
 interface RoomApi : AutoCloseable {
     val serverTime: ServerTime? get() = null
+    suspend fun reactions(token: String, code: String): ReactionSnapshot? = null
+    suspend fun react(token: String, code: String, request: CommandRequest): RoomUpdate = throw UnsupportedOperationException("Reactions unavailable")
     suspend fun friendInvitation(code: String): String? = null
     suspend fun guest(request: GuestRequest): GuestCredentials
     suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment
@@ -96,6 +98,15 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
             payload
         }
     override suspend fun guest(request: GuestRequest): GuestCredentials = WireJson.decodeFromString(text("/v1/guests", body = WireJson.encodeToString(request), post = true))
+    override suspend fun reactions(token: String, code: String): ReactionSnapshot? = try {
+        WireJson.decodeFromString(text(roomPath(code) + "/reactions", token))
+    } catch (error: RoomApiFailure) {
+        if (error.status == 404) null else throw error
+    }
+    override suspend fun react(token: String, code: String, request: CommandRequest): RoomUpdate {
+        require(request.action is RoomAction.React)
+        return WireJson.decodeFromString(text(roomPath(code) + "/reactions", token, WireJson.encodeToString(request), true))
+    }
     override suspend fun enrollDevice(token: String, request: EnrollDeviceRequest): DeviceEnrollment =
         WireJson.decodeFromString(text("/v1/guests/me/device", token, WireJson.encodeToString(request), true))
     override suspend fun renewSession(deviceKey: String, request: RenewSessionRequest): RenewedSession =

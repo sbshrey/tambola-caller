@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
@@ -47,7 +49,10 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                         }
                         // A wrapping title can be taller than one row. Allocate the
                         // remaining height to prizes while keeping the close action fixed.
-                        Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Current coin rooms have six prizes, all visible together. Older
+                        // custom/ranked rooms retain their longer list without losing choices.
+                        val prizeGrid = Modifier.weight(1f, fill = false).testTag("claim-prize-grid")
+                        Column(if (choices.size <= 6) prizeGrid else prizeGrid.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             choices.chunked(columns).forEach { row ->
                                 Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                     row.forEach { (id, label) ->
@@ -63,15 +68,18 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                         val active = enabled && open && !table.finished
                                         val taken = wonByTicket || closed
                                         val coins = table.coins?.prizes?.firstOrNull { it.prize.name == id }?.coins
+                                        val standardPrize = table.settings.prizes.firstOrNull { it.name == id }
                                         Surface(onClick = { dismiss(); claim(ClaimSelection(ticket.id, id)) }, enabled = active,
                                             modifier = Modifier.weight(1f).heightIn(min = 60.dp).fillMaxHeight().testTag("claim-prize-$id")
                                                 .semantics(mergeDescendants = true) {
-                                                    contentDescription = coins?.let { words(R.string.coin_prize_amount, label, it) } ?: label
+                                                    val title = coins?.let { words(R.string.coin_prize_amount, label, it) } ?: label
+                                                    contentDescription = standardPrize?.let { "$title. ${words.prizeExplanation(it)}" } ?: title
                                                     if (taken && draw != null) stateDescription = words(R.string.ui_verified_call_n, draw)
                                                 },
                                             shape = RoundedCornerShape(14.dp), color = if (active) colors.surfaceContainerHigh else colors.background,
                                             border = BorderStroke(1.dp, if (active) colors.secondary.copy(alpha = .65f) else colors.outlineVariant)) {
                                             Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                                                if (standardPrize != null && density.fontScale <= 1.3f) PrizePattern(standardPrize, active)
                                                 Text(if (taken) "✓ $label" else label, modifier = Modifier.weight(1f), fontSize = 13.sp, lineHeight = 16.sp,
                                                     fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
                                                 coins?.let { Text("$it", fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Bold,
@@ -88,5 +96,28 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
             }
         }
         }
+    }
+}
+
+/** Schematic numbered positions, never the player's ticket or current called/marked state. */
+@Composable
+private fun PrizePattern(prize: Prize, active: Boolean) {
+    val ink = if (active) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant
+    Canvas(Modifier.size(62.dp, 22.dp).clearAndSetSemantics {}) {
+        val early = prize == Prize.EARLY_FIVE || prize == Prize.EARLY_TEN
+        val rows = if (prize == Prize.EARLY_FIVE) 1 else if (prize == Prize.EARLY_TEN) 2 else 3
+        val gapX = size.width / 5
+        val gapY = size.height / 3
+        repeat(rows) { row -> repeat(5) { column ->
+            val selected = when (prize) {
+                Prize.TOP_LINE -> row == 0
+                Prize.MIDDLE_LINE -> row == 1
+                Prize.BOTTOM_LINE -> row == 2
+                Prize.CORNERS -> row != 1 && column in listOf(0, 4)
+                else -> true
+            }
+            drawCircle(if (selected) ink else ink.copy(alpha = .18f), radius = 2.3.dp.toPx(),
+                center = Offset((column + .5f) * gapX, (row + .5f + if (early) (3 - rows) / 2f else 0f) * gapY))
+        } }
     }
 }

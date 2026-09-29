@@ -58,7 +58,10 @@ internal fun GameSettings(prefs: Preferences, update: (Preferences) -> Unit, bac
                     }
                 }
             }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            io.github.sbshrey.tambola.game.updates.UpdateSettingsButton()
             TextButton(onClick = { privacy = true }, modifier = Modifier.heightIn(min = 48.dp).testTag("open-game-data")) { Text(words(R.string.privacy_open)) }
+            }
         }
       }
       if (privacy) GameDataDialog { privacy = false }

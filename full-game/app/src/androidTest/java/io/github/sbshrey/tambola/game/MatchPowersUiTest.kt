@@ -18,6 +18,32 @@ import java.util.Random
 class MatchPowersUiTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
 
+    @Test fun powerPickerExplainsUnavailableTicketsAndUpdatesAfterAWin() {
+        val round = Round.create(listOf(Player("me", "Player123456")),
+            RoundSettings(ticketsPerPlayer = 6), Random(27)).start()
+        val hand = round.tickets
+        var powers by mutableStateOf(MatchPowers(
+            inventory = listOf(MatchPower.PRIZE_BONUS),
+            discarded = setOf(hand[0].id),
+            used = mapOf(hand[1].id to setOf(MatchPower.PRIZE_BONUS), hand[2].id to setOf(MatchPower.PRIZE_BONUS)),
+            armedBonus = setOf(hand[1].id)))
+        var activated: String? = null
+        compose.setContent { TambolaTheme {
+            PowerDock(round.toTable().copy(powers = powers), true, false) { ticket, _ -> activated = ticket }
+        } }
+        compose.onNodeWithTag("match-power-PRIZE_BONUS").performClick()
+        compose.onNodeWithTag("use-power-ticket-1").performScrollTo().assertIsNotEnabled()
+            .assertTextEquals("Ticket 1 · discarded")
+        compose.onNodeWithTag("use-power-ticket-2").performScrollTo().assertIsNotEnabled()
+            .assertTextEquals("Ticket 2 · bonus ready for next win")
+        compose.runOnIdle { powers = powers.won(hand[1].id, Prize.EARLY_FIVE) }
+        compose.onNodeWithTag("use-power-ticket-2").assertTextEquals("Ticket 2 · already used this round")
+        compose.onNodeWithTag("use-power-ticket-3").performScrollTo().assertIsNotEnabled()
+            .assertTextEquals("Ticket 3 · already used this round")
+        compose.onNodeWithTag("use-power-ticket-6").performScrollTo().assertIsEnabled().performClick()
+        assertEquals(hand[5].id, activated)
+    }
+
     @Test fun powerActivationAndDiscardedTicketsKeepOtherTicketPlayable() {
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         val round = Round.create(listOf(Player("me", "Mira"), Player("peer", "Noor")),

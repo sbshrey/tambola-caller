@@ -20,6 +20,28 @@ class MatchPowersServerTest : PostgresTest() {
     private fun command(actor: GuestCredentials, code: String, action: RoomAction) = service.command(actor.token, code,
         CommandRequest(id(), service.read(actor.token, code).snapshot.revision, action)).snapshot
     private fun next(code: String) { now.set(requireNotNull(stored(code).nextDrawAt)); service.tick() }
+
+    @Test fun `friend mode rejection never charges and corrected durable request charges once`() {
+        for (power in listOf(false, true)) {
+            val host = guest("Host"); val joiner = guest("Joiner")
+            val room = service.match(host.token, MatchRequest(id(), 2, true, rulesVersion = 2, powersEnabled = power)).snapshot
+            val before = service.wallet(joiner.token)
+            val rejected = MatchRequest(id(), 3, true, room.code, rulesVersion = 2, powersEnabled = !power)
+            assertEquals("power_room_mismatch", assertThrows(ApiFailure::class.java) { service.match(joiner.token, rejected) }.code)
+            assertEquals(before, service.wallet(joiner.token))
+            assertEquals(1, service.read(host.token, room.code).snapshot.members.size)
+            database.transaction { c ->
+                assertEquals(0, c.query("SELECT count(*) FROM match_receipts WHERE actor = ? AND command_id = ?", joiner.playerId, rejected.id) { it.getInt(1) }.single())
+            }
+            val replacement = rejected.copy(id = id(), powersEnabled = power)
+            val accepted = service.match(joiner.token, replacement)
+            assertEquals(before.balance - 300, accepted.snapshot.wallet!!.balance)
+            service = RoomService(database, now::get)
+            assertEquals(accepted, service.match(joiner.token, replacement))
+            assertEquals(before.balance - 300, service.wallet(joiner.token).balance)
+            assertEquals(2, service.read(host.token, room.code).snapshot.members.size)
+        }
+    }
     private fun friends(tickets: Int = 2): Triple<GuestCredentials, GuestCredentials, String> {
         val a = guest("Mira"); val b = guest("Noor")
         val room = service.match(a.token, MatchRequest(id(), tickets, friendTable = true, rulesVersion = 2, powersEnabled = true)).snapshot

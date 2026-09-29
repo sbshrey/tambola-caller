@@ -27,6 +27,7 @@ import io.github.sbshrey.tambola.game.ui.TambolaTheme
 import io.github.sbshrey.tambola.game.audio.GameAudio
 
 class MainActivity : AppCompatActivity() {
+    private val updates: io.github.sbshrey.tambola.game.updates.UpdateViewModel by viewModels()
     private val model: GameViewModel by viewModels()
     private val online: OnlineViewModel by viewModels()
     private val invitations: RoomInviteViewModel by viewModels()
@@ -84,8 +85,17 @@ class MainActivity : AppCompatActivity() {
                     navigationBarStyle = if (gameLobby) SystemBarStyle.dark(android.graphics.Color.rgb(25, 22, 47)) else if (dark) SystemBarStyle.dark(darkBar) else SystemBarStyle.light(lightBar, darkBar),
                 )
             }
-            CompositionLocalProvider(LocalRewardedAds provides ads) {
-                TambolaTheme(dark) { TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss) }
+            val updateEligible = !state.loading && !onlineState.loading && !state.saving &&
+                state.screen in setOf(Screen.HOME, Screen.ONLINE, Screen.SETTINGS) &&
+                state.round?.status != RoundStatus.PLAYING &&
+                onlineState.room?.phase !in setOf(io.github.sbshrey.tambola.protocol.RoomPhase.LOBBY, io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE) &&
+                !onlineState.busy && !onlineState.pending && !onlineState.adActive && inviteState.code == null
+            CompositionLocalProvider(LocalRewardedAds provides ads,
+                io.github.sbshrey.tambola.game.updates.LocalAppUpdates provides io.github.sbshrey.tambola.game.updates.UpdateControls(updates, updateEligible)) {
+                TambolaTheme(dark) {
+                    TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss)
+                    io.github.sbshrey.tambola.game.updates.UpdateHost(updates, updateEligible, this)
+                }
             }
         }
     }

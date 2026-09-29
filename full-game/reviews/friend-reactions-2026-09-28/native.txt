@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.FriendReactionsUiTest:....
+
+Time: 13.196
+
+OK (4 tests)
+
+

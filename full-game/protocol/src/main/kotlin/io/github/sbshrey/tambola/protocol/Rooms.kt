@@ -84,6 +84,9 @@ val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class CommandRequest(val id: String, val expectedRevision: Long, val action: RoomAction)
 @Serializable sealed class RoomAction {
+    @Serializable @SerialName("react") data class React(val roundId: String, val reaction: FriendReaction) : RoomAction() {
+        init { require(roundId.length in 1..64) }
+    }
     @Serializable @SerialName("mark") data class Mark(val roundId: String, val ticketId: String, val number: Int) : RoomAction() {
         init { require(roundId.length in 1..64 && ticketId.length in 1..100 && number in 1..90) }
     }

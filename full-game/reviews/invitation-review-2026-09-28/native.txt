@@ -1,0 +1,71 @@
+
+io.github.sbshrey.tambola.game.FriendInviteDialogTest:
+Error in englishLargeTextRetainsTicketChoiceAndConfirmation(io.github.sbshrey.tambola.game.FriendInviteDialogTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review$default(FriendInviteDialogTest.kt:35)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.englishLargeTextRetainsTicketChoiceAndConfirmation(FriendInviteDialogTest.kt:31)
+
+Error in hindiLargeTextRetainsTicketChoiceAndConfirmation(io.github.sbshrey.tambola.game.FriendInviteDialogTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review$default(FriendInviteDialogTest.kt:35)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.hindiLargeTextRetainsTicketChoiceAndConfirmation(FriendInviteDialogTest.kt:30)
+
+Error in hindiPortraitDoesNotScroll(io.github.sbshrey.tambola.game.FriendInviteDialogTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.hindiPortraitDoesNotScroll(FriendInviteDialogTest.kt:33)
+
+Error in openingCostsNothingAndOnlyExplicitConfirmationBuysSelectedTickets(io.github.sbshrey.tambola.game.FriendInviteDialogTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review$default(FriendInviteDialogTest.kt:35)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.openingCostsNothingAndOnlyExplicitConfirmationBuysSelectedTickets(FriendInviteDialogTest.kt:29)
+
+Error in englishPortraitDoesNotScroll(io.github.sbshrey.tambola.game.FriendInviteDialogTest):
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.englishPortraitDoesNotScroll(FriendInviteDialogTest.kt:32)
+..
+
+Time: 35.599
+There were 5 failures:
+1) englishLargeTextRetainsTicketChoiceAndConfirmation(io.github.sbshrey.tambola.game.FriendInviteDialogTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review$default(FriendInviteDialogTest.kt:35)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.englishLargeTextRetainsTicketChoiceAndConfirmation(FriendInviteDialogTest.kt:31)
+2) hindiLargeTextRetainsTicketChoiceAndConfirmation(io.github.sbshrey.tambola.game.FriendInviteDialogTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review$default(FriendInviteDialogTest.kt:35)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.hindiLargeTextRetainsTicketChoiceAndConfirmation(FriendInviteDialogTest.kt:30)
+3) hindiPortraitDoesNotScroll(io.github.sbshrey.tambola.game.FriendInviteDialogTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.hindiPortraitDoesNotScroll(FriendInviteDialogTest.kt:33)
+4) openingCostsNothingAndOnlyExplicitConfirmationBuysSelectedTickets(io.github.sbshrey.tambola.game.FriendInviteDialogTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review$default(FriendInviteDialogTest.kt:35)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.openingCostsNothingAndOnlyExplicitConfirmationBuysSelectedTickets(FriendInviteDialogTest.kt:29)
+5) englishPortraitDoesNotScroll(io.github.sbshrey.tambola.game.FriendInviteDialogTest)
+java.lang.IllegalArgumentException: Failed requirement.
+	at io.github.sbshrey.tambola.game.TestUiKt.captureTestScreen(TestUi.kt:46)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.review(FriendInviteDialogTest.kt:60)
+	at io.github.sbshrey.tambola.game.FriendInviteDialogTest.englishPortraitDoesNotScroll(FriendInviteDialogTest.kt:32)
+
+FAILURES!!!
+Tests run: 7,  Failures: 5
+
+

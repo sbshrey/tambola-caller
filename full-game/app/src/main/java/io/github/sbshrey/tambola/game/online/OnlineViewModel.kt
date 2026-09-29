@@ -57,6 +57,10 @@ data class OnlineUiState(
     val notice: UiMessage? = null,
     val winMoment: WinMoment? = null,
     val claimMessage: UiMessage? = null,
+    val reactions: ReactionSnapshot? = null,
+    val reactionClock: ServerTime? = null,
+    val reactionSending: Boolean = false,
+    val reactionNotice: UiMessage? = null,
 )
 
 class OnlineViewModel(application: Application) : AndroidViewModel(application) {
@@ -72,6 +76,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private var stream: Job? = null
     private var operation: Job? = null
     private var walletJob: Job? = null
+    private var reactionRead: Job? = null
+    private var reactionSend: Job? = null
+    private var reactionVisibleAfter = Long.MAX_VALUE
     private var preferences = Preferences()
     private val audio = CallAudio(application) { mutable.update { it.copy(error = UiMessage(R.string.error_online_recording)) } }
     private val sessions = api?.let { transport -> DeviceSessions(transport, { saved }) { player, transform ->
@@ -109,6 +116,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             preferredTickets = value?.ticketPreference() ?: 3, serverTime = api?.serverTime,
             badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null,
             deletingProfile = value?.pending is PendingOperation.DeleteProfile,
+            reactions = it.reactions.takeIf { snapshot -> snapshot?.roomId == value?.room?.roomId && snapshot?.roundId == value?.room?.round?.id && value?.room?.phase == RoomPhase.ACTIVE },
+            reactionClock = it.reactionClock.takeIf { _ -> it.reactions?.roomId == value?.room?.roomId && it.reactions?.roundId == value?.room?.round?.id && value?.room?.phase == RoomPhase.ACTIVE },
+            reactionSending = it.reactionSending && it.room?.roomId == value?.room?.roomId,
+            reactionNotice = it.reactionNotice.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id },
             claimMessage = it.claimMessage?.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id },
             winMoment = it.winMoment?.takeIf { _ -> it.room?.round?.id == value?.room?.round?.id }
                 ?.refreshPlayers(value?.room?.round?.players.orEmpty())) }
@@ -135,8 +146,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         if (active == value) return
         active = value
         if (value) { connect(); refreshWallet() } else {
-            stream?.cancel(); stream = null; audio.stop()
-            mutable.update { it.copy(connection = if (saved?.room == null) Connection.IDLE else Connection.SUSPENDED, winMoment = null) }
+            stream?.cancel(); stream = null; reactionRead?.cancel(); reactionSend?.cancel(); audio.stop()
+            mutable.update { it.copy(connection = if (saved?.room == null) Connection.IDLE else Connection.SUSPENDED,
+                winMoment = null, reactions = null, reactionClock = null, reactionSending = false, reactionNotice = null) }
         }
     }
     fun clearError() { mutable.update { it.copy(error = null) } }
@@ -301,7 +313,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             finally { mutable.update { it.copy(busy = false) }; connect() }
         }
     }
-    private suspend fun performPending(readyRetries: Int = 3) {
+    private suspend fun performPending(readyRetries: Int = 3, friendModeRetry: Boolean = true) {
         val current = saved ?: return
         val pending = current.pending ?: return
         val api = api ?: return
@@ -348,6 +360,18 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
         } catch (error: RoomApiFailure) {
+            val friendJoin = if (friendModeRetry) (pending as? PendingOperation.Match)?.followFriendMode(error, UUID.randomUUID().toString()) else null
+            if (friendJoin != null) {
+                val replaced = mutex.withLock {
+                    val latest = saved ?: return@withLock false
+                    if (latest.credentials.playerId != current.credentials.playerId || latest.pending != pending) return@withLock false
+                    // The server definitively rejected the old mode without charging.
+                    // Persist the replacement before sending it, including across process death.
+                    persist(latest.withPending(friendJoin))
+                    true
+                }
+                if (replaced) { performPending(readyRetries, friendModeRetry = false); return }
+            }
             if (error.status == 401 && pending == PendingOperation.Logout) {
                 mutex.withLock { persist(null) }; stream?.cancel(); stream = null
                 mutable.update { it.copy(connection = Connection.IDLE) }; return
@@ -396,6 +420,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         if (error is RoomStreamClosed) emit(authorized { api.read(it, room.code) })
                         throw error
                     }.collect { update ->
+                        val firstSnapshot = !received
+                        val newRound = saved?.room?.round?.id != update.snapshot.round?.id
+                        if (firstSnapshot || newRound) reactionVisibleAfter = update.snapshot.serverTime
                         mutex.withLock {
                             val latest = saved ?: return@withLock
                             if (latest.room?.roomId != room.roomId) return@withLock
@@ -405,6 +432,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                             // Silent on first snapshot and catch-up. Explicit "Hear again" remains available.
                             announceAccepted(latest, accepted)
                             received = true; attempts = 0; authRetried = false
+                        }
+                        if (firstSnapshot || mutable.value.reactions != null || update.events.any { it.type == "reacted" || it.type == "started" }) {
+                            refreshReactions(show = !firstSnapshot && !update.resyncRequired)
                         }
                     }
                 } catch (error: CancellationException) { throw error }
@@ -453,12 +483,57 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val moment = if (accepted.liveAwards) accepted.saved.room?.newWinMoment(previous.room) else null
         if (moment != null) mutable.update { it.copy(winMoment = moment) }
         accepted.announcement?.let { number ->
-            mutable.update { it.copy(claimMessage = null) }
+            mutable.update { it.copy(claimMessage = null, reactionNotice = null) }
             audio.play(number, preferences.language, celebration = moment != null)
         }
         if (accepted.announcement == null && moment != null) audio.effect(SoundCue.WIN)
         if (moment != null) audio.prizes(moment, preferences.language)
         if (accepted.announcement == null && moment == null && accepted.saved.marks != previous.marks) audio.effect(SoundCue.MARK)
+    }
+    private fun refreshReactions(show: Boolean) {
+        val session = saved ?: return
+        val room = session.room ?: return
+        if (!active || room.coins?.friendTable != true || room.phase != RoomPhase.ACTIVE) return
+        reactionRead?.cancel()
+        reactionRead = viewModelScope.launch {
+            try {
+                val snapshot = authorized { requireNotNull(api).reactions(it, room.code) }
+                if (!sameReactionRoom(session)) return@launch
+                snapshot?.validateFor(requireNotNull(saved?.room))
+                mutable.update { it.copy(reactionClock = snapshot?.let { value -> ServerTime(value.serverTime, System.nanoTime()) }, reactions = snapshot?.let { value -> value.copy(reactions =
+                    if (show) value.reactions.filter { reaction -> reaction.at > reactionVisibleAfter } else emptyList()) }) }
+            } catch (error: CancellationException) { throw error }
+            catch (_: Exception) { /* Optional social updates must not suspend gameplay. */ }
+        }
+    }
+    private fun sameReactionRoom(session: OnlineSaved): Boolean = active &&
+        mutable.value.connection == Connection.LIVE && !mutable.value.deletingProfile &&
+        saved?.credentials?.playerId == session.credentials.playerId && saved?.room?.roomId == session.room?.roomId &&
+        saved?.room?.round?.id == session.room?.round?.id && saved?.room?.phase == RoomPhase.ACTIVE
+
+    fun react(kind: FriendReaction) {
+        val session = saved ?: return
+        val room = session.room ?: return
+        val game = room.round ?: return
+        val ui = mutable.value
+        if (!sameReactionRoom(session) || ui.reactions == null || ui.reactionSending || ui.busy || ui.pending || ui.storageFailure || ui.sessionExpired) return
+        val request = CommandRequest(UUID.randomUUID().toString(), room.revision, RoomAction.React(game.id, kind))
+        mutable.update { it.copy(reactionSending = true, reactionNotice = null) }
+        reactionSend = viewModelScope.launch {
+            try {
+                // No optimistic message: only the authenticated server event is displayed.
+                authorized { requireNotNull(api).react(it, room.code, request) }
+                if (sameReactionRoom(session)) refreshReactions(show = true)
+            } catch (error: CancellationException) { throw error }
+            catch (_: Exception) {
+                if (sameReactionRoom(session)) {
+                    mutable.update { it.copy(reactionNotice = UiMessage(R.string.reaction_not_sent)) }
+                    refreshReactions(show = false)
+                }
+            } finally {
+                if (saved?.room?.roomId == room.roomId) mutable.update { it.copy(reactionSending = false) }
+            }
+        }
     }
     fun reconnect() { stream?.cancel(); stream = null; connect() }
     fun mark(ticketId: String, number: Int) {

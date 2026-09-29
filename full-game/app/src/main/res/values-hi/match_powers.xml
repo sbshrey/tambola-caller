@@ -13,6 +13,10 @@
     <string name="power_active">पावर चालू है।</string>
     <string name="power_progress">%1$d/5 सही\nमुफ़्त पावर</string>
     <string name="power_use_ticket">टिकट %1$d पर इस्तेमाल करें</string>
+    <string name="power_ticket_discarded">टिकट %1$d · दौर से बाहर</string>
+    <string name="power_ticket_armed">टिकट %1$d · अगली जीत के लिए बोनस तैयार</string>
+    <string name="power_ticket_used">टिकट %1$d · इस दौर में इस्तेमाल हो चुका है</string>
+    <string name="power_ticket_empty">टिकट %1$d · इस्तेमाल के लिए यह पावर कमाएँ</string>
     <string name="power_auto_remaining">टिकट %1$d · %2$d सेकंड बाकी</string>
     <string name="power_shield_detail">शील्ड एक गलत इनाम दावा माफ़ करती है। हर टिकट को एक दौर में एक बार बचा सकती है। उपलब्ध शील्ड न होने पर गलत दावे वाला टिकट बाहर हो जाता है; पहले की जीत मान्य रहती है।</string>
     <string name="power_auto_detail">ऑटो-डैब एक टिकट पर पहले और नए पुकारे नंबरों को 15 सेकंड तक निशान लगाती है। हर टिकट पर एक बार। अपने आप लगे निशानों से पावर नहीं मिलती।</string>

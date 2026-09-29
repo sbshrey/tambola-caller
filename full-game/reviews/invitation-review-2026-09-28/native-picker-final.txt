@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.PrizePickerUiTest:........
+
+Time: 30.626
+
+OK (8 tests)
+
+

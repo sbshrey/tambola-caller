@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -55,23 +56,23 @@ class FriendConnectionUiTest {
             room = room, wallet = room.wallet, connection = Connection.LIVE))
         var retries = 0
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { CoinLobby(state, model, {}, {}, {}, reducedMotion = true, reconnect = { retries++ }) }
             }
         }
-        compose.onNodeWithTag("friend-start").performScrollTo().assertIsDisplayed().assertIsEnabled()
+        compose.onNodeWithTag("friend-start").assertIsDisplayed().assertIsEnabled()
         val before = compose.onNodeWithTag("friend-waiting").getUnclippedBoundsInRoot()
         val label = "$language-${if (landscape) "landscape" else "portrait"}"
         captureTestScreen("friend-connection-live-$label")
         listOf(Connection.CONNECTING, Connection.RECONNECTING, Connection.SUSPENDED).forEachIndexed { index, connection ->
             compose.runOnIdle { state = state.copy(connection = connection) }
-            compose.onNodeWithTag("friend-start").performScrollTo().assertIsDisplayed().assertIsNotEnabled()
+            compose.onNodeWithTag("friend-start").assertIsDisplayed().assertIsNotEnabled()
                 .assertTextEquals(words(R.string.friend_wait_connection))
             val after = compose.onNodeWithTag("friend-waiting").getUnclippedBoundsInRoot()
             assertEquals("A disconnected table must keep its width", (before.right - before.left).value, (after.right - after.left).value, .5f)
             compose.onNodeWithTag("lobby-ticket-panel").assertDoesNotExist()
-            val copy = compose.onNodeWithTag("waiting-connection-copy").performScrollTo().assertIsDisplayed()
+            val copy = compose.onNodeWithTag("waiting-connection-copy").assertIsDisplayed()
             val expected = when (connection) {
                 Connection.CONNECTING -> R.string.lobby_table_connecting
                 Connection.RECONNECTING -> R.string.lobby_table_reconnecting
@@ -81,7 +82,7 @@ class FriendConnectionUiTest {
             val layouts = mutableListOf<TextLayoutResult>()
             copy.performSemanticsAction(SemanticsActions.GetTextLayoutResult) { assertTrue(it(layouts)) }
             assertFalse("Connection message must fit without clipping", layouts.single().hasVisualOverflow)
-            val button = compose.onNodeWithTag("waiting-reconnect").performScrollTo().assertIsDisplayed().assertIsEnabled()
+            val button = compose.onNodeWithTag("waiting-reconnect").assertIsDisplayed().assertIsEnabled()
             val target = button.fetchSemanticsNode().boundsInRoot
             val requiredHeight = kotlin.math.round(48f * compose.activity.resources.displayMetrics.density)
             assertTrue("Reconnect target ${target.height}px must meet ${requiredHeight}px", target.height >= requiredHeight)
@@ -91,16 +92,16 @@ class FriendConnectionUiTest {
         }
         // A pending command still exposes its exact-retry flow; connection retry cannot bypass it.
         compose.runOnIdle { state = state.copy(pending = true) }
-        compose.onNodeWithTag("coin-retry").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("coin-retry").assertIsDisplayed()
         compose.onNodeWithTag("waiting-reconnect").assertIsNotEnabled()
         compose.runOnIdle { state = state.copy(pending = false, storageFailure = true) }
-        compose.onNodeWithText(words(R.string.ui_reset_online_data)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.ui_reset_online_data)).assertIsDisplayed()
         compose.onNodeWithTag("waiting-reconnect").assertIsNotEnabled()
         compose.runOnIdle { state = state.copy(storageFailure = false, sessionExpired = true) }
-        compose.onNodeWithText(words(R.string.ui_reset_online_data)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.ui_reset_online_data)).assertIsDisplayed()
         compose.onNodeWithTag("waiting-reconnect").assertIsNotEnabled()
         compose.runOnIdle { state = state.copy(connection = Connection.LIVE, sessionExpired = false) }
-        compose.onNodeWithTag("friend-start").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("friend-start").assertIsEnabled()
         compose.onNodeWithTag("waiting-connection").assertDoesNotExist()
         compose.onNodeWithTag("friend-code").assertTextEquals("ABCD 2345")
         assertEquals(1200L, state.wallet!!.balance)

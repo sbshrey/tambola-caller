@@ -1,0 +1,10 @@
+
+io.github.sbshrey.tambola.game.FriendModeJoinOnlineTest:..
+io.github.sbshrey.tambola.game.CoinLobbyTest:.
+io.github.sbshrey.tambola.game.FriendConnectionUiTest:....
+
+Time: 42.601
+
+OK (7 tests)
+
+

@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.game.FriendEntryUiTest:....
+
+Time: 45.781
+
+OK (4 tests)
+
+

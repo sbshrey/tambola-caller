@@ -1,0 +1,19 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:..
+Error in fiftyFriendsKeepStartAndCancelOnScreen(io.github.sbshrey.tambola.game.CoinLobbyTest):
+java.lang.AssertionError: Assert failed: The component with TestTag = 'cancel-match' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.fiftyFriendsKeepStartAndCancelOnScreen(CoinLobbyTest.kt:66)
+...............
+
+Time: 68.669
+There was 1 failure:
+1) fiftyFriendsKeepStartAndCancelOnScreen(io.github.sbshrey.tambola.game.CoinLobbyTest)
+java.lang.AssertionError: Assert failed: The component with TestTag = 'cancel-match' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.CoinLobbyTest.fiftyFriendsKeepStartAndCancelOnScreen(CoinLobbyTest.kt:66)
+
+FAILURES!!!
+Tests run: 18,  Failures: 1
+
+

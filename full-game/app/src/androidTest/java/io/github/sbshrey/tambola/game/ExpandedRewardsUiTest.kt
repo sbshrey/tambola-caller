@@ -35,7 +35,7 @@ class ExpandedRewardsUiTest {
         val state = OnlineUiState(loading = false, available = true, name = "Mira", playerId = "fixture",
             wallet = wallet, loginRewards = LoginRewards(wallet, 1, 500, 86_400_000, 48_500, true))
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { CoinLobby(state, model, {}, {}, {}, reducedMotion = true) }
             }
@@ -45,11 +45,11 @@ class ExpandedRewardsUiTest {
         compose.onNodeWithText(words(R.string.daily_coins_day, 7, 5000L)).performScrollTo().assertIsDisplayed()
         captureTestScreen("rewards-daily-$language")
         compose.onNodeWithText(words(R.string.ui_got_it)).performClick()
-        compose.onNodeWithTag("choose-powerup").performScrollTo().performClick()
-        compose.onNodeWithTag("powerup-TICKET_INSURANCE").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithTag("powerup-PRIZE_BOOST").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("choose-powerup").assertIsDisplayed().performClick()
+        compose.onNodeWithText(words(R.string.power_drop_rules)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.power_bonus_detail)).performScrollTo().assertIsDisplayed()
         captureTestScreen("rewards-powerups-$language")
-        compose.onNodeWithTag("powerup-PRIZE_BOOST").performClick()
-        compose.runOnIdle { assertEquals(PowerUp.PRIZE_BOOST, model.state.value.chosenPowerUp) }
+        compose.onNodeWithText(words(R.string.ui_back_to_game)).performClick()
+        compose.onNodeWithTag("coin-play").assertIsDisplayed()
     }
 }

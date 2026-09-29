@@ -57,12 +57,13 @@ fun PlayArena(
     markNumber: ((String, Int) -> Unit)? = null, claim: ((ClaimSelection) -> Unit)? = null,
     claimMessage: String? = null, claimEnabled: Boolean = enabled, expandedFooter: Boolean = false,
     usePower: ((String, MatchPower) -> Unit)? = null,
+    reactionMessage: String? = null,
     footer: @Composable () -> Unit,
 ) {
     if (table.settings.manualClaims && markNumber != null && claim != null) {
         MaterialTheme(colorScheme = if (table.coins != null) GameNightPalette.colors else MaterialTheme.colorScheme) {
             ClaimArena(table, ownerId, preferences, status, markNumber, claim, claimMessage, repeatCall, back,
-                win, dismissWin, enabled, claimEnabled, expandedFooter, extraMenu, usePower, footer)
+                win, dismissWin, enabled, claimEnabled, expandedFooter, extraMenu, usePower, reactionMessage, footer)
         }
         return
     }
@@ -489,8 +490,12 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
         state.winMoment, model::dismissWin, enabled = if (table.powers != null) enabled else !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
         markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled,
         usePower = model::usePower,
+        reactionMessage = if (state.connection == Connection.LIVE) state.reactionNotice?.let(words::message) ?: friendReactionCaption(state.reactions, room, state.reactionClock) else null,
         expandedFooter = recovering, extraMenu = { close ->
             DropdownMenuItem(text = { Text(words(R.string.play_room)) }, onClick = { close(); roomDetails() })
+            state.reactions?.takeIf { it.roomId == room.roomId && it.roundId == room.round?.id && room.coins?.friendTable == true && !table.finished }?.let {
+                state.reactionClock?.let { clock -> FriendReactionMenu(it, enabled, state.reactionSending, clock, close, model::react) }
+            }
         }) {
         Row(Modifier.fillMaxWidth().heightIn(min = if (room.options.coinGame) 56.dp else 52.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             if (table.finished) ArenaPrimaryAction(words(R.string.ui_see_round_results)) { roomDetails() }

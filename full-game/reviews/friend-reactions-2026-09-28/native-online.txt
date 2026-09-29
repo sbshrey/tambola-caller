@@ -1,0 +1,43 @@
+
+io.github.sbshrey.tambola.game.FriendReactionsOnlineTest:
+Error in receiveSendExpireAndReconnectWithoutReplayingMessages(io.github.sbshrey.tambola.game.FriendReactionsOnlineTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 25000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:809)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:378)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest.until(FriendReactionsOnlineTest.kt:23)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest.access$until(FriendReactionsOnlineTest.kt:18)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest$receiveSendExpireAndReconnectWithoutReplayingMessages$1.invokeSuspend(FriendReactionsOnlineTest.kt:40)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest.receiveSendExpireAndReconnectWithoutReplayingMessages(FriendReactionsOnlineTest.kt:25)
+
+
+Time: 32.669
+There was 1 failure:
+1) receiveSendExpireAndReconnectWithoutReplayingMessages(io.github.sbshrey.tambola.game.FriendReactionsOnlineTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 25000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:809)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:378)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest.until(FriendReactionsOnlineTest.kt:23)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest.access$until(FriendReactionsOnlineTest.kt:18)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest$receiveSendExpireAndReconnectWithoutReplayingMessages$1.invokeSuspend(FriendReactionsOnlineTest.kt:40)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source:1)
+	at io.github.sbshrey.tambola.game.FriendReactionsOnlineTest.receiveSendExpireAndReconnectWithoutReplayingMessages(FriendReactionsOnlineTest.kt:25)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

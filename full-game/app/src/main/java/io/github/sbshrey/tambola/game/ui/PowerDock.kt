@@ -9,10 +9,11 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.game.presentation.PowerTicketState
+import io.github.sbshrey.tambola.game.presentation.ticketState
 
 internal fun GameText.matchPowerName(power: MatchPower): String = this(when (power) {
     MatchPower.SHIELD -> R.string.power_shield
@@ -38,9 +39,10 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
         if (hapticsEnabled && powers.noticeSequence > previousNotice) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         previousNotice = powers.noticeSequence
     }
-    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("power-dock"), verticalAlignment = Alignment.CenterVertically) {
-        Text(words(R.string.power_progress, powers.correctMarks % 5), Modifier.weight(1f),
-            style = MaterialTheme.typography.labelSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+    FlowRow(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("power-dock"),
+        horizontalArrangement = Arrangement.SpaceBetween, itemVerticalAlignment = Alignment.CenterVertically) {
+        Text(words(R.string.power_progress, powers.correctMarks % 5),
+            style = MaterialTheme.typography.labelSmall)
         MatchPower.entries.forEach { power ->
             val count = powers.inventory.count { it == power }
             TextButton(onClick = { selected = power }, modifier = Modifier.sizeIn(minWidth = 56.dp, minHeight = 48.dp)
@@ -59,10 +61,17 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
         if (power != MatchPower.SHIELD) table.tickets.forEachIndexed { index, ticket ->
             val until = powers.autoUntil[ticket.id]
             val remaining by countdownSeconds(remainingCoinTime(until, table.serverTime, table.id))
-            val caption = if (power == MatchPower.AUTO_DAB && remaining > 0) words(R.string.power_auto_remaining, index + 1, remaining)
-                else words(R.string.power_use_ticket, index + 1)
+            val state = powers.ticketState(ticket.id, power, remaining)
+            val caption = when (state) {
+                PowerTicketState.ACTIVE -> words(R.string.power_auto_remaining, index + 1, remaining)
+                PowerTicketState.DISCARDED -> words(R.string.power_ticket_discarded, index + 1)
+                PowerTicketState.ARMED -> words(R.string.power_ticket_armed, index + 1)
+                PowerTicketState.USED -> words(R.string.power_ticket_used, index + 1)
+                PowerTicketState.EMPTY -> words(R.string.power_ticket_empty, index + 1)
+                PowerTicketState.AVAILABLE -> words(R.string.power_use_ticket, index + 1)
+            }
             OutlinedButton(onClick = { activate(ticket.id, power); selected = null }, modifier = Modifier.fillMaxWidth().testTag("use-power-ticket-${index + 1}"),
-                enabled = enabled && power in powers.inventory && ticket.id !in powers.discarded && power !in powers.used[ticket.id].orEmpty()) { Text(caption) }
+                enabled = enabled && !table.finished && state == PowerTicketState.AVAILABLE) { Text(caption) }
         }
         Text(words(R.string.power_drop_rules), style = MaterialTheme.typography.bodySmall)
     } }

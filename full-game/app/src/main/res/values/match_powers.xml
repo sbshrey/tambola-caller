@@ -13,6 +13,10 @@
     <string name="power_active">Power activated.</string>
     <string name="power_progress">%1$d/5 correct\nFree power</string>
     <string name="power_use_ticket">Use on ticket %1$d</string>
+    <string name="power_ticket_discarded">Ticket %1$d · discarded</string>
+    <string name="power_ticket_armed">Ticket %1$d · bonus ready for next win</string>
+    <string name="power_ticket_used">Ticket %1$d · already used this round</string>
+    <string name="power_ticket_empty">Ticket %1$d · earn this power to use it</string>
     <string name="power_auto_remaining">Ticket %1$d · %2$d seconds left</string>
     <string name="power_shield_detail">Shield automatically forgives one false prize claim. It can protect each ticket once per round. Without an available Shield, a false claim discards only that ticket; earlier wins remain valid.</string>
     <string name="power_auto_detail">Auto-Dab marks already called and newly called numbers on one ticket for 15 seconds. Use once per ticket. Automatic marks do not earn powers.</string>

@@ -10,8 +10,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.*
@@ -43,6 +45,61 @@ class CoinLobbyTest {
     @Test fun firstPlayAndPersonalizationKeepSixReadableChoices() = landing("en", 1f)
     @Test fun hindiLandingKeepsAllChoicesAndPlayVisibleAtLargeText() = landing("hi", 1.5f)
 
+    @Test fun noScrollEnglishPortraitAtDoubleText() = noScrollLanding("en", false)
+    @Test fun noScrollHindiPortraitAtDoubleText() = noScrollLanding("hi", false)
+    @Test fun noScrollEnglishLandscapeAtDoubleText() = noScrollLanding("en", true)
+    @Test fun noScrollHindiLandscapeAtDoubleText() = noScrollLanding("hi", true)
+
+    @Test fun fiftyFriendsKeepStartAndCancelOnScreen() {
+        val previous = finished()
+        val room = previous.copy(phase = RoomPhase.LOBBY, round = null,
+            options = previous.options.copy(capacity = 50),
+            members = (1..50).map { MemberView(if (it == 1) "a" else "p$it", "Player$it", 0, true, true) },
+            coins = previous.coins!!.copy(friendTable = true))
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        var state by mutableStateOf(OnlineUiState(loading = false, available = true, room = room, name = "Player1", playerId = "a", connection = Connection.LIVE))
+        compose.setContent { TambolaTheme {
+            CoinLobby(state, model, {}, {}, {}, reducedMotion = true)
+        } }
+        compose.onNodeWithTag("lobby-content").assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.VerticalScrollAxisRange))
+        compose.onNodeWithTag("friend-start").assertIsDisplayed().assertIsEnabled()
+        compose.onNodeWithTag("cancel-match").assertIsDisplayed().assertIsEnabled()
+        compose.onNodeWithTag("waiting-pool").assertIsDisplayed()
+        captureTestScreen("friend-waiting-fifty-final")
+        compose.onNodeWithTag("friend-players").performClick()
+        compose.onNodeWithText("Player50").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.ui_back_to_game)).performClick()
+        compose.runOnIdle { state = state.copy(pending = true) }
+        compose.onNodeWithTag("coin-retry").assertIsDisplayed()
+        compose.onNodeWithTag("waiting-connection").assertDoesNotExist()
+    }
+
+    private fun noScrollLanding(language: String, landscape: Boolean) {
+        compose.runOnUiThread { compose.activity.requestedOrientation = if (landscape) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
+        compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == if (landscape) Configuration.ORIENTATION_LANDSCAPE else Configuration.ORIENTATION_PORTRAIT }
+        val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)); fontScale = 2f }
+        val context = compose.activity.createConfigurationContext(config)
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        var purchased = 0
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
+                LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
+                TambolaTheme { CoinLobby(OnlineUiState(loading = false, available = true), model, { purchased = it }, {}, {}, reducedMotion = true) }
+            }
+        }
+        compose.onNodeWithTag("lobby-content").assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.VerticalScrollAxisRange))
+        val root = compose.onNodeWithTag("coin-lobby").getUnclippedBoundsInRoot()
+        ((1..6).map { "buy-tickets-$it" } + listOf("coin-play", "play-friends", "power-room-true", "power-room-false", "lobby-practice-disclosure")).forEach { tag ->
+            val node = compose.onNodeWithTag(tag).assertIsDisplayed()
+            val bounds = node.getUnclippedBoundsInRoot()
+            assertTrue("$tag must fit completely on screen", bounds.top >= root.top && bounds.bottom <= root.bottom && bounds.left >= root.left && bounds.right <= root.right)
+        }
+        compose.onNodeWithTag("buy-tickets-6").performClick()
+        compose.onNodeWithTag("coin-play").performClick()
+        assertEquals(6, purchased)
+        captureTestScreen("no-scroll-$language-${if (landscape) "landscape" else "portrait"}")
+    }
+
     private fun landing(language: String, scale: Float) {
         val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)); fontScale = scale }
         val context = compose.activity.createConfigurationContext(config)
@@ -51,11 +108,12 @@ class CoinLobbyTest {
         var state by mutableStateOf(OnlineUiState(loading = false, available = true))
         var selected = 0; var purchases = 0
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { CoinLobby(state, model, { selected = it; purchases++ }, {}, {}, reducedMotion = true) }
             }
         }
+        compose.onNodeWithTag("lobby-content").assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.VerticalScrollAxisRange))
         compose.onNodeWithTag("lobby-welcome-heading").assertIsDisplayed()
         compose.onNodeWithTag("lobby-player-name").assertDoesNotExist()
         (1..6).forEach {
@@ -140,30 +198,24 @@ class CoinLobbyTest {
         }), coins = previous.coins!!.copy(prizes = plan.prizes, pool = 2400, settledWinnings = 2400, returnedCoins = 0, friendTable = true))
         var purchased = 0
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { CoinLobby(OnlineUiState(loading = false, available = true, name = "You", playerId = "a",
                     room = result, preferredTickets = 6, wallet = WalletView(3300, 1, 0)), model, {}, {}, {}, replayFriends = { purchased = it }) }
             }
         }
-        if (scale == 1f) {
-            val viewport = compose.onNodeWithTag("lobby-scroll").getUnclippedBoundsInRoot()
-            plan.prizes.forEach { slot ->
-                val amount = compose.onNodeWithTag("coin-prize-value-${slot.prize.name}").getUnclippedBoundsInRoot()
-                assertTrue("${slot.prize} payout must fit in the initial normal-text viewport",
-                    amount.top >= viewport.top && amount.bottom <= viewport.bottom)
-            }
-        }
+        compose.onNodeWithTag("result-details").assertIsDisplayed().performClick()
         plan.prizes.forEach { slot ->
             assertFullText("coin-prize-title-${slot.prize.name}", "✓ " + words.prizeTitle(slot.prize))
             assertFullText("coin-prize-value-${slot.prize.name}", slot.coins.toString())
         }
-        compose.onNodeWithTag("coin-winnings").performScrollTo().assertTextEquals(words(R.string.coin_won, 2400L))
+        compose.onNodeWithText(words(R.string.ui_back_to_game)).performClick()
+        compose.onNodeWithTag("coin-winnings").assertTextEquals(words(R.string.coin_won, 2400L))
         captureTestScreen("complete-results-$language")
-        compose.onNodeWithTag("friend-replay").performScrollTo().assertIsDisplayed().performClick()
+        compose.onNodeWithTag("friend-replay").assertIsDisplayed().performClick()
         assertEquals(6, purchased)
-        compose.onNodeWithTag("coin-play").performScrollTo().assertIsEnabled()
-        compose.onNodeWithTag("play-friends").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("coin-play").assertIsEnabled()
+        compose.onNodeWithTag("play-friends").assertIsEnabled()
         captureTestScreen("complete-results-actions-$language")
     }
 
@@ -174,7 +226,7 @@ class CoinLobbyTest {
         val prizes = CoinPool(192).prizes
         var width by mutableStateOf(144.dp)
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
                 TambolaTheme {
                     Column(Modifier.width(width).verticalScroll(rememberScrollState())) {
@@ -218,25 +270,25 @@ class CoinLobbyTest {
             room = result, preferredTickets = 6, wallet = WalletView(350, 1, 0)))
         var replayTickets = 0; var quickTickets = 0
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { CoinLobby(state, model, { quickTickets = it }, {}, {}, replayFriends = { replayTickets = it }) }
             }
         }
-        compose.onNodeWithTag("buy-tickets-3").performScrollTo().assertIsSelected()
+        compose.onNodeWithTag("buy-tickets-3").assertIsSelected()
         compose.onNodeWithTag("buy-tickets-4").assertIsNotEnabled()
-        compose.onNodeWithTag("friend-replay").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("friend-replay").assertIsDisplayed()
             .assertTextEquals(words(R.string.friend_replay, 300L)).performClick()
         assertEquals(3, replayTickets); assertEquals(0, quickTickets)
         captureTestScreen("friends-results-$language")
-        compose.onNodeWithTag("coin-play").performScrollTo().assertIsEnabled().performClick()
+        compose.onNodeWithTag("coin-play").assertIsEnabled().performClick()
         assertEquals(3, quickTickets)
-        compose.onNodeWithTag("play-friends").performScrollTo().assertIsDisplayed().assertIsEnabled()
-            .assertTextEquals(words(R.string.friend_other_table))
+        compose.onNodeWithTag("play-friends").assertIsDisplayed().assertIsEnabled()
+            .assertTextEquals(words(R.string.lobby_friends_short))
         compose.runOnIdle { state = state.copy(pending = true) }
         compose.onNodeWithTag("friend-replay").assertDoesNotExist()
         compose.onNodeWithTag("coin-play").assertDoesNotExist()
-        compose.onNodeWithTag("coin-retry").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("coin-retry").assertIsDisplayed()
     }
 
     private fun results(language: String, scale: Float) {
@@ -251,17 +303,19 @@ class CoinLobbyTest {
         var state by mutableStateOf(OnlineUiState(loading = false, name = "You", playerId = "a",
             room = room, wallet = WalletView(1487, 1, 0), connection = Connection.LIVE))
         compose.setContent {
-            CompositionLocalProvider(LocalContext provides context, LocalConfiguration provides config,
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources, LocalConfiguration provides config,
                 LocalDensity provides Density(compose.activity.resources.displayMetrics.density, scale)) {
                 TambolaTheme { CoinLobby(state, model, { selected = it }, {}, {}) }
             }
         }
         compose.onNodeWithTag("coin-winnings").assertTextEquals(words(R.string.coin_won, 27L))
+        compose.onNodeWithTag("result-details").performClick()
         compose.onNodeWithTag("coin-prize-value-EARLY_FIVE").assertIsDisplayed().assertTextEquals("27")
         compose.onNodeWithTag("coin-prize-share-EARLY_FIVE").assertTextEquals(words(R.string.coin_shared))
         compose.onNodeWithTag("coin-prize-TOP_LINE").assertDoesNotExist()
         compose.onNodeWithTag("coin-prize-FULL_HOUSE").assertDoesNotExist()
-        compose.onNodeWithTag("coin-play").performScrollTo().assertIsEnabled()
+        compose.onNodeWithText(words(R.string.ui_back_to_game)).performClick()
+        compose.onNodeWithTag("coin-play").assertIsEnabled()
         captureTestScreen("coin-shared-results-$language")
         compose.onNodeWithTag("coin-play").performClick()
         assertEquals(3, selected)
@@ -272,9 +326,9 @@ class CoinLobbyTest {
             state = state.copy(room = room.copy(round = finishedRound.copy(awards = finishedRound.awards.filter { it.prize != Prize.EARLY_FIVE }),
                 coins = room.coins!!.copy(settledWinnings = 0)))
         }
-        compose.onNodeWithTag("coin-winnings").performScrollTo().assertTextEquals(words(R.string.coin_won, 0L))
+        compose.onNodeWithTag("coin-winnings").assertTextEquals(words(R.string.coin_won, 0L))
         compose.onNodeWithTag("coin-prize-EARLY_FIVE").assertDoesNotExist()
-        compose.onNodeWithTag("coin-play").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("coin-play").assertIsEnabled()
     }
 
     @Test fun queueCountdownEndsAndNewServerSnapshotStartsTheNextCountdown() {
@@ -297,19 +351,19 @@ class CoinLobbyTest {
             room = finished(), preferredTickets = 6, wallet = WalletView(1500, 1, 0)))
         var purchased = 0
         compose.setContent { TambolaTheme { if (shown) CoinLobby(state, model, { purchased = it }, {}, {}) } }
-        compose.onNodeWithTag("buy-tickets-6").performScrollTo().assertIsSelected()
+        compose.onNodeWithTag("buy-tickets-6").assertIsSelected()
         compose.runOnIdle { shown = false }
         compose.runOnIdle { shown = true }
-        compose.onNodeWithTag("buy-tickets-6").performScrollTo().assertIsSelected()
+        compose.onNodeWithTag("buy-tickets-6").assertIsSelected()
         compose.runOnIdle { state = state.copy(wallet = WalletView(230, 2, 0)) }
         compose.onNodeWithTag("buy-tickets-2").assertIsSelected().assertIsEnabled()
         compose.onNodeWithTag("buy-tickets-3").assertIsNotEnabled()
         compose.onNodeWithTag("buy-tickets-6").assertIsNotEnabled()
         val words = GameText(compose.activity.resources)
-        compose.onNodeWithTag("coin-play").performScrollTo().assertTextEquals(words(R.string.coin_play_again, 200L)).performClick()
+        compose.onNodeWithTag("coin-play").assertTextEquals(words(R.string.lobby_play_short)).performClick()
         assertEquals(2, purchased)
         captureTestScreen("coin-affordable-replay")
-        compose.onNodeWithTag("buy-tickets-1").performScrollTo().performClick()
+        compose.onNodeWithTag("buy-tickets-1").performClick()
         compose.runOnIdle { state = state.copy(wallet = WalletView(500, 3, 0)) }
         compose.onNodeWithTag("buy-tickets-1").assertIsSelected()
         compose.onNodeWithTag("buy-tickets-5").assertIsEnabled()
@@ -336,7 +390,7 @@ class CoinLobbyTest {
             room = finished(), wallet = WalletView(99, 2, 0), serverTime = ServerTime(500_000, System.nanoTime()))
         compose.setContent { TambolaTheme { CoinLobby(state, model, { fail("Must collect coins before buying") }, {}, {}) } }
         compose.onNodeWithTag("coin-play").assertDoesNotExist()
-        compose.onNodeWithTag("coin-refill").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("coin-refill").assertIsEnabled()
         (1..6).forEach { compose.onNodeWithTag("buy-tickets-$it").assertIsNotEnabled().assertIsNotSelected() }
         captureTestScreen("coin-free-refill")
     }

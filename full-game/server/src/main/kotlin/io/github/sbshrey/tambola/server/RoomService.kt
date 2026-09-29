@@ -449,6 +449,25 @@ class RoomService(
         }
     }
 
+    fun reactions(token: String, code: String): ReactionSnapshot {
+        authenticatedRate(token, "read", 300)
+        return database.transaction { connection ->
+            val guest = authenticate(connection, token)
+            val room = load(connection, code)
+            member(room, guest.id)
+            demand(room.friendTable, 409, "friends_only", "Reactions are for friends tables.")
+            val now = clock()
+            val roundId = room.round?.id
+            ReactionSnapshot(room.id, roundId, room.revision, now,
+                maxOf(room.reactions[guest.id]?.at?.plus(REACTION_COOLDOWN_MS) ?: now,
+                    room.reactions.values.maxOfOrNull { it.at + 1_000L } ?: now),
+                room.reactions.values.filter { reaction ->
+                    room.phase == RoomPhase.ACTIVE && reaction.roundId == roundId &&
+                        reaction.at <= now && now - reaction.at < REACTION_LIFETIME_MS && room.members.any { it.id == reaction.playerId }
+                }.sortedWith(compareBy<RoomReaction> { it.at }.thenBy { it.playerId }))
+        }
+    }
+
     fun command(token: String, code: String, request: CommandRequest): RoomUpdate {
         validId(request.id)
         demand(request.expectedRevision >= 0, 400, "invalid_revision", "Revision must be non-negative.")
@@ -468,7 +487,7 @@ class RoomService(
             demand(room.expiresAt > clock() && room.phase != RoomPhase.CLOSED, 410, "room_closed", "This room has closed or expired.")
             // A claim is tied to a round/call, not to unrelated readiness/presence or
             // another same-call winner. Future revisions are still invalid.
-            demand(room.revision == request.expectedRevision || ((request.action is RoomAction.Claim || request.action is RoomAction.Mark || request.action is RoomAction.UsePower) && request.expectedRevision < room.revision),
+            demand(room.revision == request.expectedRevision || ((request.action is RoomAction.Claim || request.action is RoomAction.Mark || request.action is RoomAction.UsePower || request.action is RoomAction.React) && request.expectedRevision < room.revision),
                 409, "stale_revision", "The room changed. Refresh before trying again.")
             val now = clock()
             room = room.copy(members = room.members.map { if (it.id == guest.id) it.copy(lastSeen = now, connected = true) else it })
@@ -543,9 +562,21 @@ class RoomService(
         fun host() = demand(room.hostId == actor, 403, "host_only", "Only the host can do that.")
         fun lobby() = demand(room.phase == RoomPhase.LOBBY, 409, "not_lobby", "Settings and membership are locked during a round.")
         fun active() = demand(room.phase == RoomPhase.ACTIVE, 409, "not_active", "There is no active round.")
-        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.Mark || action is RoomAction.UsePower || action is RoomAction.BuyTickets || action == RoomAction.Leave || (room.friendTable && action == RoomAction.Start),
+        if (room.options.coinGame) demand(action is RoomAction.Claim || action is RoomAction.Mark || action is RoomAction.UsePower || action is RoomAction.React || action is RoomAction.BuyTickets || action == RoomAction.Leave || (room.friendTable && action == RoomAction.Start),
             403, "automatic_coin_round", "Coin rounds are managed by the server.")
         return when (action) {
+            is RoomAction.React -> {
+                active()
+                demand(room.friendTable && room.round?.id == action.roundId && room.round.status == RoundStatus.PLAYING,
+                    409, "reaction_unavailable", "Reactions are available during a friends round.")
+                val previous = room.reactions[actor]
+                demand(previous == null || now - previous.at >= REACTION_COOLDOWN_MS,
+                    429, "reaction_wait", "Wait before sending another reaction.")
+                demand(room.reactions.values.all { now - it.at >= 1_000L },
+                    429, "reaction_wait", "Let the current reaction finish before sending another.")
+                room.copy(reactions = room.reactions.filterKeys { id -> room.members.any { it.id == id } } +
+                    (actor to RoomReaction(actor, action.roundId, action.reaction, now)))
+            }
             is RoomAction.Mark -> {
                 active()
                 val game = requireNotNull(room.round)
@@ -760,6 +791,7 @@ class RoomService(
         })
     }
     private fun actionName(action: RoomAction): String = when (action) {
+        is RoomAction.React -> "reacted"
         is RoomAction.Mark -> "marked"
         is RoomAction.UsePower -> "power_used"
         is RoomAction.BuyTickets -> "tickets_bought"

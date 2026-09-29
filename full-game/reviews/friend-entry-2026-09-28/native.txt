@@ -1,0 +1,44 @@
+
+io.github.sbshrey.tambola.game.FriendEntryUiTest:
+Error in englishPortrait(io.github.sbshrey.tambola.game.FriendEntryUiTest):
+java.lang.AssertionError: expected:<[null, ABCD2345]> but was:<[null]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.entry(FriendEntryUiTest.kt:57)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.englishPortrait(FriendEntryUiTest.kt:20)
+..
+Error in hindiPortrait(io.github.sbshrey.tambola.game.FriendEntryUiTest):
+java.lang.AssertionError: expected:<[null, ABCD2345]> but was:<[null]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.entry(FriendEntryUiTest.kt:57)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.hindiPortrait(FriendEntryUiTest.kt:22)
+
+
+Time: 29.266
+There were 2 failures:
+1) englishPortrait(io.github.sbshrey.tambola.game.FriendEntryUiTest)
+java.lang.AssertionError: expected:<[null, ABCD2345]> but was:<[null]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.entry(FriendEntryUiTest.kt:57)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.englishPortrait(FriendEntryUiTest.kt:20)
+2) hindiPortrait(io.github.sbshrey.tambola.game.FriendEntryUiTest)
+java.lang.AssertionError: expected:<[null, ABCD2345]> but was:<[null]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.entry(FriendEntryUiTest.kt:57)
+	at io.github.sbshrey.tambola.game.FriendEntryUiTest.hindiPortrait(FriendEntryUiTest.kt:22)
+
+FAILURES!!!
+Tests run: 4,  Failures: 2
+
+

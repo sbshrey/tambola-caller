@@ -1,0 +1,10 @@
+<resources>
+    <string name="reaction_title">Say something</string>
+    <string name="reaction_good_luck">Good luck!</string>
+    <string name="reaction_nice_win">Nice win!</string>
+    <string name="reaction_well_played">Well played!</string>
+    <string name="reaction_thanks">Thanks!</string>
+    <string name="reaction_from">%1$s: %2$s</string>
+    <string name="reaction_wait">Ready in %1$d seconds</string>
+    <string name="reaction_not_sent">Reaction not confirmed. Try again shortly.</string>
+</resources>

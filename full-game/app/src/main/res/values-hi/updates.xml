@@ -1,0 +1,18 @@
+<resources>
+    <string name="update_title">ऐप अपडेट</string>
+    <string name="update_check">अपडेट जाँचें</string>
+    <string name="update_after_game">खेल के बाद अपडेट करें</string>
+    <string name="update_checking">अपडेट जाँचे जा रहे हैं…</string>
+    <string name="update_available">नया संस्करण उपलब्ध है। अभी डाउनलोड करें या पहले खेलें।</string>
+    <string name="update_downloading">अपडेट डाउनलोड हो रहा है…</string>
+    <string name="update_ready">अपडेट तैयार है। Android इंस्टॉल करने की पुष्टि माँगेगा। आपकी सहेजी प्रोफ़ाइल इसी डिवाइस पर रहेगी।</string>
+    <string name="update_permission">Android सेटिंग में इस ऐप को अपडेट इंस्टॉल करने की अनुमति दें, फिर लौटकर अपडेट इंस्टॉल करें दबाएँ।</string>
+    <string name="update_current">आपके पास नवीनतम उपलब्ध अपडेट है।</string>
+    <string name="update_error">अपडेट जाँचा या तैयार नहीं किया जा सका। फिर प्रयास करें।</string>
+    <string name="update_download">डाउनलोड करें</string>
+    <string name="update_install">अपडेट इंस्टॉल करें</string>
+    <string name="update_retry">फिर प्रयास करें</string>
+    <string name="update_later">बाद में</string>
+    <string name="update_cancel">डाउनलोड रद्द करें</string>
+    <string name="update_close">बंद करें</string>
+</resources>

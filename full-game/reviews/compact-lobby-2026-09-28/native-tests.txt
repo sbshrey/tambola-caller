@@ -1,0 +1,9 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:..................
+io.github.sbshrey.tambola.game.MatchPowersUiTest:..
+
+Time: 97.076
+
+OK (20 tests)
+
+

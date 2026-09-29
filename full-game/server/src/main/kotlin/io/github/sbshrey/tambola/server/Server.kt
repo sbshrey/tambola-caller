@@ -188,6 +188,12 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             }
             post("/rooms/{code}/join") { call.respond(withContext(Dispatchers.IO) { service.join(call.bearer(), call.code()) }) }
             get("/rooms/{code}") { call.respond(withContext(Dispatchers.IO) { service.read(call.bearer(), call.code(), call.cursor()) }) }
+            get("/rooms/{code}/reactions") { call.respond(withContext(Dispatchers.IO) { service.reactions(call.bearer(), call.code()) }) }
+            post("/rooms/{code}/reactions") {
+                val body = call.body<CommandRequest>()
+                demand(body.action is RoomAction.React, 400, "invalid_reaction", "Choose a supported reaction.")
+                call.respond(withContext(Dispatchers.IO) { service.command(call.bearer(), call.code(), body) })
+            }
             post("/rooms/{code}/commands") {
                 val body = call.body<CommandRequest>()
                 call.respond(withContext(Dispatchers.IO) { service.command(call.bearer(), call.code(), body) })

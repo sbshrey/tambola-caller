@@ -1,0 +1,143 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:..................
+io.github.sbshrey.tambola.game.FriendEntryUiTest:....
+io.github.sbshrey.tambola.game.FriendInviteDialogTest:.......
+io.github.sbshrey.tambola.game.FriendConnectionUiTest:....
+io.github.sbshrey.tambola.game.PrizePickerUiTest:
+Error in fixedSixHindiLandscapeWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixHindiLandscapeWithoutScrolling(PrizePickerUiTest.kt:42)
+
+Error in fixedSixEnglishLandscapeWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixEnglishLandscapeWithoutScrolling(PrizePickerUiTest.kt:41)
+
+Error in fixedSixEnglishPortraitWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixEnglishPortraitWithoutScrolling(PrizePickerUiTest.kt:39)
+
+Error in hindiLandscapeChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.hindiLandscapeChoicesRemainReadable(PrizePickerUiTest.kt:37)
+
+Error in fixedSixHindiPortraitWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixHindiPortraitWithoutScrolling(PrizePickerUiTest.kt:40)
+
+Error in englishPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.englishPortraitChoicesRemainReadable(PrizePickerUiTest.kt:34)
+
+Error in hindiPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.hindiPortraitChoicesRemainReadable(PrizePickerUiTest.kt:35)
+
+Error in englishLandscapeChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest):
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.englishLandscapeChoicesRemainReadable(PrizePickerUiTest.kt:36)
+
+io.github.sbshrey.tambola.game.FriendReactionsUiTest:.....
+
+Time: 169.57
+There were 8 failures:
+1) fixedSixHindiLandscapeWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixHindiLandscapeWithoutScrolling(PrizePickerUiTest.kt:42)
+2) fixedSixEnglishLandscapeWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixEnglishLandscapeWithoutScrolling(PrizePickerUiTest.kt:41)
+3) fixedSixEnglishPortraitWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixEnglishPortraitWithoutScrolling(PrizePickerUiTest.kt:39)
+4) hindiLandscapeChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.hindiLandscapeChoicesRemainReadable(PrizePickerUiTest.kt:37)
+5) fixedSixHindiPortraitWithoutScrolling(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.fixedSixHindiPortraitWithoutScrolling(PrizePickerUiTest.kt:40)
+6) englishPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.englishPortraitChoicesRemainReadable(PrizePickerUiTest.kt:34)
+7) hindiPortraitChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.hindiPortraitChoicesRemainReadable(PrizePickerUiTest.kt:35)
+8) englishLandscapeChoicesRemainReadable(io.github.sbshrey.tambola.game.PrizePickerUiTest)
+java.lang.AssertionError: Configure the real system text size before running this matrix expected:<1.0> but was:<2.0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:577)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable(PrizePickerUiTest.kt:50)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.readable$default(PrizePickerUiTest.kt:44)
+	at io.github.sbshrey.tambola.game.PrizePickerUiTest.englishLandscapeChoicesRemainReadable(PrizePickerUiTest.kt:36)
+
+FAILURES!!!
+Tests run: 46,  Failures: 8
+
+

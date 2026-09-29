@@ -19,6 +19,7 @@
     <string name="friend_entry_detail">Your group, your table. Invite up to 49 friends. The host starts when everyone has joined.</string>
     <string name="friend_entry_cost">%1$d tickets · %2$d coins</string>
     <string name="friend_refund">Leave before the start for a full refund. Free virtual coins only.</string>
+    <string name="friend_refund_short">Leave before start: all coins returned.</string>
     <string name="friend_title">Your friends’ table</string>
     <string name="friend_host_hint">Share the code. Start when your group is here.</string>
     <string name="friend_guest_hint">You’re in! Your host starts the game when everyone is here.</string>
@@ -27,7 +28,7 @@
     <string name="friend_copy">Copy code</string>
     <string name="friend_copied">Code copied</string>
     <string name="friend_share_text">Join my Tambola friends’ table!\nCode: %1$s\nOpen Play with friends → Join with code in the current Internet Beta.\nGet the app: https://github.com/sbshrey/tambola-caller/releases\nOur host starts once everyone joins. Free virtual coins only.</string>
-    <string name="friend_people">%1$d of %2$d friends at the table</string>
+    <string name="friend_people">%1$d / %2$d friends</string>
     <string name="friend_host">Host · ready</string>
     <string name="friend_ready">Ready to play</string>
     <string name="friend_reconnecting">Reconnecting…</string>
@@ -37,6 +38,6 @@
     <string name="lobby_table_reconnecting">Reconnecting… This is your last confirmed table.</string>
     <string name="lobby_table_disconnected">Not connected. This is your last confirmed table.</string>
     <string name="friend_wait">Waiting for connected friends</string>
-    <string name="friend_expires">Start within %1$d min. Unstarted tables close and refund everyone.</string>
+    <string name="friend_expires">Start within %1$d min</string>
     <string name="friend_closed">That table has started or is not a friends’ table. Ask your friend for a new code.</string>
 </resources>

@@ -41,7 +41,8 @@ internal fun ClaimArena(
     table: TableRound, ownerId: String, preferences: Preferences, status: String,
     markNumber: (String, Int) -> Unit, claim: (ClaimSelection) -> Unit, claimMessage: String?, repeatCall: () -> Unit,
     back: () -> Unit, win: WinMoment?, dismissWin: () -> Unit, markEnabled: Boolean, claimEnabled: Boolean, expandedFooter: Boolean,
-    extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit, usePower: ((String, MatchPower) -> Unit)? = null, footer: @Composable () -> Unit,
+    extraMenu: @Composable ColumnScope.(() -> Unit) -> Unit, usePower: ((String, MatchPower) -> Unit)? = null,
+    reactionMessage: String? = null, footer: @Composable () -> Unit,
 ) {
     val words = gameText()
     val hand = table.copy(tickets = table.tickets.filter { it.playerId == ownerId }.take(6))
@@ -176,10 +177,10 @@ internal fun ClaimArena(
                         }
                         // Reserve two scaled lines even when quiet, so feedback never moves a ticket.
                         Box(Modifier.fillMaxWidth().padding(vertical = 2.dp).testTag("win-slot"), contentAlignment = Alignment.Center) {
-                            Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else "",
+                            Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else reactionMessage.orEmpty(),
                                 fontSize = 12.sp, lineHeight = 16.sp, textAlign = TextAlign.Center,
                                 color = if (win != null && dark) gold else muted, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null || powerFeedback != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
+                                modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null || powerFeedback != null || reactionMessage != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
                         }
                         if (table.powers != null && usePower != null && !table.finished) PowerDock(hand, claimEnabled, preferences.haptics, usePower)
                         if (!landscape || table.finished) Box(Modifier.fillMaxWidth().heightIn(min = 48.dp)) { footer() }

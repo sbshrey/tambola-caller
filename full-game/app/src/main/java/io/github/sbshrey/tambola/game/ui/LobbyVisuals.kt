@@ -52,6 +52,11 @@ internal fun LobbyBackdrop(modifier: Modifier) {
 @Composable
 internal fun LobbyGreeting(name: String?, compact: Boolean) {
     val words = gameText()
+    if (androidx.compose.ui.platform.LocalDensity.current.fontScale >= 1.3f) {
+        Text(words(R.string.lobby_ready), color = GameNightPalette.cream, fontSize = 24.sp, lineHeight = 28.sp,
+            fontWeight = FontWeight.Black, modifier = Modifier.testTag(if (name == null) "lobby-welcome-heading" else "lobby-heading"))
+        return
+    }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(if (name == null) words(R.string.lobby_welcome) else words(R.string.lobby_greeting, name),
             color = GameNightPalette.muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)

@@ -1,0 +1,11 @@
+
+io.github.sbshrey.tambola.game.CoinLobbyTest:..................
+io.github.sbshrey.tambola.game.MatchPowersUiTest:..
+io.github.sbshrey.tambola.game.FriendConnectionUiTest:....
+io.github.sbshrey.tambola.game.ExpandedRewardsUiTest:..
+
+Time: 121.17
+
+OK (26 tests)
+
+

@@ -1,0 +1,33 @@
+
+io.github.sbshrey.tambola.game.FriendConnectionUiTest:
+Error in englishPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest):
+java.lang.AssertionError: Assert failed: The component with TestTag = 'coin-retry' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:35)
+.
+Error in hindiPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest):
+java.lang.AssertionError: Assert failed: The component with TestTag = 'coin-retry' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:36)
+.
+io.github.sbshrey.tambola.game.ExpandedRewardsUiTest:..
+
+Time: 31.348
+There were 2 failures:
+1) englishPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest)
+java.lang.AssertionError: Assert failed: The component with TestTag = 'coin-retry' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.englishPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:35)
+2) hindiPortraitExplainsSavedTableAtLargeText(io.github.sbshrey.tambola.game.FriendConnectionUiTest)
+java.lang.AssertionError: Assert failed: The component with TestTag = 'coin-retry' is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.checkConnection(FriendConnectionUiTest.kt:95)
+	at io.github.sbshrey.tambola.game.FriendConnectionUiTest.hindiPortraitExplainsSavedTableAtLargeText(FriendConnectionUiTest.kt:36)
+
+FAILURES!!!
+Tests run: 6,  Failures: 2
+
+
