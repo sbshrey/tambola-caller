@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -28,15 +29,16 @@ internal fun RoundRecoveryControls(state: OnlineUiState, retry: () -> Unit, reco
     }
     BoxWithConstraints(Modifier.fillMaxWidth().height(56.dp).testTag("round-recovery")) {
         val explain = maxWidth > 400.dp
+        val visibleLabel = if (maxWidth < 160.dp && state.pending && !state.busy) words(R.string.round_retry_short) else label
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             if (explain) Text(words(if (state.pending) R.string.play_waiting_result else R.string.play_saved_calls),
                 modifier = Modifier.weight(1f).testTag("round-recovery-copy").semantics { liveRegion = LiveRegionMode.Polite },
                 fontSize = 11.sp, lineHeight = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Button(onClick = action, enabled = enabled,
                 modifier = (if (explain) Modifier.width(164.dp) else Modifier.fillMaxWidth()).height(56.dp)
-                    .testTag(if (state.pending) "round-retry" else "round-reconnect"),
+                    .testTag(if (state.pending) "round-retry" else "round-reconnect").semantics { contentDescription = label },
                 contentPadding = PaddingValues(horizontal = 8.dp), shape = RoundedCornerShape(16.dp)) {
-                Text(label, fontSize = 11.sp, lineHeight = 13.sp)
+                Text(visibleLabel, fontSize = 11.sp, lineHeight = 13.sp)
             }
         }
     }

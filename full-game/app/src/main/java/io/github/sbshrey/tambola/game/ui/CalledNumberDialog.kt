@@ -92,12 +92,12 @@ internal fun CalledNumberDialog(called: List<Int>, initiallyHistory: Boolean = f
 }
 
 @Composable
-private fun CalledNumberGrid(called: List<Int>, words: GameText) {
+internal fun CalledNumberGrid(called: List<Int>, words: GameText, fixedColumns: Int? = null) {
     val colors = MaterialTheme.colorScheme
     val fontScale = LocalDensity.current.fontScale
     val positions = called.withIndex().associate { it.value to it.index + 1 }
     BoxWithConstraints(Modifier.fillMaxSize().testTag("number-board-grid")) {
-        val columns = if (maxWidth > maxHeight * 1.5f) 15 else 10
+        val columns = fixedColumns ?: if (maxWidth > maxHeight * 1.5f) 15 else 10
         val rows = (1..90).toList().chunked(columns)
         val cellWidth = (maxWidth - 3.dp * (columns - 1)) / columns
         val cellHeight = (maxHeight - 3.dp * (rows.size - 1)) / rows.size

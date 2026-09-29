@@ -27,6 +27,9 @@ class ExpandedArenaUiTest {
         var round by mutableStateOf(Round.create(listOf(Player("me", "Me"), Player("friend", "Friend")),
             RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6, manualClaims = true, winnersPerPrize = 2,
                 prizes = CoinPool(12, 2).prizes.map { it.prize }), Random(17)).start().draw())
+        val ticket = round.tickets.first { it.playerId == "me" }
+        while (ticket.numbers.none { it in round.called }) round = round.draw()
+        val initialCalls = round.called.size
         var claimEnabled by mutableStateOf(true)
         var submitted: ClaimSelection? = null
         var submittedAt = 0
@@ -41,8 +44,7 @@ class ExpandedArenaUiTest {
         compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
         compose.onNodeWithTag("hand-ticket-2").assertIsDisplayed()
         compose.onNodeWithTag("hand-ticket-3").assertDoesNotExist()
-        val ticket = round.tickets.first { it.playerId == "me" }
-        val number = ticket.numbers.first { it !in round.called }
+        val number = ticket.numbers.first { it in round.called }
         compose.onNodeWithTag("dab-$number").assertIsEnabled().performClick()
         compose.runOnIdle { assertTrue(number in round.marks.getValue(ticket.id)) }
         compose.onNodeWithTag("current-call").performClick()
@@ -54,7 +56,7 @@ class ExpandedArenaUiTest {
         compose.onNodeWithTag("claim-prize-${Prize.TOP_LINE.name}").performClick()
         compose.runOnIdle {
             assertEquals(ClaimSelection(ticket.id, Prize.TOP_LINE.name), submitted)
-            assertEquals(2, submittedAt)
+            assertEquals(initialCalls + 1, submittedAt)
         }
         compose.onNodeWithTag("ticket-prize-picker").assertDoesNotExist()
         compose.onNodeWithTag("claim-ticket-1").performClick()

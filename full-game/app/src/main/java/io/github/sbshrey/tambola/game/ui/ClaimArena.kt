@@ -60,6 +60,8 @@ internal fun ClaimArena(
     var history by remember(table.id) { mutableStateOf(false) }
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
+    var visiblePowerTickets by remember(table.id, ownerId) { mutableStateOf(hand.tickets.take(2).map { it.id }) }
+    var lastPowerTicket by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
     var powerFeedback by remember(table.id) { mutableStateOf<String?>(null) }
     var powerSequence by remember(table.id) { mutableIntStateOf(table.powers?.noticeSequence ?: 0) }
     LaunchedEffect(table.powers?.noticeSequence) {
@@ -83,12 +85,7 @@ internal fun ClaimArena(
         if (line.players.any { it.id == ownerId }) words(R.string.play_my_win, title)
         else words(R.string.play_won, line.players.joinToString { words.playerLabel(it) }, title)
     }
-    Surface(Modifier.fillMaxSize().testTag("play-arena"), color = ground, contentColor = ink) {
-        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 10.dp, vertical = 4.dp)) {
-            val landscape = maxWidth > maxHeight
-            val largeText = LocalDensity.current.fontScale > 1.3f
-            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Row(Modifier.fillMaxWidth().height(62.dp).then(if (gameNight) Modifier.background(GameNightPalette.panel, RoundedCornerShape(16.dp)).padding(horizontal = 4.dp) else Modifier), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+    val optionsContent: @Composable () -> Unit = {
                     Box {
                         IconButton(onClick = { menu = true }, modifier = Modifier.size(48.dp).testTag("game-options")) {
                             Canvas(Modifier.size(20.dp).semantics { contentDescription = words(R.string.play_more) }) {
@@ -104,6 +101,35 @@ internal fun ClaimArena(
                             extraMenu { menu = false }
                         }
                     }
+    }
+    Surface(Modifier.fillMaxSize().testTag("play-arena"), color = ground, contentColor = ink) {
+        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 10.dp, vertical = 4.dp)) {
+            val landscape = maxWidth > maxHeight
+            val largeText = LocalDensity.current.fontScale > 1.3f
+            if (gameNight && landscape) {
+                CoinRoundLayout(table, remaining, status, optionsContent,
+                    players = { players = true }, prizes = { details = true },
+                    board = { history = false; board = true }, repeatCall = repeatCall,
+                    power = { if (table.powers != null && usePower != null && !table.finished)
+                        TopPowerControl(hand, visiblePowerTickets, lastPowerTicket, claimEnabled, preferences.reducedMotion, usePower) },
+                    clock = footer, showCountdown = !expandedFooter, reducedMotion = preferences.reducedMotion,
+                    tickets = {
+                        TicketPages(hand, ownerId, preferences.reducedMotion,
+                            { ticket, number -> lastPowerTicket = ticket; markNumber(ticket, number) }, markEnabled,
+                            claimEnabled && table.called.isNotEmpty() && !table.finished,
+                            visibleChanged = { visiblePowerTickets = it }) { claimTicketId = it }
+                        win?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
+                    }, feedback = {
+                        Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else reactionMessage.orEmpty(),
+                            modifier = Modifier.fillMaxWidth().testTag("claim-feedback").semantics {
+                                if (winText != null || claimMessage != null || powerFeedback != null) liveRegion = LiveRegionMode.Polite
+                            }, minLines = 2, maxLines = 2, fontSize = 12.sp, lineHeight = 16.sp,
+                            textAlign = TextAlign.Center, color = muted, overflow = TextOverflow.Ellipsis)
+                    })
+            } else {
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(Modifier.fillMaxWidth().height(62.dp).then(if (gameNight) Modifier.background(GameNightPalette.panel, RoundedCornerShape(16.dp)).padding(horizontal = 4.dp) else Modifier), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                    optionsContent()
                     val reveal = remember { Animatable(1f) }
                     LaunchedEffect(table.latest, preferences.reducedMotion) {
                         if (preferences.reducedMotion || table.latest == null) reveal.snapTo(1f)
@@ -189,6 +215,7 @@ internal fun ClaimArena(
             }
         }
     }
+    }
     hand.tickets.firstOrNull { it.id == claimTicketId }?.let { ticket ->
         TicketPrizePicker(table, ticket, hand.tickets.indexOf(ticket) + 1, claimEnabled,
             dismiss = { claimTicketId = null }, claim = claim)
@@ -221,7 +248,7 @@ internal fun ClaimArena(
 
 @Composable
 private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boolean, mark: (String, Int) -> Unit,
-    markEnabled: Boolean, claimEnabled: Boolean, choose: (String) -> Unit) {
+    markEnabled: Boolean, claimEnabled: Boolean, visibleChanged: (List<String>) -> Unit = {}, choose: (String) -> Unit) {
     val words = gameText()
     Box(Modifier.fillMaxSize().testTag("owned-hand")) {
         val pageSize = 2
@@ -229,6 +256,7 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
         val page = (firstTicket / pageSize).coerceIn(0, ((table.tickets.size - 1) / pageSize).coerceAtLeast(0))
         val start = page * pageSize
         val visible = table.tickets.drop(start).take(pageSize)
+        LaunchedEffect(table.id, start) { visibleChanged(visible.map { it.id }) }
         val pages = (table.tickets.size + pageSize - 1) / pageSize
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {

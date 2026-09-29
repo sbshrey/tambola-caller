@@ -1,4 +1,5 @@
 <resources>
+    <string name="round_retry_short">फिर आज़माएँ</string>
     <string name="settings_sound">आवाज़</string>
     <string name="settings_play">खेल</string>
     <string name="settings_music">संगीत</string>

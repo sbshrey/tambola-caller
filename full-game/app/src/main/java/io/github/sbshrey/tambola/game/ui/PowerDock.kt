@@ -10,6 +10,11 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.presentation.PowerTicketState
@@ -28,6 +33,42 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
     PowerNotice.TICKET_DISCARDED -> R.string.power_discarded
     PowerNotice.ACTIVATED -> R.string.power_active
 }) }
+
+/** Present the server's ready power directly; no player-selected power or target dialog. */
+@Composable internal fun TopPowerControl(table: TableRound, visibleTickets: List<String>, lastPlayed: String?,
+    enabled: Boolean, reducedMotion: Boolean, activate: (String, MatchPower) -> Unit) {
+    val powers = requireNotNull(table.powers)
+    val words = gameText()
+    // Old rooms keep passive shields until the new activation contract is deployed.
+    val power = powers.inventory.firstOrNull { it != MatchPower.SHIELD } ?: powers.inventory.firstOrNull()
+    val ordered = visibleTickets.sortedBy { it != lastPlayed }
+    val target = if (power == null || power == MatchPower.SHIELD) null else ordered.firstOrNull {
+        it !in powers.discarded && power !in powers.used[it].orEmpty()
+    }
+    val ordinal = table.tickets.indexOfFirst { it.id == target } + 1
+    val glow = remember { Animatable(0f) }
+    LaunchedEffect(power, target, reducedMotion) {
+        glow.snapTo(if (target != null) 1f else 0f)
+        if (target != null && !reducedMotion) repeat(3) {
+            glow.animateTo(.15f, tween(350)); glow.animateTo(1f, tween(350))
+        }
+    }
+    val title = power?.let(words::matchPowerName)
+    val caption = if (target != null) words(R.string.power_use_ticket, ordinal)
+        else words(R.string.power_progress, powers.correctMarks % 5)
+    Surface(onClick = { if (target != null && power != null) activate(target, power) },
+        enabled = enabled && target != null && !table.finished,
+        modifier = Modifier.fillMaxWidth().fillMaxHeight().testTag("top-power-control")
+            .semantics { contentDescription = listOfNotNull(title, caption).joinToString(". ") },
+        shape = RoundedCornerShape(14.dp), color = GameNightPalette.raised,
+        border = BorderStroke(2.dp, GameNightPalette.mint.copy(alpha = glow.value))) {
+        Column(Modifier.padding(horizontal = 8.dp, vertical = 2.dp), verticalArrangement = Arrangement.Center) {
+            if (title != null) Text("${when (power) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; else -> "+25%" }} $title", fontSize = 11.sp, lineHeight = 13.sp, maxLines = 2,
+                color = GameNightPalette.mint)
+            Text(caption, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 2, color = GameNightPalette.cream)
+        }
+    }
+}
 
 @Composable internal fun PowerDock(table: TableRound, enabled: Boolean, hapticsEnabled: Boolean, activate: (String, MatchPower) -> Unit) {
     val powers = requireNotNull(table.powers)
