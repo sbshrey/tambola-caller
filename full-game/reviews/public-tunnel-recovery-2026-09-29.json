@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-29T17:38:44.386Z",
+  "origin": "https://shoulder-challenges-displays-longer.trycloudflare.com",
+  "sampledPower": "PRIZE_BONUS",
+  "checks": [
+    "six private tickets",
+    "visible preview matches power granted at five authoritative dabs",
+    "identical mark receipts on retry",
+    "peer power state stays private",
+    "no future draw order",
+    "wrong marks rejected",
+    "single activation of the sampled power",
+    "false-claim receipts cannot punish twice",
+    "selected ticket discarded",
+    "QA profiles deleted"
+  ],
+  "scope": "Real public HTTPS API and eight-second calls; UI and full settlement covered separately",
+  "cause": "Public supervisor rejected healthy protocol 9 because readiness accepted only protocols 4-6",
+  "fixCommit": "f5b2215",
+  "deployedScriptMatchesRepository": true,
+  "directoryDiscoveryVerified": true,
+  "directoryCheckedUtc": "2026-09-29T17:38:40.2375789Z",
+  "gatewayTestsPassed": 2,
+  "probeScope": "Power acceptance used the new origin directly while GitHub raw cache propagated; the normal app directory was separately fetched with its minute parameter and verified ready on protocol 9.",
+  "apkChangeRequired": false
+}
