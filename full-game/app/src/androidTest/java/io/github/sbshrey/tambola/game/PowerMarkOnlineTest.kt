@@ -55,7 +55,7 @@ class PowerMarkOnlineTest {
             until { model.state.value.room != null && !model.state.value.busy && model.state.value.connection == Connection.LIVE }
             val code = model.state.value.room!!.code
             peer = api.guest(GuestRequest("Mark queue peer"))
-            api.match(peer.token, MatchRequest(id(), 1, true, code, rulesVersion = 2, powersEnabled = true, previewPowers = true))
+            api.match(peer.token, MatchRequest(id(), 1, true, code, rulesVersion = 2, powersEnabled = true, previewPowers = true, roundSummary = true))
             until { model.state.value.room!!.members.size == 2 }
             compose.runOnIdle { model.command(RoomAction.Start) }
             until { (model.state.value.room?.round?.called?.size ?: 0) >= 5 && !model.state.value.busy }

@@ -66,7 +66,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
                 matchPowerBonus(matchPowers[actor], it.awards, pool.prizes, it.status == RoundStatus.COMPLETED) } ?: 0)
     }
     fun view(actor: String, now: Long): RoomView = RoomView(
-        protocolVersion = if (options.previewPowers) 8 else if (options.largeMatch) 7 else if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
+        protocolVersion = if (options.roundSummary) 9 else if (options.previewPowers) 8 else if (options.largeMatch) 7 else if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,
         options = options, members = members.map { MemberView(it.id, it.name, it.avatar, it.ready, it.connected && now - it.lastSeen < PRESENCE_TIMEOUT) },
         round = round?.let { game -> PublicRound(game.id, game.status, game.called,
@@ -78,7 +78,11 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
                 game.tickets.filter { it.playerId == player.id }.mapIndexedNotNull { index, ticket ->
                     if (ticket.id in awarded) WinningTicket(ticket.id, player.id, index + 1) else null
                 }
-            }, game.ticketCounts, (matchPowers[actor] ?: MatchPowers()).takeIf { options.powersEnabled }) },
+            }, game.ticketCounts, (matchPowers[actor] ?: MatchPowers()).takeIf { options.powersEnabled },
+            if (options.roundSummary && game.finished) game.players.associate { player ->
+                val result = requireNotNull(coinView(player.id))
+                player.id to RoundWinnings(result.settledWinnings, result.bonusCoins, result.returnedCoins)
+            } else emptyMap()) },
         nextDrawAt = nextDrawAt, expiresAt = expiresAt, serverTime = now,
         coins = coinView(actor),
     )

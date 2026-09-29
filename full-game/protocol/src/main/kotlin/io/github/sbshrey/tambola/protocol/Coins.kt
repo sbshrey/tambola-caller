@@ -31,6 +31,7 @@ import kotlinx.serialization.EncodeDefault
     /** Capability opt-in: older apps cannot decode more than five computer seats. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val previewPowers: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val roundSummary: Boolean = false,
 ) {
     init {
         require(tickets in 1..6)
@@ -39,9 +40,14 @@ import kotlinx.serialization.EncodeDefault
         require(!powersEnabled || (rulesVersion == 2 && powerUp == PowerUp.NONE))
         require(!largeMatch || (rulesVersion == 2 && !friendTable))
         require(!previewPowers || powersEnabled)
+        require(!roundSummary || rulesVersion == 2)
         require(friendCode == null || (friendTable && friendCode.matches(Regex("[A-HJ-NP-Z2-9]{8}"))))
         require(previousFriendRound == null || (friendTable && friendCode != null && previousFriendRound.isNotBlank()))
     }
+}
+@Serializable data class RoundWinnings(val prizes: Long, val bonus: Long, val returned: Long) {
+    init { require(prizes >= 0 && bonus >= 0 && returned >= 0 && prizes <= Long.MAX_VALUE - bonus) }
+    val total: Long get() = prizes + bonus
 }
 @Serializable data class CoinTableView(
     val tickets: Int,

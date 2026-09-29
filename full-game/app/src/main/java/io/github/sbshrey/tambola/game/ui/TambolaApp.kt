@@ -47,6 +47,14 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
             GameSettings(state.preferences, model::updatePreferences) { model.navigate(Screen.HOME) }
         } else if (!state.loading && state.screen == Screen.GAME && state.round != null) {
             OfflineArena(state.round, state, model)
+        } else if (!state.loading && state.screen == Screen.ONLINE && onlineState.room?.phase == io.github.sbshrey.tambola.protocol.RoomPhase.FINISHED &&
+            onlineState.room.options.roundSummary && onlineState.room.round?.winnings?.isNotEmpty() == true &&
+            !onlineState.storageFailure && !onlineState.deletingProfile && invitation.code == null) {
+            key(requireNotNull(onlineState.room.round).id) {
+                CoinRoundSummary(onlineState, lobby = { model.navigate(Screen.HOME) },
+                    replay = { tickets -> if (onlineState.room.coins?.friendTable == true) online.replayFriends(tickets) else online.play(tickets) },
+                    retry = online::retry, clearError = online::clearError, reducedMotion = state.preferences.reducedMotion)
+            }
         } else if (!state.loading && state.screen == Screen.ONLINE && onlineState.room?.round != null &&
             (onlineState.room.phase == io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE ||
                 (onlineState.room.phase == io.github.sbshrey.tambola.protocol.RoomPhase.FINISHED && !onlineState.room.options.coinGame)) &&

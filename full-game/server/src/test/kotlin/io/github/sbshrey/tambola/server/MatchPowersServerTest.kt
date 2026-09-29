@@ -42,10 +42,10 @@ class MatchPowersServerTest : PostgresTest() {
             assertEquals(2, service.read(host.token, room.code).snapshot.members.size)
         }
     }
-    private fun friends(tickets: Int = 2, preview: Boolean = false): Triple<GuestCredentials, GuestCredentials, String> {
+    private fun friends(tickets: Int = 2, preview: Boolean = false, summary: Boolean = false): Triple<GuestCredentials, GuestCredentials, String> {
         val a = guest("Mira"); val b = guest("Noor")
-        val room = service.match(a.token, MatchRequest(id(), tickets, friendTable = true, rulesVersion = 2, powersEnabled = true, previewPowers = preview)).snapshot
-        service.match(b.token, MatchRequest(id(), tickets, friendTable = true, friendCode = room.code, rulesVersion = 2, powersEnabled = true, previewPowers = preview))
+        val room = service.match(a.token, MatchRequest(id(), tickets, friendTable = true, rulesVersion = 2, powersEnabled = true, previewPowers = preview, roundSummary = summary)).snapshot
+        service.match(b.token, MatchRequest(id(), tickets, friendTable = true, friendCode = room.code, rulesVersion = 2, powersEnabled = true, previewPowers = preview, roundSummary = summary))
         command(a, room.code, RoomAction.Start)
         return Triple(a, b, room.code)
     }
@@ -182,7 +182,8 @@ class MatchPowersServerTest : PostgresTest() {
     }
 
     @Test fun `bonus settles after shared pool and restart cannot credit it again`() {
-        val (a,b,code) = friends(1)
+        val (a,b,code) = friends(1, summary = true)
+        assertTrue(service.read(a.token, code).snapshot.round!!.winnings.isEmpty())
         repeat(90) { next(code) }
         val game = stored(code).round!!
         val ticket = game.tickets.first { it.playerId == a.playerId }
@@ -199,6 +200,11 @@ class MatchPowersServerTest : PostgresTest() {
         val done = service.read(a.token, code).snapshot
         done.validateFor(a.playerId)
         assertEquals(12L, done.coins!!.bonusCoins)
+        assertEquals(mapOf(a.playerId to RoundWinnings(50, 12, 50), b.playerId to RoundWinnings(50, 0, 50)), done.round!!.winnings)
+        assertEquals(done.round!!.winnings, service.read(b.token, code).snapshot.round!!.winnings)
+        assertThrows(io.github.sbshrey.tambola.client.InvalidRoomResponse::class.java) {
+            done.copy(round = done.round!!.copy(winnings = done.round!!.winnings - b.playerId)).validateFor(a.playerId)
+        }
         val balances = listOf(service.wallet(a.token), service.wallet(b.token))
         assertEquals(2 * COIN_STARTER_BALANCE + 12, balances.sumOf { it.balance })
         service = RoomService(database, now::get); service.tick()

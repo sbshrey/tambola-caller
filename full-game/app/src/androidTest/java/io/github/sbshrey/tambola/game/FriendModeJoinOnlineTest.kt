@@ -37,7 +37,7 @@ class FriendModeJoinOnlineTest {
             until { model.state.value.name != null && !model.state.value.busy }
             val balance = model.state.value.wallet!!.balance
             peer = api.guest(GuestRequest("ReviewHost", 2))
-            val lobby = api.match(peer.token, MatchRequest(id(), 2, true, rulesVersion = 2, powersEnabled = power)).snapshot
+            val lobby = api.match(peer.token, MatchRequest(id(), 2, true, rulesVersion = 2, powersEnabled = power, previewPowers = power, roundSummary = true)).snapshot
             compose.runOnIdle { model.choosePowerRoom(!power) }
             compose.onNodeWithTag("buy-tickets-3").performClick()
             compose.onNodeWithTag("play-friends").performClick()

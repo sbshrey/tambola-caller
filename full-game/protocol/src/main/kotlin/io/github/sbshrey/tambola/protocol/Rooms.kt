@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 8
+const val PROTOCOL_VERSION = 9
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -31,12 +31,14 @@ val WireJson = Json { encodeDefaults = true }
     @EncodeDefault(EncodeDefault.Mode.NEVER) val powersEnabled: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val previewPowers: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val roundSummary: Boolean = false,
 ) {
     init {
         require(game.mode == GameMode.ONLINE && capacity in 2..50 && intervalSeconds in 5..30)
         require(coinRulesVersion in 1..2)
         require(!powersEnabled || (coinGame && coinRulesVersion == 2))
         require(!previewPowers || powersEnabled)
+        require(!roundSummary || (coinGame && coinRulesVersion == 2))
         require(!largeMatch || (coinGame && coinRulesVersion == 2 && capacity == 50))
         require(computerPlayers in 0..(if (largeMatch) 49 else 5) && computerPlayers < capacity)
         require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
@@ -64,6 +66,7 @@ val WireJson = Json { encodeDefaults = true }
     val winningTickets: List<WinningTicket> = emptyList(),
     val ticketCounts: Map<String, Int> = emptyMap(),
     @EncodeDefault(EncodeDefault.Mode.NEVER) val powers: MatchPowers? = null,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val winnings: Map<String, RoundWinnings> = emptyMap(),
 )
 @Serializable data class RoomEvent(val revision: Long, val type: String, val at: Long, val roundId: String? = null)
 @Serializable data class RoomView(

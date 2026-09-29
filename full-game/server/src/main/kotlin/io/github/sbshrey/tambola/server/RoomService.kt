@@ -18,6 +18,7 @@ internal const val OPEN_EXPANDED_LOBBY_SQL = """SELECT payload FROM rooms WHERE 
     AND coalesce((payload::jsonb->'options'->>'powersEnabled')::boolean, false) = false
     AND coalesce((payload::jsonb->'options'->>'largeMatch')::boolean, false) = false
     AND coalesce((payload::jsonb->'options'->>'previewPowers')::boolean, false) = false
+    AND coalesce((payload::jsonb->'options'->>'roundSummary')::boolean, false) = false
     ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
 
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
@@ -162,6 +163,7 @@ class RoomService(
                 demand(request.powersEnabled || !existing.options.powersEnabled, 409, "update_required", "Rejoin this Power room with the updated app.")
                 demand(request.largeMatch || !existing.options.largeMatch, 409, "update_required", "Rejoin this larger room with the updated app.")
                 demand(request.previewPowers || !existing.options.previewPowers, 409, "update_required", "Update the app to rejoin this Power room.")
+                demand(request.roundSummary || !existing.options.roundSummary, 409, "update_required", "Update the app to rejoin this round.")
                 demand(request.rulesVersion >= existing.options.coinRulesVersion, 409, "update_required", "Update the app to rejoin this table.")
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
@@ -186,6 +188,7 @@ class RoomService(
                     joinCode != null -> load(connection, joinCode).also {
                         demand(it.options.powersEnabled == request.powersEnabled, 409, "power_room_mismatch", "Choose the same Classic or Power mode as your friends.")
                         demand(it.options.previewPowers == request.previewPowers, 409, "update_required", "Everyone at this Power table needs the same app version.")
+                        demand(it.options.roundSummary == request.roundSummary, 409, "update_required", "Everyone at this table needs the same app version.")
                         demand(it.options.coinRulesVersion == request.rulesVersion, 409, "update_required", "Everyone at a friends table needs the same game rules. Update the app and create a new table.")
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
                         demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
@@ -195,10 +198,11 @@ class RoomService(
                         it.replace("'powersEnabled')::boolean, false) = false", "'powersEnabled')::boolean, false) = ${request.powersEnabled}")
                             .replace("'largeMatch')::boolean, false) = false", "'largeMatch')::boolean, false) = ${request.largeMatch}")
                             .replace("'previewPowers')::boolean, false) = false", "'previewPowers')::boolean, false) = ${request.previewPowers}")
+                            .replace("'roundSummary')::boolean, false) = false", "'roundSummary')::boolean, false) = ${request.roundSummary}")
                     } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
-                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch, previewPowers = request.previewPowers).let {
+                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch, previewPowers = request.previewPowers, roundSummary = request.roundSummary).let {
                         if (request.friendTable || request.powersEnabled || request.largeMatch) it.copy(computerPlayers = 0) else it
                     }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,

@@ -1,0 +1,14 @@
+<resources>
+    <string name="round_summary_low_balance">You have %1$d coins. Choose fewer tickets in the lobby.</string>
+    <string name="round_summary_cancel">Cancel</string>
+    <string name="round_summary_title">Round results</string>
+    <string name="round_summary_you">You · rank %1$d</string>
+    <string name="round_summary_total">%1$d won</string>
+    <string name="round_summary_bonus">Includes %1$d bonus</string>
+    <string name="round_summary_returned">%1$d entry coins returned</string>
+    <string name="round_summary_lobby">Lobby</string>
+    <string name="round_summary_again">Play again</string>
+    <string name="round_summary_confirm">Play with %1$d tickets for %2$d coins?</string>
+    <string name="round_summary_no_prizes">No prizes this round</string>
+    <string name="round_summary_find_me">My rank</string>
+</resources>
