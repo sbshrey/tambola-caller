@@ -237,7 +237,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
         enter = { code -> friendDialog = false; friends(tickets, code) }, close = { friendDialog = false })
     if (powerUps) ArenaDialog(words(R.string.powerup_title), { powerUps = false }) {
         Text(words(R.string.power_drop_rules))
-        Text(words(R.string.power_shield_detail))
+        Text(words(if (room?.options?.previewPowers != false) R.string.power_shield_activate_detail else R.string.power_shield_detail))
         Text(words(R.string.power_auto_detail))
         Text(words(R.string.power_bonus_detail))
     }

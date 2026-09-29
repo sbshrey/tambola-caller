@@ -40,9 +40,10 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
     val powers = requireNotNull(table.powers)
     val words = gameText()
     // Old rooms keep passive shields until the new activation contract is deployed.
-    val power = powers.inventory.firstOrNull { it != MatchPower.SHIELD } ?: powers.inventory.firstOrNull()
+    val power = if (powers.nextPower != null) powers.inventory.firstOrNull()
+        else powers.inventory.firstOrNull { it != MatchPower.SHIELD } ?: powers.inventory.firstOrNull()
     val ordered = visibleTickets.sortedBy { it != lastPlayed }
-    val target = if (power == null || power == MatchPower.SHIELD) null else ordered.firstOrNull {
+    val target = if (power == null || (power == MatchPower.SHIELD && powers.nextPower == null)) null else ordered.firstOrNull {
         it !in powers.discarded && power !in powers.used[it].orEmpty()
     }
     val ordinal = table.tickets.indexOfFirst { it.id == target } + 1
@@ -53,8 +54,10 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
             glow.animateTo(.15f, tween(350)); glow.animateTo(1f, tween(350))
         }
     }
-    val title = power?.let(words::matchPowerName)
+    val shownPower = power ?: powers.nextPower
+    val title = shownPower?.let(words::matchPowerName)
     val caption = if (target != null) words(R.string.power_use_ticket, ordinal)
+        else if (power != null && powers.nextPower != null) words(R.string.power_no_visible_target)
         else words(R.string.power_progress, powers.correctMarks % 5)
     Surface(onClick = { if (target != null && power != null) activate(target, power) },
         enabled = enabled && target != null && !table.finished,
@@ -63,7 +66,7 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
         shape = RoundedCornerShape(14.dp), color = GameNightPalette.raised,
         border = BorderStroke(2.dp, GameNightPalette.mint.copy(alpha = glow.value))) {
         Column(Modifier.padding(horizontal = 8.dp, vertical = 2.dp), verticalArrangement = Arrangement.Center) {
-            if (title != null) Text("${when (power) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; else -> "+25%" }} $title", fontSize = 11.sp, lineHeight = 13.sp, maxLines = 2,
+            if (title != null) Text("${when (shownPower) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; else -> "+25%" }} $title", fontSize = 11.sp, lineHeight = 13.sp, maxLines = 2,
                 color = GameNightPalette.mint)
             Text(caption, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 2, color = GameNightPalette.cream)
         }
@@ -95,11 +98,11 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
     }
     selected?.let { power -> ArenaDialog(words.matchPowerName(power), { selected = null }) {
         Text(words(when (power) {
-            MatchPower.SHIELD -> R.string.power_shield_detail
+            MatchPower.SHIELD -> if (powers.nextPower != null) R.string.power_shield_activate_detail else R.string.power_shield_detail
             MatchPower.AUTO_DAB -> R.string.power_auto_detail
             MatchPower.PRIZE_BONUS -> R.string.power_bonus_detail
         }))
-        if (power != MatchPower.SHIELD) table.tickets.forEachIndexed { index, ticket ->
+        if (power != MatchPower.SHIELD || powers.nextPower != null) table.tickets.forEachIndexed { index, ticket ->
             val until = powers.autoUntil[ticket.id]
             val remaining by countdownSeconds(remainingCoinTime(until, table.serverTime, table.id))
             val state = powers.ticketState(ticket.id, power, remaining)

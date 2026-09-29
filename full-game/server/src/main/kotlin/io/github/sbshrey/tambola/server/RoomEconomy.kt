@@ -66,8 +66,11 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
     return lobby.copy(options = lobby.options.copy(game = settings), phase = RoomPhase.ACTIVE, locked = true,
         expiresAt = now + ROOM_LIFETIME,
         startsAt = null, coinPool = pool, round = game, nonce = nonce, drawCommitment = commitment(game, nonce),
-        nextDrawAt = now + options.intervalSeconds * 1_000L)
+        nextDrawAt = now + options.intervalSeconds * 1_000L,
+        matchPowers = if (options.previewPowers) members.associate { it.id to MatchPowers(nextPower = randomMatchPower()) } else matchPowers)
 }
+
+internal fun randomMatchPower(): MatchPower = MatchPower.entries[java.security.SecureRandom().nextInt(MatchPower.entries.size)]
 
 internal object RoomEconomy {
     /** Called under the room lock, in the same transaction as its snapshot/receipt. */

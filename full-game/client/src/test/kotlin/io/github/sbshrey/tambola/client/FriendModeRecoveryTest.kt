@@ -6,6 +6,14 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class FriendModeRecoveryTest {
+    @Test fun `preview capability follows power mode without leaking into classic`() {
+        val newPower = requireNotNull(join(false).followFriendMode(mismatch, "new-power", supportsPreview = true))
+        assertTrue(newPower.request.previewPowers)
+        assertTrue(newPower.request.powersEnabled)
+        val classic = requireNotNull(newPower.followFriendMode(mismatch, "classic", supportsPreview = true))
+        assertFalse(classic.request.previewPowers)
+        assertFalse(classic.request.powersEnabled)
+    }
     private val mismatch = RoomApiFailure(409, "power_room_mismatch", "fixture")
     private fun join(power: Boolean) = PendingOperation.Match(MatchRequest("original", 6, true, "ABCD2345", rulesVersion = 2, powersEnabled = power))
 

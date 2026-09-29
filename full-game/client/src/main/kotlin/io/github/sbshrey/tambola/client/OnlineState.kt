@@ -118,6 +118,7 @@ fun RoomView.validateFor(playerId: String) {
         // Version-one cached receipts/snapshots predate round avatars; Player defaults them to zero.
         require(protocolVersion in 1..PROTOCOL_VERSION && revision >= 0 && roomId.isNotBlank())
         require(!options.powersEnabled || protocolVersion >= 6)
+        require(!options.previewPowers || protocolVersion >= 8)
         require(!options.largeMatch || (protocolVersion >= 7 && coins?.friendTable == false))
         require(protocolVersion >= 3 || (!options.game.manualClaims && options.computerPlayers == 0))
         require(protocolVersion >= 4 || (!options.coinGame && coins == null && wallet == null))
@@ -167,11 +168,14 @@ fun RoomView.validateFor(playerId: String) {
             require(game.ownTickets.map { it.id }.distinct().size == game.ownTickets.size)
             require((game.powers != null) == options.powersEnabled)
             game.powers?.let { powers ->
+                require((powers.nextPower != null) == options.previewPowers)
+                require(powers.armedShield.isEmpty() || options.previewPowers)
                 val owned = game.ownTickets.associateBy { it.id }
                 require(powers.correctMarks in 0..90 && powers.inventory.size <= 2 && powers.noticeSequence in 0..100)
                 require(powers.marks.all { (id, marked) -> owned[id]?.let { marked.all { n -> n in it.numbers && n in game.called } } == true })
                 require(powers.correctMarks <= powers.marks.values.sumOf { it.size })
                 require(powers.discarded.all { it in owned } && powers.used.keys.all { it in owned })
+                require(powers.armedShield.all { it in owned && it !in powers.discarded && MatchPower.SHIELD in powers.used[it].orEmpty() })
                 require(powers.armedBonus.all { it in owned } && powers.autoUntil.all { it.key in owned && it.value > 0 })
                 require(powers.bonusPrizes.all { (prize, ticket) -> ticket in owned && game.awards.any { it.prize == prize && ticket in it.ticketIds } })
             }

@@ -1,6 +1,9 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package io.github.sbshrey.tambola.domain
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.EncodeDefault
 
 @Serializable enum class MatchPower { SHIELD, AUTO_DAB, PRIZE_BONUS }
 @Serializable enum class PowerNotice { DROP, FULL, SHIELD_SAVED, TICKET_DISCARDED, ACTIVATED }
@@ -17,6 +20,9 @@ import kotlinx.serialization.Serializable
     val bonusPrizes: Map<Prize, String> = emptyMap(),
     val notice: PowerNotice? = null,
     val noticeSequence: Int = 0,
+    /** Null preserves the original hidden-drop/passive-shield contract. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val nextPower: MatchPower? = null,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val armedShield: Set<String> = emptySet(),
 ) {
     /** Correct dabs are permanent: retries, auto-dabs and repeated taps earn nothing. */
     fun mark(ticket: Ticket, number: Int, called: List<Int>, drop: () -> MatchPower): MatchPowers {
@@ -26,18 +32,20 @@ import kotlinx.serialization.Serializable
         val milestone = count % 5 == 0
         val space = inventory.size < 2
         return copy(marks = marks + (ticket.id to (marks[ticket.id].orEmpty() + number)), correctMarks = count,
-            inventory = if (milestone && space) inventory + drop() else inventory,
+            inventory = if (milestone && space) inventory + (nextPower ?: drop()) else inventory,
+            nextPower = if (milestone && space && nextPower != null) drop() else nextPower,
             notice = if (milestone) if (space) PowerNotice.DROP else PowerNotice.FULL else notice,
             noticeSequence = noticeSequence + if (milestone) 1 else 0)
     }
 
     fun activate(ticket: Ticket, power: MatchPower, called: List<Int>, now: Long): MatchPowers {
         require(ticket.id !in discarded && power in inventory && power !in used[ticket.id].orEmpty())
-        require(power != MatchPower.SHIELD) // Shield is consumed only by a false claim.
+        require(power != MatchPower.SHIELD || nextPower != null)
         val next = copy(inventory = inventory.toMutableList().also { it.remove(power) },
             used = used + (ticket.id to (used[ticket.id].orEmpty() + power)),
             autoUntil = if (power == MatchPower.AUTO_DAB) autoUntil + (ticket.id to now + 15_000L) else autoUntil,
             armedBonus = if (power == MatchPower.PRIZE_BONUS) armedBonus + ticket.id else armedBonus,
+            armedShield = if (power == MatchPower.SHIELD) armedShield + ticket.id else armedShield,
             notice = PowerNotice.ACTIVATED, noticeSequence = noticeSequence + 1)
         return next.autoMark(listOf(ticket), called, now)
     }
@@ -52,8 +60,10 @@ import kotlinx.serialization.Serializable
 
     fun falseClaim(ticketId: String): MatchPowers {
         require(ticketId !in discarded)
-        val shield = MatchPower.SHIELD in inventory && MatchPower.SHIELD !in used[ticketId].orEmpty()
-        return copy(inventory = if (shield) inventory.toMutableList().also { it.remove(MatchPower.SHIELD) } else inventory,
+        val passive = nextPower == null && MatchPower.SHIELD in inventory && MatchPower.SHIELD !in used[ticketId].orEmpty()
+        val shield = ticketId in armedShield || passive
+        return copy(inventory = if (passive) inventory.toMutableList().also { it.remove(MatchPower.SHIELD) } else inventory,
+            armedShield = armedShield - ticketId,
             used = if (shield) used + (ticketId to (used[ticketId].orEmpty() + MatchPower.SHIELD)) else used,
             discarded = if (shield) discarded else discarded + ticketId,
             autoUntil = if (shield) autoUntil else autoUntil - ticketId,

@@ -204,7 +204,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2,
-            powersEnabled = mutable.value.powersEnabled, largeMatch = !friendTable)
+            powersEnabled = mutable.value.powersEnabled, largeMatch = !friendTable, previewPowers = mutable.value.powersEnabled)
         if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {
@@ -259,7 +259,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val room = saved?.room ?: return
         if (tickets !in 1..6 || room.phase != RoomPhase.FINISHED || room.coins?.friendTable != true) return
         val round = room.round ?: return
-        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id, rulesVersion = 2, powersEnabled = room.options.powersEnabled)))
+        begin(PendingOperation.Match(MatchRequest(UUID.randomUUID().toString(), tickets, true, room.code, round.id, rulesVersion = 2,
+            powersEnabled = room.options.powersEnabled, previewPowers = room.options.previewPowers)))
     }
     fun create(options: RoomOptions = RoomOptions(game = RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 3, assistedMarking = false, manualClaims = true,
         prizes = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE, Prize.FULL_HOUSE)), intervalSeconds = 10, computerPlayers = 2)) =
@@ -361,7 +362,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
         } catch (error: RoomApiFailure) {
-            val friendJoin = if (friendModeRetry) (pending as? PendingOperation.Match)?.followFriendMode(error, UUID.randomUUID().toString()) else null
+            val friendJoin = if (friendModeRetry) (pending as? PendingOperation.Match)?.followFriendMode(error, UUID.randomUUID().toString(), supportsPreview = true) else null
             if (friendJoin != null) {
                 val replaced = mutex.withLock {
                     val latest = saved ?: return@withLock false

@@ -42,12 +42,63 @@ class MatchPowersServerTest : PostgresTest() {
             assertEquals(2, service.read(host.token, room.code).snapshot.members.size)
         }
     }
-    private fun friends(tickets: Int = 2): Triple<GuestCredentials, GuestCredentials, String> {
+    private fun friends(tickets: Int = 2, preview: Boolean = false): Triple<GuestCredentials, GuestCredentials, String> {
         val a = guest("Mira"); val b = guest("Noor")
-        val room = service.match(a.token, MatchRequest(id(), tickets, friendTable = true, rulesVersion = 2, powersEnabled = true)).snapshot
-        service.match(b.token, MatchRequest(id(), tickets, friendTable = true, friendCode = room.code, rulesVersion = 2, powersEnabled = true))
+        val room = service.match(a.token, MatchRequest(id(), tickets, friendTable = true, rulesVersion = 2, powersEnabled = true, previewPowers = preview)).snapshot
+        service.match(b.token, MatchRequest(id(), tickets, friendTable = true, friendCode = room.code, rulesVersion = 2, powersEnabled = true, previewPowers = preview))
         command(a, room.code, RoomAction.Start)
         return Triple(a, b, room.code)
+    }
+
+    @Test fun `preview survives restart grants shown power and shield activation replays once`() {
+        val (a, b, code) = friends(preview = true)
+        val original = service.read(a.token, code).snapshot
+        original.validateFor(a.playerId)
+        assertEquals(8, original.protocolVersion)
+        val shown = original.round!!.powers!!.nextPower
+        assertNotNull(shown)
+        val peerPowers = service.read(b.token, code).snapshot.round!!.powers
+        service = RoomService(database, now::get)
+        assertEquals(shown, service.read(a.token, code).snapshot.round!!.powers!!.nextPower)
+        val ticket = original.round!!.ownTickets.first()
+        while (ticket.numbers.count { it in stored(code).round!!.called } < 5) next(code)
+        val called = stored(code).round!!.called
+        ticket.numbers.filter { it in called }.take(5).forEach { command(a, code, RoomAction.Mark(original.round!!.id, ticket.id, it)) }
+        val earned = service.read(a.token, code).snapshot
+        earned.validateFor(a.playerId)
+        assertEquals(listOf(shown), earned.round!!.powers!!.inventory)
+        assertEquals(peerPowers, service.read(b.token, code).snapshot.round!!.powers)
+        seed(code, a.playerId, earned.round!!.powers!!.copy(inventory = listOf(MatchPower.SHIELD)))
+        val before = service.read(a.token, code).snapshot
+        val request = CommandRequest(id(), before.revision, RoomAction.UsePower(original.round!!.id, ticket.id, MatchPower.SHIELD))
+        val active = service.command(a.token, code, request)
+        active.snapshot.validateFor(a.playerId)
+        assertEquals(setOf(ticket.id), active.snapshot.round!!.powers!!.armedShield)
+        service = RoomService(database, now::get)
+        assertEquals(active, service.command(a.token, code, request))
+        assertEquals("power_unavailable", assertThrows(ApiFailure::class.java) {
+            command(a, code, request.action)
+        }.code)
+    }
+
+    @Test fun `preview matchmaking separates old apps and friend rejection does not charge`() {
+        val a = guest("New"); val b = guest("Old")
+        val modern = service.match(a.token, MatchRequest(id(), 1, rulesVersion = 2, powersEnabled = true, previewPowers = true)).snapshot
+        val legacy = service.match(b.token, MatchRequest(id(), 1, rulesVersion = 2, powersEnabled = true)).snapshot
+        assertNotEquals(modern.code, legacy.code)
+        assertFalse(WireJson.encodeToString(MatchRequest(id(), 1)).contains("previewPowers"))
+        assertFalse(WireJson.encodeToString(MatchPowers()).contains("nextPower"))
+        assertFalse(WireJson.encodeToString(MatchPowers()).contains("armedShield"))
+        assertEquals("update_required", assertThrows(ApiFailure::class.java) {
+            service.match(a.token, MatchRequest(id(), 1, rulesVersion = 2, powersEnabled = true))
+        }.code)
+        val host = guest("Host"); val joiner = guest("Joiner")
+        val friends = service.match(host.token, MatchRequest(id(), 1, friendTable = true, rulesVersion = 2, powersEnabled = true, previewPowers = true)).snapshot
+        val balance = service.wallet(joiner.token)
+        assertEquals("update_required", assertThrows(ApiFailure::class.java) {
+            service.match(joiner.token, MatchRequest(id(), 1, friendTable = true, friendCode = friends.code, rulesVersion = 2, powersEnabled = true))
+        }.code)
+        assertEquals(balance, service.wallet(joiner.token))
     }
 
     @Test fun `power lobby has real staggered practice seats and never mixes with classic`() {

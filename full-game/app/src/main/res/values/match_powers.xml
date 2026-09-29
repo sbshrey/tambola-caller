@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="power_shield_activate_detail">Tap a ready Shield to protect the shown ticket against one false prize claim. Activate it before claiming. Each ticket can be protected once per round; an unprotected false claim discards only that ticket.</string>
+    <string name="power_no_visible_target">Try another ticket page</string>
     <string name="power_marked_number">%1$d marked</string>
     <string name="power_wrong_mark">Not called yet — mark rejected.</string>
     <string name="power_shield">Shield</string>

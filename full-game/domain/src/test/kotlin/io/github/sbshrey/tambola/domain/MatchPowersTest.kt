@@ -5,6 +5,41 @@ import org.junit.Test
 import java.util.Random
 
 class MatchPowersTest {
+    @Test fun `preview grants the shown power only on fifth unique mark and replaces it once`() {
+        var rolls = 0
+        var powers = MatchPowers(nextPower = MatchPower.SHIELD)
+        val numbers = ticket.numbers
+        numbers.take(4).forEach { powers = powers.mark(ticket, it, numbers) { error("Too early") } }
+        assertEquals(MatchPower.SHIELD, powers.nextPower)
+        assertTrue(powers.inventory.isEmpty())
+        powers = powers.mark(ticket, numbers[4], numbers) { rolls++; MatchPower.AUTO_DAB }
+        assertEquals(listOf(MatchPower.SHIELD), powers.inventory)
+        assertEquals(MatchPower.AUTO_DAB, powers.nextPower)
+        assertEquals(powers, powers.mark(ticket, numbers[4], numbers) { error("Duplicate rerolled") })
+        assertEquals(1, rolls)
+        val full = powers.copy(inventory = listOf(MatchPower.SHIELD, MatchPower.SHIELD))
+        var blocked = full
+        numbers.drop(5).take(5).forEach { blocked = blocked.mark(ticket, it, numbers) { error("Full inventory rerolled") } }
+        assertEquals(MatchPower.AUTO_DAB, blocked.nextPower)
+        assertEquals(PowerNotice.FULL, blocked.notice)
+    }
+
+    @Test fun `new shield must be armed and protects its own ticket exactly once`() {
+        val ready = MatchPowers(nextPower = MatchPower.AUTO_DAB, inventory = listOf(MatchPower.SHIELD))
+        assertEquals(setOf(ticket.id), ready.falseClaim(ticket.id).discarded)
+        val armed = ready.activate(ticket, MatchPower.SHIELD, emptyList(), 1)
+        assertEquals(setOf(ticket.id), armed.armedShield)
+        assertTrue(armed.inventory.isEmpty())
+        assertEquals(setOf(tickets.last().id), armed.falseClaim(tickets.last().id).discarded)
+        val protected = armed.falseClaim(ticket.id)
+        assertTrue(protected.discarded.isEmpty())
+        assertTrue(protected.armedShield.isEmpty())
+        assertEquals(PowerNotice.SHIELD_SAVED, protected.notice)
+        assertEquals(setOf(ticket.id), protected.falseClaim(ticket.id).discarded)
+        assertThrows(IllegalArgumentException::class.java) {
+            protected.copy(inventory = listOf(MatchPower.SHIELD)).activate(ticket, MatchPower.SHIELD, emptyList(), 2)
+        }
+    }
     private val tickets = Round.create(listOf(Player("p", "Mira")), RoundSettings(ticketsPerPlayer = 2, manualClaims = true), Random(51)).tickets
     private val ticket = tickets.first()
     @Test fun `five unique correct dabs drop once and a full inventory skips a milestone`() {

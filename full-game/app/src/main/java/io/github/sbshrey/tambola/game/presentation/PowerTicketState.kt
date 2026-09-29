@@ -10,6 +10,7 @@ internal fun MatchPowers.ticketState(ticketId: String, power: MatchPower, remain
     ticketId in discarded -> PowerTicketState.DISCARDED
     power == MatchPower.AUTO_DAB && remainingSeconds > 0 -> PowerTicketState.ACTIVE
     power == MatchPower.PRIZE_BONUS && ticketId in armedBonus -> PowerTicketState.ARMED
+    power == MatchPower.SHIELD && ticketId in armedShield -> PowerTicketState.ARMED
     power in used[ticketId].orEmpty() -> PowerTicketState.USED
     power !in inventory -> PowerTicketState.EMPTY
     else -> PowerTicketState.AVAILABLE

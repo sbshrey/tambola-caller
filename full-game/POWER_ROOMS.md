@@ -1,4 +1,37 @@
-# Power rooms — alpha38
+# Power rooms
+
+## Upcoming power and one-tap activation (protocol 8, awaiting release)
+
+New clients opt into `previewPowers`. At round start the server independently
+chooses and persists each human player's next power. The fifth new correct
+manual mark awards exactly that preview, then selects and persists the next
+preview in the same transaction. Duplicate marks, reconnects and restarts do
+not reroll it. A full two-power inventory skips that milestone and retains its
+preview. The draw order and prize pool do not change.
+
+The landscape header shows the charging icon and mark progress, then a glowing
+one-tap action. It uses the first queued power on an eligible visible ticket,
+preferring the last marked visible ticket. If no visible ticket is eligible,
+it asks the player to change ticket pages instead of targeting a hidden ticket.
+Reduced-motion mode uses a steady highlight.
+
+Shield now requires activation before a claim and protects only its selected
+ticket, once. A ready but unactivated Shield does not protect a false claim.
+Existing rooms retain their passive Shield behavior. Optional fields are
+omitted from legacy wire payloads, and matchmaking segregates preview and
+legacy rooms. Friends joining an incompatible version are rejected before a
+purchase; replay preserves the previous table's power capability.
+
+Validated 2026-09-29: 61 domain tests, 44 client tests, 18 focused PostgreSQL
+integration tests, 33 app unit tests, and 3 native UI tests passed with no
+failures or skips. Native checks include preview at zero/four marks, fifth-mark
+unlock, one-tap Shield activation, the following preview, and English/Hindi
+six-ticket layout. English/Hindi parity passed for 894 resources. Debug app and
+instrumentation APKs built successfully. This is source validation, not a
+public server deployment or signed APK release. Deploy the compatible server
+before publishing the upgraded client.
+
+## Historical alpha38 behavior
 
 The Android lobby offers Classic and Power rooms before buying tickets. The server keeps their matchmaking separate. Friends must select the same mode. Existing rules-v1/v2 Classic clients, saved rounds and receipts remain readable; Power rooms use protocol 6 with optional fields omitted from Classic responses.
 

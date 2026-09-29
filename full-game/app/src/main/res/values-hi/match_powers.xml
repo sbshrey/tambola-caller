@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="power_shield_activate_detail">तैयार शील्ड पर टैप करके दिखाए गए टिकट को एक गलत दावे से बचाएँ। दावा करने से पहले इसे चालू करें। हर टिकट को दौर में एक बार बचा सकते हैं; बिना सुरक्षा का गलत दावा केवल उसी टिकट को बाहर करता है।</string>
+    <string name="power_no_visible_target">दूसरे टिकट पेज पर जाएँ</string>
     <string name="power_marked_number">%1$d पर निशान लगा है</string>
     <string name="power_wrong_mark">यह नंबर अभी नहीं पुकारा गया — निशान अस्वीकार।</string>
     <string name="power_shield">शील्ड</string>

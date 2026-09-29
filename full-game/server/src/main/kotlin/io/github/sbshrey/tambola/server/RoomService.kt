@@ -17,6 +17,7 @@ internal const val OPEN_EXPANDED_LOBBY_SQL = """SELECT payload FROM rooms WHERE 
     AND (payload::jsonb->'options'->>'coinRulesVersion')::integer = 2
     AND coalesce((payload::jsonb->'options'->>'powersEnabled')::boolean, false) = false
     AND coalesce((payload::jsonb->'options'->>'largeMatch')::boolean, false) = false
+    AND coalesce((payload::jsonb->'options'->>'previewPowers')::boolean, false) = false
     ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
 
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
@@ -160,6 +161,7 @@ class RoomService(
             val saved = if (existing != null) {
                 demand(request.powersEnabled || !existing.options.powersEnabled, 409, "update_required", "Rejoin this Power room with the updated app.")
                 demand(request.largeMatch || !existing.options.largeMatch, 409, "update_required", "Rejoin this larger room with the updated app.")
+                demand(request.previewPowers || !existing.options.previewPowers, 409, "update_required", "Update the app to rejoin this Power room.")
                 demand(request.rulesVersion >= existing.options.coinRulesVersion, 409, "update_required", "Update the app to rejoin this table.")
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
@@ -183,6 +185,7 @@ class RoomService(
                 val waiting = when {
                     joinCode != null -> load(connection, joinCode).also {
                         demand(it.options.powersEnabled == request.powersEnabled, 409, "power_room_mismatch", "Choose the same Classic or Power mode as your friends.")
+                        demand(it.options.previewPowers == request.previewPowers, 409, "update_required", "Everyone at this Power table needs the same app version.")
                         demand(it.options.coinRulesVersion == request.rulesVersion, 409, "update_required", "Everyone at a friends table needs the same game rules. Update the app and create a new table.")
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
                         demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
@@ -191,10 +194,11 @@ class RoomService(
                     else -> connection.query(if (request.rulesVersion == 2) OPEN_EXPANDED_LOBBY_SQL.let {
                         it.replace("'powersEnabled')::boolean, false) = false", "'powersEnabled')::boolean, false) = ${request.powersEnabled}")
                             .replace("'largeMatch')::boolean, false) = false", "'largeMatch')::boolean, false) = ${request.largeMatch}")
+                            .replace("'previewPowers')::boolean, false) = false", "'previewPowers')::boolean, false) = ${request.previewPowers}")
                     } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
-                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch).let {
+                    coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch, previewPowers = request.previewPowers).let {
                         if (request.friendTable || request.powersEnabled || request.largeMatch) it.copy(computerPlayers = 0) else it
                     }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
@@ -591,7 +595,7 @@ class RoomService(
                 val powers = room.matchPowers[actor] ?: MatchPowers()
                 demand(action.ticketId !in powers.discarded, 409, "ticket_discarded", "This ticket was discarded for this round.")
                 val next = powers.mark(requireNotNull(ticket), action.number, game.called) {
-                    MatchPower.entries[java.security.SecureRandom().nextInt(MatchPower.entries.size)]
+                    randomMatchPower()
                 }
                 room.copy(matchPowers = room.matchPowers + (actor to next))
             }
@@ -602,7 +606,7 @@ class RoomService(
                     409, "power_round_changed", "Check the current round before using a power.")
                 val ticket = game.tickets.firstOrNull { it.id == action.ticketId && it.playerId == actor }
                 val powers = room.matchPowers[actor] ?: MatchPowers()
-                demand(ticket != null && action.ticketId !in powers.discarded && action.power != MatchPower.SHIELD &&
+                demand(ticket != null && action.ticketId !in powers.discarded && (action.power != MatchPower.SHIELD || room.options.previewPowers) &&
                     action.power in powers.inventory && action.power !in powers.used[action.ticketId].orEmpty(),
                     409, "power_unavailable", "That power cannot be used on this ticket.")
                 room.copy(matchPowers = room.matchPowers + (actor to powers.activate(requireNotNull(ticket), action.power, game.called, now)))

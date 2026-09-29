@@ -30,6 +30,7 @@ import kotlinx.serialization.EncodeDefault
     @EncodeDefault(EncodeDefault.Mode.NEVER) val powersEnabled: Boolean = false,
     /** Capability opt-in: older apps cannot decode more than five computer seats. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val previewPowers: Boolean = false,
 ) {
     init {
         require(tickets in 1..6)
@@ -37,6 +38,7 @@ import kotlinx.serialization.EncodeDefault
         require(powerUp == PowerUp.NONE || rulesVersion == 2)
         require(!powersEnabled || (rulesVersion == 2 && powerUp == PowerUp.NONE))
         require(!largeMatch || (rulesVersion == 2 && !friendTable))
+        require(!previewPowers || powersEnabled)
         require(friendCode == null || (friendTable && friendCode.matches(Regex("[A-HJ-NP-Z2-9]{8}"))))
         require(previousFriendRound == null || (friendTable && friendCode != null && previousFriendRound.isNotBlank()))
     }
