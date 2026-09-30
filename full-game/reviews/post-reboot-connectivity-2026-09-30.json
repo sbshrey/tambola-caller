@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-30T02:42:56.132Z",
+  "origin": "https://holland-degrees-api-baking.trycloudflare.com",
+  "checks": [
+    "concurrent 50000 starter plus day-one reward exactly once",
+    "two friends with rules v2 and ten-second calls",
+    "50-seat capacity and two winners per category",
+    "six fixed category pools",
+    "persisted power-up selections",
+    "exact purchase/leave retry and full refund",
+    "configured reward intent retries without unverified credit",
+    "QA profiles deleted"
+  ],
+  "scope": "Public HTTPS from the host PC, lobby and economy checks; no physical-phone acceptance or completed round claim",
+  "bootLocal": "2026-09-30T08:07:30+05:30",
+  "directoryPublishedUtc": "2026-09-30T02:38:29Z",
+  "directoryObservedReadyUtc": "2026-09-30T02:42:44Z",
+  "cause": "GitHub raw directory temporarily served the previous quick-tunnel address after reboot; old address returned HTTP 530",
+  "recovery": "Existing supervisors started normally; directory propagated and unmodified public acceptance passed using normal app discovery",
+  "manualServiceRestartRequired": false,
+  "physicalPhoneVerified": false
+}
