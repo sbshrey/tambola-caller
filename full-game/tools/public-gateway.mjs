@@ -12,6 +12,8 @@ export function createGateway({ upstreamPort = 18080, maxStreams = 80 } = {}) {
     if (req.method === 'GET' && path.length <= 4120 && /^\/admob\/reward\?[A-Za-z0-9%_.~=&+\/-]+$/.test(path)) return true;
     if (req.method === 'GET' && /^\/v1\/wallet\/ad-intents\/[a-f0-9-]{36}$/.test(path)) return true;
     if (req.method === 'GET' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/reactions$/.test(path)) return true;
+    if (req.method === 'GET' && /^\/v1\/bingo\/rooms\/B-[A-Z2-9]{8}$/.test(path)) return true;
+    if (req.method === 'POST' && (path === '/v1/bingo/matches' || /^\/v1\/bingo\/rooms\/B-[A-Z2-9]{8}\/commands$/.test(path))) return true;
     if (req.method === 'GET') return path === '/health/ready' || path === '/v1/wallet' || /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}(?:\?after=\d+)?$/.test(path);
     return req.method === 'POST' && (/^\/v1\/(guests|matches|wallet\/(refill|login-rewards|ad-intents)|rooms)$/.test(path) ||
       /^\/v1\/guests\/me\/(device|session|logout|delete)$/.test(path) || /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/(join|commands|reactions)$/.test(path));

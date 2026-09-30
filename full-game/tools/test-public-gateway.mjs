@@ -75,6 +75,16 @@ test('public ingress bounds routes and bodies, strips forwarded headers and carr
     assert.equal((await fetch(origin + '/v1/rooms/ABCD2345/reactions')).status, 200);
     assert.equal((await fetch(origin + '/v1/rooms/ABCD2345/reactions', { method: 'POST' })).status, 200);
     assert.equal((await fetch(origin + '/v1/rooms/ABCD2345/reactions?player=x')).status, 404);
+    for (const [path, method] of [['/v1/bingo/matches', 'POST'], ['/v1/bingo/rooms/B-ABCD2345', 'GET'], ['/v1/bingo/rooms/B-ABCD2345/commands', 'POST']]) {
+      assert.equal((await fetch(origin + path, { method, headers: { authorization: 'Bearer bingo-test' } })).status, 200);
+      assert.equal(seen.at(-1).path, path);
+      assert.equal(seen.at(-1).headers.authorization, 'Bearer bingo-test');
+    }
+    for (const [path, method] of [['/v1/bingo/matches', 'GET'], ['/v1/bingo/rooms/ABCD2345', 'GET'],
+      ['/v1/bingo/rooms/B-ABCD2340', 'GET'], ['/v1/bingo/rooms/B-ABCD2345?token=x', 'GET'],
+      ['/v1/bingo/rooms/B-ABCD2345/events', 'GET'], ['/v1/bingo/rooms/B-ABCD2345/join', 'POST'],
+      ['/v1/bingo/rooms/B-ABCD2345/commands?player=x', 'POST']])
+      assert.equal((await fetch(origin + path, { method })).status, 404);
     for (let player = 0; player < 50; player++) {
     const socket = createConnection(gateway.address().port, '127.0.0.1');
     await once(socket, 'connect');
