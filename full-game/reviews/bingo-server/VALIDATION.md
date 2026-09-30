@@ -26,4 +26,12 @@ Passed on 2026-09-30:
 
 The broad regression invocation completed in 3m 24s. After adding the rollback and restricted-runtime Bingo cases, the final focused invocation passed in 43s. No test failures or errors were reported.
 
-Remaining acceptance includes HTTP/client integration, native online Bingo and reconnection, broader compatibility checks, live deployment and a same-signer APK/update acceptance run. The multi-game goal remains active.
+## Client transport checkpoint
+
+The shared `HttpRoomApi` now provides Bingo purchase, read and command operations using the existing bounded authenticated transport. Client validation checks private-card ownership, called numbers and marks, prize economics, draw commitment/reveal and payout totals. Receipt reconciliation preserves newer room and wallet revisions, rejects changed history, and requires explicit room switches.
+
+- All 52 client tests passed, including three Bingo snapshot/reconciliation tests and existing session, wallet, invitation and recovery tests.
+- Two HTTP tests passed through Ktor and the production client adapter: purchase/replay, private six-card read, mark/replay, service restart, leave/refund, authentication, no-store responses, malformed quantities, forged prices/variants and legacy route isolation.
+- The seven Bingo service tests also passed. The complete friends-round test additionally validates the final server projection with the client validator.
+
+Remaining acceptance includes native online Bingo lobby/play and durable reconnection integration, broader compatibility checks, live deployment and a same-signer APK/update acceptance run. The multi-game goal remains active.

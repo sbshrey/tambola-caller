@@ -2,6 +2,7 @@ package io.github.sbshrey.tambola.server
 
 import io.github.sbshrey.tambola.protocol.*
 import io.github.sbshrey.tambola.domain.BingoPattern
+import io.github.sbshrey.tambola.client.validateFor
 import kotlinx.serialization.encodeToString
 import org.junit.Assert.*
 import org.junit.Test
@@ -135,6 +136,7 @@ class BingoRoomServiceTest : PostgresTest() {
         }
         now.set(stored(room.code).nextDrawAt!!); service.tick()
         val finished = service.bingo.read(actors[0].token, room.code)
+        finished.validateFor(actors[0].playerId)
         assertEquals(RoomPhase.FINISHED, finished.phase)
         assertEquals(75, finished.round!!.revealedOrder!!.size)
         assertEquals(initial.drawCommitment, bingoCommitment(stored(room.code).round!!, finished.round!!.revealedNonce!!))

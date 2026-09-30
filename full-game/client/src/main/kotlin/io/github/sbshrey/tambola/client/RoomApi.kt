@@ -51,6 +51,9 @@ interface RoomApi : AutoCloseable {
     suspend fun loginRewards(token: String): LoginRewards = throw UnsupportedOperationException("Login rewards unavailable")
     suspend fun refill(token: String, request: RefillRequest): WalletView
     suspend fun match(token: String, request: MatchRequest): RoomUpdate
+    suspend fun bingoMatch(token: String, request: BingoMatchRequest): BingoRoomView = throw UnsupportedOperationException("Bingo unavailable")
+    suspend fun bingoRead(token: String, code: String): BingoRoomView = throw UnsupportedOperationException("Bingo unavailable")
+    suspend fun bingoCommand(token: String, code: String, request: BingoCommandRequest): BingoRoomView = throw UnsupportedOperationException("Bingo unavailable")
     suspend fun create(token: String, request: CreateRoomRequest): RoomUpdate
     suspend fun join(token: String, code: String): RoomUpdate
     suspend fun read(token: String, code: String, after: Long? = null): RoomUpdate
@@ -74,6 +77,10 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     private fun roomPath(code: String): String {
         require(Regex("[A-HJ-NP-Z2-9]{8}").matches(code))
         return "/v1/rooms/$code"
+    }
+    private fun bingoPath(code: String): String {
+        require(Regex("B-[A-Z2-9]{8}").matches(code))
+        return "/v1/bingo/rooms/$code"
     }
     private suspend fun text(path: String, token: String? = null, body: String? = null, post: Boolean = false): String =
         client.prepareRequest(origin() + path) {
@@ -127,6 +134,12 @@ class HttpRoomApi(endpoint: String, allowLocalHttp: Boolean = false,
     }
     override suspend fun refill(token: String, request: RefillRequest): WalletView = WireJson.decodeFromString(text("/v1/wallet/refill", token, WireJson.encodeToString(request), true))
     override suspend fun match(token: String, request: MatchRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/matches", token, WireJson.encodeToString(request), true))
+    override suspend fun bingoMatch(token: String, request: BingoMatchRequest): BingoRoomView =
+        WireJson.decodeFromString(text("/v1/bingo/matches", token, WireJson.encodeToString(request), true))
+    override suspend fun bingoRead(token: String, code: String): BingoRoomView =
+        WireJson.decodeFromString(text(bingoPath(code), token))
+    override suspend fun bingoCommand(token: String, code: String, request: BingoCommandRequest): BingoRoomView =
+        WireJson.decodeFromString(text(bingoPath(code) + "/commands", token, WireJson.encodeToString(request), true))
     override suspend fun create(token: String, request: CreateRoomRequest): RoomUpdate = WireJson.decodeFromString(text("/v1/rooms", token, WireJson.encodeToString(request), true))
     override suspend fun join(token: String, code: String): RoomUpdate = WireJson.decodeFromString(text(roomPath(code) + "/join", token, post = true))
     override suspend fun read(token: String, code: String, after: Long?): RoomUpdate {
