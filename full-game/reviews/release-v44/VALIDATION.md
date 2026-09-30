@@ -1,6 +1,6 @@
 # Tambola Jalsa v44 release acceptance
 
-Candidate: version 44, `0.44.0-alpha44-internet-beta`, package `io.github.sbshrey.tambola.game.beta`.
+Published: [Tambola Jalsa Beta v44](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha44-multi-game), version 44, `0.44.0-alpha44-internet-beta`, package `io.github.sbshrey.tambola.game.beta`. Release source: `fc3de54` on `shrey/tambola-jalsa`.
 
 The APK adds the shared game home and online/practice Bingo. It retains the v43 Tambola layout: called numbers above tickets, labelled Tickets / Board tabs, circular eligible-mark prize progress, power progress and confirmed-win confetti.
 
@@ -12,7 +12,7 @@ The APK adds the shared game home and online/practice Bingo. It retains the v43 
 - Installed v43 baseline preparation passed in 64.838 seconds: authenticated six-ticket purchase/refund, 50,500-coin saved wallet and six-ticket preference. The test owns the disposable profile; it does not clear application data.
 - See `../bingo-native/VALIDATION.md` and `../bingo-online-native/VALIDATION.md` for practice, online six-card play, recovery, results, Hindi large text and landscape evidence.
 
-## Pending release gates
+## Server and compatibility acceptance
 
 The complete regression gate passed: 75 domain, 53 client and 215 server tests, with zero failures, errors or skips. The server suite and refreshed distribution completed in 16m 2s; domain/client tasks reused their current passing results. This includes migrations, actual runtime database roles, receipts, settlement, deletion/restore and variant isolation.
 
@@ -20,8 +20,15 @@ The production PC host was upgraded from committed source `ca44b3adec720e55b9884
 
 All six public verification groups passed through `https://play.thefinxperts.com`: readiness, legacy Tambola purchase/retry/refund, Bingo purchase retry, cross-game isolation/private six-card snapshots, actual worker draw/authenticated mark, and temporary-profile deletion. See `host-verification.json`.
 
-GitHub publication and actual v43-to-v44 updater/profile acceptance are pending.
-
 The installed v43 APK also passed an authenticated six-ticket friends-table purchase/refund against the upgraded public host in 33.023 seconds (`legacy-host.txt`), preserving its profile and selection. v42 and v43 client/protocol/online transport sources have no differences; v42 compatibility is supported by that source comparison and legacy regression coverage, not a separate installed-v42 run.
+
+## Published updater acceptance
+
+- GitHub's asset size and SHA-256 match the immutable prepared APK. `published-updater.json` records the exact download and signing metadata.
+- The installed v43 app detected the published release, downloaded and validated the APK, opened Android confirmation and installed v44 through its own updater in 43.510 seconds (`updater-test.txt`). The APK pulled back from the emulator has the same SHA-256 as the GitHub asset.
+- Profile acceptance passed in 21.528 seconds (`profile-retention-test.txt`): saved 50,500-coin wallet, six-ticket preference and session survived; authenticated Tambola purchase/refund and six-card Bingo friends-table purchase/refund succeeded; six-card Bingo practice paging and return to Tambola worked; the owned online profile was deleted afterward.
+- Screenshots show the update offer, Android confirmation, retained Tambola lobby, online Bingo table and sixth practice card. These are emulator screenshots, not phone captures.
+
+Updater-enabled installations check on an eligible lobby visit or manually in Settings. Users confirm download and Android installation; this is not silent installation or a push-notification service.
 
 No physical-phone test or sustained concurrency/load test has been performed. Native acceptance uses the owned Android emulator; recovery acceptance uses fresh ViewModels and disposable databases, with test clock advancement for complete-round settlement.

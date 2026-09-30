@@ -1,6 +1,6 @@
 # Multi-game app direction
 
-Status: active implementation goal. The 75-ball Bingo domain, native practice lifecycle, shared home/profile navigation, card paging, local save/resume and results flow are implemented and emulator-tested. The online backend includes isolated matchmaking, persisted rooms, private snapshots and shared-wallet settlement. Native online lobby/play and saved-session integration now pass an emulator-to-PostgreSQL purchase, mark and restore test. Online results, dropped-response recovery and large-text landscape acceptance also pass. Legacy compatibility and multi-game deployment/release gates are still outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
+Status: first multi-game release complete. Tambola and 75-ball Bingo are playable in published beta v44, with a shared home/profile/wallet, practice and online play, one to six cards, save/resume, claims and ranked results. The upgraded PC host and permanent public gateway passed live checks; the published v43-to-v44 in-app update preserved the profile, wallet and preferences. See `reviews/release-v44/VALIDATION.md` for the exact source, tests, APK and verification boundaries. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
 
 ## Product and home
 
@@ -42,13 +42,13 @@ Commit and push each validated slice to GitHub. Publish a new versioned APK only
 - [x] Improved native play layouts with readable 5×5 Bingo cards, one to six cards with arrows, current call/history, pattern previews and available/total prize claims.
 - [x] Complete Bingo practice rounds, save/resume, mark validation, prizes and ranked results with current-player highlighting.
 - [x] Server-authoritative Bingo rooms sharing authenticated identity and wallet, variant-isolated matchmaking/invitations, progressive 30–50-player rosters with 1–6 cards, persisted state, reconnect and exactly-once purchase/refund/settlement (source and isolated integration acceptance; deployment tracked below).
-- [ ] Old Tambola saves, rooms, invitations and v42 clients remain compatible; no Bingo state leaks into Tambola rooms.
-- [ ] Rules tests, persistence/migration tests, server transaction/isolation tests, native six-card and navigation acceptance, and upgraded profile preservation all pass.
-- [ ] Deploy validated server, publish same-signer versioned GitHub APK, verify existing in-app updater installs it, and record physical-device versus emulator validation boundaries.
+- [x] Old Tambola saves, rooms and invitations remain compatible; no Bingo state leaks into Tambola rooms. Installed v43 passed live compatibility; v42 has identical transport/protocol sources and legacy regression coverage, without a separate installed-v42 test.
+- [x] Rules tests, persistence/migration tests, server transaction/isolation tests, native six-card and navigation acceptance, and upgraded profile preservation all pass.
+- [x] Deploy validated server, publish same-signer versioned GitHub APK, verify existing in-app updater installs it, and record physical-device versus emulator validation boundaries.
 
 Ludo, Snakes and Ladders, and Poker are later additions, not nonfunctional tiles or completion requirements for this first multi-game release. No live-release change is implied by a source-only checkpoint.
 
-## Native practice checkpoint
+## Historical source checkpoints
 
 See `reviews/bingo-native/VALIDATION.md` for emulator evidence. This is source progress only; the published v43 APK still contains Tambola only. Remaining unchecked delivery gates must be verified for the eventual multi-game release.
 
@@ -56,4 +56,4 @@ See `reviews/bingo-server/VALIDATION.md` for the backend checkpoint and remainin
 
 See `reviews/bingo-online-native/VALIDATION.md` for native online purchase, six-card paging, marked-card restoration and reconnect evidence. Public v43 remains unchanged until release acceptance is complete.
 
-Native final-call claims/results, lost committed purchase/mark responses, Play again preference retention and Hindi 200% landscape online layout now pass. Broader legacy-client compatibility and the deployment/APK upgrade gates remain open.
+Native final-call claims/results, lost committed purchase/mark responses, Play again preference retention and Hindi 200% landscape online layout pass. The source-only caveats above describe those earlier checkpoints; the final v44 validation report closes deployment and APK-upgrade acceptance. Physical-phone and sustained-load tests remain outside the demonstrated evidence.
