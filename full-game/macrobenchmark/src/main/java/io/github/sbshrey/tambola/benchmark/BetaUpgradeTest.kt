@@ -102,6 +102,14 @@ class BetaUpgradeTest {
         marker.delete()
     }
 
+    @Test fun verifyV43AgainstMultiGameHost() {
+        start(43)
+        check(marker.readText() == "v43:50500:6")
+        wallet(50500); assertTrue(node("buy-tickets-6").isChecked)
+        tap("play-friends"); button("Create table"); node("cancel-match"); wallet(49900)
+        leaveWaitingRoom(); wallet(50500)
+    }
+
     @Test fun verifyV44ProfileAndCleanUp() {
         start(44)
         check(marker.readText() == "v43:50500:6") { "Only verify the owned v43 fixture" }

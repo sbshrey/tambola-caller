@@ -11,4 +11,4 @@ Choose Tambola or 75-ball Bingo from one shared home screen, with the same playe
 
 This update keeps the existing Android package, signing identity and saved profile. Install it through the existing in-app updater and confirm Android's installation prompt. Practice is available offline; online tables require the room server.
 
-Release candidate notes. Publication and update acceptance are recorded separately in the validation report.
+Retains the clearer Tambola play screen: called numbers above tickets, Tickets / Board tabs, circular prize-progress controls and confirmed-win confetti.
