@@ -14,6 +14,8 @@ The APK adds the shared game home and online/practice Bingo. It retains the v43 
 
 ## Pending release gates
 
-The complete server regression suite, production migration/health checks, public multi-game checks, GitHub publication and actual v43-to-v44 updater/profile acceptance are pending. This candidate report is not evidence of deployment or publication.
+The complete regression gate passed: 75 domain, 53 client and 215 server tests, with zero failures, errors or skips. The server suite and refreshed distribution completed in 16m 2s; domain/client tasks reused their current passing results. This includes migrations, actual runtime database roles, receipts, settlement, deletion/restore and variant isolation.
+
+Production migration/health checks, public multi-game checks, GitHub publication and actual v43-to-v44 updater/profile acceptance are pending. This candidate report is not evidence of deployment or publication.
 
 No physical-phone test or sustained concurrency/load test has been performed. Native acceptance uses the owned Android emulator; recovery acceptance uses fresh ViewModels and disposable databases, with test clock advancement for complete-round settlement.

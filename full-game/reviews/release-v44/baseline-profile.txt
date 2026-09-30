@@ -1,0 +1,8 @@
+
+io.github.sbshrey.tambola.benchmark.BetaUpgradeTest:.
+
+Time: 64.838
+
+OK (1 test)
+
+
