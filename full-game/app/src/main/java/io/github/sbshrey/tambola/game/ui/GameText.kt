@@ -26,6 +26,7 @@ class GameText(private val resources: Resources) {
     fun date(time: Long): String = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale).format(Date(time))
     fun screen(value: Screen): String = invoke(when (value) {
         Screen.HOME -> R.string.screen_home
+        Screen.BINGO -> R.string.bingo_title
         Screen.SETUP -> R.string.screen_setup
         Screen.GAME -> R.string.screen_game
         Screen.RESULTS -> R.string.screen_results

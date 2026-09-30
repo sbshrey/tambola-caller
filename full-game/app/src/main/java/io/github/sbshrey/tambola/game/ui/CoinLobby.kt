@@ -32,7 +32,7 @@ private val CoinGold = Color(0xFFF4C879)
 @Composable
 fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit, resume: () -> Unit, settings: () -> Unit,
     reducedMotion: Boolean = false, friends: (Int, String?) -> Unit = { tickets, code -> model.play(tickets, true, code) },
-    replayFriends: (Int) -> Unit = model::replayFriends, reconnect: () -> Unit = model::reconnect) {
+    replayFriends: (Int) -> Unit = model::replayFriends, reconnect: () -> Unit = model::reconnect, home: (() -> Unit)? = null) {
     val words = gameText()
     val room = state.room
     val coins = room?.coins
@@ -44,11 +44,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
     val enabled = !state.adActive && !state.loading && !state.busy && !state.pending && !state.storageFailure && !state.sessionExpired && state.available
     var chosenTickets by rememberSaveable(state.preferredTickets) { mutableIntStateOf(state.preferredTickets) }
     var profile by rememberSaveable { mutableStateOf(false) }
-    var profileName by rememberSaveable { mutableStateOf("") }
-    var profileAvatar by rememberSaveable { mutableIntStateOf(0) }
-    var delete by remember { mutableStateOf(false) }
     var reset by remember { mutableStateOf(false) }
-    var gameData by rememberSaveable { mutableStateOf(false) }
     var friendDialog by rememberSaveable { mutableStateOf(false) }
     var powerUps by remember { mutableStateOf(false) }
     var resultDetails by remember { mutableStateOf(false) }
@@ -64,6 +60,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
         LobbyBackdrop(Modifier.matchParentSize())
         Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (home != null) IconButton(onClick = home, modifier = Modifier.testTag("games-home").semantics { contentDescription = words(R.string.ui_home) }) { Text("←") }
                 if (compactBrand) {
                     Text("T", color = GameNightPalette.coral, fontSize = 22.sp, fontWeight = FontWeight.Black,
                         modifier = Modifier.weight(1f).semantics { contentDescription = words(R.string.ui_tambola_together) })
@@ -202,37 +199,13 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
         }
       }
     }
-    if (profile && state.name == null) LobbyPlayerDialog(profileName, profileAvatar, enabled,
-        changeName = { if (it.length <= 40) profileName = it }, chooseAvatar = { profileAvatar = it },
-        save = { profile = false; model.register(profileName, profileAvatar) }, close = { profile = false }, openData = { gameData = true })
-    else if (profile) AlertDialog(onDismissRequest = { profile = false }, title = { Text(state.name ?: words(R.string.coin_profile)) }, text = {
-        Column(Modifier.testTag("coin-profile-scroll").verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(words(R.string.beta_coins_grant, COIN_BETA_BALANCE), fontWeight = FontWeight.Bold)
-            state.loginRewards?.let { reward ->
-                Text(words(R.string.daily_coins_collected, reward.day, reward.coins))
-            }
-            Text(words(R.string.daily_coins_rules))
-            DAILY_COIN_REWARDS.forEachIndexed { index, amount ->
-                Text(words(R.string.daily_coins_day, index + 1, amount))
-            }
-            Text(words(R.string.coin_free))
-            Text(words(R.string.coin_ties))
-            if (state.name != null) RewardedCoins(enabled, model)
-            TextButton(onClick = { profile = false; gameData = true }) { Text(words(R.string.privacy_open)) }
-            if (state.name != null) TextButton(onClick = { profile = false; delete = true }, enabled = !state.busy && !state.pending && !state.storageFailure) { Text(words(R.string.ui_delete_online_profile)) }
-        }
-    }, confirmButton = { TextButton(onClick = { profile = false }) { Text(words(R.string.ui_got_it)) } })
-    if (delete) AlertDialog(onDismissRequest = { delete = false }, title = { Text(words(R.string.ui_delete_online_profile)) },
-        text = { Text(words(R.string.ui_this_permanently_removes_your_service_profile_and_access)) },
-        confirmButton = { TextButton(onClick = { delete = false; model.deleteProfile() }) { Text(words(R.string.ui_delete_online_profile)) } },
-        dismissButton = { TextButton(onClick = { delete = false }) { Text(words(R.string.ui_keep_playing)) } })
+    if (profile) SharedPlayerProfile(state, model) { profile = false }
     if (reset) AlertDialog(onDismissRequest = { reset = false }, title = { Text(words(R.string.ui_reset_online_data)) },
         text = { Text(words(R.string.coin_reset_warning)) },
         confirmButton = { TextButton(onClick = { reset = false; model.resetLocalData() }) { Text(words(R.string.ui_reset_online_data)) } },
         dismissButton = { TextButton(onClick = { reset = false }) { Text(words(R.string.ui_keep_playing)) } })
     state.error?.let { error -> AlertDialog(onDismissRequest = model::clearError, title = { Text(words(R.string.ui_online_play)) },
         text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
-    if (gameData) GameDataDialog { gameData = false }
     if (friendDialog) FriendEntryDialog(tickets, cost, enabled,
         enter = { code -> friendDialog = false; friends(tickets, code) }, close = { friendDialog = false })
     if (powerUps) ArenaDialog(words(R.string.powerup_title), { powerUps = false }) {

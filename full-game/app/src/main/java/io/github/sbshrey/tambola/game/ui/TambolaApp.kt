@@ -33,8 +33,10 @@ import io.github.sbshrey.tambola.game.presentation.WinMoment
 
 @Composable
 fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiState, online: OnlineViewModel,
+    bingoState: BingoUiState, bingo: BingoViewModel,
     invitation: RoomInviteState = RoomInviteState(), dismissInvitation: () -> Unit = {}) {
     val words = gameText()
+    var profile by rememberSaveable { mutableStateOf(false) }
     var roomDetails by rememberSaveable(onlineState.room?.round?.id) { mutableStateOf(false) }
     BackHandler(state.screen != Screen.HOME && state.ruleDraft == null) { model.navigate(Screen.HOME) }
     BackHandler(roomDetails && state.screen == Screen.ONLINE) { roomDetails = false }
@@ -43,7 +45,13 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
         invitation.revision.takeIf { state.screen == Screen.ONLINE },
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
     Surface(Modifier.fillMaxSize().testTag("app-background").semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
-        if (!state.loading && state.screen == Screen.SETTINGS) {
+        if (!state.loading && state.screen == Screen.BINGO) {
+            BingoScreen(bingoState, bingo, onlineState.name, state.preferences.reducedMotion) { model.navigate(Screen.HOME) }
+        } else if (!state.loading && state.screen == Screen.HOME && invitation.code == null) {
+            GameHub(onlineState.name, onlineState.wallet?.balance, onlineState.avatar, state.lastGame, profile = { profile = true },
+                tambola = { model.navigate(Screen.ONLINE) }, bingo = { model.navigate(Screen.BINGO) },
+                settings = { model.navigate(Screen.SETTINGS) })
+        } else if (!state.loading && state.screen == Screen.SETTINGS) {
             GameSettings(state.preferences, model::updatePreferences) { model.navigate(Screen.HOME) }
         } else if (!state.loading && state.screen == Screen.GAME && state.round != null) {
             OfflineArena(state.round, state, model)
@@ -65,7 +73,8 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
             CoinLobby(onlineState, online, play = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets) },
                 friends = { tickets, code -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets, friendTable = true, friendCode = code) },
                 replayFriends = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.replayFriends(tickets) },
-                resume = { roomDetails = false; model.navigate(Screen.ONLINE) }, settings = { model.navigate(Screen.SETTINGS) }, reducedMotion = state.preferences.reducedMotion)
+                resume = { roomDetails = false; model.navigate(Screen.ONLINE) }, settings = { model.navigate(Screen.SETTINGS) }, reducedMotion = state.preferences.reducedMotion,
+                home = { model.navigate(Screen.HOME) })
         } else BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
             // A fixed action panel must not consume the reading area at large text sizes or
             // in a short window. Keep those actions in the same scroll flow as the room.
@@ -82,6 +91,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
                     SoundNotice()
                     when (state.screen) {
                         Screen.HOME -> QuickHome(state, model)
+                        Screen.BINGO -> Unit
                         Screen.SETUP -> Setup(state, model)
                         Screen.GAME -> Unit // Live games use the bounded arena above.
                         Screen.RESULTS -> (state.viewedResult ?: state.round)?.let { Results(it, model) }
@@ -102,6 +112,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
     if (!state.loading && invitation.friendTable && invitation.code != null) FriendInviteDialog(invitation.code, onlineState,
         join = { tickets -> roomDetails = false; model.navigate(Screen.ONLINE); online.play(tickets, true, invitation.code) },
         close = dismissInvitation, resume = { dismissInvitation(); roomDetails = false; model.navigate(Screen.ONLINE) })
+    if (profile) SharedPlayerProfile(onlineState, online) { profile = false }
     if (state.screen == Screen.SETUP && state.ruleDraft != null) CustomRuleEditor(state, model)
     state.error?.let { error -> AlertDialog(onDismissRequest = model::clearError, title = { Text(words(R.string.ui_a_quick_heads_up)) }, text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
 }

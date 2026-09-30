@@ -29,6 +29,7 @@ import io.github.sbshrey.tambola.game.audio.GameAudio
 class MainActivity : AppCompatActivity() {
     private val updates: io.github.sbshrey.tambola.game.updates.UpdateViewModel by viewModels()
     private val model: GameViewModel by viewModels()
+    private val bingo: BingoViewModel by viewModels()
     private val online: OnlineViewModel by viewModels()
     private val invitations: RoomInviteViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity() {
             }
             val state by model.state.collectAsStateWithLifecycle()
             val onlineState by online.state.collectAsStateWithLifecycle()
+            val bingoState by bingo.state.collectAsStateWithLifecycle()
+            LaunchedEffect(state.screen) { if (state.screen != Screen.BINGO) bingo.pause() }
             val inviteState by invitations.state.collectAsStateWithLifecycle()
             LaunchedEffect(inviteState.navigate, inviteState.revision, state.loading, state.saving) {
                 if (inviteState.navigate && !state.loading && !state.saving) {
@@ -56,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             LaunchedEffect(state.screen) { online.setActive(state.screen in setOf(Screen.HOME, Screen.ONLINE) && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
-            val playing = (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
+            val playing = (state.screen == Screen.BINGO && bingoState.round?.status == RoundStatus.PLAYING) || (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
                 (state.screen == Screen.ONLINE && onlineState.room?.round?.status == RoundStatus.PLAYING)
             val ambient = when (state.screen) {
                 Screen.GAME -> state.round?.status == RoundStatus.PLAYING
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 Appearance.LIGHT -> false
                 Appearance.DARK -> true
             }
-            val gameLobby = state.screen == Screen.SETTINGS || state.screen in setOf(Screen.HOME, Screen.ONLINE) &&
+            val gameLobby = state.screen == Screen.SETTINGS || state.screen == Screen.ONLINE &&
                 (onlineState.room == null || onlineState.room?.options?.coinGame == true)
             LaunchedEffect(dark, gameLobby) {
                 val transparent = android.graphics.Color.TRANSPARENT
@@ -87,13 +90,13 @@ class MainActivity : AppCompatActivity() {
             }
             val updateEligible = !state.loading && !onlineState.loading && !state.saving &&
                 state.screen in setOf(Screen.HOME, Screen.ONLINE, Screen.SETTINGS) &&
-                state.round?.status != RoundStatus.PLAYING &&
+                state.round?.status != RoundStatus.PLAYING && bingoState.round?.status != RoundStatus.PLAYING &&
                 onlineState.room?.phase !in setOf(io.github.sbshrey.tambola.protocol.RoomPhase.LOBBY, io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE) &&
                 !onlineState.busy && !onlineState.pending && !onlineState.adActive && inviteState.code == null
             CompositionLocalProvider(LocalRewardedAds provides ads,
                 io.github.sbshrey.tambola.game.updates.LocalAppUpdates provides io.github.sbshrey.tambola.game.updates.UpdateControls(updates, updateEligible)) {
                 TambolaTheme(dark) {
-                    TambolaApp(state, model, onlineState, online, inviteState, invitations::dismiss)
+                    TambolaApp(state, model, onlineState, online, bingoState, bingo, inviteState, invitations::dismiss)
                     io.github.sbshrey.tambola.game.updates.UpdateHost(updates, updateEligible, this)
                 }
             }
@@ -115,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() { super.onResume(); GameAudio.get(application).setForeground(true) }
     override fun onPause() { GameAudio.get(application).setForeground(false); super.onPause() }
     override fun onStop() {
-        if (!isChangingConfigurations) { model.setForeground(false); online.setActive(false) }
+        if (!isChangingConfigurations) { model.setForeground(false); online.setActive(false); bingo.pause() }
         super.onStop()
     }
 }

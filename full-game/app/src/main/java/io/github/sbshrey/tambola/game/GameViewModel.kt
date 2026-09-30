@@ -19,10 +19,11 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-enum class Screen { HOME, SETUP, GAME, RESULTS, HISTORY, SETTINGS, ONLINE, TUTORIAL, BADGES }
+enum class Screen { HOME, BINGO, SETUP, GAME, RESULTS, HISTORY, SETTINGS, ONLINE, TUTORIAL, BADGES }
 data class GameUiState(
     val loading: Boolean = true,
     val screen: Screen = Screen.HOME,
+    val lastGame: Screen? = null,
     val setupDraft: SetupDraft = SetupDraft(),
     val ruleDraft: CustomRuleDraft? = null,
     val originalRuleDraft: CustomRuleDraft? = null,
@@ -44,7 +45,10 @@ class GameViewModel(application: Application, private val savedState: SavedState
     private val repository = LocalGameRepository(database)
     private val preferences = PreferenceStore(application)
     private val mutex = Mutex()
-    private val mutable = MutableStateFlow(GameUiState())
+    private val navigation = application.getSharedPreferences("game-navigation", 0)
+    private val mutable = MutableStateFlow(GameUiState(lastGame = navigation.getString("last-game", null)?.let { name ->
+        Screen.entries.firstOrNull { it.name == name && it in setOf(Screen.ONLINE, Screen.BINGO) }
+    }))
     val state: StateFlow<GameUiState> = mutable.asStateFlow()
     private val audio = CallAudio(application) { mutable.update { it.copy(error = UiMessage(R.string.error_recording)) } }
     private var timer: Job? = null
@@ -83,7 +87,9 @@ class GameViewModel(application: Application, private val savedState: SavedState
 
     fun navigate(screen: Screen) {
         if (screen != Screen.GAME) pause()
-        mutable.update { it.copy(screen = screen, viewedResult = null) }
+        if (screen in setOf(Screen.ONLINE, Screen.BINGO)) navigation.edit().putString("last-game", screen.name).apply()
+        mutable.update { it.copy(screen = screen, viewedResult = null,
+            lastGame = if (screen in setOf(Screen.ONLINE, Screen.BINGO)) screen else it.lastGame) }
     }
     fun setup(mode: GameMode) {
         pause()

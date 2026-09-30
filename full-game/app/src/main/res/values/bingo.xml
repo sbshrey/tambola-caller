@@ -1,0 +1,33 @@
+<resources>
+    <string name="bingo_title">Bingo</string>
+    <string name="hub_choose">What shall we play?</string>
+    <string name="hub_coins">%1$d coins</string>
+    <string name="hub_tambola">90 balls · Play together</string>
+    <string name="hub_bingo">75 balls · Practice</string>
+    <string name="bingo_practice">Practice</string>
+    <string name="bingo_pick_cards">Pick your cards</string>
+    <string name="bingo_deal">Deal cards</string>
+    <string name="bingo_storage_error">Your saved Bingo round could not be loaded or saved. Please reopen the app to retry.</string>
+    <string name="bingo_results">Round results</string>
+    <string name="bingo_practice_player">Practice opponent</string>
+    <string name="bingo_points">%1$d pts</string>
+    <string name="bingo_again">Play again</string>
+    <string name="bingo_called">%1$d/75 called · %2$d players</string>
+    <string name="bingo_history">Calls</string>
+    <string name="bingo_pause">Pause</string>
+    <string name="bingo_start">Play</string>
+    <string name="bingo_free">Free centre</string>
+    <string name="bingo_card_page">Card %1$d / %2$d</string>
+    <string name="bingo_claim">Claim a prize</string>
+    <string name="bingo_incomplete">Mark the called numbers for this pattern first.</string>
+    <string name="bingo_line">One line</string>
+    <string name="bingo_corners">Four corners</string>
+    <string name="bingo_x">X pattern</string>
+    <string name="bingo_blackout">Full card</string>
+    <string name="bingo_marked">Marked</string>
+    <string name="bingo_unmarked">Not marked</string>
+    <string name="bingo_previous_card">Previous card</string>
+    <string name="bingo_next_card">Next card</string>
+    <string name="bingo_reset">Reset practice round</string>
+    <string name="bingo_reset_detail">Discard the saved Bingo practice round and start again? Your profile, coins and Tambola games stay unchanged.</string>
+</resources>

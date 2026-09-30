@@ -1,0 +1,33 @@
+<resources>
+    <string name="bingo_title">बिंगो</string>
+    <string name="hub_choose">कौन सा खेल खेलें?</string>
+    <string name="hub_coins">%1$d सिक्के</string>
+    <string name="hub_tambola">90 नंबर · साथ खेलें</string>
+    <string name="hub_bingo">75 नंबर · अभ्यास</string>
+    <string name="bingo_practice">अभ्यास</string>
+    <string name="bingo_pick_cards">अपने कार्ड चुनें</string>
+    <string name="bingo_deal">कार्ड बाँटें</string>
+    <string name="bingo_storage_error">बिंगो राउंड लोड या सेव नहीं हो सका। फिर कोशिश करने के लिए ऐप दोबारा खोलें।</string>
+    <string name="bingo_results">राउंड के नतीजे</string>
+    <string name="bingo_practice_player">अभ्यास प्रतिद्वंद्वी</string>
+    <string name="bingo_points">%1$d अंक</string>
+    <string name="bingo_again">फिर खेलें</string>
+    <string name="bingo_called">%1$d/75 नंबर · %2$d खिलाड़ी</string>
+    <string name="bingo_history">नंबर</string>
+    <string name="bingo_pause">रोकें</string>
+    <string name="bingo_start">खेलें</string>
+    <string name="bingo_free">मुफ़्त मध्य</string>
+    <string name="bingo_card_page">कार्ड %1$d / %2$d</string>
+    <string name="bingo_claim">इनाम का दावा करें</string>
+    <string name="bingo_incomplete">पहले इस पैटर्न के बुलाए गए नंबर चिन्हित करें।</string>
+    <string name="bingo_line">एक पंक्ति</string>
+    <string name="bingo_corners">चार कोने</string>
+    <string name="bingo_x">X पैटर्न</string>
+    <string name="bingo_blackout">पूरा कार्ड</string>
+    <string name="bingo_marked">चिह्नित</string>
+    <string name="bingo_unmarked">चिह्नित नहीं</string>
+    <string name="bingo_previous_card">पिछला कार्ड</string>
+    <string name="bingo_next_card">अगला कार्ड</string>
+    <string name="bingo_reset">अभ्यास राउंड रीसेट करें</string>
+    <string name="bingo_reset_detail">सहेजा हुआ बिंगो अभ्यास राउंड हटाकर नया शुरू करें? आपकी प्रोफ़ाइल, सिक्के और तंबोला गेम नहीं बदलेंगे।</string>
+</resources>
