@@ -1,6 +1,6 @@
 # Hosting options and reboot recovery
 
-Checked against provider documentation on 2026-09-30. No billing plan, cloud service, DNS record or nameserver has been changed by this assessment.
+Checked against provider documentation on 2026-09-30. The comparison itself did not change billing; the subsequently approved free domain/tunnel setup is recorded below.
 
 ## Free-tier fit
 
@@ -27,7 +27,7 @@ Before promising capacity, measure v41 with 25/50/100 real-equivalent connection
 
 ## Selected direction and remaining work
 
-The user initially requested free/domain-free recovery, then confirmed an existing GoDaddy domain and authorized inspecting it for setup. Prefer a stable game subdomain with a named tunnel on the current PC. Domain registration remains with its current registrar; DNS requirements must be checked after sign-in. Inventory and preserve existing website/email records before any DNS migration. No domain has yet been selected or configured.
+The user initially requested free/domain-free recovery, then confirmed an existing GoDaddy domain and authorized inspecting it for setup. Prefer a stable game subdomain with a named tunnel on the current PC. Domain registration remains with its current registrar; DNS requirements must be checked after sign-in. Inventory and preserve existing website/email records before any DNS migration. The selected domain is thefinxperts.com; the completed setup and APK migration are recorded below.
 
 The current client explicitly trusts only publisher-discovered `*.trycloudflare.com` origins. A permanent hostname therefore also requires a narrowly scoped client allowlist/build configuration update, validation and a new versioned APK. Keep the old quick tunnel for old clients until migration is verified. Do not replace the hostname in the existing discovery feed while v41 rejects custom domains.
 
@@ -45,4 +45,4 @@ The named tunnel `tambola-jalsa-pc` is healthy and routes `https://play.thefinxp
 
 Validation: connector readiness 200, Cloudflare Healthy, public HTTPS readiness protocol 9, and `verify-expanded-beta.mjs --permanent --ads-enabled` passed the lobby/economy checks. During propagation the integration probe used 1.1.1.1's current answer with normal hostname/TLS verification because the local resolver cached NXDOMAIN; a subsequent ordinary curl without a DNS override also returned readiness 200. Evidence is in `reviews/permanent-domain-2026-09-30.json`. No phone acceptance, complete round or reboot test was performed for this tunnel.
 
-The existing quick tunnel and v41 discovery feed remain running. Installed v41 APKs do not use the permanent hostname yet. The client migration and new APK release described above remain outstanding; do not claim that this domain setup updated installed apps.
+The existing quick tunnel and v41 discovery feed remain running. Installed v41 APKs use the old address until users accept the v42 APK update. V42 has now been published as `full-game-alpha42-permanent-server`, with the fixed hostname transport and unchanged saved-profile identity. Publication makes the update discoverable; it does not silently update installed apps. See APP_UPDATES.md and reviews/release-v42 for validation.

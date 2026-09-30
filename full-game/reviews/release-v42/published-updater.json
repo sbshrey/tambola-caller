@@ -1,0 +1,10 @@
+{
+  "version": 42,
+  "previousVersion": 41,
+  "passed": true,
+  "installedSha256": "a77c3e558e774b726bcbc1049aea4147621b3041360ed790641558c22125bc0b",
+  "githubDigest": "sha256:a77c3e558e774b726bcbc1049aea4147621b3041360ed790641558c22125bc0b",
+  "installation": "Published APK downloaded and installed through the v41 app updater with Android confirmation",
+  "retainedWallet": 50500,
+  "scope": "Owned Android emulator; no physical-phone acceptance"
+}
