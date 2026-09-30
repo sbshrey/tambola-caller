@@ -1,0 +1,5 @@
+io.github.sbshrey.tambola.game.BingoAccessibilityTest:.
+
+Time: 8.024
+
+OK (1 test)

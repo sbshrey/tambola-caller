@@ -1,0 +1,14 @@
+<resources>
+    <string name="bingo_online">ऑनलाइन · 75 बॉल</string>
+    <string name="bingo_buy">खेलें · %1$d सिक्के</string>
+    <string name="bingo_friends">दोस्त</string>
+    <string name="bingo_join">टेबल से जुड़ें</string>
+    <string name="bingo_create">टेबल बनाएं</string>
+    <string name="bingo_code">टेबल कोड</string>
+    <string name="bingo_waiting">%1$d खिलाड़ी · %2$d कार्ड</string>
+    <string name="bingo_countdown">%1$d में शुरू</string>
+    <string name="bingo_leave">टेबल छोड़ें</string>
+    <string name="bingo_retry">फिर कोशिश करें</string>
+    <string name="bingo_connecting">जुड़ रहे हैं…</string>
+    <string name="bingo_busy">सहेज रहे हैं…</string>
+</resources>

@@ -37,6 +37,9 @@ data class OnlineUiState(
     val avatar: Int = 0,
     val playerId: String? = null,
     val room: RoomView? = null,
+    val bingoRoom: BingoRoomView? = null,
+    val preferredBingoCards: Int = 1,
+    val bingoWinSequence: Int = 0,
     val wallet: WalletView? = null,
     val loginRewards: LoginRewards? = null,
     val preferredTickets: Int = 3,
@@ -75,6 +78,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private val mutable = MutableStateFlow(OnlineUiState())
     val state = mutable.asStateFlow()
     private var active = false
+    private var bingoVisible = false
     private var stream: Job? = null
     private var operation: Job? = null
     private var walletJob: Job? = null
@@ -98,6 +102,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 val restored = store.read()
                 check(restored == null || restored.endpoint == BuildConfig.ROOM_API_URL)
                 restored?.room?.validateFor(restored.credentials.playerId)
+                restored?.bingoRoom?.validateFor(restored.credentials.playerId)
                 restored?.wallet?.validate()
                 restored?.deviceIdentity?.validate()
                 saved = restored?.acceptWallet(restored.room?.wallet)?.let { it.copy(preferredTickets = it.ticketPreference()).pruneQueuedMarks() }
@@ -113,7 +118,8 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     private fun publish() {
         val value = saved
         mutable.update { it.copy(name = value?.displayName, avatar = value?.avatar ?: 0, playerId = value?.credentials?.playerId,
-            room = value?.room, wallet = value?.wallet, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
+            room = value?.room, bingoRoom = value?.bingoRoom, preferredBingoCards = value?.preferredBingoCards ?: 1,
+            wallet = value?.wallet, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
             loginRewards = it.loginRewards.takeIf { _ -> value?.credentials?.playerId == it.playerId && value != null },
             preferredTickets = value?.ticketPreference() ?: 3, serverTime = api?.serverTime,
             badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null || value?.queuedMarks?.isNotEmpty() == true,
@@ -227,15 +233,50 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             finally { mutable.update { it.copy(busy = false) }; connect() }
         }
     }
+    fun playBingo(cards: Int, friendTable: Boolean = false, friendCode: String? = null) {
+        if (cards !in 1..6 || api == null || mutable.value.loading || mutable.value.adActive || mutable.value.busy ||
+            mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
+        val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
+        if (code != null && !Regex("B-[A-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
+        val pending = PendingOperation.BingoMatch(BingoMatchRequest(UUID.randomUUID().toString(), cards, friendTable, code))
+        if (saved != null) { begin(pending); return }
+        mutable.update { it.copy(busy = true, error = null) }
+        operation = viewModelScope.launch {
+            try {
+                val name = getApplication<Application>().getString(R.string.coin_guest, Random.nextInt(1000, 10000))
+                val avatar = Random.nextInt(io.github.sbshrey.tambola.domain.AVATAR_COUNT)
+                val credentials = api.guest(GuestRequest(name, avatar))
+                mutex.withLock { persist(OnlineSaved(BuildConfig.ROOM_API_URL, credentials, name, avatar).withPending(pending)) }
+                collectDailyRewards(); performPending()
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { showFailure(error) }
+            finally { mutable.update { it.copy(busy = false) }; connect() }
+        }
+    }
+    fun bingoCommand(action: BingoAction) {
+        val room = saved?.bingoRoom ?: return
+        begin(PendingOperation.BingoCommand(room.code, BingoCommandRequest(UUID.randomUUID().toString(), room.revision, action)))
+    }
+    fun bingoLobby() {
+        if (mutable.value.busy || mutable.value.pending || saved?.bingoRoom?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) return
+        viewModelScope.launch { mutex.withLock { saved?.let { persist(it.copy(bingoRoom = null)) } } }
+    }
+    fun dismissBingoWin() { mutable.update { it.copy(bingoWinSequence = 0) } }
+    fun setBingoVisible(value: Boolean) {
+        bingoVisible = value
+        if (!value) { audio.stop(); dismissBingoWin() }
+    }
+    fun repeatBingoCall() { saved?.bingoRoom?.round?.called?.lastOrNull()?.let { audio.play(it, preferences.language, false) } }
     fun beginAd(): Boolean {
         val state = mutable.value
-        if (state.adActive || state.busy || state.pending || state.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) return false
+        if (state.adActive || state.busy || state.pending || state.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE) || state.bingoRoom?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) return false
         mutable.update { it.copy(adActive = true) }; return true
     }
     fun endAd() { mutable.update { it.copy(adActive = false) } }
     suspend fun prepareAd(): RewardAdIntent {
         check(BuildConfig.REWARDED_ADS_ENABLED && !BuildConfig.REWARDED_ADS_TEST)
         check(!mutable.value.busy && !mutable.value.pending && mutable.value.room?.phase !in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE))
+        check(mutable.value.bingoRoom?.phase !in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE))
         return authorized { requireNotNull(api).prepareAd(it) }.also {
             check(it.adUnit == BuildConfig.ADMOB_REWARD_UNIT && it.coins == AD_REWARD_COINS)
         }
@@ -292,6 +333,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             if (saved?.room != null) { mutable.update { it.copy(error = UiMessage(R.string.error_leave_first)) }; return }
         }
         if (pending is PendingOperation.Match && saved?.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) { connect(); return }
+        if (pending is PendingOperation.BingoMatch && saved?.bingoRoom?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) { connect(); return }
         if (pending.pausesRoomStream()) { stream?.cancel(); stream = null; audio.stop() }
         if (pending is PendingOperation.DeleteProfile || pending == PendingOperation.Logout) walletJob?.cancel()
         mutable.update { it.copy(busy = true, error = null, notice = null,
@@ -310,7 +352,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     fun retry() {
         if (mutable.value.busy || mutable.value.storageFailure) return
-        if (saved?.pending == null) { startMarkDrain(force = true); return }
+        if (saved?.pending == null) {
+            if (saved?.bingoRoom != null) { stream?.cancel(); stream = null; connect(); return }
+            startMarkDrain(force = true); return
+        }
         if (saved?.pending.pausesRoomStream()) { stream?.cancel(); stream = null; audio.stop() }
         mutable.update { it.copy(busy = true, error = null, markSending = saved?.pending.isMark()) }
         operation = viewModelScope.launch {
@@ -329,8 +374,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val api = api ?: return
         var deletionConfirmed = false
         var walletResult: WalletView? = null
+        var bingoResult: BingoRoomView? = null
         try {
             val result = when (pending) {
+                is PendingOperation.BingoMatch -> { bingoResult = authorized(TelemetryOperation.MATCH) { api.bingoMatch(it, pending.request) }; null }
+                is PendingOperation.BingoCommand -> { bingoResult = authorized { api.bingoCommand(it, pending.code, pending.request) }; null }
                 is PendingOperation.Match -> authorized(TelemetryOperation.MATCH) { api.match(it, pending.request) }
                 is PendingOperation.Refill -> { walletResult = authorized { api.refill(it, pending.request) }; null }
                 is PendingOperation.Create -> authorized { api.create(it, pending.request) }
@@ -345,6 +393,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                     stream?.cancel(); stream = null; audio.stop(); persist(null)
                     mutable.update { it.copy(connection = Connection.IDLE, sessionExpired = false,
                         notice = if (deletionConfirmed) UiMessage(R.string.notice_profile_deleted) else null) }
+                } else if (bingoResult != null) {
+                    val accepted = latest.acceptBingo(requireNotNull(bingoResult), latest.bingoRoom, pending is PendingOperation.BingoMatch)
+                    val leaving = pending is PendingOperation.BingoCommand && pending.request.action == BingoAction.Leave
+                    persist(accepted.first.copy(bingoRoom = accepted.second.takeUnless { leaving }, pending = null))
+                    announceBingo(latest.bingoRoom, accepted.second, active)
                 } else if (pending is PendingOperation.Refill) {
                     persist(latest.acceptWallet(requireNotNull(walletResult)).copy(pending = null))
                 } else if (pending is PendingOperation.Command && pending.request.action == RoomAction.Leave) {
@@ -389,6 +442,15 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             if (pending !is PendingOperation.DeleteProfile && error.status in 400..499 && error.status !in listOf(401, 408, 429)) mutex.withLock { saved?.let { persist(it.copy(pending = null)) } }
             if (pending is PendingOperation.Refill && error.code == "refill_wait") mutex.withLock { saved?.let { persist(it.copy(pending = null)) } }
             if (error.code in setOf("coins_low", "refill_not_needed", "refill_wait")) refreshWallet()
+            if (error.status == 409 && pending is PendingOperation.BingoCommand) {
+                val fresh = authorized { api.bingoRead(it, pending.code) }
+                mutex.withLock {
+                    saved?.let { latest ->
+                        val accepted = latest.acceptBingo(fresh, latest.bingoRoom)
+                        persist(accepted.first.copy(bingoRoom = accepted.second))
+                    }
+                }
+            }
             if (error.status == 409 && current.room != null && pending is PendingOperation.Command) {
                 val update = authorized { api.read(it, current.room!!.code) }
                 val retryReady = mutex.withLock {
@@ -409,6 +471,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     private fun connect() {
+        if (saved?.bingoRoom != null && saved?.room?.phase !in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) { connectBingo(); return }
         if (!active || mutable.value.loading || mutable.value.storageFailure || mutable.value.sessionExpired ||
             mutable.value.deletingProfile || saved?.pending.pausesRoomStream() ||
             saved?.room == null || api == null || stream?.isActive == true) return
@@ -484,6 +547,56 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 mutable.update { it.copy(connection = Connection.RECONNECTING) }
                 attempts++
                 delay((1_000L shl attempts.coerceAtMost(5)).coerceAtMost(30_000) + Random.nextLong(500))
+            }
+        }
+    }
+    private fun announceBingo(before: BingoRoomView?, after: BingoRoomView, live: Boolean) {
+        if (!live || !bingoVisible || before?.round?.id != after.round?.id || before?.round == null) return
+        val actor = saved?.credentials?.playerId ?: return
+        val next = after.round ?: return
+        val won = next.claims.count { it.playerId == actor } > before.round!!.claims.count { it.playerId == actor }
+        if (won) mutable.update { it.copy(bingoWinSequence = it.bingoWinSequence + 1) }
+        if (next.called.size == before.round!!.called.size + 1) audio.play(next.called.last(), preferences.language, won)
+        else if (won) audio.effect(SoundCue.WIN)
+    }
+    private fun connectBingo() {
+        if (!active || mutable.value.loading || mutable.value.storageFailure || mutable.value.sessionExpired ||
+            mutable.value.deletingProfile || saved?.pending.pausesRoomStream() || api == null || stream?.isActive == true) return
+        stream = viewModelScope.launch {
+            var received = false
+            var failures = 0
+            while (isActive && active) {
+                val session = saved ?: break
+                val room = session.bingoRoom ?: break
+                if (session.pending.pausesRoomStream()) break
+                try {
+                    val next = authorized { api.bingoRead(it, room.code) }
+                    mutex.withLock {
+                        val latest = saved ?: return@withLock
+                        if (latest.credentials.playerId != session.credentials.playerId || latest.bingoRoom?.roomId != room.roomId) return@withLock
+                        val accepted = latest.acceptBingo(next, latest.bingoRoom)
+                        persist(accepted.first.copy(bingoRoom = accepted.second))
+                        announceBingo(latest.bingoRoom, accepted.second, received && active)
+                        mutable.update { it.copy(connection = Connection.LIVE) }
+                        received = true; failures = 0
+                    }
+                } catch (error: CancellationException) { throw error }
+                catch (error: RoomApiFailure) {
+                    if (error.status in setOf(403, 404, 410)) {
+                        mutex.withLock {
+                            saved?.takeIf { it.credentials.playerId == session.credentials.playerId && it.bingoRoom?.roomId == room.roomId }?.let {
+                                persist(it.copy(bingoRoom = null))
+                            }
+                        }
+                        refreshWallet(); showFailure(error); break
+                    }
+                    if (error.status == 401) { showFailure(error); break }
+                    failures++
+                } catch (error: InvalidRoomResponse) { showFailure(error); break }
+                catch (error: LocalStorageFailure) { showFailure(error); break }
+                catch (_: Exception) { failures++ }
+                if (failures > 0) mutable.update { it.copy(connection = Connection.RECONNECTING) }
+                delay(if (failures == 0) 1_000 else (1_000L shl failures.coerceAtMost(5)).coerceAtMost(30_000))
             }
         }
     }
@@ -677,5 +790,6 @@ private class LocalStorageFailure : Exception("Local online storage unavailable"
 /** A leave may commit before its HTTP receipt arrives. Keep that receipt retryable;
  * losing room membership is expected until the exact command is confirmed. */
 private fun PendingOperation?.pausesRoomStream(): Boolean = this is PendingOperation.DeleteProfile ||
+    this is PendingOperation.BingoMatch || this is PendingOperation.BingoCommand ||
     this is PendingOperation.Match || this == PendingOperation.Logout ||
     (this is PendingOperation.Command && request.action == RoomAction.Leave)

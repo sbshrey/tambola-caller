@@ -58,8 +58,8 @@ class MainActivity : AppCompatActivity() {
                     invitations.navigated()
                 }
             }
-            LaunchedEffect(state.screen) { online.setActive(state.screen in setOf(Screen.HOME, Screen.ONLINE) && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
-            val playing = (state.screen == Screen.BINGO && bingoState.round?.status == RoundStatus.PLAYING) || (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
+            LaunchedEffect(state.screen) { online.setActive(state.screen in setOf(Screen.HOME, Screen.ONLINE, Screen.BINGO) && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
+            val playing = (state.screen == Screen.BINGO && (bingoState.round?.status == RoundStatus.PLAYING || onlineState.bingoRoom?.phase == io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE)) || (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
                 (state.screen == Screen.ONLINE && onlineState.room?.round?.status == RoundStatus.PLAYING)
             val ambient = when (state.screen) {
                 Screen.GAME -> state.round?.status == RoundStatus.PLAYING
@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                 state.screen in setOf(Screen.HOME, Screen.ONLINE, Screen.SETTINGS) &&
                 state.round?.status != RoundStatus.PLAYING && bingoState.round?.status != RoundStatus.PLAYING &&
                 onlineState.room?.phase !in setOf(io.github.sbshrey.tambola.protocol.RoomPhase.LOBBY, io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE) &&
+                onlineState.bingoRoom?.phase !in setOf(io.github.sbshrey.tambola.protocol.RoomPhase.LOBBY, io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE) &&
                 !onlineState.busy && !onlineState.pending && !onlineState.adActive && inviteState.code == null
             CompositionLocalProvider(LocalRewardedAds provides ads,
                 io.github.sbshrey.tambola.game.updates.LocalAppUpdates provides io.github.sbshrey.tambola.game.updates.UpdateControls(updates, updateEligible)) {
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun consumedInviteIntent() = Intent(this, MainActivity::class.java)
         .setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-    override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen in setOf(Screen.HOME, Screen.ONLINE)) }
+    override fun onStart() { super.onStart(); model.setForeground(true); online.setActive(model.state.value.screen in setOf(Screen.HOME, Screen.ONLINE, Screen.BINGO)) }
     override fun onResume() { super.onResume(); GameAudio.get(application).setForeground(true) }
     override fun onPause() { GameAudio.get(application).setForeground(false); super.onPause() }
     override fun onStop() {

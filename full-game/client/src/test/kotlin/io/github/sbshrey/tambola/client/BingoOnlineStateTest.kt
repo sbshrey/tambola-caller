@@ -6,8 +6,22 @@ import java.security.MessageDigest
 import java.util.Random
 import org.junit.Assert.*
 import org.junit.Test
+import kotlinx.serialization.encodeToString
 
 class BingoOnlineStateTest {
+    @Test fun `Bingo purchase and command survive save reload without changing Tambola preference`() {
+        val purchase = PendingOperation.BingoMatch(BingoMatchRequest("purchase", 6))
+        val pending = saved().copy(preferredTickets = 3).withPending(purchase)
+        val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(pending))
+        assertEquals(purchase, restored.pending)
+        assertEquals(6, restored.preferredBingoCards)
+        assertEquals(3, restored.ticketPreference())
+        val command = PendingOperation.BingoCommand("B-ABCD2345", BingoCommandRequest("mark", 2, BingoAction.Mark("game", "me-card", 1)))
+        val marked = restored.copy(bingoRoom = view()).withPending(command)
+        val retry = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(marked))
+        assertEquals(command, retry.pending)
+        assertEquals(view(), retry.bingoRoom)
+    }
     private val players = listOf(Player("me", "Me"), Player("peer", "Peer"))
     private val cards = players.map { BingoCardGenerator(Random(it.id.hashCode().toLong())).generate(it.id + "-card", it.id) }
     private val order = (1..75).toList()

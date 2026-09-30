@@ -28,6 +28,7 @@ class BingoNavigationTest {
         compose.waitUntil(20000) { bingo.state.value.round?.id != previousId && bingo.state.value.round?.cards?.count { it.playerId == "me" } == 6 }
         val id = bingo.state.value.round!!.id
         compose.onNodeWithTag("choose-bingo").performClick()
+        compose.onNodeWithTag("bingo-practice-mode").performClick()
         compose.onNodeWithText("Card 1 / 6").assertIsDisplayed()
         compose.onNodeWithTag("bingo-previous").assertIsNotEnabled()
         repeat(5) { compose.onNodeWithTag("bingo-next").performClick() }
@@ -46,6 +47,7 @@ class BingoNavigationTest {
         assertEquals(6, bingo.state.value.cards)
         assertEquals(RoundStatus.PAUSED, bingo.state.value.round?.status)
         compose.onNodeWithTag("choose-bingo").performClick()
+        compose.onNodeWithTag("bingo-practice-mode").performClick()
         compose.onNodeWithTag("bingo-card").assertIsDisplayed()
         val store = ViewModelStore()
         val restored = compose.runOnIdle {

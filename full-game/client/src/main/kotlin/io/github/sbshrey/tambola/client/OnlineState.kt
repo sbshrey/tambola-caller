@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 import java.security.MessageDigest
 
 @Serializable sealed class PendingOperation {
+    @Serializable @SerialName("bingo_match") data class BingoMatch(val request: BingoMatchRequest) : PendingOperation()
+    @Serializable @SerialName("bingo_command") data class BingoCommand(val code: String, val request: BingoCommandRequest) : PendingOperation()
     @Serializable @SerialName("match") data class Match(val request: MatchRequest) : PendingOperation()
     @Serializable @SerialName("refill") data class Refill(val request: RefillRequest) : PendingOperation()
     @Serializable @SerialName("create") data class Create(val request: CreateRoomRequest) : PendingOperation()
@@ -31,8 +33,11 @@ import java.security.MessageDigest
     val deviceIdentity: DeviceIdentity? = null,
     val preferredTickets: Int? = null,
     val queuedMarks: List<RoomAction.Mark> = emptyList(),
+    val bingoRoom: BingoRoomView? = null,
+    val preferredBingoCards: Int = 1,
 ) {
     init {
+        require(preferredBingoCards in 1..6)
         require(preferredTickets == null || preferredTickets in 1..6)
         require(queuedMarks.size <= 90 && queuedMarks.distinct().size == queuedMarks.size)
     }
@@ -45,6 +50,7 @@ fun OnlineSaved.ticketPreference(): Int = (pending as? PendingOperation.Match)?.
 
 /** Persist the confirmed quantity alongside the exact retryable purchase, never its affordable preview. */
 fun OnlineSaved.withPending(operation: PendingOperation): OnlineSaved = copy(pending = operation,
+    preferredBingoCards = (operation as? PendingOperation.BingoMatch)?.request?.cards ?: preferredBingoCards,
     preferredTickets = (operation as? PendingOperation.Match)?.request?.tickets ?: ticketPreference())
 
 data class AcceptedRoom(val saved: OnlineSaved, val announcement: Int?, val liveAwards: Boolean = false)

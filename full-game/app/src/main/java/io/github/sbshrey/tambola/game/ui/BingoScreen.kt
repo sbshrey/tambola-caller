@@ -151,7 +151,7 @@ fun BingoScreen(state: BingoUiState, model: BingoViewModel, name: String?, reduc
 }
 
 @Composable
-private fun patternTitle(pattern: BingoPattern): String = stringResource(when (pattern) {
+internal fun patternTitle(pattern: BingoPattern): String = stringResource(when (pattern) {
     BingoPattern.ANY_LINE -> R.string.bingo_line
     BingoPattern.FOUR_CORNERS -> R.string.bingo_corners
     BingoPattern.X -> R.string.bingo_x
@@ -160,6 +160,11 @@ private fun patternTitle(pattern: BingoPattern): String = stringResource(when (p
 
 @Composable
 private fun BingoCardView(card: BingoCard, round: BingoRound, mark: (String, Int) -> Unit, modifier: Modifier) {
+    BingoCardView(card, round.draw.called, round.marks[card.id].orEmpty(), round.status == RoundStatus.PLAYING, mark, modifier)
+}
+
+@Composable
+internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, enabled: Boolean, mark: (String, Int) -> Unit, modifier: Modifier) {
     Column(modifier.testTag("bingo-card"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             "BINGO".forEach { Text("$it", style = MaterialTheme.typography.titleMedium, color = Jade, fontWeight = FontWeight.Black) }
@@ -168,10 +173,10 @@ private fun BingoCardView(card: BingoCard, round: BingoRound, mark: (String, Int
             Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 repeat(5) { column ->
                     val number = card.cells[row * 5 + column]
-                    val marked = number == 0 || number in round.marks[card.id].orEmpty()
+                    val marked = number == 0 || number in marks
                     val description = if (number == 0) stringResource(R.string.bingo_free) else bingoCallLabel(number)
                     val markState = stringResource(if (marked) R.string.bingo_marked else R.string.bingo_unmarked)
-                    Surface(onClick = { mark(card.id, number) }, enabled = number != 0 && number in round.draw.called && round.status == RoundStatus.PLAYING,
+                    Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called,
                         modifier = Modifier.weight(1f).fillMaxHeight().testTag("bingo-cell-$number").semantics {
                             contentDescription = description; stateDescription = markState
                         }, shape = RoundedCornerShape(10.dp), color = if (marked) Jade else Panel,
@@ -189,7 +194,7 @@ private fun BingoCardView(card: BingoCard, round: BingoRound, mark: (String, Int
 }
 
 @Composable
-private fun BingoPatternPreview(pattern: BingoPattern) {
+internal fun BingoPatternPreview(pattern: BingoPattern) {
     val color = MaterialTheme.colorScheme.primary
     Canvas(Modifier.size(40.dp)) {
         repeat(25) { index ->

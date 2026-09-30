@@ -1,0 +1,14 @@
+<resources>
+    <string name="bingo_online">Online · 75-ball</string>
+    <string name="bingo_buy">Play · %1$d coins</string>
+    <string name="bingo_friends">Friends</string>
+    <string name="bingo_join">Join table</string>
+    <string name="bingo_create">Create table</string>
+    <string name="bingo_code">Table code</string>
+    <string name="bingo_waiting">%1$d players · %2$d cards</string>
+    <string name="bingo_countdown">Starting in %1$d</string>
+    <string name="bingo_leave">Leave table</string>
+    <string name="bingo_retry">Retry</string>
+    <string name="bingo_connecting">Connecting…</string>
+    <string name="bingo_busy">Saving…</string>
+</resources>

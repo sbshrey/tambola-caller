@@ -37,6 +37,7 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
     invitation: RoomInviteState = RoomInviteState(), dismissInvitation: () -> Unit = {}) {
     val words = gameText()
     var profile by rememberSaveable { mutableStateOf(false) }
+    var bingoPractice by rememberSaveable(state.screen) { mutableStateOf(false) }
     var roomDetails by rememberSaveable(onlineState.room?.round?.id) { mutableStateOf(false) }
     BackHandler(state.screen != Screen.HOME && state.ruleDraft == null) { model.navigate(Screen.HOME) }
     BackHandler(roomDetails && state.screen == Screen.ONLINE) { roomDetails = false }
@@ -46,7 +47,8 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
         onlineState.room?.round?.id.takeIf { state.screen == Screen.ONLINE }) { rememberScrollState() }
     Surface(Modifier.fillMaxSize().testTag("app-background").semantics { testTagsAsResourceId = true }, color = MaterialTheme.colorScheme.background) {
         if (!state.loading && state.screen == Screen.BINGO) {
-            BingoScreen(bingoState, bingo, onlineState.name, state.preferences.reducedMotion) { model.navigate(Screen.HOME) }
+            if (bingoPractice) BingoScreen(bingoState, bingo, onlineState.name, state.preferences.reducedMotion) { model.navigate(Screen.HOME) }
+            else BingoOnlineScreen(onlineState, online, state.preferences.reducedMotion, practice = { bingoPractice = true }) { model.navigate(Screen.HOME) }
         } else if (!state.loading && state.screen == Screen.HOME && invitation.code == null) {
             GameHub(onlineState.name, onlineState.wallet?.balance, onlineState.avatar, state.lastGame, profile = { profile = true },
                 tambola = { model.navigate(Screen.ONLINE) }, bingo = { model.navigate(Screen.BINGO) },
