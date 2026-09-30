@@ -65,10 +65,19 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
             .semantics { contentDescription = listOfNotNull(title, caption).joinToString(". ") },
         shape = RoundedCornerShape(14.dp), color = GameNightPalette.raised,
         border = BorderStroke(2.dp, GameNightPalette.mint.copy(alpha = glow.value))) {
-        Column(Modifier.padding(horizontal = 8.dp, vertical = 2.dp), verticalArrangement = Arrangement.Center) {
+        Row(Modifier.padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Box(Modifier.size(44.dp), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(progress = { if (power != null) 1f else (powers.correctMarks % 5) / 5f },
+                    modifier = Modifier.fillMaxSize().testTag("power-charge-ring"), color = GameNightPalette.mint,
+                    trackColor = GameNightPalette.muted.copy(alpha = .25f), strokeWidth = 3.dp)
+                Text(when (shownPower) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; else -> "+25%" }, fontSize = 12.sp)
+            }
+            Column(Modifier.weight(1f)) {
             if (title != null) Text("${when (shownPower) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; else -> "+25%" }} $title", fontSize = 11.sp, lineHeight = 13.sp, maxLines = 2,
                 color = GameNightPalette.mint)
             Text(caption, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 2, color = GameNightPalette.cream)
+            }
         }
     }
 }

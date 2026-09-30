@@ -229,18 +229,18 @@ internal fun CompactTicket(ticket: Ticket, table: TableRound, modifier: Modifier
         if (stacked) Column(Modifier.fillMaxSize()) {
             TicketBody(ticket, table, Modifier.fillMaxWidth().weight(1f), reducedMotion, markNumber, markEnabled)
             TicketClaimAction(label, ordinal, gameNight, claimEnabled, requireNotNull(claimTicket),
-                Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp, vertical = 3.dp), horizontal = true)
+                Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp, vertical = 3.dp), horizontal = true, progress = ticketClaimProgress(table, ticket))
         } else Row(Modifier.fillMaxSize()) {
             TicketBody(ticket, table, Modifier.weight(1f).fillMaxHeight(), reducedMotion, markNumber, markEnabled)
             if (claimTicket != null) TicketClaimAction(label, ordinal, gameNight, claimEnabled, claimTicket,
-                Modifier.width(actionWidth).fillMaxHeight().padding(horizontal = 6.dp), horizontal = false)
+                Modifier.width(actionWidth).fillMaxHeight().padding(horizontal = 6.dp), horizontal = false, progress = ticketClaimProgress(table, ticket))
         }
     }
 }
 
 @Composable
 private fun TicketClaimAction(label: String, ordinal: Int, gameNight: Boolean, enabled: Boolean, claim: () -> Unit,
-    modifier: Modifier, horizontal: Boolean) {
+    modifier: Modifier, horizontal: Boolean, progress: Float) {
     val words = gameText()
     val scale = LocalDensity.current.fontScale
     val glyph: @Composable () -> Unit = {
@@ -249,18 +249,18 @@ private fun TicketClaimAction(label: String, ordinal: Int, gameNight: Boolean, e
     }
     val caption: @Composable () -> Unit = { Text(label, fontSize = 12.sp, lineHeight = 16.sp, maxLines = 1) }
     Box(modifier, contentAlignment = Alignment.Center) {
-        Button(onClick = claim, enabled = enabled, contentPadding = PaddingValues(horizontal = 8.dp, vertical = if (horizontal) 0.dp else 6.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
-            modifier = Modifier.fillMaxWidth().heightIn(min = if (horizontal || !gameNight) 48.dp else 68.dp).testTag("claim-ticket-$ordinal")
-                .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = RoundedCornerShape(12.dp)) {
-            if (horizontal) Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (gameNight && scale <= 1.3f) glyph()
-                caption()
-            } else Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                if (gameNight && scale <= 1.3f) glyph()
-                caption()
+        val diameter = if (horizontal) 48.dp else 68.dp
+        Box(Modifier.size(diameter), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxSize().clearAndSetSemantics {},
+                color = if (progress >= 1f) Jade else Coral, trackColor = Ink.copy(alpha = .15f), strokeWidth = 4.dp)
+            Button(onClick = claim, enabled = enabled, contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
+                modifier = Modifier.fillMaxSize().padding(6.dp).testTag("claim-ticket-$ordinal")
+                    .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = CircleShape) {
+                if (scale <= 1.3f && !horizontal) caption() else glyph()
             }
         }
+        if (horizontal) Text(label, Modifier.align(Alignment.CenterStart), fontSize = 12.sp)
     }
 }
 

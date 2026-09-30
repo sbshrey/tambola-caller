@@ -44,9 +44,13 @@ internal fun WinConfetti(eventId: String, reducedMotion: Boolean, modifier: Modi
     Canvas(modifier.clearAndSetSemantics {}) {
         val p = progress.value
         if (reducedMotion || p >= 1f) return@Canvas
-        repeat(18) { index ->
-            val x = size.width * ((index * 37 % 101) / 100f) + sin(p * 5 + index) * 5.dp.toPx()
-            val y = size.height * (((index * 17 % 31) / 100f) + p * .65f)
+        repeat(40) { index ->
+            // Two upward bursts from the lower corners, followed by gravity.
+            val left = index % 2 == 0
+            val speed = .25f + (index * 37 % 67) / 100f
+            val origin = if (left) .08f else .92f
+            val x = size.width * (origin + (if (left) 1 else -1) * p * speed)
+            val y = size.height * (.85f - (1.3f + (index % 7) * .09f) * p + 1.4f * p * p)
             rotate(index * 27f + p * 120f, Offset(x, y)) {
                 drawRect(colors[index % colors.size].copy(alpha = (1 - p) * intensity), Offset(x, y), Size(4.dp.toPx(), 7.dp.toPx()))
             }

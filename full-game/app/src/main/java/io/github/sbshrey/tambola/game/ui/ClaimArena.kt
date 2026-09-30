@@ -117,7 +117,7 @@ internal fun ClaimArena(
                 } }
                 CoinRoundLayout(table, remaining, status, optionsContent,
                     players = { players = true }, prizes = { details = true },
-                    board = { history = false; board = true }, repeatCall = repeatCall,
+                    board = { history = true; board = true }, repeatCall = repeatCall,
                     power = { if (table.powers != null && usePower != null && !table.finished)
                         TopPowerControl(hand, visiblePowerTickets, lastPowerTicket, claimEnabled && claimTicket == null, preferences.reducedMotion, usePower) },
                     clock = footer, showCountdown = !expandedFooter, reducedMotion = preferences.reducedMotion,
@@ -126,7 +126,7 @@ internal fun ClaimArena(
                             { ticket, number -> lastPowerTicket = ticket; markNumber(ticket, number) }, markEnabled,
                             claimEnabled && table.called.isNotEmpty() && !table.finished,
                             visibleChanged = { visiblePowerTickets = it }) { claimTicketId = it }
-                        win?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
+                        win?.takeIf { moment -> moment.lines.any { line -> line.players.any { it.id == ownerId } } }?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
                     }, feedback = {
                         Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else reactionMessage.orEmpty(),
                             modifier = Modifier.fillMaxWidth().testTag("claim-feedback").semantics {
@@ -211,7 +211,7 @@ internal fun ClaimArena(
                         Box(Modifier.weight(1f).fillMaxWidth()) {
                             TicketPages(hand, ownerId, preferences.reducedMotion, markNumber, markEnabled,
                                 claimEnabled && table.called.isNotEmpty() && !table.finished) { claimTicketId = it }
-                            win?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
+                            win?.takeIf { moment -> moment.lines.any { line -> line.players.any { it.id == ownerId } } }?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
                         }
                         // Reserve two scaled lines even when quiet, so feedback never moves a ticket.
                         Box(Modifier.fillMaxWidth().padding(vertical = 2.dp).testTag("win-slot"), contentAlignment = Alignment.Center) {

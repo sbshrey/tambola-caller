@@ -63,8 +63,8 @@ class BetaUpgradeTest {
             device.hasObject(By.res("cancel-match")) || device.hasObject(By.res("resume-match")) || device.hasObject(By.text("Got it")))
     }
 
-    @Test fun prepareV41Profile() {
-        start(41)
+    @Test fun prepareV42Profile() {
+        start(42)
         check(!marker.exists()) { "An upgrade fixture already needs verification or cleanup" }
         node("lobby-welcome-heading"); wallet(50000)
         tap("coin-wallet")
@@ -77,14 +77,14 @@ class BetaUpgradeTest {
         wallet(49900)
         leaveWaitingRoom(); wallet(50500)
         assertTrue(node("buy-tickets-6").isChecked)
-        marker.writeText("v41:50500:6")
+        marker.writeText("v42:50500:6")
     }
 
     @Test fun cleanInterruptedOwnedFixture() {
         val version = instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode
-        check(version in setOf(41L, 42L))
+        check(version in setOf(42L, 43L))
         start(version)
-        check(marker.readText() in setOf("preparing", "v41:50500:6"))
+        check(marker.readText() in setOf("preparing", "v42:50500:6"))
         if (device.hasObject(By.text("Got it"))) button("Got it")
         tap("coin-wallet")
         repeat(8) {
@@ -98,15 +98,15 @@ class BetaUpgradeTest {
         marker.delete()
     }
 
-    @Test fun verifyV42ProfileAndCleanUp() {
-        start(42)
-        check(marker.readText() == "v41:50500:6") { "Only verify the owned v41 fixture" }
+    @Test fun verifyV43ProfileAndCleanUp() {
+        start(43)
+        check(marker.readText() == "v42:50500:6") { "Only verify the owned v42 fixture" }
         if (device.hasObject(By.text("The room changed. Review its latest state and try your action again."))) button("Got it")
         if (device.hasObject(By.res("cancel-match"))) leaveWaitingRoom()
         wallet(50500)
         assertFalse(device.hasObject(By.res("lobby-welcome-heading")))
         assertTrue(node("buy-tickets-6").isChecked)
-        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v42-upgrade.png"))
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v43-upgrade.png"))
         // A paid request after upgrade proves the saved session still authenticates.
         tap("play-friends"); button("Create table"); node("cancel-match"); wallet(49900)
         leaveWaitingRoom(); wallet(50500)
@@ -120,19 +120,19 @@ class BetaUpgradeTest {
         button("Delete online profile")
         node("coin-play"); wallet(50000); node("lobby-welcome-heading")
         marker.delete()
-        File(instrumentation.context.filesDir, "beta-v42-upgrade.txt").writeText(
-            "PASS: v41 to v42 upgrade retained wallet, six-ticket preference and authenticated session; purchase refunded; owned profile deleted.\n")
+        File(instrumentation.context.filesDir, "beta-v43-upgrade.txt").writeText(
+            "PASS: v42 to v43 upgrade retained wallet, six-ticket preference and authenticated session; purchase refunded; owned profile deleted.\n")
     }
 
-    @Test fun installPublishedV42ThroughUpdater() {
-        start(41)
-        check(marker.readText() == "v41:50500:6") { "Prepare the owned profile before checking the public updater" }
+    @Test fun installPublishedV43ThroughUpdater() {
+        start(42)
+        check(marker.readText() == "v42:50500:6") { "Prepare the owned profile before checking the public updater" }
         assertTrue(device.wait(Until.hasObject(By.text("Download")), 60000))
-        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v42-update-offer.png"))
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v43-update-offer.png"))
         button("Download")
         assertTrue(device.wait(Until.hasObject(By.text("Install update")), 240000))
-        assertEquals(41L, instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode)
-        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v42-update-ready.png"))
+        assertEquals(42L, instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode)
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v43-update-ready.png"))
         button("Install update")
         val allow = device.wait(Until.findObject(By.clazz("android.widget.Switch")), 5000)
         if (allow != null) {
@@ -150,10 +150,10 @@ class BetaUpgradeTest {
         }
         val install = checkNotNull(device.wait(Until.findObject(By.text(Pattern.compile("(?i)install|update"))), 15000))
         assertTrue(device.currentPackageName.endsWith("packageinstaller"))
-        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v42-android-confirmation.png"))
+        device.takeScreenshot(File(instrumentation.context.filesDir, "beta-v43-android-confirmation.png"))
         button(install.text)
         val end = SystemClock.elapsedRealtime() + 60000
-        while (instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode != 42L) {
+        while (instrumentation.context.packageManager.getPackageInfo(target, 0).longVersionCode != 43L) {
             check(SystemClock.elapsedRealtime() < end) { "Android did not finish the update" }
             SystemClock.sleep(500)
         }
@@ -162,9 +162,9 @@ class BetaUpgradeTest {
         button(device.findObject(By.text(Pattern.compile("(?i)done"))).text)
         device.pressHome()
         device.waitForIdle()
-        start(42)
+        start(43)
         wallet(50500)
-        File(instrumentation.context.filesDir, "beta-v42-public-updater.txt").writeText(
-            "PASS: v41 detected the published GitHub update, downloaded and validated it, requested Android confirmation, and installed v42 through the app updater.\n")
+        File(instrumentation.context.filesDir, "beta-v43-public-updater.txt").writeText(
+            "PASS: v42 detected the published GitHub update, downloaded and validated it, requested Android confirmation, and installed v43 through the app updater.\n")
     }
 }

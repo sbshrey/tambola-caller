@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -41,7 +42,7 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
             Surface((if (embedded) Modifier.fillMaxSize() else Modifier.widthIn(max = 680.dp).fillMaxWidth().heightIn(max = maxHeight)).testTag("ticket-prize-picker")
                 .semantics { testTagsAsResourceId = true }, shape = RoundedCornerShape(24.dp), color = colors.surface) {
                 BoxWithConstraints(Modifier.padding(if (embedded) 8.dp else 16.dp)) {
-                    val columns = if (embedded && density.fontScale > 1.3f) 2 else if (maxWidth > 420.dp) 3 else 2
+                    val columns = if (maxWidth > 420.dp) 3 else 2
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(words(R.string.play_choose_prize, ordinal), modifier = Modifier.weight(1f).semantics { heading() },
@@ -91,7 +92,15 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                             shape = RoundedCornerShape(14.dp), color = if (active) colors.surfaceContainerHigh else colors.background,
                                             border = BorderStroke(1.dp, if (active) colors.secondary.copy(alpha = .65f) else colors.outlineVariant)) {
                                             Column(Modifier.padding(horizontal = if (embedded) 6.dp else 10.dp, vertical = if (embedded) 4.dp else 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                                                if (standardPrize != null && density.fontScale <= 1.3f && !embedded) PrizePattern(standardPrize, active)
+                                                if (standardPrize != null && density.fontScale <= 1.3f) {
+                                                    val progress = ticketPrizeProgress(table, ticket, standardPrize)
+                                                    Box(Modifier.size(if (embedded) 36.dp else 52.dp).align(Alignment.CenterHorizontally), contentAlignment = Alignment.Center) {
+                                                        CircularProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxSize().testTag("prize-progress-$id"),
+                                                            color = if (progress >= 1f) colors.primary else colors.secondary,
+                                                            trackColor = colors.onSurface.copy(alpha = .22f), strokeWidth = 3.dp)
+                                                        Text(if (wonByTicket) "✓" else "${(progress * 100).toInt()}%", fontSize = 10.sp)
+                                                    }
+                                                }
                                                 Text(if (taken) "✓ $label" else label, modifier = Modifier.weight(1f), fontSize = if (embedded) 11.sp else 13.sp, lineHeight = if (embedded) 13.sp else 16.sp,
                                                     fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
                                                 if (embedded) {

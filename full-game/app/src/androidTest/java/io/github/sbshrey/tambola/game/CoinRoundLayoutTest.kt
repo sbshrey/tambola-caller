@@ -57,12 +57,16 @@ class CoinRoundLayoutTest {
                 } }
             }
         }
+        compose.onNodeWithTag("play-board-tab").performClick()
         compose.onNodeWithTag("persistent-call-board").assertIsDisplayed()
         (1..90).forEach { compose.onNodeWithTag("board-number-$it", useUnmergedTree = true).assertIsDisplayed() }
+        val board = compose.onNodeWithTag("persistent-call-board").getUnclippedBoundsInRoot()
+        compose.onNodeWithTag("play-tickets-tab").performClick()
         val first = compose.onNodeWithTag("hand-ticket-1").getUnclippedBoundsInRoot()
         val second = compose.onNodeWithTag("hand-ticket-2").getUnclippedBoundsInRoot()
-        val board = compose.onNodeWithTag("persistent-call-board").getUnclippedBoundsInRoot()
-        assertTrue(board.right <= first.left)
+        assertTrue("Board uses the full playing width", board.right - board.left >= first.right - first.left)
+        val call = compose.onNodeWithTag("current-call").getUnclippedBoundsInRoot()
+        assertTrue("Calls stay above the tickets", call.bottom <= first.top)
         val power = compose.onNodeWithTag("top-power-control").getUnclippedBoundsInRoot()
         assertTrue("Powers must stay above the hand", power.bottom <= first.top)
         compose.onNodeWithTag("dab-$number").performClick()
@@ -75,6 +79,15 @@ class CoinRoundLayoutTest {
         compose.onNodeWithTag("hand-ticket-5").assertIsDisplayed()
         compose.onNodeWithTag("hand-ticket-6").assertIsDisplayed()
         compose.onNodeWithTag("tickets-down").assertIsNotEnabled()
+        compose.onNodeWithTag("play-board-tab").performClick()
+        compose.onNodeWithTag("play-tickets-tab").performClick()
+        compose.onNodeWithTag("hand-ticket-5").assertIsDisplayed()
+        compose.runOnIdle {
+            val ticket = own.first()
+            val progressTable = table.copy(called = ticket.numbers.take(2), marks = mapOf(ticket.id to ticket.numbers.toSet()))
+            assertEquals(.4f, ticketPrizeProgress(progressTable, ticket, Prize.EARLY_FIVE), .001f)
+            assertEquals(0f, ticketPrizeProgress(progressTable.copy(marks = emptyMap()), ticket, Prize.EARLY_FIVE), .001f)
+        }
         compose.runOnIdle { table = table.copy(powers = MatchPowers(inventory = listOf(MatchPower.AUTO_DAB))) }
         compose.onNodeWithTag("top-power-control").assertIsEnabled().performClick()
         compose.runOnIdle { assertEquals(own[4].id to MatchPower.AUTO_DAB, activation) }
@@ -83,8 +96,8 @@ class CoinRoundLayoutTest {
         val fifth = compose.onNodeWithTag("hand-ticket-5").getUnclippedBoundsInRoot()
         compose.onNodeWithTag("claim-ticket-5").performClick()
         val panel = compose.onNodeWithTag("ticket-prize-picker").assertIsDisplayed().getUnclippedBoundsInRoot()
-        assertTrue("Claim panel must leave the board visible", board.right <= panel.left)
-        compose.onNodeWithTag("persistent-call-board").assertIsDisplayed()
+        assertTrue("Claim panel uses the playing width", panel.right - panel.left >= first.right - first.left)
+        compose.onNodeWithTag("current-call").assertIsDisplayed()
         pool.prizes.forEach { prize -> compose.onNodeWithTag("claim-prize-${prize.prize.name}").assertIsDisplayed().assertIsEnabled() }
         fun claimTextFits() {
         compose.onAllNodes(hasAnyAncestor(hasTestTag("ticket-prize-picker")) and
@@ -119,3 +132,4 @@ class CoinRoundLayoutTest {
         compose.runOnIdle { assertTrue(number in table.marks[own.first().id].orEmpty()) }
     }
 }
+
