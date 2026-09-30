@@ -1,6 +1,6 @@
 # Multi-game app direction
 
-Status: active implementation goal. The 75-ball Bingo domain foundation is implemented; navigation, playable rounds, online integration and release acceptance remain outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
+Status: active implementation goal. The 75-ball Bingo domain foundation and serializable practice-round lifecycle are implemented; native navigation/play screens, persistence integration, online integration and release acceptance remain outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
 
 ## Product and home
 
@@ -15,6 +15,10 @@ Use bottom previous/next arrows with a visible card/page count during play. Supp
 Selected first variant: 75-ball Bingo, 5×5 B-I-N-G-O cards, free centre. The game tile and lobby identify it as 75-ball. One line includes rows, columns and either diagonal; additional patterns are four corners, X and blackout. Cards use the standard 15-number range per column. One to six cards per player; cards are individually shuffled and distinct within a hand.
 
 For 75-ball, start with clearly displayed winning patterns; show each prize's remaining/total claims. Pattern order, prize allocation and tie rules must be defined before online play. Do not automatically apply Tambola's early-five or row prizes to Bingo.
+
+Implemented practice rules: each pattern targets two distinct winning players; one player can claim each category only once, regardless of card count. The call that fills a category's quota remains open to all same-call ties until the next draw. The final 75th call has a full claim window before completion on the following timer tick. Practice points total 100: Line 20, Four Corners 20, X 20, Blackout 40. Each category's pool is shared exactly among its winners with deterministic integer remainders. These points never directly credit the online wallet. The server integration must define and validate coin settlement separately.
+
+Practice opponents use generated fictional personas with the computer flag retained, varied 30–50-player populations and one to six cards per opponent. Saves include the entire shuffled draw, position, marks and accepted claims; decoding rejects invalid ownership, out-of-range marks and impossible historical claims. UI/storage integration is still needed for device resume.
 
 ## Code boundaries
 
