@@ -1,6 +1,6 @@
 # Multi-game app direction
 
-Status: proposed expansion; Bingo is not implemented or released. The Bingo variant question is pending. Existing shipped branding remains Tambola Jalsa until the multi-game release.
+Status: active implementation goal. The 75-ball Bingo domain foundation is implemented; navigation, playable rounds, online integration and release acceptance remain outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
 
 ## Product and home
 
@@ -12,7 +12,7 @@ Use bottom previous/next arrows with a visible card/page count during play. Supp
 
 ## Variant decision
 
-Recommended first variant: 75-ball Bingo, 5×5 B-I-N-G-O cards, free centre. Alternative requested for clarification: 1–25 Bingo with five completed lines. These require different draw and win rules, so the implementation must explicitly name its variant.
+Selected first variant: 75-ball Bingo, 5×5 B-I-N-G-O cards, free centre. The game tile and lobby identify it as 75-ball. One line includes rows, columns and either diagonal; additional patterns are four corners, X and blackout. Cards use the standard 15-number range per column. One to six cards per player; cards are individually shuffled and distinct within a hand.
 
 For 75-ball, start with clearly displayed winning patterns; show each prize's remaining/total claims. Pattern order, prize allocation and tie rules must be defined before online play. Do not automatically apply Tambola's early-five or row prizes to Bingo.
 
@@ -31,3 +31,15 @@ Continue all work on `shrey/tambola-jalsa`. Keep Android application IDs, signin
 Implement and validate the chosen Bingo rules, then practice play, then server-backed rooms and the shared home. Release the renamed app when both choices lead to playable games. Tests must cover card validity, winning patterns, invalid claims, cross-game isolation, ties, refunds, reconnect/resume, old Tambola saves/clients, six-card controls and APK upgrade data preservation.
 
 Commit and push each validated slice to GitHub. Publish a new versioned APK only after end-to-end acceptance; this document is not an APK or server release.
+
+## Goal acceptance checklist
+
+- [ ] Bounded home with immediately playable Tambola and Bingo choices, shared profile/settings, clear Home/Play again navigation, and separate remembered card counts.
+- [ ] Improved native play layouts with readable 5×5 Bingo cards, one to six cards with arrows, current call/history, pattern previews and available/total prize claims.
+- [ ] Complete Bingo practice rounds, save/resume, mark validation, prizes and ranked results with current-player highlighting.
+- [ ] Server-authoritative Bingo rooms sharing authenticated identity and wallet, variant-isolated matchmaking/invitations, progressive 30–50-player rosters with 1–6 cards, persisted state, reconnect and exactly-once purchase/refund/settlement.
+- [ ] Old Tambola saves, rooms, invitations and v42 clients remain compatible; no Bingo state leaks into Tambola rooms.
+- [ ] Rules tests, persistence/migration tests, server transaction/isolation tests, native six-card and navigation acceptance, and upgraded profile preservation all pass.
+- [ ] Deploy validated server, publish same-signer versioned GitHub APK, verify existing in-app updater installs it, and record physical-device versus emulator validation boundaries.
+
+Ludo, Snakes and Ladders, and Poker are later additions, not nonfunctional tiles or completion requirements for this first multi-game release. No live-release change is implied by a source-only checkpoint.
