@@ -24,8 +24,8 @@ const proxy = http.createServer((request, response) => {
   }
   const upstream = http.request({ hostname: '127.0.0.1', port: upstreamPort, method: request.method, path: request.url, headers: request.headers }, result => {
     const deletion = armed && request.method === 'POST' && request.url === '/v1/guests/me/delete';
-    const command = commandArmed && request.method === 'POST' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/commands$/.test(request.url);
-    const match = matchArmed && request.method === 'POST' && request.url === '/v1/matches';
+    const command = commandArmed && request.method === 'POST' && /^\/v1\/(?:rooms\/[A-HJ-NP-Z2-9]{8}|bingo\/rooms\/B-[A-Z2-9]{8})\/commands$/.test(request.url);
+    const match = matchArmed && request.method === 'POST' && ['/v1/matches', '/v1/bingo/matches'].includes(request.url);
     const session = sessionArmed && request.method === 'POST' && request.url === '/v1/guests/me/session';
     const refill = refillArmed && request.method === 'POST' && request.url === '/v1/wallet/refill';
     const commandPath = request.method === 'POST' && /^\/v1\/rooms\/[A-HJ-NP-Z2-9]{8}\/commands$/.test(request.url);

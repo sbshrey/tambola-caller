@@ -41,7 +41,7 @@ Commit and push each validated slice to GitHub. Publish a new versioned APK only
 - [x] Bounded home with immediately playable Tambola and Bingo choices, shared profile/settings, clear Home/Play again navigation, and separate remembered card counts.
 - [x] Improved native play layouts with readable 5×5 Bingo cards, one to six cards with arrows, current call/history, pattern previews and available/total prize claims.
 - [x] Complete Bingo practice rounds, save/resume, mark validation, prizes and ranked results with current-player highlighting.
-- [ ] Server-authoritative Bingo rooms sharing authenticated identity and wallet, variant-isolated matchmaking/invitations, progressive 30–50-player rosters with 1–6 cards, persisted state, reconnect and exactly-once purchase/refund/settlement.
+- [x] Server-authoritative Bingo rooms sharing authenticated identity and wallet, variant-isolated matchmaking/invitations, progressive 30–50-player rosters with 1–6 cards, persisted state, reconnect and exactly-once purchase/refund/settlement (source and isolated integration acceptance; deployment tracked below).
 - [ ] Old Tambola saves, rooms, invitations and v42 clients remain compatible; no Bingo state leaks into Tambola rooms.
 - [ ] Rules tests, persistence/migration tests, server transaction/isolation tests, native six-card and navigation acceptance, and upgraded profile preservation all pass.
 - [ ] Deploy validated server, publish same-signer versioned GitHub APK, verify existing in-app updater installs it, and record physical-device versus emulator validation boundaries.
@@ -55,3 +55,5 @@ See `reviews/bingo-native/VALIDATION.md` for emulator evidence. This is source p
 See `reviews/bingo-server/VALIDATION.md` for the backend checkpoint and remaining integration boundaries. The backend source checkpoint does not deploy migration 010 or make online Bingo available in installed apps.
 
 See `reviews/bingo-online-native/VALIDATION.md` for native online purchase, six-card paging, marked-card restoration and reconnect evidence. Public v43 remains unchanged until release acceptance is complete.
+
+Native final-call claims/results, lost committed purchase/mark responses, Play again preference retention and Hindi 200% landscape online layout now pass. Broader legacy-client compatibility and the deployment/APK upgrade gates remain open.

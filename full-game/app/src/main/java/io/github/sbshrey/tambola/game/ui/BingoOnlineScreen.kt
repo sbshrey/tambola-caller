@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -28,6 +29,8 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
     val nextCard = stringResource(R.string.bingo_next_card)
     val room = state.bingoRoom
     val game = room?.round
+    val config = LocalConfiguration.current
+    val widePlay = config.screenWidthDp > config.screenHeightDp && room?.phase == RoomPhase.ACTIVE
     var count by rememberSaveable(state.preferredBingoCards) { mutableIntStateOf(state.preferredBingoCards) }
     var page by rememberSaveable(game?.id) { mutableIntStateOf(0) }
     var friends by remember { mutableStateOf(false) }
@@ -39,7 +42,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
     LaunchedEffect(state.bingoWinSequence) { if (state.bingoWinSequence > 0) { delay(1600); model.dismissBingoWin() } }
     val blocked = state.loading || state.busy || state.pending || state.storageFailure || state.sessionExpired || !state.available
     Column(Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        if (!widePlay) Row(verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = home, modifier = Modifier.testTag("bingo-online-home")) { Text(stringResource(R.string.ui_home)) }
             Text(stringResource(R.string.bingo_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Text(stringResource(R.string.hub_coins, state.wallet?.balance ?: 0), style = MaterialTheme.typography.labelLarge)
@@ -93,25 +96,43 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                         }
                     }
                 }
-                Button(onClick = model::bingoLobby, enabled = !blocked, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.bingo_again)) }
+                Button(onClick = model::bingoLobby, enabled = !blocked, modifier = Modifier.fillMaxWidth().testTag("bingo-online-again")) { Text(stringResource(R.string.bingo_again)) }
             }
             game != null && game.ownCards.isNotEmpty() -> {
                 val card = game.ownCards[page.coerceIn(game.ownCards.indices)]
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                val controls: @Composable ColumnScope.() -> Unit = {
+                    if (widePlay) TextButton(onClick = home, modifier = Modifier.testTag("bingo-online-home")) { Text(stringResource(R.string.ui_home)) }
                     TextButton(onClick = model::repeatBingoCall) { Text(game.called.lastOrNull()?.let(::bingoCallLabel) ?: "75", style = MaterialTheme.typography.headlineLarge, color = Saffron) }
-                    Text(stringResource(R.string.bingo_called, game.called.size, game.players.size), Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                    TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }
-                    Button(onClick = { prizes = true }, enabled = !blocked) { Text(stringResource(R.string.bingo_claim)) }
+                    Text(stringResource(R.string.bingo_called, game.called.size, game.players.size), style = MaterialTheme.typography.labelMedium)
+                    Row {
+                        TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }
+                        if (!widePlay) Spacer(Modifier.weight(1f))
+                    }
+                    Button(onClick = { prizes = true }, enabled = !blocked, modifier = Modifier.fillMaxWidth().testTag("bingo-online-prizes")) { Text(stringResource(R.string.bingo_claim)) }
                 }
-                Box(Modifier.weight(1f).fillMaxWidth()) {
-                    BingoCardView(card, game.called, game.ownMarks[card.id].orEmpty(), !blocked && state.connection == Connection.LIVE,
-                        { cardId, number -> model.bingoCommand(BingoAction.Mark(game.id, cardId, number)) }, Modifier.fillMaxSize())
-                    if (state.bingoWinSequence > 0) WinConfetti("${game.id}:${state.bingoWinSequence}", reducedMotion, Modifier.matchParentSize(), intensity = .85f)
+                val hand: @Composable ColumnScope.() -> Unit = {
+                    Box(Modifier.weight(1f).fillMaxWidth()) {
+                        BingoCardView(card, game.called, game.ownMarks[card.id].orEmpty(), !blocked && state.connection == Connection.LIVE,
+                            { cardId, number -> model.bingoCommand(BingoAction.Mark(game.id, cardId, number)) }, Modifier.fillMaxSize())
+                        if (state.bingoWinSequence > 0) WinConfetti("${game.id}:${state.bingoWinSequence}", reducedMotion, Modifier.matchParentSize(), intensity = .85f)
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedButton(onClick = { page-- }, enabled = page > 0, modifier = Modifier.testTag("bingo-online-previous").semantics { contentDescription = previousCard }) { Text("←") }
+                        Text(stringResource(R.string.bingo_card_page, page + 1, game.ownCards.size), style = MaterialTheme.typography.labelLarge)
+                        OutlinedButton(onClick = { page++ }, enabled = page < game.ownCards.lastIndex, modifier = Modifier.testTag("bingo-online-next").semantics { contentDescription = nextCard }) { Text("→") }
+                    }
                 }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    OutlinedButton(onClick = { page-- }, enabled = page > 0, modifier = Modifier.testTag("bingo-online-previous").semantics { contentDescription = previousCard }) { Text("←") }
-                    Text(stringResource(R.string.bingo_card_page, page + 1, game.ownCards.size))
-                    OutlinedButton(onClick = { page++ }, enabled = page < game.ownCards.lastIndex, modifier = Modifier.testTag("bingo-online-next").semantics { contentDescription = nextCard }) { Text("→") }
+                if (widePlay) Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Column(Modifier.weight(1f).fillMaxHeight(), content = hand)
+                    Column(Modifier.weight(.55f).fillMaxHeight(), content = controls)
+                } else Column(Modifier.weight(1f).fillMaxWidth()) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(onClick = model::repeatBingoCall) { Text(game.called.lastOrNull()?.let(::bingoCallLabel) ?: "75", style = MaterialTheme.typography.headlineLarge, color = Saffron) }
+                        Text(stringResource(R.string.bingo_called, game.called.size, game.players.size), Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                        TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }
+                        Button(onClick = { prizes = true }, enabled = !blocked, modifier = Modifier.testTag("bingo-online-prizes")) { Text(stringResource(R.string.bingo_claim)) }
+                    }
+                    hand()
                 }
                 if (prizes) AlertDialog(onDismissRequest = { prizes = false }, title = { Text(stringResource(R.string.bingo_claim)) }, text = {
                     Column {
@@ -120,7 +141,8 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             val won = wins.any { it.playerId == state.playerId }
                             val open = wins.size < game.winnersPerPattern || wins.last().drawCount == game.called.size
                             val complete = pattern.isComplete(card, game.called.toSet(), game.ownMarks[card.id].orEmpty())
-                            TextButton(onClick = { model.bingoCommand(BingoAction.Claim(game.id, card.id, pattern)); prizes = false }, enabled = !blocked && !won && open && complete) {
+                            TextButton(onClick = { model.bingoCommand(BingoAction.Claim(game.id, card.id, pattern)); prizes = false }, enabled = !blocked && !won && open && complete,
+                                modifier = Modifier.testTag("bingo-online-claim-${pattern.name}")) {
                                 Column {
                                     Text(patternTitle(pattern))
                                     Text(if (won) stringResource(R.string.prize_already_claimed) else if (wins.size >= game.winnersPerPattern && open) stringResource(R.string.prize_ties_open)
