@@ -139,6 +139,18 @@ fun Application.roomsModule(database: Database, service: RoomService = RoomServi
             call.respondText("ok")
         }
         route("/v1") {
+            post("/bingo/matches") {
+                val body = call.body<BingoMatchRequest>()
+                val token = call.bearer()
+                call.respond(quickPurchases.withPermit { withContext(Dispatchers.IO) { service.bingo.match(token, body) } })
+            }
+            get("/bingo/rooms/{code}") {
+                call.respond(withContext(Dispatchers.IO) { service.bingo.read(call.bearer(), call.parameters["code"].orEmpty()) })
+            }
+            post("/bingo/rooms/{code}/commands") {
+                val body = call.body<BingoCommandRequest>()
+                call.respond(withContext(Dispatchers.IO) { service.bingo.command(call.bearer(), call.parameters["code"].orEmpty(), body) })
+            }
             post("/wallet/ad-intents") { call.respond(withContext(Dispatchers.IO) { service.prepareAd(call.bearer()) }) }
             get("/wallet/ad-intents/{id}") { call.respond(withContext(Dispatchers.IO) { service.adStatus(call.bearer(), call.parameters["id"].orEmpty()) }) }
             post("/wallet/login-rewards") { call.respond(withContext(Dispatchers.IO) { service.loginRewards(call.bearer()) }) }

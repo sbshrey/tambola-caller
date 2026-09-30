@@ -12,6 +12,9 @@ internal object RuntimePrivileges {
         "deletion_receipts" to Access(setOf("INSERT", "DELETE")), "deletion_recovery" to Access(updateColumns = setOf("journal_id", "applied_sequence")),
         "coin_wallets" to Access(setOf("INSERT"), setOf("refill_after")), "coin_ledger" to Access(setOf("INSERT")),
         "reward_ad_intents" to Access(setOf("INSERT")), "reward_ad_receipts" to Access(setOf("INSERT")),
+        "bingo_rooms" to Access(setOf("INSERT", "UPDATE", "DELETE")),
+        "bingo_participants" to Access(setOf("INSERT", "DELETE")),
+        "bingo_receipts" to Access(setOf("INSERT"), setOf("response")),
         "match_receipts" to Access(setOf("INSERT"), setOf("response")),
     )
     private val recovery = mapOf("journal_migrations" to Access(), "profile_deletions" to Access(setOf("INSERT")),

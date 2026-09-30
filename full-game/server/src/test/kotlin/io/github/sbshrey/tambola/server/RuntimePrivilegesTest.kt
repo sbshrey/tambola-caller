@@ -85,6 +85,23 @@ class RuntimePrivilegesTest {
         assertEquals(state, failure.sqlState)
     }
 
+    @Test fun `restricted runtime can purchase refund tick and redact Bingo`() {
+        fun id() = UUID.randomUUID().toString()
+        val actor = service.register(GuestRequest("Restricted Bingo owner"), "bingo-owner")
+        val peer = service.register(GuestRequest("Bingo peer"), "bingo-peer")
+        val room = service.bingo.match(actor.token, BingoMatchRequest(id(), 6, friendTable = true))
+        val request = BingoMatchRequest(id(), 1, friendTable = true, friendCode = room.code)
+        service.bingo.match(peer.token, request)
+        service.tick()
+        service.deleteProfile(actor.token, DeleteProfileRequest(id()), "bingo-delete")
+        val remaining = service.bingo.read(peer.token, room.code)
+        assertEquals(listOf(peer.playerId), remaining.members.map { it.playerId })
+        assertTrue(service.bingo.match(peer.token, request).members.none { it.displayName == "Restricted Bingo owner" })
+        val left = service.bingo.command(peer.token, room.code, BingoCommandRequest(id(), remaining.revision, BingoAction.Leave))
+        assertEquals(1500L, left.wallet!!.balance)
+        now.addAndGet(32 * ROOM_LIFETIME); service.cleanup()
+    }
+
     @Test fun `restricted runtime can grant and cascade delete ad rewards`() {
         val unit = "ca-app-pub-1234567890123456/1234567890"
         val rewards = RoomService(mainRuntime, now::get, journal, RewardedAds.forTest(unit) { })

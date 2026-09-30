@@ -28,6 +28,9 @@ class RoomService(
     private val journal: DeletionJournal? = null,
     private val ads: RewardedAds? = null,
 ) {
+    internal val bingo = BingoRoomService(database, clock,
+        { connection, token, lock -> authenticate(connection, token, lock) }, ::authenticatedRate)
+
     fun prepareAd(token: String): RewardAdIntent {
         val rewards = ads ?: fail(503, "ads_disabled", "Rewarded ads are not available yet.")
         authenticatedRate(token, "ad_prepare", 15)
@@ -155,6 +158,7 @@ class RoomService(
                 return@transaction WireJson.decodeFromString<RoomUpdate>(receipt.response)
             }
             val now = clock()
+            demand(!bingo.hasActive(connection, guest.id, now), 409, "other_game_active", "Finish or leave your Bingo table before joining Tambola.")
             val existing = connection.query("""SELECT payload FROM rooms WHERE (payload::jsonb->'options'->>'coinGame')::boolean AND phase IN ('LOBBY','ACTIVE')
                 AND expires_at > ? AND id IN (SELECT room_id FROM room_participants WHERE player_id = ?)
                 AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
@@ -370,9 +374,10 @@ class RoomService(
             connection.execute("UPDATE match_receipts SET response = ? WHERE actor = ? AND command_id = ?",
                 WireJson.encodeToString(response.redact(playerId)), row.getString(1), row.getString(2))
         }
+        bingo.redact(connection, playerId, now)
         connection.execute("DELETE FROM command_receipts WHERE actor = ?", playerId)
         connection.execute("DELETE FROM room_participants WHERE player_id = ?", playerId)
-        listOf("create", "join", "read", "command", "wallet", "refill", "match").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
+        listOf("create", "join", "read", "command", "wallet", "refill", "match", "bingo_match", "bingo_read", "bingo_command").forEach { connection.execute("DELETE FROM rate_limits WHERE bucket = ?", "$it:$playerId") }
         connection.execute("DELETE FROM guests WHERE id = ?", playerId)
         if (intent.confirmUntil > now) connection.execute("INSERT INTO deletion_receipts VALUES (?, ?, ?) ON CONFLICT (confirmation_hash) DO NOTHING", intent.proof, intent.deletedAt, intent.confirmUntil)
     }
@@ -561,13 +566,14 @@ class RoomService(
             if (room != original) changed(connection, room, event, now)
             connection.execute("UPDATE rooms SET checked_at = ? WHERE id = ?", now, room.id)
         }
-        rooms.size
+        rooms.size + bingo.tick(connection, now)
     }
 
     fun cleanup() = database.transaction { connection ->
         val now = clock()
         connection.execute("DELETE FROM guests WHERE expires_at < ? AND (device_key_hash IS NULL OR revoked_at IS NOT NULL)", now - 30 * ROOM_LIFETIME)
         connection.execute("DELETE FROM rooms WHERE id IN (SELECT id FROM rooms WHERE expires_at < ? ORDER BY id FOR UPDATE)", now - 30 * ROOM_LIFETIME)
+        connection.execute("DELETE FROM bingo_rooms WHERE expires_at < ?", now - 30 * ROOM_LIFETIME)
         connection.execute("DELETE FROM deletion_receipts WHERE expires_at <= ?", now)
         connection.execute("DELETE FROM rate_limits WHERE window_start < ?", now / 60_000 - 2)
         Unit

@@ -23,3 +23,8 @@ GRANT SELECT, INSERT ON match_receipts TO :"runtime_role";
 GRANT UPDATE (response) ON match_receipts TO :"runtime_role";
 
 GRANT SELECT, INSERT ON reward_ad_intents, reward_ad_receipts TO :"runtime_role";
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON bingo_rooms TO :"runtime_role";
+GRANT SELECT, INSERT, DELETE ON bingo_participants TO :"runtime_role";
+GRANT SELECT, INSERT ON bingo_receipts TO :"runtime_role";
+GRANT UPDATE (response) ON bingo_receipts TO :"runtime_role";

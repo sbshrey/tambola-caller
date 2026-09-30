@@ -1,6 +1,6 @@
 # Multi-game app direction
 
-Status: active implementation goal. The 75-ball Bingo domain, native practice lifecycle, shared home/profile navigation, card paging, local save/resume and results flow are implemented and emulator-tested. Server-backed Bingo, cross-game integration and multi-game release acceptance remain outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
+Status: active implementation goal. The 75-ball Bingo domain, native practice lifecycle, shared home/profile navigation, card paging, local save/resume and results flow are implemented and emulator-tested. The online backend now includes isolated matchmaking, persisted rooms, private snapshots and shared-wallet settlement, with PostgreSQL integration coverage. Native online integration and multi-game release acceptance remain outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
 
 ## Product and home
 
@@ -51,3 +51,5 @@ Ludo, Snakes and Ladders, and Poker are later additions, not nonfunctional tiles
 ## Native practice checkpoint
 
 See `reviews/bingo-native/VALIDATION.md` for emulator evidence. This is source progress only; the published v43 APK still contains Tambola only. Remaining unchecked delivery gates must be verified for the eventual multi-game release.
+
+See `reviews/bingo-server/VALIDATION.md` for the backend checkpoint and remaining integration boundaries. The backend source checkpoint does not deploy migration 010 or make online Bingo available in installed apps.
