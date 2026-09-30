@@ -1,0 +1,9 @@
+{
+  "asset": "D:\\Github\\App Ideas\\tambola-caller\\full-game\\releases\\ota-v43\\tambola-beta-v43.apk",
+  "versionCode": 43,
+  "certificateSha256": "55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c",
+  "bytes": 31687898,
+  "sha256": "25e95e94a151ad85f003c3c3c6d7150c4f6d854bc931b451edb25ae2bf186235",
+  "packageName": "io.github.sbshrey.tambola.game.beta",
+  "installedApkSha256": "25e95e94a151ad85f003c3c3c6d7150c4f6d854bc931b451edb25ae2bf186235"
+}
