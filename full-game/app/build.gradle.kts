@@ -48,8 +48,8 @@ android {
         buildConfigField("boolean", "REWARDED_ADS_ENABLED", "false")
         buildConfigField("boolean", "REWARDED_ADS_TEST", "false")
         buildConfigField("String", "ADMOB_REWARD_UNIT", "\"\"")
-        versionCode = 41
-        versionName = "0.41.0-alpha41"
+        versionCode = 42
+        versionName = "0.42.0-alpha42"
         buildConfigField("String", "ROOM_DISCOVERY_URL", "\"\"")
         buildConfigField("boolean", "TELEMETRY_CONFIGURED", "false")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -98,13 +98,13 @@ android {
             versionNameSuffix = "-internet-beta"
             signingConfig = signingConfigs.getByName("debug")
             isDebuggable = false
-            // Stable saved-profile identity; actual transport is resolved through the publisher directory.
+            // Preserve saved-profile identity; transport now uses the permanent publisher hostname.
             manifestPlaceholders["admobAppId"] = adApp
             buildConfigField("String", "ADMOB_REWARD_UNIT", "\"$adUnit\"")
             buildConfigField("boolean", "REWARDED_ADS_ENABLED", adLive.toString())
             buildConfigField("boolean", "TELEMETRY_CONFIGURED", firebaseConfigured.toString())
             buildConfigField("String", "ROOM_API_URL", "\"https://sbshrey.github.io\"")
-            buildConfigField("String", "ROOM_DISCOVERY_URL", "\"https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json\"")
+            buildConfigField("String", "ROOM_DISCOVERY_URL", "\"https://play.thefinxperts.com\"")
             manifestPlaceholders["inviteHost"] = "disabled.invalid"
             manifestPlaceholders["verifyInvites"] = "false"
         }

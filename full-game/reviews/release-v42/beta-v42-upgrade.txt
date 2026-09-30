@@ -1,0 +1,1 @@
+PASS: v41 to v42 upgrade retained wallet, six-ticket preference and authenticated session; purchase refunded; owned profile deleted.

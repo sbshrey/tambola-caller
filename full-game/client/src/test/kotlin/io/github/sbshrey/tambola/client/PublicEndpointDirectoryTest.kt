@@ -10,6 +10,36 @@ import org.junit.Test
 import java.util.UUID
 
 class PublicEndpointDirectoryTest {
+    @Test fun `permanent transport preserves invitations and sends purchases once without discovery`() = runBlocking {
+        var purchases = 0
+        val client = HttpClient(MockEngine { call ->
+            assertEquals("play.thefinxperts.com", call.url.host)
+            assertEquals("https", call.url.protocol.name)
+            assertEquals("Bearer secret", call.headers[HttpHeaders.Authorization])
+            purchases++
+            respond("{}", HttpStatusCode.BadGateway)
+        })
+        val api = HttpRoomApi("https://sbshrey.github.io", client = client,
+            discoveryUrl = PublicEndpointDirectory.PERMANENT_ORIGIN)
+        try {
+            assertEquals("https://sbshrey.github.io/tambola-caller/friends/#ABCDEFG2", api.friendInvitation("ABCDEFG2"))
+            assertEquals(0, purchases)
+            try { api.match("secret", MatchRequest(UUID.randomUUID().toString(), 6)); fail() }
+            catch (_: RoomApiFailure) { }
+            assertEquals(1, purchases)
+        } finally { api.close() }
+    }
+
+    @Test fun `permanent endpoint configuration rejects alternate hosts paths and schemes`() {
+        val client = HttpClient(MockEngine { error("No network expected") })
+        try {
+            for (url in listOf("http://play.thefinxperts.com", "https://play.thefinxperts.com.evil.example",
+                "https://play.thefinxperts.com/path", "https://evil.example")) {
+                try { PublicEndpointDirectory(url, client); fail("Accepted $url") }
+                catch (_: IllegalArgumentException) { }
+            }
+        } finally { client.close() }
+    }
     @Test fun `sharing uses a stable publisher page without requiring an online directory or room`() = runBlocking {
         var requests = 0
         val api = HttpRoomApi("https://sbshrey.github.io", client = HttpClient(MockEngine { call ->

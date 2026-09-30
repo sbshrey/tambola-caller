@@ -12,7 +12,7 @@ import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
 import java.net.URI
 
-/** Only the publisher-controlled directory can change the temporary Internet beta origin.
+/** Public beta transport: a fixed publisher hostname, or the legacy temporary directory.
  * No player credential is sent to the directory. Mutating game requests are never replayed here. */
 class PublicEndpointDirectory(
     private val url: String,
@@ -20,13 +20,15 @@ class PublicEndpointDirectory(
     private val now: () -> Long = System::currentTimeMillis,
 ) {
     init {
-        require(url == DIRECTORY_URL) { "Unrecognized game directory" }
+        require(url == DIRECTORY_URL || url == PERMANENT_ORIGIN) { "Unrecognized game endpoint configuration" }
     }
     private val mutex = Mutex()
     private var cached: Entry? = null
     private var checkedAt = 0L
 
     suspend fun origin(): String = mutex.withLock {
+        // Keep the saved profile's publisher identity while removing discovery/cache dependence.
+        if (url == PERMANENT_ORIGIN) return@withLock PERMANENT_ORIGIN
         val time = now()
         cached?.takeIf { time >= checkedAt && time - checkedAt < 60_000 && time < it.expiresAt }
             ?.let { return@withLock it.origin }
@@ -52,6 +54,7 @@ class PublicEndpointDirectory(
 
     @Serializable private data class Entry(val version: Int, val service: String, val origin: String, val expiresAt: Long)
     companion object {
+        const val PERMANENT_ORIGIN = "https://play.thefinxperts.com"
         const val SERVICE = "tambola-together-public-beta-v1"
         const val DIRECTORY_URL = "https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json"
     }

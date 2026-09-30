@@ -27,3 +27,7 @@ Install permission and provider exist only in the direct-distribution publicBeta
 No release is automatically published by the preparation tool. This keeps a build or test run from notifying every installed beta app.
 
 Project delivery preference: after validating an APK update, commit and push its corresponding source and publish the versioned APK in a GitHub prerelease. Return the public download link. Publishing is part of completing an update; the preparation script remains read-only with respect to GitHub so intermediate builds cannot notify users accidentally.
+
+## Permanent hostname update (v42)
+
+Public beta v42 keeps the saved publisher profile identity and invitation format while connecting directly to `https://play.thefinxperts.com`. It no longer fetches the temporary server directory for game traffic. The old quick tunnel and feed remain available to v40/v41 during migration. Publishing the immutable `tambola-beta-v42.apk` release makes it discoverable by their existing updater; users must confirm download and Android installation. This is a foreground update check, not a push notification or silent installation.

@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "observedAt": "2026-09-30T03:10:03.781Z",
+  "origin": "https://play.thefinxperts.com",
+  "checks": [
+    "concurrent 50000 starter plus day-one reward exactly once",
+    "two friends with rules v2 and ten-second calls",
+    "50-seat capacity and two winners per category",
+    "six fixed category pools",
+    "persisted power-up selections",
+    "exact purchase/leave retry and full refund",
+    "configured reward intent retries without unverified credit",
+    "QA profiles deleted"
+  ],
+  "scope": "Public HTTPS from the host PC, lobby and economy checks; no physical-phone acceptance or completed round claim"
+}
