@@ -4,10 +4,14 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 const directory = 'https://raw.githubusercontent.com/sbshrey/tambola-caller/codex/public-beta-channel/server.json';
-const entry = await (await fetch(`${directory}?minute=${Math.floor(Date.now() / 60000)}`, { redirect: 'error', signal: AbortSignal.timeout(15000) })).json();
-assert.equal(entry.service, 'tambola-together-public-beta-v1');
-assert.ok(entry.expiresAt > Date.now());
-assert.match(entry.origin, /^https:\/\/[a-z0-9]+(?:-[a-z0-9]+)*\.trycloudflare\.com$/);
+const permanent = process.argv.includes('--permanent');
+const entry = permanent ? { origin: 'https://play.thefinxperts.com' } :
+  await (await fetch(`${directory}?minute=${Math.floor(Date.now() / 60000)}`, { redirect: 'error', signal: AbortSignal.timeout(15000) })).json();
+if (!permanent) {
+  assert.equal(entry.service, 'tambola-together-public-beta-v1');
+  assert.ok(entry.expiresAt > Date.now());
+  assert.match(entry.origin, /^https:\/\/[a-z0-9]+(?:-[a-z0-9]+)*\.trycloudflare\.com$/);
+}
 const guests = [];
 const adsEnabled = process.argv.includes('--ads-enabled');
 async function request(path, method = 'GET', body, actor) {
