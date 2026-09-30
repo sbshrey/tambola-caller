@@ -34,3 +34,9 @@ The current client explicitly trusts only publisher-discovered `*.trycloudflare.
 The stable address removes post-reboot address rotation and directory-cache propagation, not the reboot itself. The PC must remain powered and connected; automatic login/startup/watchdogs restore it after a restart. Eliminating downtime while the PC is off requires another host or failover.
 
 Quick Tunnels are development infrastructure with no uptime guarantee and a 200 in-flight request limit, which is not a player-capacity promise. Source: [Cloudflare Quick Tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/).
+
+## Domain preparation (2026-09-30)
+
+Cloudflare Free has been selected for the existing GoDaddy domain. All eight application DNS records were imported and compared with the registrar: the root A record, www and _domainconnect CNAME records, three Zoho MX records with priorities 10/20/50, SPF and DMARC. Existing A/CNAME records were set to DNS-only in the pending Cloudflare zone to preserve website routing. The registrar's two authoritative NS records and SOA are provider-managed, not application records to copy. GoDaddy DNSSEC is currently off.
+
+Cloudflare assigned chad.ns.cloudflare.com and lilith.ns.cloudflare.com. Their replacement of ns15.domaincontrol.com and ns16.domaincontrol.com is staged but NOT saved, pending action-time confirmation for domain-wide DNS delegation. No tunnel, game hostname, client release or live nameserver cutover has been completed. Intended game hostname: play.thefinxperts.com. Verify DNS propagation and website/mail records after the approved cutover before releasing the app migration.
