@@ -50,7 +50,15 @@ function Run-Child([string]$executable, [string[]]$arguments, [hashtable]$variab
 function Active-RoomCount {
     $pgArgs = @('-X','--no-password','-h','127.0.0.1','-p','55433','-U','tambola_main_app','-d','tambola_local','-At','-v','ON_ERROR_STOP=1',
         '-c',"SELECT count(*) FROM rooms WHERE phase IN ('LOBBY','ACTIVE') AND expires_at > (extract(epoch from clock_timestamp()) * 1000)::bigint")
-    return [int](Run-Child (Join-Path $config.postgresBin 'psql.exe') $pgArgs @{PGPASSWORD=$runtime.TAMBOLA_DATABASE_PASSWORD} 'room-inventory')
+    $count = [int](Run-Child (Join-Path $config.postgresBin 'psql.exe') $pgArgs @{PGPASSWORD=$runtime.TAMBOLA_DATABASE_PASSWORD} 'room-inventory')
+    # The first multi-game upgrade starts on a schema without Bingo. Later upgrades must protect both games.
+    $probe = $pgArgs.Clone()
+    $probe[-1] = "SELECT to_regclass('bingo_rooms') IS NOT NULL"
+    if ((Run-Child (Join-Path $config.postgresBin 'psql.exe') $probe @{PGPASSWORD=$runtime.TAMBOLA_DATABASE_PASSWORD} 'bingo-table-probe') -eq 't') {
+        $probe[-1] = "SELECT count(*) FROM bingo_rooms WHERE phase IN ('LOBBY','ACTIVE') AND expires_at > (extract(epoch from clock_timestamp()) * 1000)::bigint"
+        $count += [int](Run-Child (Join-Path $config.postgresBin 'psql.exe') $probe @{PGPASSWORD=$runtime.TAMBOLA_DATABASE_PASSWORD} 'bingo-room-inventory')
+    }
+    return $count
 }
 function Lock-Free([string]$name) {
     try { $handle = [IO.File]::Open((Join-Path $hostRoot $name), 'OpenOrCreate', 'ReadWrite', 'None'); $handle.Dispose(); return $true }
