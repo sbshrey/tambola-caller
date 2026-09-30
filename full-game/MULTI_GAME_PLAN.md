@@ -1,6 +1,6 @@
 # Multi-game app direction
 
-Status: active implementation goal. The 75-ball Bingo domain, native practice lifecycle, shared home/profile navigation, card paging, local save/resume and results flow are implemented and emulator-tested. The online backend includes isolated matchmaking, persisted rooms, private snapshots and shared-wallet settlement. Native online lobby/play and saved-session integration now pass an emulator-to-PostgreSQL purchase, mark and restore test. Remaining online results/failure/accessibility acceptance and multi-game deployment/release gates are still outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
+Status: active implementation goal. The 75-ball Bingo domain, native practice lifecycle, shared home/profile navigation, card paging, local save/resume and results flow are implemented and emulator-tested. The online backend includes isolated matchmaking, persisted rooms, private snapshots and shared-wallet settlement. Native online lobby/play and saved-session integration now pass an emulator-to-PostgreSQL purchase, mark and restore test. Online results, dropped-response recovery and large-text landscape acceptance also pass. Legacy compatibility and multi-game deployment/release gates are still outstanding. Existing shipped branding remains Tambola Jalsa under AGENTS.md.
 
 ## Product and home
 
