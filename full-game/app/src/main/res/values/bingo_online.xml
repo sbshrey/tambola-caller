@@ -5,7 +5,11 @@
     <string name="bingo_join">Join table</string>
     <string name="bingo_create">Create table</string>
     <string name="bingo_code">Table code</string>
-    <string name="bingo_waiting">%1$d players · %2$d cards</string>
+    <string name="bingo_waiting">%1$s · %2$s</string>
+    <plurals name="bingo_card_count">
+        <item quantity="one">%d card</item>
+        <item quantity="other">%d cards</item>
+    </plurals>
     <string name="bingo_countdown">Starting in %1$d</string>
     <string name="bingo_leave">Leave table</string>
     <string name="bingo_retry">Retry</string>

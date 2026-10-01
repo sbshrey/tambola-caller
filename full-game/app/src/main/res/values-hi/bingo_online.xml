@@ -5,7 +5,11 @@
     <string name="bingo_join">टेबल से जुड़ें</string>
     <string name="bingo_create">टेबल बनाएं</string>
     <string name="bingo_code">टेबल कोड</string>
-    <string name="bingo_waiting">%1$d खिलाड़ी · %2$d कार्ड</string>
+    <string name="bingo_waiting">%1$s · %2$s</string>
+    <plurals name="bingo_card_count">
+        <item quantity="one">%d कार्ड</item>
+        <item quantity="other">%d कार्ड</item>
+    </plurals>
     <string name="bingo_countdown">%1$d में शुरू</string>
     <string name="bingo_leave">टेबल छोड़ें</string>
     <string name="bingo_retry">फिर कोशिश करें</string>

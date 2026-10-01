@@ -8,7 +8,7 @@
     <string name="round_summary_returned">%1$d entry coins returned</string>
     <string name="round_summary_lobby">Lobby</string>
     <string name="round_summary_again">Play again</string>
-    <string name="round_summary_confirm">Play with %1$d tickets for %2$d coins?</string>
+    <string name="round_summary_confirm">Play with %1$s for %2$d coins?</string>
     <string name="round_summary_no_prizes">No prizes this round</string>
     <string name="round_summary_find_me">My rank</string>
 </resources>

@@ -8,7 +8,7 @@
     <string name="round_summary_returned">%1$d प्रवेश सिक्के लौटाए गए</string>
     <string name="round_summary_lobby">लॉबी</string>
     <string name="round_summary_again">फिर खेलें</string>
-    <string name="round_summary_confirm">%2$d सिक्कों में %1$d टिकट के साथ खेलें?</string>
+    <string name="round_summary_confirm">%2$d सिक्कों में %1$s के साथ खेलें?</string>
     <string name="round_summary_no_prizes">इस दौर में कोई इनाम नहीं</string>
     <string name="round_summary_find_me">मेरा स्थान</string>
 </resources>

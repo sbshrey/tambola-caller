@@ -95,7 +95,8 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                                 style = MaterialTheme.typography.labelSmall)
                             if (state.connection != Connection.LIVE) WaitingConnectionNotice(state.connection, enabled, reconnect)
                         }
-                        if (!compact || coins?.friendTable == true) Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
+                        if (!compact || coins?.friendTable == true) Text(words(R.string.coin_choose_count,
+                            pluralStringResource(R.plurals.ticket_count, coins?.ownTickets ?: 0, coins?.ownTickets ?: 0)) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
                             " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
                             modifier = Modifier.testTag("waiting-pool"))
                         if (coins?.friendTable != true) TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,

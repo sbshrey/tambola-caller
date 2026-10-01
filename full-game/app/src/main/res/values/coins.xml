@@ -30,7 +30,7 @@
     <string name="coin_refill_timer">Free refill in %1$d:%2$02d</string>
     <string name="coin_unavailable">The online table is unavailable in this build.</string>
     <string name="coin_ties">Claims on the same call share the prize. Unclaimed coins return at the end.</string>
-    <string name="coin_choose_count">%1$d tickets</string>
+    <string name="coin_choose_count">%1$s</string>
     <string name="coin_players">%1$d players · %2$d computer</string>
     <string name="coin_reset_warning">This clears your sign-in, saved tickets and pending requests from this device. You will lose access to this guest wallet. It does not delete your server profile. To confirm a pending action, reconnect and retry it first.</string>
 </resources>

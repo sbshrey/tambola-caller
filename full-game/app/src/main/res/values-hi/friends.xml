@@ -17,7 +17,7 @@
     <string name="friend_create">टेबल बनाएं</string>
     <string name="friend_join">कोड से जुड़ें</string>
     <string name="friend_entry_detail">आपका समूह, आपकी टेबल। 49 दोस्तों को बुलाएं। सभी के जुड़ने पर होस्ट खेल शुरू करेगा।</string>
-    <string name="friend_entry_cost">%1$d टिकट · %2$d सिक्के</string>
+    <string name="friend_entry_cost">%1$s · %2$d सिक्के</string>
     <string name="friend_refund">शुरू होने से पहले छोड़ने पर सारे सिक्के वापस। केवल मुफ्त वर्चुअल सिक्के।</string>
     <string name="friend_refund_short">खेल शुरू होने से पहले छोड़ें: सारे सिक्के वापस।</string>
     <string name="friend_title">दोस्तों की टेबल</string>

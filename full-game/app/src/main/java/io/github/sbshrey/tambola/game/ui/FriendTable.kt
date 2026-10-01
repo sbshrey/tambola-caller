@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import io.github.sbshrey.tambola.game.online.Connection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -65,7 +66,7 @@ internal fun FriendEntryDialog(tickets: Int, cost: Long, enabled: Boolean, enter
           Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (editing) TextButton(onClick = { finishTyping() }, modifier = Modifier.align(Alignment.End).testTag("friend-code-done")) { Text(words(R.string.ui_done)) }
             else {
-            Text(words(R.string.friend_entry_cost, tickets, cost), fontSize = 14.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("friend-entry-cost"))
+            Text(words(R.string.friend_entry_cost, pluralStringResource(R.plurals.ticket_count, tickets, tickets), cost), fontSize = 14.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("friend-entry-cost"))
             Text(words(R.string.friend_refund_short), fontSize = 12.sp)
             Button(onClick = { finishTyping(); enter(code.takeIf { join }) }, enabled = enabled && (!join || Regex("[A-HJ-NP-Z2-9]{8}").matches(code)),
                 modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("friend-enter")) { Text(words(if (join) R.string.friend_join else R.string.friend_create), fontSize = 14.sp) }

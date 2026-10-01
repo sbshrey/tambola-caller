@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -118,7 +119,10 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                         Text(stringResource(R.string.bingo_live_players, room.members.size), color = GameNightPalette.mint)
                         if (!room.friendTable) Text(stringResource(R.string.bingo_computer_fill), color = GameNightPalette.muted,
                             style = MaterialTheme.typography.labelSmall)
-                        Text(stringResource(R.string.bingo_waiting, room.players.size, room.cardCounts.values.sum()), color = GameNightPalette.muted)
+                        val cardCount = room.cardCounts.values.sum()
+                        Text(stringResource(R.string.bingo_waiting,
+                            pluralStringResource(R.plurals.player_count, room.players.size, room.players.size),
+                            pluralStringResource(R.plurals.bingo_card_count, cardCount, cardCount)), color = GameNightPalette.muted)
                         if (room.friendTable) Text(room.code, style = MaterialTheme.typography.headlineMedium, color = GameNightPalette.gold)
                         if (room.friendTable && room.hostId == state.playerId) Button(onClick = { model.bingoCommand(BingoAction.Start) },
                             enabled = !blocked && room.members.size >= 2) { Text(stringResource(R.string.bingo_start)) }

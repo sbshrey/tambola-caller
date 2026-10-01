@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +77,7 @@ internal fun FriendInviteDialog(code: String, state: OnlineUiState, join: (Int) 
           val actions: @Composable () -> Unit = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
               if (valid && !recovery) {
-                Text(words(R.string.friend_entry_cost, tickets, cost), fontSize = 14.sp, lineHeight = 18.sp,
+                Text(words(R.string.friend_entry_cost, pluralStringResource(R.plurals.ticket_count, tickets, tickets), cost), fontSize = 14.sp, lineHeight = 18.sp,
                     fontWeight = FontWeight.Bold, modifier = Modifier.testTag("friend-invitation-cost"))
                 Text(words(R.string.friend_refund_short), fontSize = 12.sp, lineHeight = 16.sp)
                 if (balance != null && balance < COIN_TICKET_PRICE) Text(words(R.string.friend_invitation_refill), fontSize = 12.sp, lineHeight = 16.sp)

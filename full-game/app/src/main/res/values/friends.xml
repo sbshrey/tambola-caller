@@ -17,7 +17,7 @@
     <string name="friend_create">Create table</string>
     <string name="friend_join">Join with code</string>
     <string name="friend_entry_detail">Your group, your table. Invite up to 49 friends. The host starts when everyone has joined.</string>
-    <string name="friend_entry_cost">%1$d tickets · %2$d coins</string>
+    <string name="friend_entry_cost">%1$s · %2$d coins</string>
     <string name="friend_refund">Leave before the start for a full refund. Free virtual coins only.</string>
     <string name="friend_refund_short">Leave before start: all coins returned.</string>
     <string name="friend_title">Your friends’ table</string>

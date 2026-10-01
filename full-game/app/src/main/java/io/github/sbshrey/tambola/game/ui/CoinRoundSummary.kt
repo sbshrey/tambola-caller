@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -90,7 +91,8 @@ internal fun CoinRoundSummary(state: OnlineUiState, lobby: () -> Unit, replay: (
     }
     if (confirm) AlertDialog(onDismissRequest = { confirm = false }, title = { Text(words(R.string.round_summary_again)) },
         text = { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(words(R.string.round_summary_confirm, tickets, cost))
+            Text(words(R.string.round_summary_confirm,
+                pluralStringResource(R.plurals.ticket_count, tickets, tickets), cost))
             if (!affordable) Text(words(R.string.round_summary_low_balance, state.wallet?.balance ?: 0L))
         } },
         confirmButton = { TextButton(onClick = { confirm = false; replay(tickets) }, enabled = enabled && affordable,

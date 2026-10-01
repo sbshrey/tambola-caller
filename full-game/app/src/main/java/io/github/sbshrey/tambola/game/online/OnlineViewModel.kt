@@ -211,6 +211,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
 
     fun play(tickets: Int, friendTable: Boolean = false, friendCode: String? = null) {
         if (tickets !in 1..6 || api == null || mutable.value.adActive || mutable.value.busy || mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
+        if (saved?.bingoRoom?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) {
+            mutable.update { it.copy(error = UiMessage(R.string.error_finish_bingo)) }; return
+        }
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2,
@@ -237,6 +240,9 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun playBingo(cards: Int, friendTable: Boolean = false, friendCode: String? = null) {
         if (cards !in 1..6 || api == null || mutable.value.loading || mutable.value.adActive || mutable.value.busy ||
             mutable.value.pending || mutable.value.storageFailure || mutable.value.sessionExpired) return
+        if (saved?.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) {
+            mutable.update { it.copy(error = UiMessage(R.string.error_finish_tambola)) }; return
+        }
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("B-[A-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         val pending = PendingOperation.BingoMatch(BingoMatchRequest(UUID.randomUUID().toString(), cards, friendTable, code,
@@ -775,6 +781,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 error.code == "coins_low" -> UiMessage(R.string.coin_low)
                 error.code == "refill_wait" -> UiMessage(R.string.coin_refill_wait)
                 error.code == "refill_not_needed" -> UiMessage(R.string.coin_refill_not_needed)
+                error.code == "other_game_active" && saved?.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE) ->
+                    UiMessage(R.string.error_finish_tambola)
+                error.code == "other_game_active" && saved?.bingoRoom?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE) ->
+                    UiMessage(R.string.error_finish_bingo)
                 else -> when (error.status) {
                 401 -> if (saved?.pending is PendingOperation.DeleteProfile) UiMessage(R.string.error_delete_unconfirmed)
                     else UiMessage(R.string.error_session_expired)
