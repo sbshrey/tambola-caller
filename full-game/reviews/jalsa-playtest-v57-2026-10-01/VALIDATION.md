@@ -16,4 +16,4 @@ The Game Studio playtest checklist was applied to the native Android app: first 
 - Prepared asset: `tambola-beta-v57.apk`, 31,678,178 bytes, SHA-256 `efd81ed293bec4322d61f21e069b6992e7b245df3740599d9d606ef4d0f3091b`. The signer SHA-256 remains `55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c`.
 - The intended published tag is [`full-game-alpha57-gameplay-polish`](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha57-gameplay-polish). Verify its uploaded asset digest against the prepared APK before treating it as distributed.
 
-The physical OnePlus remains locked and reported v51 during this follow-up. v57 play and update acceptance on that device, a two-human round, and unattended host availability are still open.
+The physical OnePlus remains locked. An earlier in-place v54 install eventually completed, and a v57 install was requested through ADB but had not finished when this review was written. v57 play and update acceptance on that device, a two-human round, and unattended host availability are still open.

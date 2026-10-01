@@ -23,3 +23,5 @@ The public invitation and privacy pages were copied from the canonical branch to
 - The public game service is hosted on the operator's Windows PC. Availability during PC shutdown, Internet loss and unattended restart remains a practical beta dependency. Store distribution, long-duration endurance and broad physical-device coverage are separate release gates.
 
 This evidence supports a limited first beta with clear monitoring and recovery, but does not certify an unattended public production launch or full physical-phone acceptance of v54.
+
+Later ADB inspection showed that Android eventually completed the in-place v54 install while the phone stayed locked: `dumpsys package` reported versionCode 54. This confirms the update installed, but does not confirm the preserved profile or the v54 playing experience until the device is unlocked.
