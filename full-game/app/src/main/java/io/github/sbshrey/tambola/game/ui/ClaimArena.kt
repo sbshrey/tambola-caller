@@ -128,7 +128,11 @@ internal fun ClaimArena(
                             visibleChanged = { visiblePowerTickets = it }) { claimTicketId = it }
                         win?.takeIf { moment -> moment.lines.any { line -> line.players.any { it.id == ownerId } } }?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
                     }, feedback = {
-                        Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else reactionMessage.orEmpty(),
+                        val marked = hand.tickets.sumOf { ticket -> hand.marks[ticket.id].orEmpty().count { it in table.called } }
+                        val ready = hand.tickets.sumOf { ticket -> ticket.numbers.count { it in table.called && it !in hand.marks[ticket.id].orEmpty() } }
+                        Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims)
+                            else reactionMessage ?: if (table.called.isEmpty()) words(R.string.arena_first_call)
+                            else words(R.string.arena_marks_ready, marked, ready),
                             modifier = Modifier.fillMaxWidth().testTag("claim-feedback").semantics {
                                 if (winText != null || claimMessage != null || powerFeedback != null) liveRegion = LiveRegionMode.Polite
                             }, minLines = 2, maxLines = 2, fontSize = 12.sp, lineHeight = 16.sp,
@@ -267,19 +271,20 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
         LaunchedEffect(table.id, start) { visibleChanged(visible.map { it.id }) }
         val pages = (table.tickets.size + pageSize - 1) / pageSize
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                visible.forEach { ticket -> key(ticket.id) {
-                    val discarded = ticket.id in table.powers?.discarded.orEmpty()
-                    Box(Modifier.fillMaxWidth().weight(1f)) {
-                        CompactTicket(ticket, table, Modifier.fillMaxSize(), reducedMotion, mark, markEnabled && !discarded,
-                            claimTicket = { choose(ticket.id) }, claimEnabled = claimEnabled && !discarded)
-                        if (discarded) Surface(Modifier.align(Alignment.Center).testTag("discarded-${ticket.id}"),
-                            color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(8.dp)) {
-                            Text(words(R.string.power_ticket_out), Modifier.padding(8.dp), color = MaterialTheme.colorScheme.onErrorContainer)
-                        }
+            BoxWithConstraints(Modifier.weight(1f).fillMaxHeight()) {
+                if (visible.size == 1 && maxHeight > 320.dp) {
+                    val ticketHeight = minOf(maxHeight * .56f, maxOf(210.dp, maxWidth * .20f))
+                    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TicketPageCard(visible.first(), table, reducedMotion, mark, markEnabled, claimEnabled, choose,
+                            Modifier.fillMaxWidth().height(ticketHeight))
+                        RecentCallStage(table.called, Modifier.weight(1f).fillMaxWidth())
                     }
-                } }
-                if (visible.size < pageSize) Spacer(Modifier.weight(1f))
+                } else Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    visible.forEach { ticket -> key(ticket.id) {
+                        TicketPageCard(ticket, table, reducedMotion, mark, markEnabled, claimEnabled, choose,
+                            Modifier.fillMaxWidth().weight(1f))
+                    } }
+                }
             }
             if (pages > 1) Column(Modifier.width(48.dp).fillMaxHeight().testTag("ticket-pages"),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
@@ -292,6 +297,50 @@ private fun TicketPages(table: TableRound, ownerId: String, reducedMotion: Boole
                 IconButton(onClick = { firstTicket = (page + 1) * pageSize }, enabled = page + 1 < pages,
                     modifier = Modifier.size(48.dp).background(if (page + 1 < pages) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp)).testTag("tickets-down").semantics { contentDescription = words(R.string.play_next_tickets) }) {
                     Text("↓", fontSize = (28 / LocalDensity.current.fontScale).sp, lineHeight = (32 / LocalDensity.current.fontScale).sp, modifier = Modifier.clearAndSetSemantics {})
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TicketPageCard(ticket: Ticket, table: TableRound, reducedMotion: Boolean, mark: (String, Int) -> Unit,
+    markEnabled: Boolean, claimEnabled: Boolean, choose: (String) -> Unit, modifier: Modifier) {
+    val words = gameText()
+    val discarded = ticket.id in table.powers?.discarded.orEmpty()
+    Box(modifier) {
+        CompactTicket(ticket, table, Modifier.fillMaxSize(), reducedMotion, mark, markEnabled && !discarded,
+            claimTicket = { choose(ticket.id) }, claimEnabled = claimEnabled && !discarded)
+        if (discarded) Surface(Modifier.align(Alignment.Center).testTag("discarded-${ticket.id}"),
+            color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(8.dp)) {
+            Text(words(R.string.power_ticket_out), Modifier.padding(8.dp), color = MaterialTheme.colorScheme.onErrorContainer)
+        }
+    }
+}
+
+@Composable
+private fun RecentCallStage(called: List<Int>, modifier: Modifier) {
+    val words = gameText()
+    Surface(modifier.testTag("ticket-call-stage"), color = GameNightPalette.panel, shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(words(R.string.arena_recent_calls), color = GameNightPalette.mint,
+                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+            if (called.isEmpty()) Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Text(words(R.string.arena_first_call), color = GameNightPalette.muted,
+                    style = MaterialTheme.typography.titleMedium)
+            } else {
+                called.takeLast(8).reversed().chunked(4).forEach { row ->
+                    Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        row.forEach { number -> Surface(Modifier.weight(1f).fillMaxHeight(),
+                            color = if (number == called.last()) GameNightPalette.gold else GameNightPalette.raised,
+                            shape = RoundedCornerShape(12.dp)) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text("$number", color = if (number == called.last()) GameNightPalette.background else GameNightPalette.cream,
+                                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
+                            }
+                        } }
+                        repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
+                    }
                 }
             }
         }

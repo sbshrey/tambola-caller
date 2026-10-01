@@ -12,6 +12,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.data.Preferences
 import io.github.sbshrey.tambola.game.ui.*
@@ -26,6 +27,34 @@ class CoinRoundLayoutTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
     @Test fun sixTicketsKeepTheirBoundsAcrossMarksCallsAndRecovery() = checkLayout("en", 1f)
     @Test fun hindiLargeTextKeepsBoardAndSixTicketNavigationVisible() = checkLayout("hi", 2f)
+
+    @Test fun singleTicketUsesTheStageAndKeepsClaimVisible() {
+        check(isAndroidEmulator())
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+        val pool = CoinPool(12, 2)
+        val round = Round.create(listOf(Player("me", "QA"), Player("peer", "Mira")),
+            RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 1, manualClaims = true,
+                prizes = pool.prizes.map { it.prize }), Random(72)).start()
+        val ticket = round.tickets.first { it.playerId == "me" }
+        val table = round.toTable().copy(called = ticket.numbers.take(3),
+            coins = CoinTableView(12, 1200, pool.prizes, 1, null))
+        compose.setContent { TambolaTheme { MaterialTheme(colorScheme = GameNightPalette.colors) {
+            ClaimArena(table, "me", Preferences(reducedMotion = true), "Live", { _, _ -> }, {}, null, {}, {}, null, {},
+                markEnabled = true, claimEnabled = true, expandedFooter = false, extraMenu = {}, footer = { Text("8s") })
+        } } }
+        compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
+        compose.onNodeWithTag("ticket-prize-pace-1").assertIsDisplayed()
+        compose.onNodeWithTag("claim-ticket-1").assertIsDisplayed()
+        val ticketBounds = compose.onNodeWithTag("hand-ticket-1").getUnclippedBoundsInRoot()
+        val stage = compose.onAllNodesWithTag("ticket-call-stage").fetchSemanticsNodes()
+        if (stage.isNotEmpty()) {
+            val stageBounds = compose.onNodeWithTag("ticket-call-stage").assertIsDisplayed().getUnclippedBoundsInRoot()
+            assertTrue("Call stage follows the ticket", ticketBounds.bottom <= stageBounds.top)
+            assertTrue("Call stage uses the ticket width", stageBounds.right - stageBounds.left >= ticketBounds.right - ticketBounds.left - 1.dp)
+        } else assertTrue("A short stage lets one ticket use the full playfield", ticketBounds.bottom - ticketBounds.top > 180.dp)
+        captureTestScreen("coin-single-ticket-stage")
+    }
 
     private fun checkLayout(language: String, scale: Float) {
         check(isAndroidEmulator())

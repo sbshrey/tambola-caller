@@ -250,15 +250,21 @@ private fun TicketClaimAction(label: String, ordinal: Int, gameNight: Boolean, e
     val caption: @Composable () -> Unit = { Text(label, fontSize = 12.sp, lineHeight = 16.sp, maxLines = 1) }
     Box(modifier, contentAlignment = Alignment.Center) {
         val diameter = if (horizontal) 48.dp else 68.dp
-        Box(Modifier.size(diameter), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxSize().clearAndSetSemantics {},
-                color = if (progress >= 1f) Jade else Coral, trackColor = Ink.copy(alpha = .15f), strokeWidth = 4.dp)
-            Button(onClick = claim, enabled = enabled, contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
-                modifier = Modifier.fillMaxSize().padding(6.dp).testTag("claim-ticket-$ordinal")
-                    .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = CircleShape) {
-                if (scale <= 1.3f && !horizontal) caption() else glyph()
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.size(diameter), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxSize().clearAndSetSemantics {},
+                    color = if (progress >= 1f) Jade else Coral, trackColor = Ink.copy(alpha = .15f), strokeWidth = 4.dp)
+                Button(onClick = claim, enabled = enabled, contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = if (gameNight) GameNightPalette.coral else BallGold, contentColor = Ink),
+                    modifier = Modifier.fillMaxSize().padding(6.dp).testTag("claim-ticket-$ordinal")
+                        .semantics { contentDescription = words(R.string.play_claim_ticket, ordinal) }, shape = CircleShape) {
+                    if (scale <= 1.3f && !horizontal) caption() else glyph()
+                }
             }
+            if (!horizontal) Text(words(R.string.arena_prize_pace, (progress * 100).toInt()),
+                Modifier.testTag("ticket-prize-pace-$ordinal"),
+                color = if (gameNight) GameNightPalette.ticketInk.copy(alpha = .7f) else Ink.copy(alpha = .7f),
+                fontSize = 10.sp, lineHeight = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         if (horizontal) Text(label, Modifier.align(Alignment.CenterStart), fontSize = 12.sp)
     }

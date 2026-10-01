@@ -20,4 +20,6 @@
     <string name="bingo_compact_mix">पुकार %1$d · कंप्यूटर %2$d</string>
     <string name="bingo_next_call">अगला नंबर</string>
     <string name="bingo_recent_calls">हाल के नंबर</string>
+    <string name="bingo_your_chase">आपके पैटर्न की दौड़</string>
+    <string name="bingo_ready_count">इस कार्ड पर %1$d पुकारे गए</string>
 </resources>

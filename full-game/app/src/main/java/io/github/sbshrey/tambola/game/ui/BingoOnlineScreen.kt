@@ -149,51 +149,56 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
             game != null && game.ownCards.isNotEmpty() -> {
                 val card = game.ownCards[page.coerceIn(game.ownCards.indices)]
                 val controls: @Composable ColumnScope.() -> Unit = {
-                    if (widePlay) TextButton(onClick = home, modifier = Modifier.testTag("bingo-online-home")) { Text(stringResource(R.string.ui_home)) }
+                    if (widePlay) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        TextButton(onClick = home, modifier = Modifier.testTag("bingo-online-home")) { Text(stringResource(R.string.ui_home)) }
+                        TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }
+                    }
                     Surface(shape = RoundedCornerShape(22.dp), color = GameNightPalette.panel,
                         modifier = Modifier.fillMaxWidth()) {
-                        Column(Modifier.padding(if (compactPlay) 8.dp else 16.dp), horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            if (!compactPlay) Text(stringResource(R.string.bingo_live_table), color = GameNightPalette.mint,
-                                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Surface(onClick = model::repeatBingoCall, enabled = game.called.isNotEmpty(),
-                                    shape = androidx.compose.foundation.shape.CircleShape, color = GameNightPalette.gold,
-                                    modifier = Modifier.size(if (compactPlay) 52.dp else 86.dp).testTag("bingo-current-call")) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(game.called.lastOrNull()?.let(::bingoCallLabel) ?: "—",
-                                            color = GameNightPalette.background, style = if (compactPlay) MaterialTheme.typography.titleMedium else MaterialTheme.typography.headlineMedium,
-                                            fontWeight = FontWeight.Black)
+                        Row(Modifier.padding(if (compactPlay) 8.dp else 12.dp),
+                            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Surface(onClick = model::repeatBingoCall, enabled = game.called.isNotEmpty(),
+                                shape = androidx.compose.foundation.shape.CircleShape, color = GameNightPalette.gold,
+                                modifier = Modifier.size(if (compactPlay) 52.dp else 68.dp).testTag("bingo-current-call")) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(game.called.lastOrNull()?.let(::bingoCallLabel) ?: "—",
+                                        color = GameNightPalette.background, style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Black)
+                                }
+                            }
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text(stringResource(R.string.bingo_live_table), color = GameNightPalette.mint,
+                                    style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
+                                Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
+                                    color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
+                                LinearProgressIndicator(progress = { game.called.size / 75f },
+                                    modifier = Modifier.fillMaxWidth(), color = GameNightPalette.mint)
+                                Text(stringResource(R.string.bingo_table_mix,
+                                    game.players.count { !it.computer }, game.players.count { it.computer }),
+                                    color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
+                    }
+                    Button(onClick = { prizes = true }, enabled = !blocked,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("bingo-online-prizes")) {
+                        Text(stringResource(R.string.bingo_claim))
+                    }
+                    if (!compactPlay) Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (game.called.isNotEmpty()) {
+                            Text(stringResource(R.string.bingo_recent_calls), color = GameNightPalette.muted,
+                                style = MaterialTheme.typography.labelSmall)
+                            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                                game.called.takeLast(5).forEach { call ->
+                                    Surface(shape = RoundedCornerShape(10.dp), color = GameNightPalette.raised) {
+                                        Text(bingoCallLabel(call), Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
+                                            color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
                                     }
                                 }
-                                if (compactPlay) Text(if (game.players.any { it.computer })
-                                    stringResource(R.string.bingo_compact_mix, game.called.size, game.players.count { it.computer })
-                                    else stringResource(R.string.bingo_called, game.called.size, game.players.size),
-                                    color = GameNightPalette.cream, style = MaterialTheme.typography.labelSmall)
-                            }
-                            if (!compactPlay) Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
-                                color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
-                            LinearProgressIndicator(progress = { game.called.size / 75f },
-                                modifier = Modifier.fillMaxWidth(), color = GameNightPalette.mint)
-                            if (!compactPlay) Text(stringResource(R.string.bingo_table_mix,
-                                game.players.count { !it.computer }, game.players.count { it.computer }),
-                                color = GameNightPalette.mint, style = MaterialTheme.typography.labelMedium)
-                        }
-                    }
-                    if (game.called.isNotEmpty() && !compactPlay) {
-                        Text(stringResource(R.string.bingo_recent_calls), color = GameNightPalette.muted,
-                            style = MaterialTheme.typography.labelSmall)
-                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                            game.called.takeLast(5).forEach { call ->
-                                Surface(shape = RoundedCornerShape(10.dp), color = GameNightPalette.raised) {
-                                    Text(bingoCallLabel(call), Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
-                                        color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
-                                }
                             }
                         }
+                        BingoChasePanel(card, game.ownMarks[card.id].orEmpty())
                     }
-                    if (!compactPlay) OutlinedButton(onClick = { history = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.bingo_history)) }
-                    Button(onClick = { prizes = true }, enabled = !blocked, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("bingo-online-prizes")) { Text(stringResource(R.string.bingo_claim)) }
                 }
                 val hand: @Composable ColumnScope.() -> Unit = {
                     Box(Modifier.weight(1f).fillMaxWidth()) {
@@ -209,7 +214,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                 }
                 if (widePlay) Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Column(Modifier.weight(1f).fillMaxHeight(), content = hand)
-                    Column(Modifier.weight(.55f).fillMaxHeight(), content = controls)
+                    Column(Modifier.weight(.75f).fillMaxHeight(), content = controls)
                 } else Column(Modifier.weight(1f).fillMaxWidth()) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Surface(onClick = model::repeatBingoCall, enabled = game.called.isNotEmpty(),
@@ -225,6 +230,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             Text(stringResource(R.string.bingo_table_mix,
                                 game.players.count { !it.computer }, game.players.count { it.computer }),
                                 color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
+                            val ready = card.numbers.count { it in game.called && it !in game.ownMarks[card.id].orEmpty() }
+                            if (ready > 0) Text(stringResource(R.string.bingo_ready_count, ready),
+                                color = GameNightPalette.gold, style = MaterialTheme.typography.labelSmall)
                         }
                         TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }
                         Button(onClick = { prizes = true }, enabled = !blocked, modifier = Modifier.testTag("bingo-online-prizes")) { Text(stringResource(R.string.bingo_claim)) }
@@ -261,5 +269,34 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
     if (history && game != null) AlertDialog(onDismissRequest = { history = false }, title = { Text(stringResource(R.string.bingo_history)) },
         text = { LazyColumn { itemsIndexed(game.called.reversed()) { _, number -> Text(bingoCallLabel(number), Modifier.padding(4.dp)) } } },
         confirmButton = { TextButton(onClick = { history = false }) { Text(stringResource(R.string.ui_got_it)) } })
+    }
+}
+
+@Composable
+private fun BingoChasePanel(card: BingoCard, marks: Set<Int>) {
+    Surface(Modifier.fillMaxWidth().testTag("bingo-chase"), shape = RoundedCornerShape(18.dp), color = GameNightPalette.panel) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.bingo_your_chase), color = GameNightPalette.mint,
+                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
+            BingoPattern.entries.chunked(2).forEach { row ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    row.forEach { pattern ->
+                        val mask = pattern.masks().maxBy { candidate -> candidate.count { it == 12 || card.cells[it] in marks } }
+                        val done = mask.count { it == 12 || card.cells[it] in marks }
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text(patternTitle(pattern), color = GameNightPalette.cream,
+                                    style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                                Text("$done/${mask.size}", color = GameNightPalette.gold,
+                                    style = MaterialTheme.typography.labelSmall)
+                            }
+                            LinearProgressIndicator(progress = { done.toFloat() / mask.size },
+                                modifier = Modifier.fillMaxWidth(), color = GameNightPalette.mint,
+                                trackColor = GameNightPalette.raised)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

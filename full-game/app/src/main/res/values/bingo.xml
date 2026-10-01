@@ -34,6 +34,7 @@
     <string name="bingo_blackout">Full card</string>
     <string name="bingo_marked">Marked</string>
     <string name="bingo_unmarked">Not marked</string>
+    <string name="bingo_ready_to_mark">Called — tap to mark</string>
     <string name="bingo_previous_card">Previous card</string>
     <string name="bingo_next_card">Next card</string>
     <string name="bingo_reset">Reset practice round</string>

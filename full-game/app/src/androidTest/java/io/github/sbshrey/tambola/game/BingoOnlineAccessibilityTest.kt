@@ -18,11 +18,40 @@ import io.github.sbshrey.tambola.game.ui.*
 import io.github.sbshrey.tambola.protocol.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Assert.assertTrue
 import java.util.Locale
 import java.util.Random
 
 class BingoOnlineAccessibilityTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+    @Test fun liveLandscapeHasSquareCardReadyCellsAndPatternChase() {
+        check(isAndroidEmulator())
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+        val model = compose.runOnIdle { ViewModelProvider(compose.activity)[OnlineViewModel::class.java] }
+        val player = Player("me", "QA")
+        val cards = BingoCardGenerator(Random(73)).deal("me", 1)
+        val first = cards.first().numbers.first()
+        val ready = cards.first().numbers.drop(1).first()
+        val game = PublicBingoRound("qa-chase", RoundStatus.PLAYING, listOf(first, ready), cards,
+            mapOf(cards.first().id to setOf(first)), emptyList(), listOf(player), mapOf("me" to 1),
+            2, BingoCoinPool(1).prizes, "0".repeat(64))
+        val room = BingoRoomView("qa-room", "B-ABCD2345", 1, RoomPhase.ACTIVE, "me", true,
+            listOf(MemberView("me", "QA", 0, true, true)), listOf(player), mapOf("me" to 1),
+            null, 9000, 100000, 1000, 600, game, WalletView(50000, 1, 0))
+        compose.setContent { TambolaTheme(dark = true) { Surface {
+            BingoOnlineScreen(OnlineUiState(loading = false, available = true, playerId = "me",
+                bingoRoom = room, wallet = room.wallet, connection = Connection.LIVE), model, true, {})
+        } } }
+        compose.onNodeWithTag("bingo-chase").assertIsDisplayed()
+        val cardBounds = compose.onNodeWithTag("bingo-card").getUnclippedBoundsInRoot()
+        val firstCell = compose.onNodeWithTag("bingo-cell-$first").getUnclippedBoundsInRoot()
+        assertTrue("Bingo cells stay square", kotlin.math.abs((firstCell.right - firstCell.left).value - (firstCell.bottom - firstCell.top).value) < 5f)
+        assertTrue("Card stays inside its play area", firstCell.left >= cardBounds.left && firstCell.right <= cardBounds.right)
+        compose.onNodeWithTag("bingo-cell-$ready").assertIsEnabled()
+        compose.onNodeWithTag("bingo-cell-$first").assertIsEnabled()
+        captureTestScreen("bingo-square-chase")
+    }
     @Test fun quickBingoExplainsComputerFillWhileCountingDown() {
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }

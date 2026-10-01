@@ -20,4 +20,6 @@
     <string name="bingo_compact_mix">Calls %1$d · Computer %2$d</string>
     <string name="bingo_next_call">NEXT CALL</string>
     <string name="bingo_recent_calls">RECENT CALLS</string>
+    <string name="bingo_your_chase">YOUR PATTERN CHASE</string>
+    <string name="bingo_ready_count">%1$d called on this card</string>
 </resources>

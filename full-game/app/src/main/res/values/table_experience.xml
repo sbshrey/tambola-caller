@@ -11,6 +11,10 @@
     <string name="table_joined">%1$s joined</string>
     <string name="table_computers_joining">Computer players are joining</string>
     <string name="table_tickets_ready">Your tickets are ready</string>
+    <string name="arena_prize_pace">%1$d%% to prize</string>
+    <string name="arena_first_call">The first call is coming</string>
+    <string name="arena_marks_ready">%1$d marked · %2$d ready to dab</string>
+    <string name="arena_recent_calls">RECENT CALLS</string>
     <plurals name="table_prize_count">
         <item quantity="one">%d prize</item>
         <item quantity="other">%d prizes</item>

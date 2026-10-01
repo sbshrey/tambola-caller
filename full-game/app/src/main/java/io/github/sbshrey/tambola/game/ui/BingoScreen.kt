@@ -2,6 +2,7 @@ package io.github.sbshrey.tambola.game.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
@@ -165,26 +166,40 @@ private fun BingoCardView(card: BingoCard, round: BingoRound, mark: (String, Int
 
 @Composable
 internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, enabled: Boolean, mark: (String, Int) -> Unit, modifier: Modifier) {
-    Column(modifier.testTag("bingo-card"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            "BINGO".forEach { Text("$it", style = MaterialTheme.typography.titleMedium, color = Jade, fontWeight = FontWeight.Black) }
-        }
-        repeat(5) { row ->
-            Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                repeat(5) { column ->
-                    val number = card.cells[row * 5 + column]
-                    val marked = number == 0 || number in marks
-                    val description = if (number == 0) stringResource(R.string.bingo_free) else bingoCallLabel(number)
-                    val markState = stringResource(if (marked) R.string.bingo_marked else R.string.bingo_unmarked)
-                    Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called,
-                        modifier = Modifier.weight(1f).fillMaxHeight().testTag("bingo-cell-$number").semantics {
-                            contentDescription = description; stateDescription = markState
-                        }, shape = RoundedCornerShape(10.dp), color = if (marked) Jade else Panel,
-                        contentColor = if (marked) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface) {
-                        BoxWithConstraints(contentAlignment = Alignment.Center) {
-                            val scale = LocalDensity.current.fontScale
-                            val font = minOf(24f * scale, maxHeight.value * .65f) / scale
-                            Text(if (number == 0) "★" else "$number", fontSize = androidx.compose.ui.unit.TextUnit(font, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = FontWeight.Bold)
+    BoxWithConstraints(modifier.testTag("bingo-card")) {
+        val heading = 30.dp
+        val side = minOf(maxWidth, (maxHeight - heading - 4.dp).coerceAtLeast(0.dp))
+        Column(Modifier.width(side).height(side + heading + 4.dp).align(Alignment.Center),
+            verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(Modifier.fillMaxWidth().height(heading), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                "BINGO".forEach { letter -> Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+                    Text("$letter", style = MaterialTheme.typography.titleMedium, color = Jade, fontWeight = FontWeight.Black)
+                } }
+            }
+            repeat(5) { row ->
+                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    repeat(5) { column ->
+                        val number = card.cells[row * 5 + column]
+                        val marked = number == 0 || number in marks
+                        val ready = number != 0 && number in called && !marked
+                        val description = if (number == 0) stringResource(R.string.bingo_free) else bingoCallLabel(number)
+                        val markState = stringResource(when {
+                            marked -> R.string.bingo_marked
+                            ready -> R.string.bingo_ready_to_mark
+                            else -> R.string.bingo_unmarked
+                        })
+                        Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called,
+                            modifier = Modifier.weight(1f).fillMaxHeight().testTag("bingo-cell-$number").semantics {
+                                contentDescription = description; stateDescription = markState
+                            }, shape = RoundedCornerShape(10.dp),
+                            border = if (ready) BorderStroke(2.dp, GameNightPalette.gold) else null,
+                            color = if (marked) Jade else if (ready) GameNightPalette.gold.copy(alpha = .18f) else Panel,
+                            contentColor = if (marked) MaterialTheme.colorScheme.onSecondary else if (ready) GameNightPalette.gold else MaterialTheme.colorScheme.onSurface) {
+                            BoxWithConstraints(contentAlignment = Alignment.Center) {
+                                val scale = LocalDensity.current.fontScale
+                                val font = minOf(24f * scale, maxHeight.value * .65f) / scale
+                                Text(if (number == 0) "★" else "$number", fontSize = androidx.compose.ui.unit.TextUnit(font, androidx.compose.ui.unit.TextUnitType.Sp), fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }

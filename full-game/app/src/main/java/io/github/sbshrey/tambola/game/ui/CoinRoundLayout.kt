@@ -53,6 +53,9 @@ internal fun CoinRoundLayout(
                 }
             }
             Row(Modifier.weight(1f).testTag("recent-calls"), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                if (table.called.size < 2) Text(words(R.string.table_tickets_ready),
+                    color = GameNightPalette.muted, style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis)
                 table.called.dropLast(1).takeLast(if (largeText) 2 else 4).forEach { number ->
                     Surface(Modifier.weight(1f).height(36.dp), color = GameNightPalette.raised, shape = RoundedCornerShape(8.dp)) {
                         Box(contentAlignment = Alignment.Center) { Text("$number", fontSize = 14.sp,

@@ -11,6 +11,10 @@
     <string name="table_joined">%1$s जुड़ गए</string>
     <string name="table_computers_joining">कंप्यूटर खिलाड़ी जुड़ रहे हैं</string>
     <string name="table_tickets_ready">आपके टिकट तैयार हैं</string>
+    <string name="arena_prize_pace">इनाम %1$d%%</string>
+    <string name="arena_first_call">पहली पुकार आने वाली है</string>
+    <string name="arena_marks_ready">%1$d चिह्नित · %2$d दबाने के लिए तैयार</string>
+    <string name="arena_recent_calls">पिछली पुकारें</string>
     <plurals name="table_prize_count">
         <item quantity="one">%d इनाम</item>
         <item quantity="other">%d इनाम</item>
