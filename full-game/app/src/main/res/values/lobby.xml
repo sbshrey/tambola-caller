@@ -2,12 +2,14 @@
     <string name="lobby_ready">Ready to play?</string>
     <string name="lobby_play_short">Play</string>
     <string name="lobby_friends_short">Friends</string>
-    <string name="lobby_practice_short">Play: simulated opponents · Friends: invited players</string>
+    <string name="lobby_practice_short">Play with real people online · or invite friends</string>
+    <string name="lobby_waiting_for_people">Waiting for another player</string>
+    <string name="lobby_real_players">%1$d real players</string>
     <string name="lobby_welcome">Welcome to Tambola Jalsa</string>
     <string name="lobby_greeting">Hey, %1$s</string>
     <string name="lobby_first_heading">A little luck.\nA great game night.</string>
     <string name="lobby_heading">Make your next\ncall count.</string>
-    <string name="lobby_pace">8s calls · 6 shared prizes</string>
+    <string name="lobby_pace">Live multiplayer · 8s calls · shared prizes</string>
     <string name="lobby_choose">Pick your hand. We’ll find your table.</string>
     <string name="lobby_personalize">Choose your player</string>
     <string name="lobby_save_player">Save player</string>

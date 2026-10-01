@@ -5,6 +5,7 @@ import io.github.sbshrey.tambola.protocol.*
 import java.sql.Connection
 
 internal const val MATCH_COUNTDOWN = 12_000L
+internal const val MATCH_WAIT_LIMIT = 2 * 60_000L
 internal const val FRIEND_LOBBY_LIFETIME = 15 * 60_000L
 internal const val COMPUTER_TICKETS = 3
 
@@ -39,7 +40,7 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
     if (!options.coinGame || phase != RoomPhase.LOBBY) return this
     require(purchases.keys == members.map { it.id }.toSet() && purchases.values.all { it in 1..6 })
     val computers = when {
-        friendTable -> 0
+        realPlayersOnly || friendTable -> 0
         options.largeMatch -> (1 + practiceSeats.coerceAtMost(matchPopulation() - 1) - members.size).coerceAtLeast(0)
         else -> (4 - members.size).coerceAtLeast(0).coerceAtMost(if (options.powersEnabled) practiceSeats else 3)
     }
@@ -52,8 +53,8 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
 }
 
 internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
-    check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable || members.size >= 2))
-    val lobby = copy(practiceSeats = if (options.largeMatch) matchPopulation() - 1 else 3).coinLobby()
+    check(options.coinGame && phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable && !realPlayersOnly || members.size >= 2))
+    val lobby = copy(practiceSeats = if (realPlayersOnly) 0 else if (options.largeMatch) matchPopulation() - 1 else 3).coinLobby()
     val computers = (1..lobby.options.computerPlayers).map { index ->
         computerPlayer(id, index)
     }

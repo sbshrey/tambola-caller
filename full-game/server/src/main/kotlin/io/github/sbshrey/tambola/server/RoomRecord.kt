@@ -52,6 +52,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
     @EncodeDefault(EncodeDefault.Mode.NEVER) val matchPowers: Map<String, MatchPowers> = emptyMap(),
     @EncodeDefault(EncodeDefault.Mode.NEVER) val practiceSeats: Int = 0,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val reactions: Map<String, RoomReaction> = emptyMap(),
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val realPlayersOnly: Boolean = false,
 ) {
     fun coinView(actor: String): CoinTableView? {
         if (!options.coinGame) return null

@@ -36,11 +36,13 @@ internal class BingoRoomService(
                     request.friendTable -> null
                     else -> connection.query("""SELECT payload FROM bingo_rooms WHERE phase = 'LOBBY' AND NOT friend_table
                         AND starts_at > ? AND expires_at > ? AND jsonb_array_length(payload::jsonb->'members') < 50
+                        AND coalesce((payload::jsonb->>'realPlayersOnly')::boolean, false) = ${request.realPlayersOnly}
                         ORDER BY starts_at, id LIMIT 1 FOR UPDATE""", at, at) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: BingoRoomRecord(UUID.randomUUID().toString(), "B-" + roomCode(), guest.id,
                     emptyList(), emptyMap(), at, at + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
-                    friendTable = request.friendTable, startsAt = (at + MATCH_COUNTDOWN).takeUnless { request.friendTable }).also {
+                    friendTable = request.friendTable, startsAt = (at + MATCH_COUNTDOWN).takeUnless { request.friendTable },
+                    realPlayersOnly = request.realPlayersOnly).also {
                     connection.execute("INSERT INTO bingo_rooms (id, code, phase, expires_at, starts_at, friend_table, payload) VALUES (?, ?, ?, ?, ?, ?, ?)",
                         it.id, it.code, it.phase.name, it.expiresAt, it.startsAt, it.friendTable, WireJson.encodeToString(it))
                 }

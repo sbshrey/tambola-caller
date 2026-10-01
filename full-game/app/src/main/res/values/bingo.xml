@@ -2,8 +2,15 @@
     <string name="bingo_title">Bingo</string>
     <string name="hub_choose">What shall we play?</string>
     <string name="hub_coins">%1$d coins</string>
-    <string name="hub_tambola">90 balls · Play together</string>
-    <string name="hub_bingo">75 balls · Practice</string>
+    <string name="hub_tambola">90-ball tickets · Live prizes</string>
+    <string name="hub_bingo">75-ball cards · Live prizes</string>
+    <string name="hub_tambola_title">Tambola</string>
+    <string name="hub_live_games">Two games. Real people. One live table.</string>
+    <string name="hub_multiplayer">ONLINE MULTIPLAYER</string>
+    <string name="hub_connected">Connected to live tables</string>
+    <string name="hub_reconnecting">Connecting to live tables</string>
+    <string name="hub_recent">RECENT</string>
+    <string name="hub_join_table">Join a table  →</string>
     <string name="bingo_practice">Practice</string>
     <string name="bingo_pick_cards">Pick your cards</string>
     <string name="bingo_deal">Deal cards</string>

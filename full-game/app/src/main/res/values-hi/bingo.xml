@@ -2,8 +2,15 @@
     <string name="bingo_title">बिंगो</string>
     <string name="hub_choose">कौन सा खेल खेलें?</string>
     <string name="hub_coins">%1$d सिक्के</string>
-    <string name="hub_tambola">90 नंबर · साथ खेलें</string>
-    <string name="hub_bingo">75 नंबर · अभ्यास</string>
+    <string name="hub_tambola">90 नंबर वाले टिकट · लाइव इनाम</string>
+    <string name="hub_bingo">75 नंबर वाले कार्ड · लाइव इनाम</string>
+    <string name="hub_tambola_title">तंबोला</string>
+    <string name="hub_live_games">दो खेल। असली खिलाड़ी। एक लाइव टेबल।</string>
+    <string name="hub_multiplayer">ऑनलाइन मल्टीप्लेयर</string>
+    <string name="hub_connected">लाइव टेबल से जुड़ा है</string>
+    <string name="hub_reconnecting">लाइव टेबल से जुड़ रहे हैं</string>
+    <string name="hub_recent">हाल ही में</string>
+    <string name="hub_join_table">टेबल में जाएँ  →</string>
     <string name="bingo_practice">अभ्यास</string>
     <string name="bingo_pick_cards">अपने कार्ड चुनें</string>
     <string name="bingo_deal">कार्ड बाँटें</string>

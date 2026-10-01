@@ -19,6 +19,40 @@ class BingoRoomServiceTest : PostgresTest() {
         c.query("SELECT payload FROM bingo_rooms WHERE code = ?", code) { WireJson.decodeFromString<BingoRoomRecord>(it.getString(1)) }.single()
     }
 
+    @Test fun `real player queue waits for a peer and starts without computer seats`() {
+        val legacy = service.bingo.match(guest("Legacy").token, BingoMatchRequest(id(), 1))
+        val first = guest("First")
+        val second = guest("Second")
+        val request = BingoMatchRequest(id(), 2, realPlayersOnly = true)
+        val room = service.bingo.match(first.token, request)
+        assertNotEquals(legacy.code, room.code)
+        assertEquals(1, room.players.size)
+        now.set(room.startsAt!!); service.tick()
+        val waiting = service.bingo.read(first.token, room.code)
+        assertEquals(RoomPhase.LOBBY, waiting.phase)
+        assertEquals(1, waiting.players.size)
+        assertTrue(waiting.startsAt!! > now.get())
+        val joined = service.bingo.match(second.token, BingoMatchRequest(id(), 1, realPlayersOnly = true))
+        assertEquals(room.code, joined.code)
+        now.set(joined.startsAt!!); service.tick()
+        val active = service.bingo.read(first.token, room.code)
+        assertEquals(RoomPhase.ACTIVE, active.phase)
+        assertEquals(2, active.players.size)
+        assertTrue(active.players.none { it.computer })
+        assertEquals(3, active.round!!.cardCounts.values.sum())
+    }
+
+    @Test fun `unmatched real player Bingo queue refunds at its wait limit`() {
+        val actor = guest()
+        val room = service.bingo.match(actor.token, BingoMatchRequest(id(), 3, realPlayersOnly = true))
+        assertEquals(1200L, service.wallet(actor.token).balance)
+        now.set(room.startsAt!!); service.tick()
+        assertEquals(RoomPhase.LOBBY, stored(room.code).phase)
+        now.set(stored(room.code).createdAt + MATCH_WAIT_LIMIT); service.tick()
+        assertEquals(RoomPhase.CLOSED, stored(room.code).phase)
+        assertEquals(1500L, service.wallet(actor.token).balance)
+    }
+
     @Test fun `concurrent purchase retries and leave refund each apply once`() {
         val actor = guest()
         val request = BingoMatchRequest(id(), 6)

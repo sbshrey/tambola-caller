@@ -88,7 +88,13 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             start = { model.command(RoomAction.Start) }, leave = { model.command(RoomAction.Leave) }, invitationLink = model::friendInvitation,
                             connection = state.connection, reconnect = reconnect)
                         else {
-                            TableCountdown(room, state.playerId, reducedMotion)
+                            if (room.members.size < 2) {
+                                CircularProgressIndicator(color = GameNightPalette.mint, modifier = Modifier.size(36.dp))
+                                Text(words(R.string.lobby_waiting_for_people), color = GameNightPalette.cream,
+                                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
+                            } else TableCountdown(room, state.playerId, reducedMotion)
+                            Text(words(R.string.lobby_real_players, room.members.size), color = GameNightPalette.mint,
+                                style = MaterialTheme.typography.labelLarge)
                             if (state.connection != Connection.LIVE) WaitingConnectionNotice(state.connection, enabled, reconnect)
                         }
                         Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +

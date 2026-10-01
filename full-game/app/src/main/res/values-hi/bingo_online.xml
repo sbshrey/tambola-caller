@@ -11,4 +11,9 @@
     <string name="bingo_retry">फिर कोशिश करें</string>
     <string name="bingo_connecting">जुड़ रहे हैं…</string>
     <string name="bingo_busy">सहेज रहे हैं…</string>
+    <string name="bingo_waiting_for_people">एक और खिलाड़ी का इंतज़ार है</string>
+    <string name="bingo_live_table">लाइव टेबल</string>
+    <string name="bingo_live_players">%1$d असली खिलाड़ी</string>
+    <string name="bingo_next_call">अगला नंबर</string>
+    <string name="bingo_recent_calls">हाल के नंबर</string>
 </resources>

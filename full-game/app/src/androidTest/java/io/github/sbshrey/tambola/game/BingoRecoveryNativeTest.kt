@@ -49,7 +49,7 @@ class BingoRecoveryNativeTest {
         compose.setContent { TambolaTheme {
             val current = requireNotNull(model)
             val state by current.state.collectAsState()
-            BingoOnlineScreen(state, current, true, {}, {})
+            BingoOnlineScreen(state, current, true, {})
         } }
         val api = HttpRoomApi(BuildConfig.ROOM_API_URL, true)
         var peer: GuestCredentials? = null

@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable data class BingoMatchRequest(
     val id: String, val cards: Int, val friendTable: Boolean = false, val friendCode: String? = null,
     val variant: GameVariant = GameVariant.BINGO_75,
+    val realPlayersOnly: Boolean = false,
 ) {
     init {
         require(variant == GameVariant.BINGO_75 && cards in 1..6)

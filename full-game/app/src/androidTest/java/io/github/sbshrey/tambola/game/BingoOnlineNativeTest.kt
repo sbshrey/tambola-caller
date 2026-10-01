@@ -35,7 +35,7 @@ class BingoOnlineNativeTest {
         compose.setContent { TambolaTheme {
             val current = requireNotNull(model)
             val state by current.state.collectAsState()
-            BingoOnlineScreen(state, current, reducedMotion = true, practice = {}, home = {})
+            BingoOnlineScreen(state, current, reducedMotion = true, home = {})
         } }
         fun until(predicate: () -> Boolean) = compose.waitUntil(30_000, predicate)
         try {

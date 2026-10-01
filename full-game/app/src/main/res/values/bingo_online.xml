@@ -11,4 +11,9 @@
     <string name="bingo_retry">Retry</string>
     <string name="bingo_connecting">Connecting…</string>
     <string name="bingo_busy">Saving…</string>
+    <string name="bingo_waiting_for_people">Waiting for another player</string>
+    <string name="bingo_live_table">LIVE TABLE</string>
+    <string name="bingo_live_players">%1$d real players</string>
+    <string name="bingo_next_call">NEXT CALL</string>
+    <string name="bingo_recent_calls">RECENT CALLS</string>
 </resources>

@@ -17,6 +17,7 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
     val revision: Long = 0, val phase: RoomPhase = RoomPhase.LOBBY, val practiceSeats: Int = 0,
     val round: BingoRound? = null, val pool: BingoCoinPool? = null, val nonce: String? = null,
     val variant: GameVariant = GameVariant.BINGO_75,
+    val realPlayersOnly: Boolean = false,
 ) {
     init {
         require(variant == GameVariant.BINGO_75 && code.matches(Regex("B-[A-Z2-9]{8}")))
@@ -32,13 +33,13 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
         practicePersona(id, index).id to 1 + (digest("$id:bingo-card-count:$index").take(8).toLong(16) % 6).toInt()
     }
     fun lobbyPlayers(): List<Player> {
-        val count = if (friendTable) 0 else (1 + practiceSeats.coerceAtMost(population() - 1) - members.size).coerceAtLeast(0)
+        val count = if (friendTable || realPlayersOnly) 0 else (1 + practiceSeats.coerceAtMost(population() - 1) - members.size).coerceAtLeast(0)
         return members.map { Player(it.id, it.name, avatar = it.avatar) } + (1..count).map { practicePersona(id, it) }
     }
     fun lobbyCounts(): Map<String, Int> = purchases + computerCounts(lobbyPlayers().count { it.computer })
     fun start(now: Long): BingoRoomRecord {
-        require(phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable || members.size >= 2))
-        val filled = copy(practiceSeats = if (friendTable) 0 else population() - 1)
+        require(phase == RoomPhase.LOBBY && members.isNotEmpty() && (!friendTable && !realPlayersOnly || members.size >= 2))
+        val filled = copy(practiceSeats = if (realPlayersOnly || friendTable) 0 else population() - 1)
         val players = filled.lobbyPlayers()
         val counts = filled.lobbyCounts()
         val generator = BingoCardGenerator(SecureRandom())
@@ -52,8 +53,11 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
         if (phase == RoomPhase.CLOSED) return this
         if (expiresAt <= now) return copy(phase = RoomPhase.CLOSED, round = round?.cancel(), startsAt = null, nextDrawAt = null)
         if (phase == RoomPhase.LOBBY && !friendTable) {
-            if (requireNotNull(startsAt) <= now) return if (now - startsAt > 30_000 || members.isEmpty())
-                copy(phase = RoomPhase.CLOSED, startsAt = null) else start(now)
+            if (requireNotNull(startsAt) <= now) return if (now - startsAt > 30_000 || members.isEmpty() ||
+                (realPlayersOnly && now - createdAt >= MATCH_WAIT_LIMIT))
+                copy(phase = RoomPhase.CLOSED, startsAt = null) else if (!realPlayersOnly || members.size >= 2) start(now)
+                else copy(startsAt = now + MATCH_COUNTDOWN)
+            if (realPlayersOnly) return this
             val elapsed = (now - createdAt).coerceIn(0, 10_000)
             return copy(practiceSeats = ((population() - 1) * elapsed / 10_000).toInt())
         }

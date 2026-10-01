@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 Appearance.LIGHT -> false
                 Appearance.DARK -> true
             }
-            val gameLobby = state.screen == Screen.SETTINGS || state.screen == Screen.ONLINE &&
+            val gameLobby = state.screen in setOf(Screen.HOME, Screen.BINGO, Screen.SETTINGS) || state.screen == Screen.ONLINE &&
                 (onlineState.room == null || onlineState.room?.options?.coinGame == true)
             LaunchedEffect(dark, gameLobby) {
                 val transparent = android.graphics.Color.TRANSPARENT

@@ -23,6 +23,26 @@ import java.util.Random
 
 class BingoOnlineAccessibilityTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+    @Test fun hindiLargePortraitShowsEveryOnlineCardChoiceAndFriendsAction() {
+        check(isAndroidEmulator())
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
+        compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
+        val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag("hi")); fontScale = 2f }
+        val context = compose.activity.createConfigurationContext(config)
+        val model = compose.runOnIdle { ViewModelProvider(compose.activity)[OnlineViewModel::class.java] }
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources,
+                LocalConfiguration provides config, LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
+                TambolaTheme(dark = true) { Surface {
+                    BingoOnlineScreen(OnlineUiState(loading = false, available = true, wallet = WalletView(50_000, 1, 0)),
+                        model, true, {})
+                } }
+            }
+        }
+        (1..6).forEach { compose.onNodeWithTag("bingo-online-cards-$it").assertIsDisplayed() }
+        compose.onNodeWithTag("bingo-online-play").assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.bingo_friends)).assertIsDisplayed()
+    }
     @Test fun hindiLargeLandscapeKeepsSixCardsAndAllClaimChoicesVisible() {
         check(isAndroidEmulator())
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
@@ -42,7 +62,7 @@ class BingoOnlineAccessibilityTest {
                 LocalConfiguration provides config, LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
                 TambolaTheme(dark = true) { Surface(color = MaterialTheme.colorScheme.background) {
                     BingoOnlineScreen(OnlineUiState(loading = false, available = true,
-                        playerId = "me", bingoRoom = room, wallet = room.wallet, connection = Connection.LIVE), model, true, {}, {})
+                        playerId = "me", bingoRoom = room, wallet = room.wallet, connection = Connection.LIVE), model, true, {})
                 } }
             }
         }

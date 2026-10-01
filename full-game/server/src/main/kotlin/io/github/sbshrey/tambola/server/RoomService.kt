@@ -203,6 +203,7 @@ class RoomService(
                             .replace("'largeMatch')::boolean, false) = false", "'largeMatch')::boolean, false) = ${request.largeMatch}")
                             .replace("'previewPowers')::boolean, false) = false", "'previewPowers')::boolean, false) = ${request.previewPowers}")
                             .replace("'roundSummary')::boolean, false) = false", "'roundSummary')::boolean, false) = ${request.roundSummary}")
+                            .replace("ORDER BY coin_starts_at", "AND coalesce((payload::jsonb->>'realPlayersOnly')::boolean, false) = ${request.realPlayersOnly} ORDER BY coin_starts_at")
                     } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
@@ -214,7 +215,8 @@ class RoomService(
                         if (request.friendTable || request.powersEnabled || request.largeMatch) it.copy(computerPlayers = 0) else it
                     }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
-                    startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable).also {
+                    startsAt = (purchaseAt + MATCH_COUNTDOWN).takeUnless { request.friendTable }, friendTable = request.friendTable,
+                    realPlayersOnly = request.realPlayersOnly).also {
                     connection.execute("INSERT INTO rooms (id, code, phase, expires_at, payload, matchable) VALUES (?, ?, ?, ?, ?, ?)",
                         it.id, it.code, it.phase.name, it.expiresAt, WireJson.encodeToString(it), !request.friendTable)
                 }
@@ -539,17 +541,19 @@ class RoomService(
                         event = "host_changed"
                     }
                 }
-                if (room.phase == RoomPhase.LOBBY && (room.options.powersEnabled || room.options.largeMatch) && !room.friendTable) {
+                if (room.phase == RoomPhase.LOBBY && (room.options.powersEnabled || room.options.largeMatch) && !room.friendTable && !room.realPlayersOnly) {
                     val joined = room.progressiveSeats(now)
                     if (joined > room.practiceSeats) { room = room.copy(practiceSeats = joined).coinLobby(); event = "practice_joined" }
                 }
                 if (room.phase == RoomPhase.LOBBY && room.options.coinGame && room.startsAt?.let { it <= now } == true) {
                     // A long host outage refunds the queue instead of spending
                     // entries after players believe the countdown failed.
-                    room = if (now - requireNotNull(room.startsAt) > 30_000L || room.members.isEmpty())
+                    room = if (now - requireNotNull(room.startsAt) > 30_000L || room.members.isEmpty() ||
+                        (room.realPlayersOnly && now - (room.expiresAt - ROOM_LIFETIME) >= MATCH_WAIT_LIMIT))
                         room.copy(phase = RoomPhase.CLOSED, startsAt = null)
-                    else room.startCoinRound(now)
-                    event = if (room.phase == RoomPhase.CLOSED) "queue_refunded" else "started"
+                    else if (!room.realPlayersOnly || room.members.size >= 2) room.startCoinRound(now)
+                    else room.copy(startsAt = now + MATCH_COUNTDOWN)
+                    event = when (room.phase) { RoomPhase.CLOSED -> "queue_refunded"; RoomPhase.ACTIVE -> "started"; else -> "waiting_for_players" }
                 } else if (room.phase == RoomPhase.ACTIVE && room.nextDrawAt?.let { it <= now } == true) {
                     room = draw(room, now)
                     event = "drawn"

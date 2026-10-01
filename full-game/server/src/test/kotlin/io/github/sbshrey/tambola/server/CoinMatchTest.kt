@@ -13,6 +13,40 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class CoinMatchTest : PostgresTest() {
+    @Test fun `real player Tambola queue waits for a peer and never fills computer seats`() {
+        val legacy = service.match(guest("Legacy").token, MatchRequest(UUID.randomUUID().toString(), 1,
+            rulesVersion = 2, largeMatch = true, roundSummary = true)).snapshot
+        val first = guest("First")
+        val second = guest("Second")
+        fun request() = MatchRequest(UUID.randomUUID().toString(), 2, rulesVersion = 2,
+            largeMatch = true, roundSummary = true, realPlayersOnly = true)
+        val room = service.match(first.token, request()).snapshot
+        assertNotEquals(legacy.code, room.code)
+        now.set(room.coins!!.startsAt!!); service.tick()
+        val waiting = service.read(first.token, room.code).snapshot
+        assertEquals(RoomPhase.LOBBY, waiting.phase)
+        assertEquals(0, waiting.options.computerPlayers)
+        assertTrue(waiting.coins!!.startsAt!! > now.get())
+        assertEquals(room.code, service.match(second.token, request()).snapshot.code)
+        now.set(service.read(first.token, room.code).snapshot.coins!!.startsAt!!); service.tick()
+        val active = service.read(first.token, room.code).snapshot
+        assertEquals(RoomPhase.ACTIVE, active.phase)
+        assertEquals(2, active.round!!.players.size)
+        assertTrue(active.round!!.players.none { it.computer })
+        assertEquals(4, active.coins!!.tickets)
+    }
+
+    @Test fun `unmatched real player Tambola queue refunds at its wait limit`() {
+        val actor = guest("Waiting")
+        val room = service.match(actor.token, MatchRequest(UUID.randomUUID().toString(), 3,
+            rulesVersion = 2, largeMatch = true, roundSummary = true, realPlayersOnly = true)).snapshot
+        assertEquals(1200L, service.wallet(actor.token).balance)
+        now.set(room.coins!!.startsAt!!); service.tick()
+        assertEquals(RoomPhase.LOBBY, stored(room.code).phase)
+        now.set(stored(room.code).expiresAt - ROOM_LIFETIME + MATCH_WAIT_LIMIT); service.tick()
+        assertEquals(RoomPhase.CLOSED, stored(room.code).phase)
+        assertEquals(1500L, service.wallet(actor.token).balance)
+    }
     @Test fun `a three house game settles every slot exactly once and conserves all human coins`() {
         val actors = (1..4).map { guest("House player $it") }
         val active = start(actors, List(4) { 6 })

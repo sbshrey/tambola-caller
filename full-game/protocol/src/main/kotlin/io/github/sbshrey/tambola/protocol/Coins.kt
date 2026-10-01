@@ -32,6 +32,7 @@ import kotlinx.serialization.EncodeDefault
     @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val previewPowers: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val roundSummary: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val realPlayersOnly: Boolean = false,
 ) {
     init {
         require(tickets in 1..6)
