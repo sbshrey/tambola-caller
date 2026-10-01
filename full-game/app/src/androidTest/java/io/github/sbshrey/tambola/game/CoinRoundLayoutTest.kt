@@ -127,7 +127,13 @@ class CoinRoundLayoutTest {
         val panel = compose.onNodeWithTag("ticket-prize-picker").assertIsDisplayed().getUnclippedBoundsInRoot()
         assertTrue("Claim panel uses the playing width", panel.right - panel.left >= first.right - first.left)
         compose.onNodeWithTag("current-call").assertIsDisplayed()
-        pool.prizes.forEach { prize -> compose.onNodeWithTag("claim-prize-${prize.prize.name}").assertIsDisplayed().assertIsEnabled() }
+        pool.prizes.forEach { prize ->
+            val choice = compose.onNodeWithTag("claim-prize-${prize.prize.name}").assertIsDisplayed().assertIsEnabled().getUnclippedBoundsInRoot()
+            val title = compose.onNode(hasText(GameText(context.resources).prizeTitle(prize.prize)) and
+                hasAnyAncestor(hasTestTag("claim-prize-${prize.prize.name}")), useUnmergedTree = true).getUnclippedBoundsInRoot()
+            assertTrue("${prize.prize} title is below its choice", title.bottom <= choice.bottom + 1.dp)
+            assertTrue("${prize.prize} title is above its choice", title.top >= choice.top - 1.dp)
+        }
         fun claimTextFits() {
         compose.onAllNodes(hasAnyAncestor(hasTestTag("ticket-prize-picker")) and
             SemanticsMatcher.keyIsDefined(SemanticsActions.GetTextLayoutResult), useUnmergedTree = true).fetchSemanticsNodes().forEach { node ->
@@ -140,8 +146,8 @@ class CoinRoundLayoutTest {
             }
         }
         }
-        claimTextFits()
         captureTestScreen("coin-round-claim-$language-${scale.toInt()}")
+        claimTextFits()
         compose.runOnIdle { table = table.copy(awards = listOf(Award(Prize.TOP_LINE, table.called.size, listOf("peer-ticket"), listOf("peer")))) }
         compose.onNodeWithTag("claim-prize-TOP_LINE").assertIsEnabled()
         claimTextFits()

@@ -43,21 +43,29 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                 .semantics { testTagsAsResourceId = true }, shape = RoundedCornerShape(24.dp), color = colors.surface) {
                 BoxWithConstraints(Modifier.padding(if (embedded) 8.dp else 16.dp)) {
                     val columns = if (maxWidth > 420.dp) 3 else 2
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val compactEmbedded = embedded && maxHeight < 260.dp
+                    Column(verticalArrangement = Arrangement.spacedBy(if (compactEmbedded) 4.dp else 8.dp)) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(words(R.string.play_choose_prize, ordinal), modifier = Modifier.weight(1f).semantics { heading() },
                                 fontSize = if (embedded) 13.sp else 19.sp, lineHeight = if (embedded) 16.sp else 24.sp, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = dismiss, modifier = Modifier.size(48.dp).testTag("dismiss-claim")
-                                .semantics { contentDescription = words(R.string.ui_back_to_game) }) { Text("×", fontSize = 28.sp) }
+                            IconButton(onClick = dismiss, modifier = Modifier.size(if (compactEmbedded) 32.dp else 48.dp).testTag("dismiss-claim")
+                                .semantics { contentDescription = words(R.string.ui_back_to_game) }) {
+                                Canvas(Modifier.size(if (compactEmbedded) 16.dp else 24.dp)) {
+                                    drawLine(colors.onSurface, Offset.Zero, Offset(size.width, size.height), strokeWidth = 2.dp.toPx())
+                                    drawLine(colors.onSurface, Offset(size.width, 0f), Offset(0f, size.height), strokeWidth = 2.dp.toPx())
+                                }
+                            }
                         }
                         // A wrapping title can be taller than one row. Allocate the
                         // remaining height to prizes while keeping the close action fixed.
                         // Current coin rooms have six prizes, all visible together. Older
                         // custom/ranked rooms retain their longer list without losing choices.
                         val prizeGrid = Modifier.weight(1f, fill = embedded).testTag("claim-prize-grid")
-                        Column(if (choices.size <= 6) prizeGrid else prizeGrid.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(if (choices.size <= 6) prizeGrid else prizeGrid.verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(if (compactEmbedded) 4.dp else 8.dp)) {
                             choices.chunked(columns).forEach { row ->
-                                Row((if (embedded) Modifier.weight(1f) else Modifier.height(IntrinsicSize.Min)).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row((if (embedded) Modifier.weight(1f) else Modifier.height(IntrinsicSize.Min)).fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(if (compactEmbedded) 4.dp else 8.dp)) {
                                     row.forEach { (id, label) ->
                                         val award = table.awards.firstOrNull { it.prize.name == id }
                                         val custom = table.customAwards.firstOrNull { it.prizeId == id }
@@ -81,8 +89,16 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                                 PrizePlaceState.OWNED -> words(R.string.prize_already_claimed)
                                             }
                                         }
+                                        val places = availability?.let {
+                                            when (it.state) {
+                                                PrizePlaceState.OPEN -> words(R.string.prize_places_compact, it.remaining, it.total)
+                                                PrizePlaceState.TIES_OPEN -> words(R.string.prize_ties_compact)
+                                                PrizePlaceState.FULL -> words(R.string.prize_places_full)
+                                                PrizePlaceState.OWNED -> words(R.string.prize_owned_compact)
+                                            }
+                                        }
                                         Surface(onClick = { dismiss(); claim(ClaimSelection(ticket.id, id)) }, enabled = active,
-                                            modifier = Modifier.weight(1f).heightIn(min = 60.dp).fillMaxHeight().testTag("claim-prize-$id")
+                                            modifier = Modifier.weight(1f).heightIn(min = if (compactEmbedded) 38.dp else 60.dp).fillMaxHeight().testTag("claim-prize-$id")
                                                 .semantics(mergeDescendants = true) {
                                                     val title = coins?.let { words(R.string.coin_prize_amount, label, it) } ?: label
                                                     contentDescription = standardPrize?.let { "$title. ${words.prizeExplanation(it)}" } ?: title
@@ -91,7 +107,16 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                                 },
                                             shape = RoundedCornerShape(14.dp), color = if (active) colors.surfaceContainerHigh else colors.background,
                                             border = BorderStroke(1.dp, if (active) colors.secondary.copy(alpha = .65f) else colors.outlineVariant)) {
-                                            Column(Modifier.padding(horizontal = if (embedded) 6.dp else 10.dp, vertical = if (embedded) 4.dp else 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                                            if (compactEmbedded) Column(Modifier.fillMaxSize().padding(horizontal = 6.dp, vertical = 2.dp),
+                                                verticalArrangement = Arrangement.Center) {
+                                                Text(if (taken) "✓ $label" else label, fontSize = 10.sp, lineHeight = 11.sp,
+                                                    fontWeight = FontWeight.SemiBold, maxLines = 2,
+                                                    color = if (active) colors.onSurface else colors.onSurfaceVariant)
+                                                val progress = standardPrize?.let { ticketPrizeProgress(table, ticket, it) }
+                                                Text(listOfNotNull(progress?.let { "${(it * 100).toInt()}%" }, coins?.toString(), places).joinToString(" \u00b7 "),
+                                                    fontSize = 8.sp, lineHeight = 9.sp, maxLines = 1,
+                                                    color = if (active) GameNightPalette.gold else colors.onSurfaceVariant)
+                                            } else Column(Modifier.padding(horizontal = if (embedded) 6.dp else 10.dp, vertical = if (embedded) 4.dp else 8.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                                                 if (standardPrize != null && density.fontScale <= 1.3f) {
                                                     val progress = ticketPrizeProgress(table, ticket, standardPrize)
                                                     Box(Modifier.size(if (embedded) 36.dp else 52.dp).align(Alignment.CenterHorizontally), contentAlignment = Alignment.Center) {
@@ -104,14 +129,6 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                                 Text(if (taken) "✓ $label" else label, modifier = Modifier.weight(1f), fontSize = if (embedded) 11.sp else 13.sp, lineHeight = if (embedded) 13.sp else 16.sp,
                                                     fontWeight = FontWeight.SemiBold, color = if (active) colors.onSurface else colors.onSurfaceVariant)
                                                 if (embedded) {
-                                                    val places = availability?.let {
-                                                        when (it.state) {
-                                                            PrizePlaceState.OPEN -> words(R.string.prize_places_compact, it.remaining, it.total)
-                                                            PrizePlaceState.TIES_OPEN -> words(R.string.prize_ties_compact)
-                                                            PrizePlaceState.FULL -> words(R.string.prize_places_full)
-                                                            PrizePlaceState.OWNED -> words(R.string.prize_owned_compact)
-                                                        }
-                                                    }
                                                     Text(listOfNotNull(coins?.toString(), places).joinToString(" \u00b7 "), fontSize = 10.sp, lineHeight = 12.sp,
                                                         color = if (active) GameNightPalette.gold else colors.onSurfaceVariant)
                                                 } else {

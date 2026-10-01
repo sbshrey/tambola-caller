@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private val invitations: RoomInviteViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Keep the visible game awake through lobbies, results and update prompts as well as live rounds.
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val incoming = intent
         // SavedStateHandle defaults include launch extras. Clear them before any ViewModel is created.
         intent = if (incoming.action == Intent.ACTION_VIEW) consumedInviteIntent() else Intent(incoming).replaceExtras(null as Bundle?)
@@ -59,8 +61,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             LaunchedEffect(state.screen) { online.setActive(state.screen in setOf(Screen.HOME, Screen.ONLINE, Screen.BINGO) && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
-            val playing = (state.screen == Screen.BINGO && (bingoState.round?.status == RoundStatus.PLAYING || onlineState.bingoRoom?.phase == io.github.sbshrey.tambola.protocol.RoomPhase.ACTIVE)) || (state.screen == Screen.GAME && state.round?.status == RoundStatus.PLAYING) ||
-                (state.screen == Screen.ONLINE && onlineState.room?.round?.status == RoundStatus.PLAYING)
             val ambient = when (state.screen) {
                 Screen.GAME -> state.round?.status == RoundStatus.PLAYING
                 Screen.ONLINE -> onlineState.room?.round == null || onlineState.room?.round?.status == RoundStatus.PLAYING
@@ -68,10 +68,6 @@ class MainActivity : AppCompatActivity() {
                 else -> true
             }
             LaunchedEffect(ambient) { GameAudio.get(application).setMusicEligible(ambient) }
-            LaunchedEffect(playing) {
-                if (playing) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
             val dark = when (state.preferences.appearance) {
                 Appearance.SYSTEM -> isSystemInDarkTheme()
                 Appearance.LIGHT -> false
