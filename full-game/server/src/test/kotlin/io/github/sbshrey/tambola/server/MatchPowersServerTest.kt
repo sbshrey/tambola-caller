@@ -101,18 +101,18 @@ class MatchPowersServerTest : PostgresTest() {
         assertEquals(balance, service.wallet(joiner.token))
     }
 
-    @Test fun `power lobby has real staggered practice seats and never mixes with classic`() {
+    @Test fun `power lobby waits ten seconds before computer fill and never mixes with classic`() {
         val a = guest("Mira"); val b = guest("Noor")
         val power = service.match(a.token, MatchRequest(id(), 1, rulesVersion = 2, powersEnabled = true)).snapshot
         power.validateFor(a.playerId)
         assertEquals(6, power.protocolVersion); assertEquals(0, power.options.computerPlayers)
         val classic = service.match(b.token, MatchRequest(id(), 1, rulesVersion = 2)).snapshot
         assertNotEquals(classic.code, power.code)
-        (1..3).forEach { count ->
+        repeat(3) {
             now.addAndGet(3_000); service.tick()
             val view = service.read(a.token, power.code).snapshot
-            view.validateFor(a.playerId); assertEquals(count, view.options.computerPlayers)
-            assertEquals(1 + count * 3, view.coins!!.tickets)
+            view.validateFor(a.playerId); assertEquals(0, view.options.computerPlayers)
+            assertEquals(1, view.coins!!.tickets)
         }
         now.addAndGet(3_000); service.tick()
         val active = service.read(a.token, power.code).snapshot

@@ -87,3 +87,14 @@ fun OnlineSaved.acceptBingo(next: BingoRoomView, previous: BingoRoomView?, allow
     }
     return updated to next
 }
+
+/** A draw can advance the revision between a card tap and its command. Retry only after a definitive rejection. */
+fun PendingOperation.BingoCommand.rebaseMark(latest: BingoRoomView, newRequestId: String): PendingOperation.BingoCommand? {
+    val mark = request.action as? BingoAction.Mark ?: return null
+    val game = latest.round ?: return null
+    if (latest.code != code || latest.revision <= request.expectedRevision || latest.phase != RoomPhase.ACTIVE ||
+        game.id != mark.roundId || mark.number !in game.called ||
+        game.ownCards.none { it.id == mark.cardId && mark.number in it.numbers } ||
+        mark.number in game.ownMarks[mark.cardId].orEmpty()) return null
+    return copy(request = request.copy(id = newRequestId, expectedRevision = latest.revision))
+}

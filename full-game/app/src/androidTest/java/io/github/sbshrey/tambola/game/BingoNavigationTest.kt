@@ -11,11 +11,36 @@ import io.github.sbshrey.tambola.game.online.OnlineViewModel
 import io.github.sbshrey.tambola.game.ui.BingoOnlineScreen
 import io.github.sbshrey.tambola.game.ui.GameHub
 import io.github.sbshrey.tambola.game.ui.TambolaTheme
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
 class BingoNavigationTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+
+    @Test fun shortLandscapeHomeKeepsBothJoinActionsInsideCards() {
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10_000) {
+            compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        }
+        compose.setContent {
+            TambolaTheme(dark = true) { GameHub("QA", 50_000, 0, null, {}, {}, {}, {}) }
+        }
+        val join = compose.activity.getString(R.string.hub_join_table)
+        val actions = compose.onAllNodesWithText(join, useUnmergedTree = true)
+        actions.assertCountEquals(2)
+        val tambolaAction = actions[0].getUnclippedBoundsInRoot()
+        val tambolaCard = compose.onNodeWithTag("choose-tambola").getUnclippedBoundsInRoot()
+        val bingoAction = actions[1].getUnclippedBoundsInRoot()
+        val bingoCard = compose.onNodeWithTag("choose-bingo").getUnclippedBoundsInRoot()
+        assertTrue("Tambola Join action must remain within its card",
+            tambolaAction.top >= tambolaCard.top && tambolaAction.bottom <= tambolaCard.bottom)
+        assertTrue("Bingo Join action must remain within its card",
+            bingoAction.top >= bingoCard.top && bingoAction.bottom <= bingoCard.bottom)
+        captureTestScreen("jalsa-short-landscape-home")
+    }
 
     @Test fun bothGameChoicesRouteToOnlinePlayWithoutPracticeEntry() {
         val model = compose.runOnIdle { ViewModelProvider(compose.activity)[OnlineViewModel::class.java] }

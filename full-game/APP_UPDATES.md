@@ -19,7 +19,7 @@ Install permission and provider exist only in the direct-distribution publicBeta
 ## Preparing the next update
 
 1. Increment `versionCode` and `versionName` in `app/build.gradle.kts`; keep the beta application ID and signing key unchanged.
-2. Run relevant tests and `./gradlew.bat :app:assemblePublicBeta`.
+2. Run relevant tests and `./gradlew.bat :app:assemblePublicBeta`. For a beta with opt-in Firebase diagnostics, use `-PtambolaFirebase=true`, verify the configured package and the manifest's default-off collection flags, and record that exact build command with the release. Never rebuild the same version with different flags after publishing its asset.
 3. Run `./tools/prepare-app-update.ps1 -Apk app/build/outputs/apk/publicBeta/app-publicBeta.apk -PreviousApk <previous-phone-apk>` from `full-game`. The tool verifies both signatures and rejects incompatible identities, non-increasing versions and reuse of a version with different bytes.
 4. Attach the prepared `tambola-beta-vN.apk` to a published GitHub release in this repository. Drafts do not notify users. Keep the newest beta within the most recent 20 published releases. Compare GitHub's asset digest against the generated `update.json` and do not replace an existing version asset.
 5. Verify detection and installation on an older updater-enabled app, confirming profile persistence. Publish rollback fixes with a higher version code; do not downgrade.

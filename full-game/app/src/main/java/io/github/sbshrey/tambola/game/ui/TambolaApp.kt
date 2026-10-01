@@ -58,7 +58,8 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
                 tambola = { if (onlineState.name.isNullOrBlank()) profile = true else model.navigate(Screen.ONLINE) },
                 bingo = { if (onlineState.name.isNullOrBlank()) profile = true else model.navigate(Screen.BINGO) },
                 settings = { model.navigate(Screen.SETTINGS) },
-                connected = onlineState.available && onlineState.connection == Connection.LIVE)
+                connected = onlineState.available && onlineState.connection == Connection.LIVE,
+                inRoom = onlineState.room != null || onlineState.bingoRoom != null)
         } else if (!state.loading && state.screen == Screen.SETTINGS) {
             GameSettings(state.preferences, model::updatePreferences) { model.navigate(Screen.HOME) }
         } else if (!state.loading && state.screen == Screen.GAME && state.round != null) {

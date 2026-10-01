@@ -114,13 +114,13 @@ class BingoRoomServiceTest : PostgresTest() {
         assertEquals(accepted, service.bingo.match(actor.token, request))
     }
 
-    @Test fun `progressive population private cards and reconnect survive service restart`() {
+    @Test fun `Bingo waits ten seconds before computer fill and survives restart`() {
         val actor = guest()
         val room = service.bingo.match(actor.token, BingoMatchRequest(id(), 6))
         assertEquals(1, room.players.size)
         now.addAndGet(5000); service.tick()
         val halfway = service.bingo.read(actor.token, room.code)
-        assertTrue(halfway.players.size in 2..29)
+        assertEquals(1, halfway.players.size)
         now.set(room.startsAt!!); service.tick()
         val active = service.bingo.read(actor.token, room.code)
         assertEquals(RoomPhase.ACTIVE, active.phase)

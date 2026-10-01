@@ -57,9 +57,7 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
                 (realPlayersOnly && now - createdAt >= MATCH_WAIT_LIMIT))
                 copy(phase = RoomPhase.CLOSED, startsAt = null) else if (!realPlayersOnly || members.size >= 2) start(now)
                 else copy(startsAt = now + MATCH_COUNTDOWN)
-            if (realPlayersOnly) return this
-            val elapsed = (now - createdAt).coerceIn(0, 10_000)
-            return copy(practiceSeats = ((population() - 1) * elapsed / 10_000).toInt())
+            return this
         }
         if (phase == RoomPhase.ACTIVE && requireNotNull(nextDrawAt) <= now) {
             val game = requireNotNull(round).next().playComputers()

@@ -23,12 +23,50 @@ import io.github.sbshrey.tambola.game.Screen
 
 @Composable
 fun GameHub(name: String?, coins: Long?, avatar: Int, lastGame: Screen?, profile: () -> Unit,
-    tambola: () -> Unit, bingo: () -> Unit, settings: () -> Unit, connected: Boolean = true) {
+    tambola: () -> Unit, bingo: () -> Unit, settings: () -> Unit, connected: Boolean = true,
+    inRoom: Boolean = false) {
     MaterialTheme(colorScheme = GameNightPalette.colors) {
         Box(Modifier.fillMaxSize().background(GameNightPalette.background)) {
             LobbyBackdrop(Modifier.fillMaxSize())
             BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding()) {
                 val landscape = maxWidth > maxHeight
+                val shortLandscape = landscape && maxHeight < 430.dp
+                if (shortLandscape) {
+                    Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(stringResource(R.string.app_name), Modifier.weight(1f),
+                                color = GameNightPalette.cream, style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Black, maxLines = 1)
+                            Surface(onClick = profile, shape = RoundedCornerShape(16.dp), color = GameNightPalette.panel,
+                                modifier = Modifier.heightIn(min = 48.dp).testTag("hub-profile")) {
+                                Row(Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    AvatarBadge(avatar, size = 30.dp)
+                                    Text(coins?.let { stringResource(R.string.hub_coins, it) }
+                                        ?: stringResource(R.string.ui_your_profile),
+                                        color = GameNightPalette.gold, fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelMedium, maxLines = 1)
+                                }
+                            }
+                            TextButton(onClick = settings, modifier = Modifier.testTag("hub-settings")) {
+                                Text(stringResource(R.string.ui_settings), color = GameNightPalette.cream)
+                            }
+                        }
+                        Text(stringResource(R.string.hub_choose), color = GameNightPalette.cream,
+                            style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Black)
+                        Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            HubGame(stringResource(R.string.hub_tambola_title), stringResource(R.string.hub_tambola), "90",
+                                GameNightPalette.coral, "choose-tambola", Modifier.weight(1f).fillMaxHeight(),
+                                lastGame == Screen.ONLINE, tambola, compact = true)
+                            HubGame(stringResource(R.string.bingo_title), stringResource(R.string.hub_bingo), "75",
+                                GameNightPalette.mint, "choose-bingo", Modifier.weight(1f).fillMaxHeight(),
+                                lastGame == Screen.BINGO, bingo, compact = true)
+                        }
+                    }
+                } else {
                 Column(Modifier.fillMaxSize().padding(horizontal = if (landscape) 28.dp else 18.dp, vertical = 14.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -52,6 +90,7 @@ fun GameHub(name: String?, coins: Long?, avatar: Int, lastGame: Screen?, profile
                                     fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 Text(stringResource(when {
                                     name.isNullOrBlank() -> R.string.hub_create_player
+                                    !inRoom -> R.string.hub_ready
                                     connected -> R.string.hub_connected
                                     else -> R.string.hub_reconnecting
                                 }),
@@ -76,6 +115,7 @@ fun GameHub(name: String?, coins: Long?, avatar: Int, lastGame: Screen?, profile
                             GameNightPalette.mint, "choose-bingo", Modifier.weight(1f).fillMaxWidth(), lastGame == Screen.BINGO, bingo)
                     }
                 }
+                }
             }
         }
     }
@@ -83,7 +123,7 @@ fun GameHub(name: String?, coins: Long?, avatar: Int, lastGame: Screen?, profile
 
 @Composable
 private fun HubGame(title: String, subtitle: String, ball: String, accent: Color, tag: String,
-    modifier: Modifier, recent: Boolean, action: () -> Unit) {
+    modifier: Modifier, recent: Boolean, action: () -> Unit, compact: Boolean = false) {
     Surface(onClick = action, modifier = modifier.testTag(tag), shape = RoundedCornerShape(28.dp),
         color = GameNightPalette.panel, border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = .55f))) {
         Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(GameNightPalette.panel, accent.copy(alpha = .23f))))) {
@@ -92,31 +132,38 @@ private fun HubGame(title: String, subtitle: String, ball: String, accent: Color
                 drawCircle(accent.copy(alpha = .12f), radius * 1.5f, Offset(size.width * .91f, size.height * .04f))
                 drawCircle(accent.copy(alpha = .13f), radius, Offset(size.width * .95f, size.height * .88f))
             }
-            Column(Modifier.fillMaxSize().padding(22.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Column(Modifier.fillMaxSize().padding(if (compact) 12.dp else 22.dp),
+                verticalArrangement = Arrangement.SpaceBetween) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
                     Surface(color = accent.copy(alpha = .18f), shape = RoundedCornerShape(50)) {
-                        Text(stringResource(R.string.hub_multiplayer), Modifier.padding(horizontal = 12.dp, vertical = 5.dp),
-                            color = accent, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.hub_multiplayer),
+                            Modifier.padding(horizontal = if (compact) 8.dp else 12.dp, vertical = if (compact) 3.dp else 5.dp),
+                            color = accent, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                     }
-                    if (recent) Text(stringResource(R.string.hub_recent), color = GameNightPalette.cream,
+                    if (recent && !compact) Text(stringResource(R.string.hub_recent), color = GameNightPalette.cream,
                         style = MaterialTheme.typography.labelSmall)
                 }
-                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Surface(shape = CircleShape, color = accent, modifier = Modifier.size(70.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(if (compact) 10.dp else 16.dp)) {
+                    Surface(shape = CircleShape, color = accent, modifier = Modifier.size(if (compact) 46.dp else 70.dp)) {
                         Box(contentAlignment = Alignment.Center) {
-                            Text(ball, color = GameNightPalette.background, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                            Text(ball, color = GameNightPalette.background,
+                                fontSize = if (compact) 20.sp else 28.sp, fontWeight = FontWeight.Black)
                         }
                     }
                     Column(Modifier.weight(1f)) {
-                        Text(title, color = GameNightPalette.cream, style = MaterialTheme.typography.headlineMedium,
+                        Text(title, color = GameNightPalette.cream,
+                            style = if (compact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Black, maxLines = 1)
-                        Text(subtitle, color = GameNightPalette.muted, style = MaterialTheme.typography.bodyMedium,
+                        Text(subtitle, color = GameNightPalette.muted,
+                            style = if (compact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.bodyMedium,
                             maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
                 }
                 Text(stringResource(R.string.hub_join_table), color = accent,
-                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    style = if (compact) MaterialTheme.typography.labelLarge else MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, maxLines = 1)
             }
         }
     }

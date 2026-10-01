@@ -20,11 +20,6 @@ internal fun RoomRecord.computerTicketCounts(count: Int = options.computerPlayer
         computerPlayer(id, index).id to tickets
     }
 
-internal fun RoomRecord.progressiveSeats(now: Long): Int = if (options.largeMatch) {
-    val elapsed = (now - (requireNotNull(startsAt) - MATCH_COUNTDOWN)).coerceIn(0L, 10_000L)
-    ((matchPopulation() - 1) * elapsed / 10_000L).toInt()
-} else ((now - (requireNotNull(startsAt) - MATCH_COUNTDOWN)) / 3_000L).toInt().coerceIn(0, 3)
-
 // Fictional game handles; computer identity stays explicit in the public player record.
 internal fun computerPlayer(roomId: String, index: Int): Player = practicePersona(roomId, index)
 

@@ -541,10 +541,6 @@ class RoomService(
                         event = "host_changed"
                     }
                 }
-                if (room.phase == RoomPhase.LOBBY && (room.options.powersEnabled || room.options.largeMatch) && !room.friendTable && !room.realPlayersOnly) {
-                    val joined = room.progressiveSeats(now)
-                    if (joined > room.practiceSeats) { room = room.copy(practiceSeats = joined).coinLobby(); event = "practice_joined" }
-                }
                 if (room.phase == RoomPhase.LOBBY && room.options.coinGame && room.startsAt?.let { it <= now } == true) {
                     // A long host outage refunds the queue instead of spending
                     // entries after players believe the countdown failed.

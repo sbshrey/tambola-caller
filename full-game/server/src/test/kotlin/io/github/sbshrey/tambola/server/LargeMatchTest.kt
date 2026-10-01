@@ -15,7 +15,7 @@ class LargeMatchTest : PostgresTest() {
         WireJson.decodeFromString<RoomRecord>(it.getString(1))
     }.single() }
 
-    @Test fun `large match fills progressively survives restart and plays legitimate claims`() {
+    @Test fun `large match waits ten seconds then fills and plays legitimate claims`() {
         val owner = guest()
         val purchase = request()
         val initial = service.match(owner.token, purchase)
@@ -23,24 +23,18 @@ class LargeMatchTest : PostgresTest() {
         val target = stored(code).matchPopulation()
         assertTrue(target in 30..50)
         assertEquals(0, initial.snapshot.options.computerPlayers)
-        var previous = 0
-        var priorTickets = emptyMap<String, Int>()
-        repeat(10) {
+        repeat(9) {
             now.addAndGet(1_000); service.tick()
             val view = service.read(owner.token, code).snapshot
             view.validateFor(owner.playerId)
-            assertTrue(view.options.computerPlayers > previous)
-            previous = view.options.computerPlayers
-            val counts = stored(code).computerTicketCounts()
-            assertEquals(priorTickets, counts.filterKeys { it in priorTickets })
-            assertEquals(6 + counts.values.sum(), view.coins!!.tickets)
-            assertEquals(view.coins!!.tickets * COIN_TICKET_PRICE, view.coins!!.pool)
-            priorTickets = counts
+            assertEquals(RoomPhase.LOBBY, view.phase)
+            assertEquals(0, view.options.computerPlayers)
+            assertEquals(6, view.coins!!.tickets)
             if (it == 4) service = RoomService(database, now::get)
         }
-        assertEquals(target-1, previous)
+        now.addAndGet(1_000); service.tick()
+        val priorTickets = stored(code).computerTicketCounts(target - 1)
         assertEquals(initial, service.match(owner.token, purchase)) // Durable receipt remains unchanged.
-        now.addAndGet(2_000); service.tick()
         val active = service.read(owner.token, code).snapshot
         active.validateFor(owner.playerId)
         assertEquals(7, active.protocolVersion)

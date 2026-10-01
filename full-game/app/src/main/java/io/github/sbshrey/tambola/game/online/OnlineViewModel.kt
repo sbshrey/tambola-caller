@@ -442,18 +442,22 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 mutex.withLock { persist(null) }; stream?.cancel(); stream = null
                 mutable.update { it.copy(connection = Connection.IDLE) }; return
             }
+            if (error.status == 409 && pending is PendingOperation.BingoCommand) {
+                val fresh = authorized { api.bingoRead(it, pending.code) }
+                val retryMark = mutex.withLock {
+                    val latest = saved ?: return@withLock false
+                    if (latest.credentials.playerId != current.credentials.playerId || latest.pending != pending) return@withLock false
+                    val accepted = latest.acceptBingo(fresh, latest.bingoRoom)
+                    val replacement = if (error.code == "room_changed" && readyRetries > 0)
+                        pending.rebaseMark(accepted.second, UUID.randomUUID().toString()) else null
+                    persist(accepted.first.copy(bingoRoom = accepted.second, pending = replacement))
+                    replacement != null
+                }
+                if (retryMark) { performPending(readyRetries - 1); return }
+            }
             if (pending !is PendingOperation.DeleteProfile && error.status in 400..499 && error.status !in listOf(401, 408, 429)) mutex.withLock { saved?.let { persist(it.copy(pending = null)) } }
             if (pending is PendingOperation.Refill && error.code == "refill_wait") mutex.withLock { saved?.let { persist(it.copy(pending = null)) } }
             if (error.code in setOf("coins_low", "refill_not_needed", "refill_wait")) refreshWallet()
-            if (error.status == 409 && pending is PendingOperation.BingoCommand) {
-                val fresh = authorized { api.bingoRead(it, pending.code) }
-                mutex.withLock {
-                    saved?.let { latest ->
-                        val accepted = latest.acceptBingo(fresh, latest.bingoRoom)
-                        persist(accepted.first.copy(bingoRoom = accepted.second))
-                    }
-                }
-            }
             if (error.status == 409 && current.room != null && pending is PendingOperation.Command) {
                 val update = authorized { api.read(it, current.room!!.code) }
                 val retryReady = mutex.withLock {

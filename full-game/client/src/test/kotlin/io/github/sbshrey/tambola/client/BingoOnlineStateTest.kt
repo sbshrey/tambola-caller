@@ -9,6 +9,20 @@ import org.junit.Test
 import kotlinx.serialization.encodeToString
 
 class BingoOnlineStateTest {
+    @Test fun `called Bingo mark rebases after a draw advances the table`() {
+        val first = cards.first().numbers.first()
+        val pending = PendingOperation.BingoCommand("B-ABCD2345",
+            BingoCommandRequest("old", 2, BingoAction.Mark("game", cards.first().id, first)))
+        val fresh = view().copy(revision = 3, round = view().round!!.copy(called = listOf(1, first).distinct()))
+        val rebased = pending.rebaseMark(fresh, "new")
+        assertEquals("new", rebased?.request?.id)
+        assertEquals(3L, rebased?.request?.expectedRevision)
+        assertNull(pending.rebaseMark(fresh.copy(revision = 2), "new"))
+        assertNull(pending.rebaseMark(fresh.copy(phase = RoomPhase.FINISHED), "new"))
+        assertNull(pending.rebaseMark(fresh.copy(round = fresh.round!!.copy(ownMarks = mapOf(cards.first().id to setOf(first)))), "new"))
+        assertNull(pending.rebaseMark(fresh.copy(round = fresh.round!!.copy(called = emptyList())), "new"))
+    }
+
     @Test fun `Bingo purchase and command survive save reload without changing Tambola preference`() {
         val purchase = PendingOperation.BingoMatch(BingoMatchRequest("purchase", 6))
         val pending = saved().copy(preferredTickets = 3).withPending(purchase)
