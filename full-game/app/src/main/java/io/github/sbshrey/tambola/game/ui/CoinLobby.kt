@@ -88,16 +88,14 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             start = { model.command(RoomAction.Start) }, leave = { model.command(RoomAction.Leave) }, invitationLink = model::friendInvitation,
                             connection = state.connection, reconnect = reconnect)
                         else {
-                            if (room.members.size < 2) {
-                                CircularProgressIndicator(color = GameNightPalette.mint, modifier = Modifier.size(36.dp))
-                                Text(words(R.string.lobby_waiting_for_people), color = GameNightPalette.cream,
-                                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
-                            } else TableCountdown(room, state.playerId, reducedMotion)
+                            TableCountdown(room, state.playerId, reducedMotion)
                             Text(words(R.string.lobby_real_players, room.members.size), color = GameNightPalette.mint,
                                 style = MaterialTheme.typography.labelLarge)
+                            Text(words(R.string.lobby_computer_fill), color = GameNightPalette.muted,
+                                style = MaterialTheme.typography.labelSmall)
                             if (state.connection != Connection.LIVE) WaitingConnectionNotice(state.connection, enabled, reconnect)
                         }
-                        Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
+                        if (!compact || coins?.friendTable == true) Text(words(R.string.coin_choose_count, coins?.ownTickets ?: 0) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
                             " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
                             modifier = Modifier.testTag("waiting-pool"))
                         if (coins?.friendTable != true) TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,

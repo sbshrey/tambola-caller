@@ -9,6 +9,7 @@
     <string name="table_joining">जुड़ रहे हैं…</string>
     <string name="table_you">आप</string>
     <string name="table_joined">%1$s जुड़ गए</string>
+    <string name="table_computers_joining">कंप्यूटर खिलाड़ी जुड़ रहे हैं</string>
     <string name="table_tickets_ready">आपके टिकट तैयार हैं</string>
     <plurals name="table_prize_count">
         <item quantity="one">%d इनाम</item>

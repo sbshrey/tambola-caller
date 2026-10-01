@@ -9,6 +9,7 @@
     <string name="table_joining">Joining…</string>
     <string name="table_you">You</string>
     <string name="table_joined">%1$s joined</string>
+    <string name="table_computers_joining">Computer players are joining</string>
     <string name="table_tickets_ready">Your tickets are ready</string>
     <plurals name="table_prize_count">
         <item quantity="one">%d prize</item>

@@ -19,6 +19,20 @@ class BingoRoomServiceTest : PostgresTest() {
         c.query("SELECT payload FROM bingo_rooms WHERE code = ?", code) { WireJson.decodeFromString<BingoRoomRecord>(it.getString(1)) }.single()
     }
 
+    @Test fun `quick Bingo starts after ten seconds with clearly flagged computer seats`() {
+        val actor = guest("Early player")
+        val room = service.bingo.match(actor.token, BingoMatchRequest(id(), 2, realPlayersOnly = false))
+        assertEquals(10_000L, room.startsAt!! - now.get())
+        now.set(room.startsAt!! - 1); service.tick()
+        assertEquals(RoomPhase.LOBBY, service.bingo.read(actor.token, room.code).phase)
+        now.incrementAndGet(); service.tick()
+        val active = service.bingo.read(actor.token, room.code)
+        assertEquals(RoomPhase.ACTIVE, active.phase)
+        assertEquals(1, active.players.count { !it.computer })
+        assertTrue(active.players.count { it.computer } in 29..49)
+        assertEquals(1300L, service.wallet(actor.token).balance)
+    }
+
     @Test fun `real player queue waits for a peer and starts without computer seats`() {
         val legacy = service.bingo.match(guest("Legacy").token, BingoMatchRequest(id(), 1))
         val first = guest("First")

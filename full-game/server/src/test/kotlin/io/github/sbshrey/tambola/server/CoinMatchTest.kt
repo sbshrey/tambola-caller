@@ -13,6 +13,21 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class CoinMatchTest : PostgresTest() {
+    @Test fun `quick Tambola starts after ten seconds with clearly flagged computer seats`() {
+        val actor = guest("Early player")
+        val room = service.match(actor.token, MatchRequest(UUID.randomUUID().toString(), 2,
+            rulesVersion = 2, largeMatch = true, roundSummary = true, realPlayersOnly = false)).snapshot
+        assertEquals(10_000L, room.coins!!.startsAt!! - now.get())
+        now.set(room.coins!!.startsAt!! - 1); service.tick()
+        assertEquals(RoomPhase.LOBBY, service.read(actor.token, room.code).snapshot.phase)
+        now.incrementAndGet(); service.tick()
+        val active = service.read(actor.token, room.code).snapshot
+        assertEquals(RoomPhase.ACTIVE, active.phase)
+        assertEquals(1, active.round!!.players.count { !it.computer })
+        assertTrue(active.round!!.players.count { it.computer } in 29..49)
+        assertEquals(1300L, service.wallet(actor.token).balance)
+    }
+
     @Test fun `real player Tambola queue waits for a peer and never fills computer seats`() {
         val legacy = service.match(guest("Legacy").token, MatchRequest(UUID.randomUUID().toString(), 1,
             rulesVersion = 2, largeMatch = true, roundSummary = true)).snapshot

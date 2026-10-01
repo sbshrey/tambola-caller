@@ -2,9 +2,10 @@
     <string name="lobby_ready">खेलने के लिए तैयार?</string>
     <string name="lobby_play_short">खेलें</string>
     <string name="lobby_friends_short">दोस्त</string>
-    <string name="lobby_practice_short">असली खिलाड़ियों के साथ ऑनलाइन खेलें · या दोस्तों को बुलाएँ</string>
+    <string name="lobby_practice_short">अभी ऑनलाइन खेलें · या दोस्तों को बुलाएँ</string>
     <string name="lobby_waiting_for_people">एक और खिलाड़ी का इंतज़ार है</string>
-    <string name="lobby_real_players">%1$d असली खिलाड़ी</string>
+    <string name="lobby_real_players">लोग: %1$d</string>
+    <string name="lobby_computer_fill">10 सेकंड बाद खाली सीटों पर कंप्यूटर खिलाड़ी आएंगे।</string>
     <string name="lobby_welcome">तंबोला जलसा में आपका स्वागत है</string>
     <string name="lobby_greeting">नमस्ते, %1$s</string>
     <string name="lobby_first_heading">थोड़ी किस्मत।\nढेर सारी मस्ती।</string>

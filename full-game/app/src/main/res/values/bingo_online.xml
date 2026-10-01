@@ -12,8 +12,12 @@
     <string name="bingo_connecting">Connecting…</string>
     <string name="bingo_busy">Saving…</string>
     <string name="bingo_waiting_for_people">Waiting for another player</string>
+    <string name="bingo_friend_ready">Ready when the host starts</string>
     <string name="bingo_live_table">LIVE TABLE</string>
-    <string name="bingo_live_players">%1$d real players</string>
+    <string name="bingo_live_players">People: %1$d</string>
+    <string name="bingo_computer_fill">Computer players fill open seats after 10 seconds.</string>
+    <string name="bingo_table_mix">People: %1$d · Computer: %2$d</string>
+    <string name="bingo_compact_mix">Calls %1$d · Computer %2$d</string>
     <string name="bingo_next_call">NEXT CALL</string>
     <string name="bingo_recent_calls">RECENT CALLS</string>
 </resources>

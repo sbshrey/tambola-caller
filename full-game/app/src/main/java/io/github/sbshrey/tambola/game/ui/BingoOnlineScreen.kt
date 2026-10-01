@@ -99,15 +99,20 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                 }
             }
             room.phase == RoomPhase.LOBBY -> {
-                Spacer(Modifier.weight(1f))
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Center) {
                 Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp), color = GameNightPalette.panel) {
-                    Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        CircularProgressIndicator(color = GameNightPalette.mint, modifier = Modifier.size(40.dp))
-                        Text(if (room.members.size < 2) stringResource(R.string.bingo_waiting_for_people)
-                            else stringResource(R.string.bingo_countdown, room.startsAt?.let { ((it - room.serverTime - elapsed).coerceAtLeast(0) + 999) / 1000 } ?: 0),
+                    Column(Modifier.padding(if (compactPlay) 12.dp else 24.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(if (compactPlay) 8.dp else 14.dp)) {
+                        CircularProgressIndicator(color = GameNightPalette.mint, modifier = Modifier.size(if (compactPlay) 28.dp else 40.dp))
+                        Text(if (room.friendTable) {
+                            if (room.members.size < 2) stringResource(R.string.bingo_waiting_for_people)
+                            else stringResource(R.string.bingo_friend_ready)
+                        } else stringResource(R.string.bingo_countdown,
+                            room.startsAt?.let { ((it - room.serverTime - elapsed).coerceAtLeast(0) + 999) / 1000 } ?: 0),
                             style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
                         Text(stringResource(R.string.bingo_live_players, room.members.size), color = GameNightPalette.mint)
+                        if (!room.friendTable) Text(stringResource(R.string.bingo_computer_fill), color = GameNightPalette.muted,
+                            style = MaterialTheme.typography.labelSmall)
                         Text(stringResource(R.string.bingo_waiting, room.players.size, room.cardCounts.values.sum()), color = GameNightPalette.muted)
                         if (room.friendTable) Text(room.code, style = MaterialTheme.typography.headlineMedium, color = GameNightPalette.gold)
                         if (room.friendTable && room.hostId == state.playerId) Button(onClick = { model.bingoCommand(BingoAction.Start) },
@@ -116,7 +121,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             modifier = Modifier.testTag("bingo-online-leave")) { Text(stringResource(R.string.bingo_leave)) }
                     }
                 }
-                Spacer(Modifier.weight(1f))
+                }
             }
             game != null && room.phase == RoomPhase.FINISHED -> {
                 Text(stringResource(R.string.bingo_results), style = MaterialTheme.typography.headlineSmall)
@@ -130,6 +135,8 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                 Text("${index + 1}", Modifier.width(32.dp))
                                 Column(Modifier.weight(1f)) {
                                     Text(player.name, fontWeight = FontWeight.Bold)
+                                    if (player.computer) Text(stringResource(R.string.play_computer_short),
+                                        color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
                                     game.claims.filter { it.playerId == player.id }.forEach { Text(patternTitle(it.pattern), style = MaterialTheme.typography.labelSmall) }
                                 }
                                 Text(stringResource(R.string.hub_coins, game.winnings[player.id]?.total ?: 0))
@@ -159,14 +166,17 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                             fontWeight = FontWeight.Black)
                                     }
                                 }
-                                if (compactPlay) Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
+                                if (compactPlay) Text(if (game.players.any { it.computer })
+                                    stringResource(R.string.bingo_compact_mix, game.called.size, game.players.count { it.computer })
+                                    else stringResource(R.string.bingo_called, game.called.size, game.players.size),
                                     color = GameNightPalette.cream, style = MaterialTheme.typography.labelSmall)
                             }
                             if (!compactPlay) Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
                                 color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
                             LinearProgressIndicator(progress = { game.called.size / 75f },
                                 modifier = Modifier.fillMaxWidth(), color = GameNightPalette.mint)
-                            if (!compactPlay) Text(stringResource(R.string.bingo_live_players, game.players.count { !it.computer }),
+                            if (!compactPlay) Text(stringResource(R.string.bingo_table_mix,
+                                game.players.count { !it.computer }, game.players.count { it.computer }),
                                 color = GameNightPalette.mint, style = MaterialTheme.typography.labelMedium)
                         }
                     }
@@ -212,7 +222,8 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                         }
                         Column(Modifier.weight(1f)) {
                             Text(stringResource(R.string.bingo_called, game.called.size, game.players.size), style = MaterialTheme.typography.labelMedium)
-                            Text(stringResource(R.string.bingo_live_players, game.players.count { !it.computer }),
+                            Text(stringResource(R.string.bingo_table_mix,
+                                game.players.count { !it.computer }, game.players.count { it.computer }),
                                 color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
                         }
                         TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }

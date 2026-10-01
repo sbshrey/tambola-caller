@@ -150,7 +150,7 @@ class GameText(private val resources: Resources) {
         Prize.FULL_HOUSE in value.prizes || Prize.HOUSE_ONE in value.prizes -> R.string.end_first_house
         else -> R.string.end_all_prizes
     })
-    fun playerLabel(player: Player): String = player.name
+    fun playerLabel(player: Player): String = if (player.computer) "${player.name} · ${invoke(R.string.play_computer_short)}" else player.name
     fun ticketLabel(round: TableRound, id: String): String {
         val owner = round.ticketOwners.firstOrNull { it.id == id } ?: return invoke(R.string.winning_ticket)
         return invoke(R.string.owned_ticket_label, round.players.firstOrNull { it.id == owner.playerId }?.let(::playerLabel)

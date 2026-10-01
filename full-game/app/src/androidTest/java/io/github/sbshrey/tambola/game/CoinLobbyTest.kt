@@ -74,6 +74,28 @@ class CoinLobbyTest {
         compose.onNodeWithTag("waiting-connection").assertDoesNotExist()
     }
 
+    @Test fun quickTableShowsTenSecondCountdownAndComputerIdentity() {
+        val previous = finished()
+        val room = previous.copy(phase = RoomPhase.LOBBY, round = null,
+            members = previous.members.take(1), options = previous.options.copy(computerPlayers = 3),
+            coins = previous.coins!!.copy(startsAt = 20_000), serverTime = 10_000)
+        val model = ViewModelProvider(compose.activity)[OnlineViewModel::class.java]
+        val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag("hi")); fontScale = 2f }
+        val context = compose.activity.createConfigurationContext(config)
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources,
+                LocalConfiguration provides config, LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
+                TambolaTheme { CoinLobby(OnlineUiState(loading = false, available = true,
+                    room = room, name = "You", playerId = "a", connection = Connection.LIVE), model, {}, {}, {}, reducedMotion = true) }
+            }
+        }
+        compose.onNodeWithTag("table-countdown").assertIsDisplayed()
+        compose.onNodeWithTag("table-start-seconds").assertTextEquals("10")
+        compose.onNodeWithText(context.getString(R.string.lobby_computer_fill)).assertIsDisplayed()
+        compose.onAllNodesWithText(context.getString(R.string.play_computer_short)).assertCountEquals(3)
+        captureTestScreen("quick-fill-tambola-hi-200")
+    }
+
     private fun noScrollLanding(language: String, landscape: Boolean) {
         compose.runOnUiThread { compose.activity.requestedOrientation = if (landscape) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
         compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == if (landscape) Configuration.ORIENTATION_LANDSCAPE else Configuration.ORIENTATION_PORTRAIT }

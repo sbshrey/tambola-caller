@@ -23,6 +23,32 @@ import java.util.Random
 
 class BingoOnlineAccessibilityTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+    @Test fun quickBingoExplainsComputerFillWhileCountingDown() {
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+        val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag("hi")); fontScale = 2f }
+        val context = compose.activity.createConfigurationContext(config)
+        val model = compose.runOnIdle { ViewModelProvider(compose.activity)[OnlineViewModel::class.java] }
+        val person = Player("me", "QA")
+        val computer = Player("computer-fixture-1", "Mira Rao", computer = true)
+        val room = BingoRoomView("qa-room", "B-ABCD2345", 1, RoomPhase.LOBBY, "me", false,
+            listOf(MemberView("me", "QA", 0, true, true)), listOf(person, computer),
+            mapOf("me" to 1, computer.id to 2), 11_000, null, 100_000, 1_000, 300, null)
+        compose.setContent {
+            CompositionLocalProvider(LocalContext provides context, LocalResources provides context.resources,
+                LocalConfiguration provides config, LocalDensity provides Density(compose.activity.resources.displayMetrics.density, 2f)) {
+                TambolaTheme(dark = true) { Surface {
+                    BingoOnlineScreen(OnlineUiState(loading = false, available = true, bingoRoom = room,
+                        playerId = "me", connection = Connection.LIVE), model, true, {})
+                } }
+            }
+        }
+        compose.onNodeWithText(context.getString(R.string.bingo_countdown, 10)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.bingo_computer_fill)).assertIsDisplayed()
+        compose.onNodeWithText(context.getString(R.string.bingo_live_players, 1)).assertIsDisplayed()
+        compose.onNodeWithTag("bingo-online-leave").assertIsDisplayed()
+        captureTestScreen("quick-fill-bingo-hi-200")
+    }
     @Test fun hindiLargePortraitShowsEveryOnlineCardChoiceAndFriendsAction() {
         check(isAndroidEmulator())
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }

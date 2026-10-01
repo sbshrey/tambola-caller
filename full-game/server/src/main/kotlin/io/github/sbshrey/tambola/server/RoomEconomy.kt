@@ -4,7 +4,7 @@ import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.protocol.*
 import java.sql.Connection
 
-internal const val MATCH_COUNTDOWN = 12_000L
+internal const val MATCH_COUNTDOWN = 10_000L
 internal const val MATCH_WAIT_LIMIT = 2 * 60_000L
 internal const val FRIEND_LOBBY_LIFETIME = 15 * 60_000L
 internal const val COMPUTER_TICKETS = 3

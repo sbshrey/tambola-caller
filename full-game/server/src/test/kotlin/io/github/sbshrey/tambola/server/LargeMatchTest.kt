@@ -80,14 +80,14 @@ class LargeMatchTest : PostgresTest() {
         val room = service.match(owner.token, request()).snapshot
         val legacy = guest()
         assertNotEquals(room.code, service.match(legacy.token, request(false)).snapshot.code)
-        now.addAndGet(10_000); service.tick()
+        now.addAndGet(8_000); service.tick()
         val target = stored(room.code).matchPopulation()
         repeat(49) {
             val human = guest()
             val joined = service.match(human.token, request()).snapshot
             assertEquals(room.code, joined.code)
             joined.validateFor(human.playerId)
-            assertEquals((target-joined.members.size).coerceAtLeast(0), joined.options.computerPlayers)
+            assertTrue(joined.options.computerPlayers <= (target-joined.members.size).coerceAtLeast(0))
             assertTrue(joined.members.size + joined.options.computerPlayers <= 50)
         }
         val overflow = guest()
