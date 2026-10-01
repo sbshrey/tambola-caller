@@ -9,6 +9,7 @@
     <string name="hub_multiplayer">ONLINE MULTIPLAYER</string>
     <string name="hub_connected">Connected to live tables</string>
     <string name="hub_reconnecting">Connecting to live tables</string>
+    <string name="hub_create_player">Create your player to join live tables</string>
     <string name="hub_recent">RECENT</string>
     <string name="hub_join_table">Join a table  →</string>
     <string name="bingo_practice">Practice</string>

@@ -55,7 +55,8 @@ fun TambolaApp(state: GameUiState, model: GameViewModel, onlineState: OnlineUiSt
             BingoOnlineScreen(onlineState, online, state.preferences.reducedMotion) { model.navigate(Screen.HOME) }
         } else if (!state.loading && state.screen == Screen.HOME && invitation.code == null) {
             GameHub(onlineState.name, onlineState.wallet?.balance, onlineState.avatar, state.lastGame, profile = { profile = true },
-                tambola = { model.navigate(Screen.ONLINE) }, bingo = { model.navigate(Screen.BINGO) },
+                tambola = { if (onlineState.name.isNullOrBlank()) profile = true else model.navigate(Screen.ONLINE) },
+                bingo = { if (onlineState.name.isNullOrBlank()) profile = true else model.navigate(Screen.BINGO) },
                 settings = { model.navigate(Screen.SETTINGS) },
                 connected = onlineState.available && onlineState.connection == Connection.LIVE)
         } else if (!state.loading && state.screen == Screen.SETTINGS) {

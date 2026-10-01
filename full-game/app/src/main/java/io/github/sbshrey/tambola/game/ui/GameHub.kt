@@ -48,9 +48,13 @@ fun GameHub(name: String?, coins: Long?, avatar: Int, lastGame: Screen?, profile
                             horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             AvatarBadge(avatar, size = 38.dp)
                             Column(Modifier.weight(1f)) {
-                                Text(name ?: stringResource(R.string.ui_your_profile), color = GameNightPalette.cream,
+                                Text(name?.takeIf { it.isNotBlank() } ?: stringResource(R.string.ui_your_profile), color = GameNightPalette.cream,
                                     fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text(stringResource(if (connected) R.string.hub_connected else R.string.hub_reconnecting),
+                                Text(stringResource(when {
+                                    name.isNullOrBlank() -> R.string.hub_create_player
+                                    connected -> R.string.hub_connected
+                                    else -> R.string.hub_reconnecting
+                                }),
                                     color = if (connected) GameNightPalette.mint else GameNightPalette.gold,
                                     style = MaterialTheme.typography.labelSmall)
                             }

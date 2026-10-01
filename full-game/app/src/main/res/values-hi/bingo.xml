@@ -9,6 +9,7 @@
     <string name="hub_multiplayer">ऑनलाइन मल्टीप्लेयर</string>
     <string name="hub_connected">लाइव टेबल से जुड़ा है</string>
     <string name="hub_reconnecting">लाइव टेबल से जुड़ रहे हैं</string>
+    <string name="hub_create_player">लाइव टेबल में शामिल होने के लिए खिलाड़ी बनाएं</string>
     <string name="hub_recent">हाल ही में</string>
     <string name="hub_join_table">टेबल में जाएँ  →</string>
     <string name="bingo_practice">अभ्यास</string>
