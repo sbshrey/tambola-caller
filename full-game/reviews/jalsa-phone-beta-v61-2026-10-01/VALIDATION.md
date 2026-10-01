@@ -20,10 +20,23 @@ The signed publicBeta APK was played on a OnePlus CPH2487 (Android 36, 2772 x 12
 - The public `https://play.thefinxperts.com/health/ready` returned HTTP 200, protocol 9 during the phone playtest. The server was upgraded and public two-client quick-table behavior checked in the v54/v57 reviews. Quick rooms wait ten seconds, then identify any computer-filled seats explicitly; a friends table can contain only people.
 - The phone's stay-awake-while-charging setting was set to 15 and its prior 30-second screen timeout was raised to 2147483647 at the user's request. The screen stayed unlocked through extended play and APK updates. This is a device setting, not an app change.
 
+## First-beta readiness assessment
+
+| User need | Evidence and status |
+| --- | --- |
+| Find and enter either game | The home screen presents separate large Tambola and Bingo cards. Both routes were used on the phone; the completed Tambola room navigation issue was fixed and retested in v61. |
+| Choose a ticket and join a live table | Ticket/card count, price, Play, and Friends are visible in short landscape. Quick Bingo started after ten seconds with explicitly counted computer seats. Separate phone and emulator profiles joined friends tables in both games. |
+| Play and understand progress | Phone Tambola tickets, board, call strip, player count and claim controls fit together. Phone Bingo shows the card, live call, claim action and all four pattern progress bars. Called-number marks persisted in both games. The user confirmed audio and tap comfort. |
+| Claim and see a result | A two-person Bingo One line claim was accepted once and settled with a 40-coin prize; both clients reached results. A previous quick Tambola round reached ranked results; the v61 two-person Tambola round was still active at review time. |
+| Keep profile and coins through updates | Signed v57-to-v61 in-place updates retained the phone's guest profile and wallet. Friend entry debited once, and Bingo prize settlement updated the wallet. The v61 APK's signature and published digest match local preparation. |
+| Privacy and recovery | The app has an explicit data disclosure, deletion flow, opt-in diagnostics and an in-app update mechanism in the public beta. Live rewarded ads remain off. Profile and wallet cannot be recovered after uninstall/device loss, so testers need this limitation in onboarding. |
+
+The app is suitable for a **small, monitored beta** with the host kept online and a support channel for testers. The two games have usable end-to-end paths and feel more like playable games than the earlier clipped arena. Their visual style and reward feedback are still simpler than leading commercial gaming apps; broader art direction, social engagement and long-term retention have not been validated with beta users. It is not ready for an unattended, broad public launch.
+
 ## Remaining beta boundaries
 
 - The game server runs on the operator's Windows PC. Shutdown, network loss, unattended restart, longer endurance, and broad phone coverage are still availability gates for a public production launch.
-- The in-app GitHub updater's new-release prompt and user-confirmed installer have not yet been exercised end to end on this v61 asset; ADB in-place updates and the release preparation identity/signature checks were completed. A published release digest must match the prepared SHA-256 before updater distribution is claimed.
+- The v61 [GitHub prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha61-phone-playtest) carries the immutable `tambola-beta-v61.apk` asset. GitHub reported the same 31,694,562 bytes and SHA-256 `8803098b04bb84182c8afcd2a3e9ce943cb3faa729a50b0ede4f66c09f6fb6ec` as local preparation. The in-app updater's new-release prompt and user-confirmed installer have not yet been exercised end to end on this asset; ADB in-place updates and the release preparation identity/signature checks were completed.
 - Live ads remain gated pending consent and server-verified reward settlement. The app can be beta tested with the virtual-coin gameplay without live ad rewards.
 - Only one physical handset was tested. Accessibility at large font scale has emulator/instrumented coverage, but not a full physical-device matrix.
 
