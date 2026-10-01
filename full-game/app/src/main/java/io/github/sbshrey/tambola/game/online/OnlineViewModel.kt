@@ -269,6 +269,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         if (mutable.value.busy || mutable.value.pending || saved?.bingoRoom?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) return
         viewModelScope.launch { mutex.withLock { saved?.let { persist(it.copy(bingoRoom = null)) } } }
     }
+    fun tambolaLobby() {
+        if (mutable.value.busy || mutable.value.pending || saved?.room?.phase in setOf(RoomPhase.LOBBY, RoomPhase.ACTIVE)) return
+        viewModelScope.launch { mutex.withLock { saved?.let { persist(it.copy(room = null)) } } }
+    }
     fun dismissBingoWin() { mutable.update { it.copy(bingoWinSequence = 0) } }
     fun setBingoVisible(value: Boolean) {
         bingoVisible = value
