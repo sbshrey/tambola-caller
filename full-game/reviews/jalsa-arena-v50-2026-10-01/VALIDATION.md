@@ -13,4 +13,4 @@ The v50 review fixtures use fictional QA data. They show the revised [single-tic
 - All 34 Android debug unit tests, debug lint, publicBeta lint and the optimized publicBeta build passed. English/Hindi parity passed for 983 resources.
 - The prepared v50 APK has package `io.github.sbshrey.tambola.game.beta`, versionCode 50, size 31,675,054 bytes and SHA-256 `65a6bc26bedb715aa87b03eccd53383c87485b8cf757064e2787004b5a7bbf2a`. Its signing certificate SHA-256 `55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c` matches v49.
 
-Record the GitHub asset digest and v49-to-v50 update result here after publication. Physical-phone acceptance remains separate from emulator evidence.
+The v50 APK was published with SHA-256 `65a6bc26bedb715aa87b03eccd53383c87485b8cf757064e2787004b5a7bbf2a`. Additional 200% Hindi screenshot review found a cropped Bingo current-call label in landscape and a portrait layout fault; v50 was superseded by v51 without replacing its immutable release asset. The v49-to-v50 updater installation was not exercised. Physical-phone acceptance remains separate from emulator evidence.

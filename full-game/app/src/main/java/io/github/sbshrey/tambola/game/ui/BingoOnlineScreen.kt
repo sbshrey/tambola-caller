@@ -21,7 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.online.*
@@ -54,11 +56,14 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
         if (!widePlay) Row(verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = home, modifier = Modifier.testTag("bingo-online-home")) { Text(stringResource(R.string.ui_home)) }
             Column(Modifier.weight(1f)) {
-                Text(stringResource(R.string.bingo_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
-                Text(stringResource(R.string.bingo_live_table), color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.bingo_title),
+                    style = if (compactPlay) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (!compactPlay) Text(stringResource(R.string.bingo_live_table), color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
             }
             Text(state.wallet?.let { stringResource(R.string.hub_coins, it.balance) } ?: "…",
-                color = GameNightPalette.gold, style = MaterialTheme.typography.labelLarge)
+                color = GameNightPalette.gold, style = MaterialTheme.typography.labelLarge,
+                maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         state.error?.let { message -> Text(stringResource(message.resource, *message.arguments.toTypedArray()), color = MaterialTheme.colorScheme.error) }
         if (state.pending || state.connection == Connection.RECONNECTING || state.error != null) {
@@ -162,8 +167,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                 modifier = Modifier.size(if (compactPlay) 52.dp else 68.dp).testTag("bingo-current-call")) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Text(game.called.lastOrNull()?.let(::bingoCallLabel) ?: "—",
-                                        color = GameNightPalette.background, style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Black)
+                                        color = GameNightPalette.background, fontSize = if (compactPlay) 10.sp else 18.sp,
+                                        lineHeight = if (compactPlay) 12.sp else 20.sp,
+                                        fontWeight = FontWeight.Black, maxLines = 1, softWrap = false)
                                 }
                             }
                             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -222,20 +228,33 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             modifier = Modifier.size(58.dp).testTag("bingo-current-call")) {
                             Box(contentAlignment = Alignment.Center) {
                                 Text(game.called.lastOrNull()?.let(::bingoCallLabel) ?: "—", color = GameNightPalette.background,
-                                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
+                                    fontSize = if (compactPlay) 10.sp else 16.sp,
+                                    lineHeight = if (compactPlay) 12.sp else 18.sp,
+                                    fontWeight = FontWeight.Black, maxLines = 1, softWrap = false)
                             }
                         }
                         Column(Modifier.weight(1f)) {
-                            Text(stringResource(R.string.bingo_called, game.called.size, game.players.size), style = MaterialTheme.typography.labelMedium)
+                            Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
+                                style = MaterialTheme.typography.labelMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             Text(stringResource(R.string.bingo_table_mix,
                                 game.players.count { !it.computer }, game.players.count { it.computer }),
-                                color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
+                                color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall,
+                                maxLines = 2, overflow = TextOverflow.Ellipsis)
                             val ready = card.numbers.count { it in game.called && it !in game.ownMarks[card.id].orEmpty() }
                             if (ready > 0) Text(stringResource(R.string.bingo_ready_count, ready),
-                                color = GameNightPalette.gold, style = MaterialTheme.typography.labelSmall)
+                                color = GameNightPalette.gold, style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
-                        TextButton(onClick = { history = true }) { Text(stringResource(R.string.bingo_history)) }
-                        Button(onClick = { prizes = true }, enabled = !blocked, modifier = Modifier.testTag("bingo-online-prizes")) { Text(stringResource(R.string.bingo_claim)) }
+                    }
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { history = true }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) {
+                            Text(stringResource(R.string.bingo_history), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                        Button(onClick = { prizes = true }, enabled = !blocked,
+                            modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("bingo-online-prizes")) {
+                            Text(stringResource(if (compactPlay) R.string.play_claim else R.string.bingo_claim),
+                                maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
                     }
                     hand()
                 }
