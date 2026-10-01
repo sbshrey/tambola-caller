@@ -1,0 +1,10 @@
+{
+  "origin": "https://play.thefinxperts.com",
+  "checkedAt": "2026-10-01T08:09:09.039Z",
+  "checks": [
+    "public TLS readiness",
+    "Tambola quick room starts after ten-second window with computer flags",
+    "Bingo quick room starts after ten-second window with computer flags",
+    "temporary QA profiles deleted"
+  ]
+}
