@@ -17,6 +17,11 @@
 - English/Hindi resource parity passed for 969 resources. All 34 debug app unit tests, debug lint and publicBeta lint passed. The optimized v47 publicBeta APK built successfully.
 - The v47 APK retains the beta application ID and the previous APK's signing certificate (`55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c`). Its 31,672,842 bytes hash to `d9175727cce385d3f649865b9adecd6af8e7565fb5663f3fa3d849d568682827`.
 
-## Remaining release checks
+## Hosted and updater checks
 
-Record the exact publicBeta APK, signer/version comparison, deployed-host readiness, public two-player purchases, published asset digest and older-app updater installation after they are completed. Emulator screenshots and source tests do not establish physical-phone performance.
+- Commit `60b2aaf3101474a9339e3071f042b69c9428fb24` was pushed to `shrey/tambola-jalsa`. The installed Windows host upgrade preflight found no unfinished rooms. Its upgrade retained a fresh database backup pair, applied migrations, and reported the new server process ready.
+- The [public host verification](host-verification.json) passed over `https://play.thefinxperts.com`: readiness, retry-safe purchases, two-human starts with no computers for both games, and deletion of all disposable QA profiles. It did not play either game to a final claim.
+- The [v47 prerelease](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha47-online-multiplayer) serves `tambola-beta-v47.apk`; GitHub reports the same 31,672,842 bytes and SHA-256 digest as the prepared asset.
+- The installed v44 publicBeta on the emulator detected the published update from Settings, downloaded it, offered Android's install confirmation, and installed and launched v47 over the existing package. `dumpsys package` reported versionCode 47 and versionName `0.47.0-alpha47-internet-beta`. The process did not clear package data; a named profile was not present in this emulator fixture, so profile identity continuity was not independently observed.
+
+Emulator screenshots and source tests do not establish physical-phone frame rate, touch comfort, or network behavior. A complete public two-player round through final settlement was not run for this release.

@@ -1,0 +1,12 @@
+{
+  "origin": "https://play.thefinxperts.com",
+  "checkedAt": "2026-10-01T03:54:01.528Z",
+  "checks": [
+    "public TLS readiness",
+    "Tambola purchase retry and human-only waiting room",
+    "Tambola quick table starts with two real players and no computer seats",
+    "Bingo purchase retry and human-only waiting room",
+    "Bingo quick table starts with two real players and no computer seats",
+    "all temporary QA profiles deleted"
+  ]
+}
