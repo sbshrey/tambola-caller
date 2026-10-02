@@ -65,6 +65,11 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                     Text("T", color = GameNightPalette.coral, fontSize = 22.sp, fontWeight = FontWeight.Black,
                         modifier = Modifier.weight(1f).semantics { contentDescription = words(R.string.ui_tambola_together) })
                 } else Text(words(R.string.ui_tambola_together), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (waiting && !showControls && compact && coins?.friendTable != true) TextButton(
+                    onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
+                    modifier = Modifier.testTag("cancel-match")) {
+                    Text(words(R.string.coin_cancel), color = Ivory, fontSize = 12.sp, maxLines = 1)
+                }
                 Surface(onClick = { model.refreshWallet(); profile = true }, color = GameNightPalette.raised, shape = CircleShape,
                     modifier = Modifier.heightIn(min = 48.dp).testTag("coin-wallet").semantics { contentDescription = words(R.string.coin_profile) }) {
                     Row(Modifier.padding(horizontal = 10.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -88,7 +93,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             start = { model.command(RoomAction.Start) }, leave = { model.command(RoomAction.Leave) }, invitationLink = model::friendInvitation,
                             connection = state.connection, reconnect = reconnect)
                         else {
-                            TableCountdown(room, state.playerId, reducedMotion)
+                            TableCountdown(room, state.playerId, reducedMotion, shortScreen = compact)
                             Text(words(R.string.lobby_real_players, room.members.size), color = GameNightPalette.mint,
                                 style = MaterialTheme.typography.labelLarge)
                             Text(words(R.string.lobby_computer_fill), color = GameNightPalette.muted,
@@ -99,7 +104,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                             pluralStringResource(R.plurals.ticket_count, coins?.ownTickets ?: 0, coins?.ownTickets ?: 0)) + " · " + words(R.string.coin_pool_preview, coins?.pool ?: 0) +
                             " · " + pluralStringResource(R.plurals.table_prize_count, coins?.prizes?.size ?: 0, coins?.prizes?.size ?: 0), color = CoinGold, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
                             modifier = Modifier.testTag("waiting-pool"))
-                        if (coins?.friendTable != true) TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
+                        if (coins?.friendTable != true && !compact) TextButton(onClick = { model.command(RoomAction.Leave) }, enabled = enabled && state.connection == Connection.LIVE,
                             modifier = Modifier.testTag("cancel-match")) { Text(words(R.string.coin_cancel), color = Ivory) }
                     } else {
                         if (finished) {

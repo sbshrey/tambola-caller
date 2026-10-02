@@ -33,7 +33,7 @@ class CoinRoundLayoutTest {
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
         val pool = CoinPool(12, 2)
-        val round = Round.create(listOf(Player("me", "QA"), Player("peer", "Mira")),
+        val round = Round.create(listOf(Player("me", "QA"), Player("peer", "Mira", computer = true)),
             RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 1, manualClaims = true,
                 prizes = pool.prizes.map { it.prize }), Random(72)).start()
         val ticket = round.tickets.first { it.playerId == "me" }
@@ -46,6 +46,9 @@ class CoinRoundLayoutTest {
         compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
         compose.onNodeWithTag("ticket-prize-pace-1").assertIsDisplayed()
         compose.onNodeWithTag("claim-ticket-1").assertIsDisplayed()
+        compose.onNodeWithTag("table-players").performClick()
+        compose.onNodeWithText("Mira · ${compose.activity.getString(R.string.play_computer_short)}").assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.ui_back_to_game)).performClick()
         val ticketBounds = compose.onNodeWithTag("hand-ticket-1").getUnclippedBoundsInRoot()
         val stage = compose.onAllNodesWithTag("ticket-call-stage").fetchSemanticsNodes()
         if (stage.isNotEmpty()) {

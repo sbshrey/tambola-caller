@@ -91,7 +91,11 @@ class CoinLobbyTest {
         }
         compose.onNodeWithTag("table-countdown").assertIsDisplayed()
         compose.onNodeWithTag("table-start-seconds").assertTextEquals("10")
-        compose.onNodeWithText(context.getString(R.string.lobby_computer_fill)).assertIsDisplayed()
+        val lobby = compose.onNodeWithTag("coin-lobby").getUnclippedBoundsInRoot()
+        val disclosure = compose.onNodeWithText(context.getString(R.string.lobby_computer_fill)).assertIsDisplayed().getUnclippedBoundsInRoot()
+        val cancel = compose.onNodeWithTag("cancel-match").assertIsDisplayed().getUnclippedBoundsInRoot()
+        assertTrue("Computer-fill disclosure must fit the screen", disclosure.bottom <= lobby.bottom)
+        assertTrue("Cancel match must fit the screen", cancel.bottom <= lobby.bottom)
         compose.onAllNodesWithText(context.getString(R.string.play_computer_short)).assertCountEquals(3)
         captureTestScreen("quick-fill-tambola-hi-200")
     }

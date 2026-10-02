@@ -28,7 +28,7 @@ class RoundSummaryUiTest {
         compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
         val config = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)) }
         val context = compose.activity.createConfigurationContext(config)
-        val players = List(50) { Player("p$it", "Player ${it.toString().padStart(2, '0')}") }
+        val players = List(50) { Player("p$it", "Player ${it.toString().padStart(2, '0')}", computer = it == 46) }
         val winnings = players.mapIndexed { index, player -> player.id to RoundWinnings((50 - index) * 10L, 0, 0) }.toMap()
         val pool = CoinPool(300, 2)
         val awards = listOf(Award(Prize.TOP_LINE, 30, listOf("ticket-p45"), listOf("p45")))
@@ -48,6 +48,8 @@ class RoundSummaryUiTest {
             }
         }
         compose.onNodeWithTag("summary-player-p45").assertIsDisplayed().assertIsSelected()
+        compose.onNodeWithTag("summary-rankings").performScrollToIndex(46)
+        compose.onNodeWithText("Player 46 · ${context.getString(R.string.play_computer_short)}").assertIsDisplayed()
         compose.onNodeWithTag("summary-player-p0").assertDoesNotExist()
         val replayBounds = compose.onNodeWithTag("summary-replay").assertIsDisplayed().getUnclippedBoundsInRoot()
         compose.onNodeWithTag("summary-rankings").performScrollToIndex(0)
@@ -60,7 +62,8 @@ class RoundSummaryUiTest {
         captureTestScreen("round-summary-$language-${scale.toInt()}")
         compose.onNodeWithTag("summary-replay").performClick()
         assertNull(replayed)
-        compose.onNodeWithText(words(R.string.round_summary_confirm, 6, 600L)).assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.round_summary_confirm,
+            context.resources.getQuantityString(R.plurals.ticket_count, 6, 6), 600L)).assertIsDisplayed()
         compose.onNodeWithTag("summary-confirm-replay").performClick()
         assertEquals(6, replayed)
         compose.onNodeWithTag("summary-lobby").performClick()

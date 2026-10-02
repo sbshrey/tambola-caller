@@ -245,7 +245,7 @@ private fun OnlineResults(table: TableRound) {
         table.players.sortedByDescending { table.score(it.id) }.forEach { player ->
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 AvatarBadge(player.avatar)
-                Text(words(R.string.ui_points_2, player.name, table.score(player.id)), color = Jade, modifier = Modifier.weight(1f))
+                Text(words(R.string.ui_points_2, words.playerLabel(player), table.score(player.id)), color = Jade, modifier = Modifier.weight(1f))
             }
         }
         Text(words(R.string.ui_calls_verified_prizes, table.called.size, table.awards.size + table.customAwards.size), color = Muted)

@@ -110,7 +110,7 @@ fun ShareResults(round: TableRound, onDismiss: () -> Unit, share: (String) -> Un
     var error by remember { mutableStateOf<String?>(null) }
     val message = buildString {
         append(words(R.string.ui_tambola_together_n_calls_n, words(if (round.status == RoundStatus.CANCELLED) R.string.cancelled_results else R.string.round_results), round.called.size))
-        round.players.forEachIndexed { index, player -> if (player.id in selected) append(words(R.string.ui_points_n, if (names) player.name else words(R.string.anonymous_player, index + 1), round.score(player.id))) }
+        round.players.forEachIndexed { index, player -> if (player.id in selected) append(words(R.string.ui_points_n, if (names) words.playerLabel(player) else words(R.string.anonymous_player, index + 1), round.score(player.id))) }
     }
     AlertDialog(onDismissRequest = onDismiss, title = { Text(words(R.string.ui_choose_what_to_share)) }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -118,7 +118,7 @@ fun ShareResults(round: TableRound, onDismiss: () -> Unit, share: (String) -> Un
             round.players.forEach { player ->
                 Row {
                     Checkbox(checked = player.id in selected, onCheckedChange = { selected = if (it) selected + player.id else selected - player.id })
-                    Text(player.name, modifier = Modifier.padding(top = 12.dp))
+                    Text(words.playerLabel(player), modifier = Modifier.padding(top = 12.dp))
                 }
             }
             Text(words(R.string.ui_message_preview), style = MaterialTheme.typography.titleMedium)

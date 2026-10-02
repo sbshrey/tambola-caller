@@ -24,7 +24,7 @@ import kotlinx.coroutines.delay
 
 /** Announce actual roster arrivals. Empty seats never impersonate another player. */
 @Composable
-internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boolean) {
+internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boolean, shortScreen: Boolean = false) {
     val words = gameText()
     val personas = (1..room.options.computerPlayers).map { practicePersona(room.roomId, it) }
     val people = room.members.sortedBy { it.playerId != ownerId }
@@ -36,15 +36,15 @@ internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boo
     val slots = maxOf(4, visibleMembers.size).coerceAtMost(8)
     val remaining = remainingCoinTime(room.coins?.startsAt, room.serverTime, room.roomId)
     val seconds by countdownSeconds(remaining)
-    val compact = androidx.compose.ui.platform.LocalDensity.current.fontScale >= 1.3f
+    val compact = shortScreen || androidx.compose.ui.platform.LocalDensity.current.fontScale >= 1.3f
     Column(Modifier.fillMaxWidth().testTag("table-countdown"), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(if (compact) 5.dp else 10.dp)) {
         if (!compact) Text(words(R.string.table_filling), fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(18.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(108.dp), contentAlignment = Alignment.Center) {
+            Box(Modifier.size(if (compact) 76.dp else 108.dp), contentAlignment = Alignment.Center) {
                 DeadlineRing(room.coins?.startsAt, room.serverTime, room.roomId, 10_000, reducedMotion, Modifier.fillMaxSize(), GameNightPalette.coral)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(if (seconds > 0) "%02d".format(seconds) else "…", fontSize = 32.sp, fontWeight = FontWeight.Black,
+                    Text(if (seconds > 0) "%02d".format(seconds) else "…", fontSize = (if (compact) 25 else 32).sp, fontWeight = FontWeight.Black,
                         color = GameNightPalette.gold, modifier = Modifier.testTag("table-start-seconds"))
                 }
             }
@@ -62,9 +62,9 @@ internal fun TableCountdown(room: RoomView, ownerId: String?, reducedMotion: Boo
                             translationY = (1f - entrance.value) * 16.dp.toPx()
                             scaleX = .88f + .12f * entrance.value; scaleY = scaleX
                         }.testTag("joining-seat-$index"), horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            if (member != null) AvatarBadge(member.avatar, size = 46.dp)
-                            else Canvas(Modifier.size(46.dp)) {
+                            verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 6.dp)) {
+                            if (member != null) AvatarBadge(member.avatar, size = if (compact) 36.dp else 46.dp)
+                            else Canvas(Modifier.size(if (compact) 36.dp else 46.dp)) {
                                 drawCircle(GameNightPalette.muted.copy(alpha = .4f), style = Stroke(2.dp.toPx()))
                                 drawCircle(GameNightPalette.muted.copy(alpha = .25f), radius = 5.dp.toPx())
                             }

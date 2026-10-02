@@ -250,7 +250,7 @@ internal fun ClaimArena(
                 horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 AvatarBadge(player.avatar, size = 32.dp, modifier = Modifier.clearAndSetSemantics {})
                 Column(Modifier.weight(1f)) {
-                    Text(player.name, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(words.playerLabel(player), maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
         }

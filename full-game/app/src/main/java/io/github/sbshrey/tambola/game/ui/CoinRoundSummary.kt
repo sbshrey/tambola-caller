@@ -69,7 +69,7 @@ internal fun CoinRoundSummary(state: OnlineUiState, lobby: () -> Unit, replay: (
                         Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Text("${row.rank}", fontSize = 13.sp, color = GameNightPalette.muted)
-                                Text(row.player.name, Modifier.weight(1f), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text(words.playerLabel(row.player), Modifier.weight(1f), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                                 Text("${row.winnings.total}", fontSize = 14.sp, color = GameNightPalette.gold)
                             }
                             Text(prizes.joinToString(" · ").ifEmpty { words(R.string.round_summary_no_prizes) }, fontSize = 11.sp, lineHeight = 15.sp)
