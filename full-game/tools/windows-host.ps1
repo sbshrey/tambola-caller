@@ -89,6 +89,42 @@ function Close-Owned($child) {
     foreach ($task in $child.streams) { $task.Wait(2000) | Out-Null }
     $child.output.Dispose(); $child.errorLog.Dispose(); $child.process.Dispose()
 }
+function Update-LanBinding {
+    $origin = [Uri]$configuration.origin
+    if ($origin.Port -ne 8443 -or $origin.HostNameType -ne [UriHostNameType]::IPv4) { return }
+    $current = Get-NetIPAddress -AddressFamily IPv4 -IPAddress $origin.Host -ErrorAction SilentlyContinue |
+        Where-Object AddressState -EQ Preferred | Select-Object -First 1
+    if ($current) { return }
+
+    # DHCP can assign a new address before this current-user host starts at sign-in.
+    $address = $null
+    $routes = Get-NetRoute -AddressFamily IPv4 -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue |
+        Where-Object State -EQ Alive | Sort-Object { $_.RouteMetric + $_.InterfaceMetric }
+    foreach ($route in $routes) {
+        $address = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $route.InterfaceIndex -ErrorAction SilentlyContinue |
+            Where-Object { $_.AddressState -eq 'Preferred' -and $_.IPAddress -match '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)' } |
+            Select-Object -First 1
+        if ($address) { break }
+    }
+    if (!$address) { throw 'No preferred private LAN address is ready' }
+
+    $caddy = Get-Content -LiteralPath $configuration.caddyFile -Raw
+    $sitePattern = '(?m)^https://(?:\d{1,3}\.){3}\d{1,3}:8443 \{\r?$'
+    $bindPattern = '(?m)^    bind (?:\d{1,3}\.){3}\d{1,3}\r?$'
+    if ([regex]::Matches($caddy, $sitePattern).Count -ne 1 -or [regex]::Matches($caddy, $bindPattern).Count -ne 1) {
+        throw 'LAN Caddyfile differs from the provisioned binding'
+    }
+    $newOrigin = "https://$($address.IPAddress):8443"
+    $caddy = [regex]::Replace($caddy, $sitePattern, "$newOrigin {")
+    $caddy = [regex]::Replace($caddy, $bindPattern, "    bind $($address.IPAddress)")
+    $pendingCaddy = "$($configuration.caddyFile).pending"
+    $pendingConfig = Join-Path $hostDirectory 'host.pending.json'
+    $caddy | Set-Content -LiteralPath $pendingCaddy
+    Move-Item -LiteralPath $pendingCaddy -Destination $configuration.caddyFile -Force
+    $configuration.origin = $newOrigin
+    $configuration | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $pendingConfig
+    Move-Item -LiteralPath $pendingConfig -Destination (Join-Path $hostDirectory 'host.json') -Force
+}
 function Ensure-Postgres {
     $ready = Start-Owned 'postgres-ready' (Join-Path $configuration.postgresBin 'pg_isready.exe') @('-h', '127.0.0.1', '-p', [string]$configuration.postgresPort) @{}
     try { $available = $ready.process.WaitForExit(5000) -and $ready.process.ExitCode -eq 0 }
@@ -100,6 +136,7 @@ function Ensure-Postgres {
     } finally { Close-Owned $starter }
 }
 try {
+    Update-LanBinding
     if (Test-Path -LiteralPath $statePath) {
         $old = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
         foreach ($child in $old.children) { Stop-VerifiedChild $child }
