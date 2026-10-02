@@ -39,3 +39,11 @@ foreach ($target in @(
     $watchLock.Dispose()
     & $script -Action Start -Directory $directory
 }
+
+# The permanent play hostname uses a separate scheduled tunnel task. Task Scheduler
+# can leave it Ready after cloudflared exits, even when restart settings are present.
+$namedTunnel = Get-ScheduledTask -TaskName 'Tambola Jalsa Named Tunnel' -ErrorAction SilentlyContinue
+if ($namedTunnel -and $namedTunnel.State -eq 'Ready' -and
+    (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'TambolaJalsaTunnel/token'))) {
+    Start-ScheduledTask -TaskName 'Tambola Jalsa Named Tunnel'
+}
