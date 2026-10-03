@@ -73,6 +73,14 @@ online, server-authoritative games with virtual coins and no cash prizes.
   31,697,826 bytes and `sha256:2fae035bb14f57dfa40fd96a37ee35cac4122d92f666aa83670a779e2f349038`
   digest as the locally verified file. A post-release public readiness check
   returned HTTP 200 and protocol 9.
+- On a separate clean Android 30 emulator, the previously published v65 APK
+  created the fictional `UpdateQA67` profile with 50,500 coins. Its Settings
+  update check found v67 from the public release, downloaded and verified the
+  APK, and opened Android's source-permission and install confirmation screens.
+  After granting permission and confirming installation, Android reported
+  versionCode 67. Opening the updated app retained `UpdateQA67`, its 50,500
+  coins and the collected day-one reward. This exercised the actual in-app
+  updater rather than only an ADB replacement install.
 
 ## Beta decision
 
