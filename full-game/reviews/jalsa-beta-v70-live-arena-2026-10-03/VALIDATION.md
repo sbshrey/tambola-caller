@@ -8,7 +8,8 @@
 
 ## Candidate and checks
 
-- Branch: `shrey/tambola-jalsa`; source commit is recorded in the release after validation.
+- Branch: `shrey/tambola-jalsa`; implementation and prepared APK source commit: `5ff83c3`.
+- GitHub prerelease: <https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha70-live-arena>. Its asset size and SHA-256 matched the prepared APK after publication.
 - Build: `./gradlew.bat :app:lintPublicBeta :app:assemblePublicBeta -PtambolaFirebase=true --offline` succeeded. The signed beta package remains `io.github.sbshrey.tambola.game.beta`, versionCode 70. The update preparation tool compared v69 and v70 signatures and version codes.
 - `./gradlew.bat :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest --offline` succeeded. All 34 Android unit tests passed. Four `CoinRoundLayoutTest` emulator UI tests passed, including the new count change, computer claim activity and remaining place check.
 - Prepared asset: `tambola-beta-v70.apk`, 31,717,754 bytes, SHA-256 `f609ed6892db73c9f43006d339a0ab226a1f67649497e20c7edd44cdbdbdf069`.
@@ -20,6 +21,7 @@
 - Two emulators joined the same hosted Quick Tambola round within the ten-second wait. The [arena](live-two.png) showed `Live 2`, `Computers 13`, and five open places in each goal. Six owned tickets fit on three stable pages; the ticket cells and claim control remained aligned during calls.
 - The [prize detail](prizes-detail.png) showed `5/5 left` for each category. After confirmed computer claims, the header fell to four, then fewer remaining places, and the activity line named a winner as Computer. The v70 player claimed Early Five and Any Line with one tap each; the [second confirmed claim](line-claim.png) shows Any Line reduced to four places and the win feedback.
 - The [roster](live-roster.png) listed both fictional test profiles as Live, with all other seats labelled Computer. After force-stopping the second emulator and waiting for server presence expiry, the [arena](live-one.png) changed to `Live 1` while retaining 13 computer seats. The player remained in the round.
+- The hosted round then finished without manual navigation. The [result](round-result.png) lists both confirmed goals for the v70 player, rank 1 and 459 coins won; computer winners remain labelled in the standings.
 
 ## Boundaries
 
