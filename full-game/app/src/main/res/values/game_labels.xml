@@ -74,9 +74,13 @@
     <string name="quick_tambola_claim_now">"Ticket %1$d ready · Claim %2$s now!"</string>
     <string name="quick_tambola_watch">"Auto dabs are on · Early Five or Any Line wins"</string>
     <string name="quick_tambola_places">"%1$d winning places left"</string>
+    <string name="quick_tambola_goal_places">"Five %1$d · Line %2$d"</string>
     <string name="quick_tambola_end">"Ends when both goals fill or after 60 calls."</string>
     <string name="quick_tambola_lobby_rules">"Numbers dab automatically. Tap Claim when Early Five or Any Line lights up. Five players can win each goal."</string>
     <string name="quick_tambola_help">"How Quick Tambola works"</string>
+    <string name="quick_tambola_heading">"Two ways to win.\nOne quick round."</string>
+    <string name="quick_tambola_pace">"Live multiplayer · 5s calls · up to 60 calls"</string>
+    <string name="quick_tambola_panel">"Auto dabs · Early Five or Any Line · five places each"</string>
     <string name="prize_full_house_detail">"All fifteen numbers on one ticket."</string>
     <string name="prize_house_one_detail">"The first group of tickets to complete all fifteen numbers."</string>
     <string name="prize_house_two_detail">"The next group of newly completed tickets after House one."</string>

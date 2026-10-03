@@ -8,7 +8,7 @@ with. New Quick Tambola clients do not join older public lobbies.
 ## Round
 
 - Fifteen players: real players who arrive during the wait, with computer seats
-  filling the rest. Computer seats use two tickets each. People may buy one to six.
+  filling the rest. Computer seats use one ticket each. People may buy one to six.
 - Two goals: Early Five and Any Line. The latter means all five numbers in any
   top, middle, or bottom row on one ticket.
 - Each goal has five winning places. Same call ties remain eligible until the

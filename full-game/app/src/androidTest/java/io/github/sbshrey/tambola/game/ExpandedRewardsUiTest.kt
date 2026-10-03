@@ -40,6 +40,11 @@ class ExpandedRewardsUiTest {
                 TambolaTheme { CoinLobby(state, model, {}, {}, {}, reducedMotion = true) }
             }
         }
+        compose.onNodeWithText(words(R.string.quick_tambola_panel)).assertIsDisplayed()
+        if (scale == 1f) {
+            compose.onNodeWithText(words(R.string.quick_tambola_heading)).assertIsDisplayed()
+            compose.onNodeWithText(words(R.string.quick_tambola_pace)).assertIsDisplayed()
+        }
         compose.onNodeWithTag("coin-wallet").performClick()
         compose.onNodeWithText(words(R.string.daily_coins_collected, 1, 500L)).performScrollTo().assertIsDisplayed()
         compose.onNodeWithText(words(R.string.daily_coins_day, 7, 5000L)).performScrollTo().assertIsDisplayed()

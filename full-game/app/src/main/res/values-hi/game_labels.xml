@@ -74,9 +74,13 @@
     <string name="quick_tambola_claim_now">"टिकट %1$d तैयार · अभी %2$s क्लेम करें!"</string>
     <string name="quick_tambola_watch">"नंबर अपने आप कटेंगे · अर्ली फ़ाइव या कोई भी लाइन जीतें"</string>
     <string name="quick_tambola_places">"%1$d जीतने की जगह बाकी"</string>
+    <string name="quick_tambola_goal_places">"पाँच %1$d · लाइन %2$d"</string>
     <string name="quick_tambola_end">"दोनों लक्ष्य भरने पर या 60 नंबरों के बाद खेल खत्म होगा।"</string>
     <string name="quick_tambola_lobby_rules">"पुकारे गए नंबर अपने आप कटेंगे। अर्ली फ़ाइव या कोई भी लाइन पूरी होने पर क्लेम करें। हर लक्ष्य में पाँच लोग जीत सकते हैं।"</string>
     <string name="quick_tambola_help">"क्विक तंबोला कैसे खेलें"</string>
+    <string name="quick_tambola_heading">"जीतने के दो तरीके।\nछोटा और तेज़ राउंड।"</string>
+    <string name="quick_tambola_pace">"लाइव मल्टीप्लेयर · हर 5 सेकंड कॉल · अधिकतम 60 कॉल"</string>
+    <string name="quick_tambola_panel">"नंबर अपने आप कटेंगे · अर्ली फ़ाइव या कोई भी लाइन · हर इनाम के पाँच विजेता"</string>
     <string name="prize_full_house_detail">"एक टिकट के सभी पंद्रह नंबर।"</string>
     <string name="prize_house_one_detail">"सभी पंद्रह नंबर पूरे करने वाला टिकटों का पहला समूह।"</string>
     <string name="prize_house_two_detail">"पहले हाउस के बाद नए पूरे होने वाले टिकटों का अगला समूह।"</string>

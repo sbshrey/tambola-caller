@@ -117,7 +117,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                                 Text(words(R.string.play_prizes))
                             }
                         } else {
-                            if (wide || !compact) LobbyGreeting(state.name, compact)
+                            if (wide || !compact) LobbyGreeting(state.name, compact, quickTambola = room?.options?.quickTambola != false)
                             if (wide && !compact) GameNightArtwork(Modifier.fillMaxWidth().height(100.dp), reducedMotion)
                         }
                     }
@@ -139,7 +139,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         Text(words(R.string.coin_pool, coins?.pool ?: 0), fontSize = 24.sp, fontWeight = FontWeight.Black)
                         Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("resume-match")) { Text(words(R.string.coin_resume)) }
                     } else {
-                        Text(words(R.string.power_room_summary), color = GameNightPalette.mint,
+                        Text(words(if (room?.options?.quickTambola != false) R.string.quick_tambola_panel else R.string.power_room_summary), color = GameNightPalette.mint,
                             fontSize = 12.sp, lineHeight = 15.sp, maxLines = 2)
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(pluralStringResource(R.plurals.lobby_ticket_count, tickets, tickets), fontSize = 13.sp,

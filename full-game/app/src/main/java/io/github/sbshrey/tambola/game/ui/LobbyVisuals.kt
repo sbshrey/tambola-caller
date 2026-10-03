@@ -50,7 +50,7 @@ internal fun LobbyBackdrop(modifier: Modifier) {
 }
 
 @Composable
-internal fun LobbyGreeting(name: String?, compact: Boolean) {
+internal fun LobbyGreeting(name: String?, compact: Boolean, quickTambola: Boolean = false) {
     val words = gameText()
     if (androidx.compose.ui.platform.LocalDensity.current.fontScale >= 1.3f) {
         Text(words(R.string.lobby_ready), color = GameNightPalette.cream, fontSize = 24.sp, lineHeight = 28.sp,
@@ -60,11 +60,11 @@ internal fun LobbyGreeting(name: String?, compact: Boolean) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(if (name == null) words(R.string.lobby_welcome) else words(R.string.lobby_greeting, name),
             color = GameNightPalette.muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(words(if (name == null) R.string.lobby_first_heading else R.string.lobby_heading),
+        Text(words(if (quickTambola) R.string.quick_tambola_heading else if (name == null) R.string.lobby_first_heading else R.string.lobby_heading),
             color = GameNightPalette.cream, fontSize = if (compact) 28.sp else 36.sp,
             lineHeight = if (compact) 32.sp else 40.sp, fontWeight = FontWeight.Black,
             modifier = Modifier.testTag(if (name == null) "lobby-welcome-heading" else "lobby-heading"))
-        Text(words(R.string.lobby_pace), color = GameNightPalette.mint, fontSize = 12.sp)
+        Text(words(if (quickTambola) R.string.quick_tambola_pace else R.string.lobby_pace), color = GameNightPalette.mint, fontSize = 12.sp)
     }
 }
 

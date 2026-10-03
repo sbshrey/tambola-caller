@@ -330,9 +330,10 @@ private fun TicketPageCard(ticket: Ticket, table: TableRound, reducedMotion: Boo
     markEnabled: Boolean, claimEnabled: Boolean, choose: (String) -> Unit, modifier: Modifier) {
     val words = gameText()
     val discarded = ticket.id in table.powers?.discarded.orEmpty()
+    val ready = table.settings.maxCalls == 90 || ticketClaimProgress(table, ticket) >= 1f
     Box(modifier) {
         CompactTicket(ticket, table, Modifier.fillMaxSize(), reducedMotion, mark, markEnabled && !discarded,
-            claimTicket = { choose(ticket.id) }, claimEnabled = claimEnabled && !discarded)
+            claimTicket = { choose(ticket.id) }, claimEnabled = claimEnabled && !discarded && ready)
         if (discarded) Surface(Modifier.align(Alignment.Center).testTag("discarded-${ticket.id}"),
             color = MaterialTheme.colorScheme.errorContainer, shape = RoundedCornerShape(8.dp)) {
             Text(words(R.string.power_ticket_out), Modifier.padding(8.dp), color = MaterialTheme.colorScheme.onErrorContainer)

@@ -40,7 +40,7 @@ class CoinMatchTest : PostgresTest() {
         assertEquals(15, started.round!!.players.size)
         assertEquals(13, started.round!!.players.count { it.computer })
         assertEquals(2, started.round!!.players.count { !it.computer })
-        assertTrue(started.computerTicketCounts().values.all { it == 2 })
+        assertTrue(started.computerTicketCounts().values.all { it == 1 })
         var turns = 0
         while (stored(lobby.code).phase == RoomPhase.ACTIVE && turns++ < 70) {
             val room = stored(lobby.code)

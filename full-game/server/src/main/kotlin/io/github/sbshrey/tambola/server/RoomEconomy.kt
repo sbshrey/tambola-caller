@@ -15,7 +15,7 @@ internal fun RoomRecord.matchPopulation(): Int = if (options.quickTambola) 15 el
 /** Stable per-seat purchases, chosen independently of the hidden draw and player tickets. */
 internal fun RoomRecord.computerTicketCounts(count: Int = options.computerPlayers): Map<String, Int> =
     (1..count).associate { index ->
-        val tickets = if (options.quickTambola) 2 else if (options.largeMatch) 1 + (digest("$id:ticket-count:$index").take(8).toLong(16) % 6).toInt()
+        val tickets = if (options.quickTambola) 1 else if (options.largeMatch) 1 + (digest("$id:ticket-count:$index").take(8).toLong(16) % 6).toInt()
             else COMPUTER_TICKETS
         computerPlayer(id, index).id to tickets
     }

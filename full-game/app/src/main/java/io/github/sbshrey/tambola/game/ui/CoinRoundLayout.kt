@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.sbshrey.tambola.game.R
+import io.github.sbshrey.tambola.domain.Prize
 
 /** Stable playfield: calls/recovery never replace tickets or change their bounds. */
 @Composable
@@ -32,9 +33,8 @@ internal fun CoinRoundLayout(
 ) {
     val words = gameText()
     val largeText = LocalDensity.current.fontScale > 1.3f
-    val quickPlaces = table.settings.prizes.sumOf { prize ->
+    fun places(prize: Prize) =
         (table.settings.winnersPerPrize - (table.awards.firstOrNull { it.prize == prize }?.playerIds?.size ?: 0)).coerceAtLeast(0)
-    }
     var showBoard by rememberSaveable(table.id) { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().testTag("coin-round-layout"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth().height(if (largeText) 84.dp else 64.dp)
@@ -81,7 +81,8 @@ internal fun CoinRoundLayout(
                 Text(words(R.string.play_players_short, table.players.size), fontSize = 12.sp)
             }
             TextButton(onClick = prizes, modifier = Modifier.testTag("round-prizes")) {
-                Text(if (table.settings.maxCalls < 90) words(R.string.quick_tambola_places, quickPlaces)
+                Text(if (table.settings.prizes == listOf(Prize.EARLY_FIVE, Prize.ANY_LINE)) words(R.string.quick_tambola_goal_places,
+                    places(Prize.EARLY_FIVE), places(Prize.ANY_LINE))
                     else words(R.string.play_prizes_left, remaining), fontSize = 12.sp)
             }
         }
