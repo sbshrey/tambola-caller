@@ -48,6 +48,17 @@ online, server-authoritative games with virtual coins and no cash prizes.
   dabs. After a force-stop and relaunch, the app resumed that active table
   with both dabs intact. The previous v66 test had dropped one of two rapid
   taps, which is why v67 adds the durable mark queue.
+- That v67 Bingo table completed within the short call limit and showed rank
+  7 of 32, two test dabs, zero goals and zero coins earned. Only two numbers
+  were deliberately marked during this queue-focused run; it is not a
+  representative win-rate trial. Returning home preserved the 51,750-coin
+  balance.
+- From the signed v67 home screen, Tambola opened directly to the online
+  ticket selector with no Classic choice. A three-ticket live table opened
+  in landscape with two aligned tickets visible, a page control for the
+  third, live calls, claim progress and the free Prize Boost meter. Marking
+  the called number 2 on ticket 2 immediately changed the ticket to 20%
+  progress and the power meter to 1/5 correct.
 - Update preparation confirmed the beta package, increasing versionCode 67,
   unchanged signer SHA-256
   `55546680e8d8f41fb68a37c6f3c494ac7c0da7dec62e19f4cc215b8ba1200d6c`,
@@ -55,6 +66,13 @@ online, server-authoritative games with virtual coins and no cash prizes.
   `2fae035bb14f57dfa40fd96a37ee35cac4122d92f666aa83670a779e2f349038`.
   The packaged manifest still sets Crashlytics and Performance collection off
   by default; collection requires the beta user's opt-in.
+- The source for the signed APK was pushed to `shrey/tambola-jalsa` at
+  `0f09f51e3625601b88097907296fc184b8ced7ca`. The published prerelease
+  [Tambola Jalsa Beta v67](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha67-quick-bingo)
+  contains the exact `tambola-beta-v67.apk` asset. GitHub reports the same
+  31,697,826 bytes and `sha256:2fae035bb14f57dfa40fd96a37ee35cac4122d92f666aa83670a779e2f349038`
+  digest as the locally verified file. A post-release public readiness check
+  returned HTTP 200 and protocol 9.
 
 ## Beta decision
 
