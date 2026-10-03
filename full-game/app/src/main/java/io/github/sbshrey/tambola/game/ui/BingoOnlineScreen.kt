@@ -128,7 +128,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         val cardCount = room.cardCounts.values.sum()
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(R.string.bingo_live_players, room.members.size), color = GameNightPalette.mint,
+                            Text(stringResource(R.string.bingo_live_players, room.members.count { it.connected }), color = GameNightPalette.mint,
                                 style = if (shortLandscape) MaterialTheme.typography.labelLarge else MaterialTheme.typography.bodyLarge)
                             Text(stringResource(R.string.bingo_waiting,
                                 pluralStringResource(R.plurals.player_count, room.players.size, room.players.size),
@@ -219,9 +219,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                  if (quick) room.nextDrawAt?.let { next -> Text(stringResource(R.string.bingo_next_in,
                                      ((next - room.serverTime - elapsed).coerceAtLeast(0) + 999) / 1000),
                                      color = GameNightPalette.gold, style = MaterialTheme.typography.labelSmall) }
-                                Text(stringResource(R.string.bingo_table_mix,
-                                    game.players.count { !it.computer }, game.players.count { it.computer }),
-                                    color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
+                                Text(bingoPresenceSummary(room, game, state.connection),
+                                    color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.testTag("bingo-live-seats"))
                             }
                         }
                     }
@@ -295,10 +295,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             Text(if (quick) stringResource(R.string.bingo_quick_called, game.called.size, game.players.size)
                                 else stringResource(R.string.bingo_called, game.called.size, game.players.size),
                                 style = MaterialTheme.typography.labelMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            Text(stringResource(R.string.bingo_table_mix,
-                                game.players.count { !it.computer }, game.players.count { it.computer }),
+                            Text(bingoPresenceSummary(room, game, state.connection),
                                 color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall,
-                                maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("bingo-live-seats"))
                             val ready = card.numbers.count { it in game.called && it !in game.ownMarks[card.id].orEmpty() }
                             if (ready > 0) Text(stringResource(R.string.bingo_ready_count, ready),
                                 color = GameNightPalette.gold, style = MaterialTheme.typography.labelSmall,
@@ -349,6 +348,17 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
         text = { LazyColumn { itemsIndexed(game.called.reversed()) { _, number -> Text(bingoCallLabel(number), Modifier.padding(4.dp)) } } },
         confirmButton = { TextButton(onClick = { history = false }) { Text(stringResource(R.string.ui_got_it)) } })
     }
+}
+
+@Composable
+private fun bingoPresenceSummary(room: BingoRoomView, game: PublicBingoRound, connection: Connection): String {
+    val people = if (connection == Connection.LIVE) room.members.count { member ->
+        member.connected && game.players.any { !it.computer && it.id == member.playerId }
+    } else game.players.count { !it.computer }
+    val computers = game.players.count { it.computer }
+    val humanLabel = stringResource(if (connection == Connection.LIVE) R.string.arena_live_people else R.string.arena_people_seated, people)
+    return listOfNotNull(humanLabel, stringResource(R.string.arena_computer_seats, computers).takeIf { computers > 0 })
+        .joinToString(" · ")
 }
 
 @Composable

@@ -35,7 +35,7 @@
     <string name="bingo_goal_claim_now">अभी दावा करें →</string>
     <string name="bingo_goal_won">यह इनाम आपने जीता</string>
     <string name="bingo_goal_closed">इनाम पूरा हुआ</string>
-    <string name="bingo_goal_reward">%1$d सिक्के · %2$d जगह</string>
+    <string name="bingo_goal_reward">%1$d सिक्के · %2$d जगह बाकी</string>
     <string name="bingo_live_wins">अभी की जीत</string>
     <string name="bingo_live_open">दोनों इनाम खुले हैं। चमकते नंबर निशान लगाएँ!</string>
     <string name="bingo_summary_win">आपने %1$d सिक्के जीते!</string>

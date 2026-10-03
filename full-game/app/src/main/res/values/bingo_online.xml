@@ -35,7 +35,7 @@
     <string name="bingo_goal_claim_now">CLAIM NOW →</string>
     <string name="bingo_goal_won">You won this goal</string>
     <string name="bingo_goal_closed">Prize filled</string>
-    <string name="bingo_goal_reward">%1$d coins · %2$d spots</string>
+    <string name="bingo_goal_reward">%1$d coins · %2$d spots left</string>
     <string name="bingo_live_wins">LIVE WINS</string>
     <string name="bingo_live_open">Both prizes are open. Dab the glowing numbers!</string>
     <string name="bingo_summary_win">You won %1$d coins!</string>

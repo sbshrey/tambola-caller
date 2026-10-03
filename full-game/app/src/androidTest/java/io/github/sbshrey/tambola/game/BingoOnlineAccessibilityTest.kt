@@ -30,14 +30,18 @@ class BingoOnlineAccessibilityTest {
         compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
         val model = compose.runOnIdle { ViewModelProvider(compose.activity)[OnlineViewModel::class.java] }
         val player = Player("me", "QA")
+        val peer = Player("peer", "Mira")
+        val computer = Player("computer-fixture", "Tara", computer = true)
         val cards = BingoCardGenerator(Random(71)).deal("me", 2)
         val line = cards.first().cells.take(5)
         val game = PublicBingoRound("qa-fast", RoundStatus.PLAYING, line, cards,
-            mapOf(cards.first().id to line.toSet()), emptyList(), listOf(player), mapOf("me" to 2),
+            mapOf(cards.first().id to line.toSet()), emptyList(), listOf(player, peer, computer), mapOf("me" to 2),
             5, BingoCoinPool(2, 2).prizes, "0".repeat(64))
-        val room = BingoRoomView("qa-room", "B-ABCD2345", 1, RoomPhase.ACTIVE, "me", true,
-            listOf(MemberView("me", "QA", 0, true, true)), listOf(player), mapOf("me" to 2),
+        var room by mutableStateOf(BingoRoomView("qa-room", "B-ABCD2345", 1, RoomPhase.ACTIVE, "me", true,
+            listOf(MemberView("me", "QA", 0, true, true), MemberView("peer", "Mira", 0, true, true)),
+            listOf(player, peer, computer), mapOf("me" to 2),
             null, 6000, 100000, 1000, 200, game, WalletView(50000, 1, 0))
+        )
         compose.setContent { TambolaTheme(dark = true) { Surface {
             BingoOnlineScreen(OnlineUiState(loading = false, available = true, playerId = "me",
                 bingoRoom = room, wallet = room.wallet, connection = Connection.LIVE), model, true, {})
@@ -46,7 +50,11 @@ class BingoOnlineAccessibilityTest {
         compose.onNodeWithTag("bingo-quick-goals").assertIsDisplayed()
         compose.onNodeWithTag("bingo-quick-claim-ANY_LINE").assertIsDisplayed().assertIsEnabled()
         compose.onNodeWithTag("bingo-quick-claim-FOUR_CORNERS").assertIsDisplayed().assertIsNotEnabled()
+        compose.onNodeWithTag("bingo-live-seats").assertTextEquals("Live 2 · Computers 1")
+        compose.onAllNodesWithText("spots left", substring = true).assertCountEquals(2)
         captureTestScreen("bingo-quick-direct-claim")
+        compose.runOnIdle { room = room.copy(members = room.members.map { if (it.playerId == "peer") it.copy(connected = false) else it }) }
+        compose.onNodeWithTag("bingo-live-seats").assertTextEquals("Live 1 · Computers 1")
         compose.onNodeWithTag("bingo-card-tab-2").assertIsDisplayed().performClick()
         compose.onNodeWithTag("bingo-cell-${cards[1].numbers.first()}").assertIsDisplayed()
         captureTestScreen("bingo-quick-card-tabs")
