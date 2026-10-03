@@ -46,9 +46,9 @@ class ExpandedRewardsUiTest {
         captureTestScreen("rewards-daily-$language")
         compose.onNodeWithText(words(R.string.ui_got_it)).performClick()
         compose.onNodeWithTag("choose-powerup").assertIsDisplayed().performClick()
-        compose.onNodeWithText(words(R.string.power_drop_rules)).performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText(words(R.string.power_bonus_detail)).performScrollTo().assertIsDisplayed()
-        captureTestScreen("rewards-powerups-$language")
+        compose.onNodeWithText(words(R.string.quick_tambola_lobby_rules)).performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText(words(R.string.quick_tambola_end)).performScrollTo().assertIsDisplayed()
+        captureTestScreen("rewards-quick-help-$language")
         compose.onNodeWithText(words(R.string.ui_back_to_game)).performClick()
         compose.onNodeWithTag("coin-play").assertIsDisplayed()
     }

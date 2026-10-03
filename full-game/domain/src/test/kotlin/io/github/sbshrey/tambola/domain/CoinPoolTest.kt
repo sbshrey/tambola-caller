@@ -5,6 +5,27 @@ import org.junit.Test
 import java.util.Random
 
 class CoinPoolTest {
+    @Test fun `quick Tambola has two funded goals and finishes at its call limit`() {
+        val pool = CoinPool(2, 2, quickTambola = true)
+        assertEquals(listOf(Prize.EARLY_FIVE, Prize.ANY_LINE), pool.prizes.map { it.prize })
+        assertEquals(pool.coins, pool.prizes.sumOf { it.coins })
+        val players = listOf(Player("one", "One"), Player("two", "Two"))
+        var round = Round.create(players, RoundSettings(mode = GameMode.ONLINE, manualClaims = true, assistedMarking = true,
+            prizes = pool.prizes.map { it.prize }, winnersPerPrize = 2, maxCalls = 10), Random(41)).start()
+        val ticket = round.tickets.first()
+        val oneEach = listOf(Prize.EARLY_FIVE, Prize.ANY_LINE).map { Award(it, 1, listOf(ticket.id), listOf("one")) }
+        assertFalse(round.terminalAward(oneEach, emptyList()))
+        assertTrue(round.terminalAward(oneEach.map { it.copy(playerIds = listOf("one", "two")) }, emptyList()))
+        assertTrue(Prize.ANY_LINE.matches(ticket, ticket.row(1).toSet()))
+        assertFalse(Prize.ANY_LINE.matches(ticket, ticket.row(1).take(4).toSet()))
+        repeat(10) { round = round.draw() }
+        assertFalse(round.finished)
+        round = round.draw()
+        assertTrue(round.finished)
+        assertEquals(10, round.called.size)
+        assertEquals(pool.coins, pool.allocations(round).sumOf { it.coins })
+        assertEquals(round, RoundCodec.decode(RoundCodec.encode(round)))
+    }
     @Test fun `independent ticket purchases preserve disjoint hands and round restoration`() {
         val players = (1..6).map { Player("p$it", "Player $it") }
         val counts = players.mapIndexed { index, player -> player.id to index + 1 }.toMap()

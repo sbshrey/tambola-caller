@@ -13,10 +13,49 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class CoinMatchTest : PostgresTest() {
+    @Test fun `new quick Tambola queue stays separate and completes within sixty calls`() {
+        val old = guest("Existing player")
+        val legacy = service.match(old.token, MatchRequest(UUID.randomUUID().toString(), 2,
+            rulesVersion = 2, largeMatch = true, roundSummary = true, powersEnabled = true, previewPowers = true)).snapshot
+        val rejoined = service.match(old.token, MatchRequest(UUID.randomUUID().toString(), 2,
+            rulesVersion = 2, largeMatch = true, roundSummary = true, quickTambola = true)).snapshot
+        assertEquals(legacy.code, rejoined.code)
+        val actor = guest("Quick player")
+        val request = MatchRequest(UUID.randomUUID().toString(), 2,
+            rulesVersion = 2, largeMatch = true, roundSummary = true, quickTambola = true)
+        val lobby = service.match(actor.token, request).snapshot
+        val peer = guest("Second quick player")
+        assertEquals(lobby.code, service.match(peer.token, request.copy(id = UUID.randomUUID().toString())).snapshot.code)
+        assertNotEquals(legacy.code, lobby.code)
+        assertEquals(10_000L, lobby.coins!!.startsAt!! - now.get())
+        assertEquals(5, lobby.options.intervalSeconds)
+        assertEquals(10, lobby.protocolVersion)
+        assertTrue(lobby.options.game.assistedMarking)
+        assertFalse(lobby.options.powersEnabled)
+        assertEquals(60, lobby.options.game.maxCalls)
+        assertEquals(5, lobby.options.game.winnersPerPrize)
+        assertEquals(listOf(Prize.EARLY_FIVE, Prize.ANY_LINE), lobby.coins!!.prizes.map { it.prize })
+        now.set(lobby.coins!!.startsAt!!); service.tick()
+        val started = stored(lobby.code)
+        assertEquals(15, started.round!!.players.size)
+        assertEquals(13, started.round!!.players.count { it.computer })
+        assertEquals(2, started.round!!.players.count { !it.computer })
+        assertTrue(started.computerTicketCounts().values.all { it == 2 })
+        var turns = 0
+        while (stored(lobby.code).phase == RoomPhase.ACTIVE && turns++ < 70) {
+            val room = stored(lobby.code)
+            now.set(requireNotNull(room.nextDrawAt)); service.tick()
+        }
+        val finished = stored(lobby.code)
+        assertEquals(RoomPhase.FINISHED, finished.phase)
+        assertTrue(finished.round!!.called.size <= 60)
+        assertEquals(finished.coinPool!!.coins, finished.coinPool!!.allocations(finished.round!!).sumOf { it.coins })
+        service.read(actor.token, lobby.code).snapshot.validateFor(actor.playerId)
+    }
     @Test fun `quick Tambola starts after ten seconds with clearly flagged computer seats`() {
         val actor = guest("Early player")
         val room = service.match(actor.token, MatchRequest(UUID.randomUUID().toString(), 2,
-            rulesVersion = 2, largeMatch = true, roundSummary = true, realPlayersOnly = false)).snapshot
+            rulesVersion = 2, largeMatch = true, roundSummary = true, quickTambola = true)).snapshot
         assertEquals(10_000L, room.coins!!.startsAt!! - now.get())
         now.set(room.coins!!.startsAt!! - 1); service.tick()
         assertEquals(RoomPhase.LOBBY, service.read(actor.token, room.code).snapshot.phase)
@@ -24,7 +63,7 @@ class CoinMatchTest : PostgresTest() {
         val active = service.read(actor.token, room.code).snapshot
         assertEquals(RoomPhase.ACTIVE, active.phase)
         assertEquals(1, active.round!!.players.count { !it.computer })
-        assertTrue(active.round!!.players.count { it.computer } in 29..49)
+        assertEquals(14, active.round!!.players.count { it.computer })
         assertEquals(1300L, service.wallet(actor.token).balance)
     }
 

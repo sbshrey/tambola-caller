@@ -11,6 +11,10 @@ fun Prize.condition(): RuleCondition = when (this) {
     else -> RuleCondition(NumberSelection.All)
 }
 
+/** Alternatives are OR choices; Any Line accepts one complete row. */
+fun Prize.conditions(): List<RuleCondition> =
+    if (this == Prize.ANY_LINE) (0..2).map { RuleCondition(NumberSelection.Row(it)) } else listOf(condition())
+
 data class ConditionInspection(val selected: List<Int>, val called: List<Int>, val required: Int) {
     val matches get() = selected.isNotEmpty() && called.size >= required
     val possible get() = selected.isNotEmpty() && required <= selected.size
@@ -34,7 +38,8 @@ fun CustomPrize.exampleCalls(tickets: List<Ticket>): Set<Int>? {
     return examples.take(minimumTickets).flatten().toSet()
 }
 
-fun RoundSettings.endExplanation(): String = if (playAllNumbers) "All 90 numbers will be called, even after a full house."
+fun RoundSettings.endExplanation(): String = if (maxCalls < 90) "Ends when all winning places fill, or after $maxCalls calls."
+else if (playAllNumbers) "All 90 numbers will be called, even after a full house."
 else when {
     Prize.HOUSE_THREE in prizes -> "Ends after House three, or at 90 calls if fewer groups finish."
     Prize.HOUSE_TWO in prizes -> "Ends after House two, or at 90 calls if fewer groups finish."

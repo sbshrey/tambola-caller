@@ -1,6 +1,9 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package io.github.sbshrey.tambola.domain
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.EncodeDefault
 
 const val COIN_TICKET_PRICE = 100L
 const val COIN_STARTER_BALANCE = 1_500L
@@ -21,10 +24,12 @@ fun coinShares(amount: Long, ticketIds: List<String>): Map<String, Long> {
 
 /** Policy is fixed before any numbers are revealed. These coins have no cash value. */
 @Serializable
-data class CoinPool(val soldTickets: Int, val version: Int = 1) {
-    init { require(version in 1..2 && soldTickets in 2..(if (version == 1) 192 else 300)) }
+data class CoinPool(val soldTickets: Int, val version: Int = 1,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val quickTambola: Boolean = false) {
+    init { require(version in 1..2 && soldTickets in 2..(if (version == 1) 192 else 300) && (!quickTambola || version == 2)) }
     val coins: Long get() = soldTickets * COIN_TICKET_PRICE
     val prizes: List<CoinPrize> get() {
+        if (quickTambola) return listOf(CoinPrize(Prize.EARLY_FIVE, coins / 2), CoinPrize(Prize.ANY_LINE, coins - coins / 2))
         val small = listOf(Prize.EARLY_FIVE, Prize.CORNERS, Prize.TOP_LINE, Prize.MIDDLE_LINE, Prize.BOTTOM_LINE)
             .map { CoinPrize(it, coins / 10) }
         val houses = when {

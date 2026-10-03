@@ -25,7 +25,10 @@ private data class VisibleAward(val call: Int, val tickets: List<String>, val pl
 fun RuleList(round: TableRound, initialTicket: Ticket = round.tickets.first()) {
     val words = gameText()
     val rules = remember(round.settings, words) {
-        round.settings.prizes.map { VisibleRule(it.name, words.prizeTitle(it), it.points, words.prizeExplanation(it), listOf(listOf(it.condition())), prize = it) } +
+        round.settings.prizes.map { prize ->
+            val groups = prize.conditions().map { listOf(it) }
+            VisibleRule(prize.name, words.prizeTitle(prize), prize.points, words.prizeExplanation(prize), groups, prize = prize)
+        } +
             round.settings.customPrizes.map { VisibleRule(it.id, it.title, it.points, words.customPrize(it), it.pattern.alternatives, custom = it) }
     }
     var inspecting by rememberSaveable(round.id) { mutableStateOf<String?>(null) }

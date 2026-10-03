@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.json.Json
 
-const val PROTOCOL_VERSION = 9
+const val PROTOCOL_VERSION = 10
 val WireJson = Json { encodeDefaults = true }
 
 @Serializable data class GuestRequest(val displayName: String, val avatar: Int = 0)
@@ -32,6 +32,7 @@ val WireJson = Json { encodeDefaults = true }
     @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val previewPowers: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val roundSummary: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val quickTambola: Boolean = false,
 ) {
     init {
         require(game.mode == GameMode.ONLINE && capacity in 2..50 && intervalSeconds in 5..30)
@@ -39,11 +40,14 @@ val WireJson = Json { encodeDefaults = true }
         require(!powersEnabled || (coinGame && coinRulesVersion == 2))
         require(!previewPowers || powersEnabled)
         require(!roundSummary || (coinGame && coinRulesVersion == 2))
+        require(!quickTambola || (coinGame && coinRulesVersion == 2 && roundSummary && largeMatch && intervalSeconds == 5 &&
+            !powersEnabled && game.assistedMarking &&
+            game.maxCalls == 60 && game.prizes == listOf(Prize.EARLY_FIVE, Prize.ANY_LINE) && game.winnersPerPrize == 5))
         require(!largeMatch || (coinGame && coinRulesVersion == 2 && capacity == 50))
         require(computerPlayers in 0..(if (largeMatch) 49 else 5) && computerPlayers < capacity)
-        require(!coinGame || (game.manualClaims && !game.assistedMarking && game.ticketsPerPlayer == 6 &&
+        require(!coinGame || (game.manualClaims && (!game.assistedMarking || quickTambola) && game.ticketsPerPlayer == 6 &&
             game.customPrizes.isEmpty() && automaticCalling &&
-            (intervalSeconds == (if (coinRulesVersion == 1) 5 else 10) || (roundSummary && intervalSeconds == 8))))
+            (intervalSeconds == (if (coinRulesVersion == 1) 5 else 10) || (roundSummary && intervalSeconds == 8) || quickTambola)))
     }
 }
 @Serializable data class CreateRoomRequest(val id: String, val options: RoomOptions = RoomOptions())

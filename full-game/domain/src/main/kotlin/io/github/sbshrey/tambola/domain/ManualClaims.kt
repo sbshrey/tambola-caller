@@ -104,7 +104,7 @@ internal fun Round.drawManual(): Round {
     if (called.isNotEmpty()) players.filter { it.computer }.forEach { player ->
         settled = settled.claimComputer(player.id)
     }
-    if (called.size == 90 || (!settings.playAllNumbers && settled.terminalAward(settled.awards, settled.customAwards))) {
+    if (called.size == settings.maxCalls || (!settings.playAllNumbers && settled.terminalAward(settled.awards, settled.customAwards))) {
         return settled.copy(status = RoundStatus.COMPLETED)
     }
     val next = called + drawOrder[called.size]

@@ -56,6 +56,9 @@ internal fun ClaimArena(
     val gold = Color(0xFFF4C879)
     val remaining = table.settings.prizes.size + table.settings.customPrizes.size -
         table.awards.count { table.finished || it.isClosed(table.settings, table.called.size) } - table.customAwards.size
+    val quickPlaces = table.settings.prizes.sumOf { prize ->
+        (table.settings.winnersPerPrize - (table.awards.firstOrNull { it.prize == prize }?.playerIds?.size ?: 0)).coerceAtLeast(0)
+    }
     var menu by remember { mutableStateOf(false) }
     var details by remember { mutableStateOf(false) }
     var board by remember(table.id) { mutableStateOf(false) }
@@ -63,6 +66,22 @@ internal fun ClaimArena(
     var players by remember(table.id) { mutableStateOf(false) }
     var claimTicketId by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
     val claimTicket = hand.tickets.firstOrNull { it.id == claimTicketId }
+    val quickTambola = table.settings.maxCalls < 90 && table.settings.prizes == listOf(Prize.EARLY_FIVE, Prize.ANY_LINE)
+    fun readyPrizes(ticket: Ticket): List<Prize> = table.settings.prizes.filter { prize ->
+        val award = table.awards.firstOrNull { it.prize == prize }
+        (award == null || (!award.isClosed(table.settings, table.called.size) && ownerId !in award.playerIds)) &&
+            prize.matches(ticket, ticket.numbers.intersect(table.called.toSet()))
+    }
+    fun chooseTicket(id: String) {
+        val ticket = hand.tickets.firstOrNull { it.id == id } ?: return
+        val ready = if (quickTambola) readyPrizes(ticket) else emptyList()
+        if (ready.size == 1) claim(ClaimSelection(id, ready.single().name)) else claimTicketId = id
+    }
+    val readyGoal = if (quickTambola && claimEnabled) hand.tickets.withIndex().firstNotNullOfOrNull { (index, ticket) ->
+        readyPrizes(ticket).firstOrNull()?.let { index + 1 to it }
+    } else null
+    val quickFeedback = readyGoal?.let { (index, prize) -> words(R.string.quick_tambola_claim_now, index, words.prizeTitle(prize)) }
+        ?: if (quickTambola) words(R.string.quick_tambola_watch) else null
     BackHandler(claimTicket != null) { claimTicketId = null }
     var visiblePowerTickets by remember(table.id, ownerId) { mutableStateOf(hand.tickets.take(2).map { it.id }) }
     var lastPowerTicket by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
@@ -123,16 +142,16 @@ internal fun ClaimArena(
                     clock = footer, showCountdown = !expandedFooter, reducedMotion = preferences.reducedMotion,
                     tickets = {
                         TicketPages(hand, ownerId, preferences.reducedMotion,
-                            { ticket, number -> lastPowerTicket = ticket; markNumber(ticket, number) }, markEnabled,
+                            { ticket, number -> lastPowerTicket = ticket; markNumber(ticket, number) }, markEnabled && !table.settings.assistedMarking,
                             claimEnabled && table.called.isNotEmpty() && !table.finished,
-                            visibleChanged = { visiblePowerTickets = it }) { claimTicketId = it }
+                            visibleChanged = { visiblePowerTickets = it }) { chooseTicket(it) }
                         win?.takeIf { moment -> moment.lines.any { line -> line.players.any { it.id == ownerId } } }?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
                     }, feedback = {
                         val marked = hand.tickets.sumOf { ticket -> hand.marks[ticket.id].orEmpty().count { it in table.called } }
                         val ready = hand.tickets.sumOf { ticket -> ticket.numbers.count { it in table.called && it !in hand.marks[ticket.id].orEmpty() } }
-                        Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims)
+                        Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == table.settings.maxCalls && !table.finished) words(R.string.play_final_claims)
                             else reactionMessage ?: if (table.called.isEmpty()) words(R.string.arena_first_call)
-                            else words(R.string.arena_marks_ready, marked, ready),
+                            else quickFeedback ?: words(R.string.arena_marks_ready, marked, ready),
                             modifier = Modifier.fillMaxWidth().testTag("claim-feedback").semantics {
                                 if (winText != null || claimMessage != null || powerFeedback != null) liveRegion = LiveRegionMode.Polite
                             }, minLines = 2, maxLines = 2, fontSize = 12.sp, lineHeight = 16.sp,
@@ -195,12 +214,14 @@ internal fun ClaimArena(
                         }
                     }
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.widthIn(max = if (landscape) 164.dp else 104.dp)) {
-                        Text(if (largeText) words(R.string.play_calls_short, table.called.size) else "$status · ${words(R.string.play_calls_short, table.called.size)}",
+                        Text(if (largeText) words(R.string.play_calls_short, table.called.size) else "$status · ${table.called.size}/${table.settings.maxCalls}",
                             color = muted, fontSize = 11.sp, lineHeight = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.testTag("play-status").semantics { contentDescription = "$status · ${words(R.string.play_calls_short, table.called.size)}" })
                         Text(pluralStringResource(R.plurals.ticket_count, hand.tickets.size, hand.tickets.size),
                             color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("owned-ticket-count"))
-                        if (!largeText) Text(table.coins?.let { words(R.string.coin_pool, it.pool) } ?: words(R.string.play_prizes_left, remaining), color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
+                        if (!largeText) Text(if (quickTambola) words(R.string.quick_tambola_places, quickPlaces)
+                            else table.coins?.let { words(R.string.coin_pool, it.pool) } ?: words(R.string.play_prizes_left, remaining),
+                            color = muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
                     }
                     if (landscape && !table.finished) Box(Modifier.width(110.dp)) { footer() }
                     }
@@ -210,16 +231,16 @@ internal fun ClaimArena(
                         Modifier.width(if (largeText) 94.dp else if (table.coins != null) 142.dp else 114.dp).fillMaxHeight(),
                         details = { details = true }, openPlayers = { players = true })
                     Column(Modifier.weight(1f).fillMaxHeight()) {
-                        if (!landscape) Text("$status · ${words(R.string.play_prizes_left, remaining)}", fontSize = 11.sp, color = muted, maxLines = 1,
+                        if (!landscape) Text("$status · ${if (quickTambola) words(R.string.quick_tambola_places, quickPlaces) else words(R.string.play_prizes_left, remaining)}", fontSize = 11.sp, color = muted, maxLines = 1,
                             modifier = Modifier.fillMaxWidth().heightIn(min = 22.dp).testTag("portrait-prizes-status"))
                         Box(Modifier.weight(1f).fillMaxWidth()) {
-                            TicketPages(hand, ownerId, preferences.reducedMotion, markNumber, markEnabled,
-                                claimEnabled && table.called.isNotEmpty() && !table.finished) { claimTicketId = it }
+                            TicketPages(hand, ownerId, preferences.reducedMotion, markNumber, markEnabled && !table.settings.assistedMarking,
+                                claimEnabled && table.called.isNotEmpty() && !table.finished) { chooseTicket(it) }
                             win?.takeIf { moment -> moment.lines.any { line -> line.players.any { it.id == ownerId } } }?.let { WinConfetti(it.id, preferences.reducedMotion, Modifier.matchParentSize(), intensity = .85f) }
                         }
                         // Reserve two scaled lines even when quiet, so feedback never moves a ticket.
                         Box(Modifier.fillMaxWidth().padding(vertical = 2.dp).testTag("win-slot"), contentAlignment = Alignment.Center) {
-                            Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == 90 && !table.finished) words(R.string.play_final_claims) else reactionMessage.orEmpty(),
+                            Text(winText ?: claimMessage ?: powerFeedback ?: if (table.called.size == table.settings.maxCalls && !table.finished) words(R.string.play_final_claims) else reactionMessage ?: quickFeedback.orEmpty(),
                                 fontSize = 12.sp, lineHeight = 16.sp, textAlign = TextAlign.Center,
                                 color = if (win != null && dark) gold else muted, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null || powerFeedback != null || reactionMessage != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
@@ -365,7 +386,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                 table.settings.prizes.take(if (table.coins != null) 8 else 6).forEach { prize ->
                     val won = table.awards.any { it.prize == prize && (table.finished || it.isClosed(table.settings, table.called.size)) }
                     val rank = when (prize) {
-                        Prize.EARLY_FIVE -> "5"; Prize.EARLY_TEN -> "10"
+                        Prize.EARLY_FIVE -> "5"; Prize.EARLY_TEN -> "10"; Prize.ANY_LINE -> "L"
                         Prize.FULL_HOUSE, Prize.HOUSE_ONE -> "1"; Prize.HOUSE_TWO -> "2"; Prize.HOUSE_THREE -> "3"
                         else -> null
                     }
@@ -377,7 +398,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                         else Canvas(Modifier.size(if (large) 26.dp else 25.dp, 16.dp).semantics { contentDescription = words.prizeTitle(prize) }) {
                             repeat(15) { cell ->
                                 val on = when (prize) {
-                                    Prize.TOP_LINE, Prize.EARLY_FIVE -> cell < 5; Prize.MIDDLE_LINE -> cell in 5..9
+                                    Prize.TOP_LINE, Prize.EARLY_FIVE, Prize.ANY_LINE -> cell < 5; Prize.MIDDLE_LINE -> cell in 5..9
                                     Prize.BOTTOM_LINE -> cell >= 10; Prize.CORNERS -> cell in setOf(0, 4, 10, 14)
                                     Prize.EARLY_TEN -> cell < 10; else -> true
                                 }
@@ -387,7 +408,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                         }
                         if (!large) {
                             val short = when (prize) {
-                                Prize.EARLY_FIVE -> R.string.play_early; Prize.CORNERS -> R.string.play_corners
+                                Prize.EARLY_FIVE -> R.string.play_early; Prize.ANY_LINE -> R.string.prize_any_line; Prize.CORNERS -> R.string.play_corners
                                 Prize.TOP_LINE -> R.string.play_top; Prize.MIDDLE_LINE -> R.string.play_middle
                                 Prize.BOTTOM_LINE -> R.string.play_bottom; else -> R.string.play_house
                             }

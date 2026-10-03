@@ -76,10 +76,11 @@ internal fun TicketPrizePicker(table: TableRound, ticket: Ticket, ordinal: Int, 
                                         val houseLocked = rankedHouse != null && (rankedHouse != nextHouse || closedHouses.any { ticket.id in it.ticketIds })
                                         val closed = award?.isClosed(table.settings, table.called.size) ?: (draw != null && draw < table.called.size)
                                         val open = !closed && !wonByTicket && !houseLocked
-                                        val active = enabled && open && !table.finished
+                                        val standardPrize = table.settings.prizes.firstOrNull { it.name == id }
+                                        val ready = standardPrize?.matches(ticket, table.marks[ticket.id].orEmpty().intersect(table.called.toSet())) ?: true
+                                        val active = enabled && open && !table.finished && (table.settings.maxCalls == 90 || ready)
                                         val taken = wonByTicket || closed
                                         val coins = table.coins?.prizes?.firstOrNull { it.prize.name == id }?.coins
-                                        val standardPrize = table.settings.prizes.firstOrNull { it.name == id }
                                         val availability = standardPrize?.let { prizeAvailability(award, table.settings, table.called.size, wonByTicket) }
                                         val availabilityLabel = availability?.let {
                                             when (it.state) {
@@ -164,7 +165,7 @@ private fun PrizePattern(prize: Prize, active: Boolean) {
         val gapY = size.height / 3
         repeat(rows) { row -> repeat(5) { column ->
             val selected = when (prize) {
-                Prize.TOP_LINE -> row == 0
+                Prize.TOP_LINE, Prize.ANY_LINE -> row == 0
                 Prize.MIDDLE_LINE -> row == 1
                 Prize.BOTTOM_LINE -> row == 2
                 Prize.CORNERS -> row != 1 && column in listOf(0, 4)

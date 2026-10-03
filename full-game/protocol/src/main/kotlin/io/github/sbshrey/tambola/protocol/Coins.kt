@@ -32,6 +32,7 @@ import kotlinx.serialization.EncodeDefault
     @EncodeDefault(EncodeDefault.Mode.NEVER) val largeMatch: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val previewPowers: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val roundSummary: Boolean = false,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val quickTambola: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val realPlayersOnly: Boolean = false,
 ) {
     init {
@@ -42,6 +43,8 @@ import kotlinx.serialization.EncodeDefault
         require(!largeMatch || (rulesVersion == 2 && !friendTable))
         require(!previewPowers || powersEnabled)
         require(!roundSummary || rulesVersion == 2)
+        require(!quickTambola || (rulesVersion == 2 && !friendTable && !realPlayersOnly && !powersEnabled &&
+            largeMatch && roundSummary))
         require(friendCode == null || (friendTable && friendCode.matches(Regex("[A-HJ-NP-Z2-9]{8}"))))
         require(previousFriendRound == null || (friendTable && friendCode != null && previousFriendRound.isNotBlank()))
     }

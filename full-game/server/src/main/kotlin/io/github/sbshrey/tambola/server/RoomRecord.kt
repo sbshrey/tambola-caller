@@ -59,7 +59,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
         val tickets = coinPool?.soldTickets ?: (purchases.values.sum() + computerTicketCounts().values.sum())
         val powerUp = powerUps[actor] ?: PowerUp.NONE
         if (coinPool == null && tickets < 2) return CoinTableView(tickets, tickets * COIN_TICKET_PRICE, emptyList(), purchases[actor] ?: 0, startsAt, friendTable = friendTable, powerUp = powerUp)
-        val pool = coinPool ?: CoinPool(tickets, options.coinRulesVersion)
+        val pool = coinPool ?: CoinPool(tickets, options.coinRulesVersion, options.quickTambola)
         val allocations = round?.let(pool::allocations).orEmpty().filter { it.playerId == actor }
         return CoinTableView(pool.soldTickets, pool.coins, pool.prizes, purchases[actor] ?: 0, startsAt,
             allocations.filter { it.prize != null }.sumOf { it.coins }, allocations.filter { it.prize == null }.sumOf { it.coins }, friendTable,
@@ -67,7 +67,7 @@ internal fun demand(condition: Boolean, status: Int, code: String, message: Stri
                 matchPowerBonus(matchPowers[actor], it.awards, pool.prizes, it.status == RoundStatus.COMPLETED) } ?: 0)
     }
     fun view(actor: String, now: Long): RoomView = RoomView(
-        protocolVersion = if (options.roundSummary) 9 else if (options.previewPowers) 8 else if (options.largeMatch) 7 else if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
+        protocolVersion = if (options.quickTambola) 10 else if (options.roundSummary) 9 else if (options.previewPowers) 8 else if (options.largeMatch) 7 else if (options.powersEnabled) 6 else if (options.coinRulesVersion == 2 || options.capacity > 32 || options.game.winnersPerPrize > 1) 5 else 4,
         code = code, roomId = id, revision = revision, phase = phase, hostId = hostId, locked = locked,
         options = options, members = members.map { MemberView(it.id, it.name, it.avatar, it.ready, it.connected && now - it.lastSeen < PRESENCE_TIMEOUT) },
         round = round?.let { game -> PublicRound(game.id, game.status, game.called,

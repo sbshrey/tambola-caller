@@ -25,6 +25,34 @@ import java.util.Random
 
 class CoinRoundLayoutTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
+    @Test fun quickTambolaClaimsReadyGoalInOneTapWithoutPowerSpace() {
+        check(isAndroidEmulator())
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10_000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+        val pool = CoinPool(4, 2, quickTambola = true)
+        val round = Round.create(listOf(Player("me", "QA"), Player("peer", "Mira", computer = true)),
+            RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 2, assistedMarking = true, manualClaims = true,
+                prizes = pool.prizes.map { it.prize }, winnersPerPrize = 5, maxCalls = 60), Random(91)).start()
+        val ticket = round.tickets.first { it.playerId == "me" }
+        val called = ticket.row(0).take(2) + ticket.row(1).take(2) + ticket.row(2).take(1)
+        assertFalse(Prize.ANY_LINE.matches(ticket, called.toSet()))
+        val table = round.toTable().copy(called = called, marks = mapOf(ticket.id to called.toSet()),
+            coins = CoinTableView(4, 400, pool.prizes, 2, null), callIntervalSeconds = 5)
+        var submitted: ClaimSelection? = null
+        compose.setContent { TambolaTheme { MaterialTheme(colorScheme = GameNightPalette.colors) {
+            ClaimArena(table, "me", Preferences(reducedMotion = true), "Live", { _, _ -> }, { submitted = it },
+                null, {}, {}, null, {}, markEnabled = true, claimEnabled = true, expandedFooter = false,
+                extraMenu = {}, footer = { Text("5s") })
+        } } }
+        compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
+        compose.onNodeWithTag("round-power-slot").assertDoesNotExist()
+        compose.onNodeWithText(compose.activity.getString(R.string.quick_tambola_claim_now, 1,
+            compose.activity.getString(R.string.prize_early_five))).assertIsDisplayed()
+        compose.onNodeWithTag("claim-ticket-1").performClick()
+        compose.runOnIdle { assertEquals(ClaimSelection(ticket.id, Prize.EARLY_FIVE.name), submitted) }
+        compose.onNodeWithTag("ticket-prize-picker").assertDoesNotExist()
+        captureTestScreen("quick-tambola-arena")
+    }
     @Test fun sixTicketsKeepTheirBoundsAcrossMarksCallsAndRecovery() = checkLayout("en", 1f)
     @Test fun hindiLargeTextKeepsBoardAndSixTicketNavigationVisible() = checkLayout("hi", 2f)
 

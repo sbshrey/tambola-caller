@@ -19,6 +19,7 @@ internal const val OPEN_EXPANDED_LOBBY_SQL = """SELECT payload FROM rooms WHERE 
     AND coalesce((payload::jsonb->'options'->>'largeMatch')::boolean, false) = false
     AND coalesce((payload::jsonb->'options'->>'previewPowers')::boolean, false) = false
     AND coalesce((payload::jsonb->'options'->>'roundSummary')::boolean, false) = false
+    AND coalesce((payload::jsonb->'options'->>'quickTambola')::boolean, false) = false
     ORDER BY coin_starts_at, id LIMIT 1 FOR UPDATE"""
 
 /** Room changes commit atomically; deletion and logout first record intent in the independent journal. */
@@ -164,10 +165,11 @@ class RoomService(
                 AND EXISTS (SELECT 1 FROM jsonb_array_elements(payload::jsonb->'members') m WHERE m->>'id' = ?)
                 ORDER BY id LIMIT 1 FOR UPDATE""", now, guest.id, guest.id) { decode(it.getString(1)) }.singleOrNull()
             val saved = if (existing != null) {
-                demand(request.powersEnabled || !existing.options.powersEnabled, 409, "update_required", "Rejoin this Power room with the updated app.")
+                demand(request.powersEnabled || request.quickTambola || !existing.options.powersEnabled, 409, "update_required", "Rejoin this Power room with the updated app.")
                 demand(request.largeMatch || !existing.options.largeMatch, 409, "update_required", "Rejoin this larger room with the updated app.")
-                demand(request.previewPowers || !existing.options.previewPowers, 409, "update_required", "Update the app to rejoin this Power room.")
+                demand(request.previewPowers || request.quickTambola || !existing.options.previewPowers, 409, "update_required", "Update the app to rejoin this Power room.")
                 demand(request.roundSummary || !existing.options.roundSummary, 409, "update_required", "Update the app to rejoin this round.")
+                demand(request.quickTambola || !existing.options.quickTambola, 409, "update_required", "Update the app to rejoin this Tambola round.")
                 demand(request.rulesVersion >= existing.options.coinRulesVersion, 409, "update_required", "Update the app to rejoin this table.")
                 // Re-entering an owned game never buys a second entry.
                 touch(connection, existing, guest.id, now)
@@ -193,25 +195,30 @@ class RoomService(
                         demand(it.options.powersEnabled == request.powersEnabled, 409, "power_room_mismatch", "Choose the same Classic or Power mode as your friends.")
                         demand(it.options.previewPowers == request.previewPowers, 409, "update_required", "Everyone at this Power table needs the same app version.")
                         demand(it.options.roundSummary == request.roundSummary, 409, "update_required", "Everyone at this table needs the same app version.")
+                        demand(it.options.quickTambola == request.quickTambola, 409, "update_required", "Everyone at this table needs the same Tambola rules.")
                         demand(it.options.coinRulesVersion == request.rulesVersion, 409, "update_required", "Everyone at a friends table needs the same game rules. Update the app and create a new table.")
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && !it.locked, 409, "friend_table_closed", "That friend table is not accepting players.")
                         demand(it.members.size < it.options.capacity, 409, "room_full", "This table is full.")
                     }
                     request.friendTable -> null
                     else -> connection.query(if (request.rulesVersion == 2) OPEN_EXPANDED_LOBBY_SQL.let {
-                        it.replace("'powersEnabled')::boolean, false) = false", "'powersEnabled')::boolean, false) = ${request.powersEnabled}")
+                        it.replace("coin_human_seats < 50", "coin_human_seats < ${if (request.quickTambola) 15 else 50}")
+                            .replace("'powersEnabled')::boolean, false) = false", "'powersEnabled')::boolean, false) = ${request.powersEnabled}")
                             .replace("'largeMatch')::boolean, false) = false", "'largeMatch')::boolean, false) = ${request.largeMatch}")
                             .replace("'previewPowers')::boolean, false) = false", "'previewPowers')::boolean, false) = ${request.previewPowers}")
                             .replace("'roundSummary')::boolean, false) = false", "'roundSummary')::boolean, false) = ${request.roundSummary}")
+                            .replace("'quickTambola')::boolean, false) = false", "'quickTambola')::boolean, false) = ${request.quickTambola}")
                             .replace("ORDER BY coin_starts_at", "AND coalesce((payload::jsonb->>'realPlayersOnly')::boolean, false) = ${request.realPlayersOnly} ORDER BY coin_starts_at")
                     } else OPEN_COIN_LOBBY_SQL, purchaseAt, purchaseAt) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: RoomRecord(UUID.randomUUID().toString(), roomCode(), guest.id,
                     coinOptions(rulesVersion = request.rulesVersion).copy(powersEnabled = request.powersEnabled, largeMatch = request.largeMatch, previewPowers = request.previewPowers,
-                        roundSummary = request.roundSummary,
-                        // Protocol 9 opts into the redesigned round, including its faster pace.
-                        // Existing rooms retain their persisted interval; older clients require 10s.
-                        intervalSeconds = if (request.roundSummary) 8 else if (request.rulesVersion == 2) 10 else 5).let {
+                        roundSummary = request.roundSummary, quickTambola = request.quickTambola,
+                        game = if (request.quickTambola) RoundSettings(mode = GameMode.ONLINE, ticketsPerPlayer = 6, assistedMarking = true, manualClaims = true,
+                            prizes = listOf(Prize.EARLY_FIVE, Prize.ANY_LINE), winnersPerPrize = 5, maxCalls = 60)
+                        else coinOptions(rulesVersion = request.rulesVersion).game,
+                        // Persist the selected pace so an app update cannot change an active round.
+                        intervalSeconds = if (request.quickTambola) 5 else if (request.roundSummary) 8 else if (request.rulesVersion == 2) 10 else 5).let {
                         if (request.friendTable || request.powersEnabled || request.largeMatch) it.copy(computerPlayers = 0) else it
                     }, emptyList(),
                     purchaseAt + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,

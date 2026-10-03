@@ -223,7 +223,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2,
-            powersEnabled = true, largeMatch = !friendTable, previewPowers = true, roundSummary = true,
+            powersEnabled = friendTable, largeMatch = !friendTable, previewPowers = friendTable, roundSummary = true, quickTambola = !friendTable,
             realPlayersOnly = friendTable)
         if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }

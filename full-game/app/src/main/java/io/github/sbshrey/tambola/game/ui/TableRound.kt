@@ -45,9 +45,11 @@ fun RoomView.toTable(localMarks: Map<String, Set<Int>>): TableRound? = round?.le
 /** Only correctly marked, already called numbers charge the nearest available standard prize. */
 internal fun ticketPrizeProgress(table: TableRound, ticket: Ticket, prize: Prize): Float {
     val correct = table.marks[ticket.id].orEmpty().intersect(table.called.toSet())
-    val inspection = prize.condition().inspect(ticket, correct)
-    return if (!inspection.possible || inspection.required <= 0) 0f
+    return prize.conditions().maxOf { condition ->
+        val inspection = condition.inspect(ticket, correct)
+        if (!inspection.possible || inspection.required <= 0) 0f
         else (inspection.called.size.toFloat() / inspection.required).coerceIn(0f, 1f)
+    }
 }
 
 internal fun ticketClaimProgress(table: TableRound, ticket: Ticket): Float = table.settings.prizes

@@ -82,6 +82,7 @@ class GameText(private val resources: Resources) {
         Prize.MIDDLE_LINE -> R.string.prize_middle_line
         Prize.BOTTOM_LINE -> R.string.prize_bottom_line
         Prize.CORNERS -> R.string.prize_corners
+        Prize.ANY_LINE -> R.string.prize_any_line
         Prize.FULL_HOUSE -> R.string.prize_full_house
         Prize.HOUSE_ONE -> R.string.prize_house_one
         Prize.HOUSE_TWO -> R.string.prize_house_two
@@ -94,6 +95,7 @@ class GameText(private val resources: Resources) {
         Prize.MIDDLE_LINE -> R.string.prize_middle_line_detail
         Prize.BOTTOM_LINE -> R.string.prize_bottom_line_detail
         Prize.CORNERS -> R.string.prize_corners_detail
+        Prize.ANY_LINE -> R.string.prize_any_line_detail
         Prize.FULL_HOUSE -> R.string.prize_full_house_detail
         Prize.HOUSE_ONE -> R.string.prize_house_one_detail
         Prize.HOUSE_TWO -> R.string.prize_house_two_detail
@@ -144,6 +146,7 @@ class GameText(private val resources: Resources) {
         pattern(value.pattern), value.minimumTickets, if (value.ticketOrdinals.isEmpty()) invoke(R.string.rule_period)
             else invoke(R.string.among_tickets, value.ticketOrdinals.sorted().joinToString()))
     fun endExplanation(value: RoundSettings): String = invoke(when {
+        value.maxCalls < 90 -> R.string.quick_tambola_end
         value.playAllNumbers -> R.string.end_all_numbers
         Prize.HOUSE_THREE in value.prizes -> R.string.end_house_three
         Prize.HOUSE_TWO in value.prizes -> R.string.end_house_two

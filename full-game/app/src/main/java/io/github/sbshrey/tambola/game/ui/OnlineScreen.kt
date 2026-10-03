@@ -142,7 +142,7 @@ fun OnlineScreen(state: OnlineUiState, model: OnlineViewModel, preferences: Pref
                     TextButton(onClick = { showRules = !showRules }, modifier = Modifier.testTag("lobby-prizes")) { Text(words(R.string.play_prizes)) }
                     if (showRules) {
                         Text(words.endExplanation(room.options.game), color = Saffron)
-                        Text(if (room.options.game.manualClaims) words(R.string.play_claim_rules) else if (room.options.game.assistedMarking)
+                        Text(if (room.options.quickTambola) words(R.string.quick_tambola_lobby_rules) else if (room.options.game.manualClaims) words(R.string.play_claim_rules) else if (room.options.game.assistedMarking)
                             words(R.string.ui_assisted_marking_for_everyone) else words(R.string.ui_mark_your_own_called_numbers_wins_are_checked), color = Muted)
                         room.options.game.prizes.forEach { Text(words(R.string.ui_pts_n, words.prizeTitle(it), it.points, words.prizeExplanation(it))) }
                         room.options.game.customPrizes.forEach { Text(words(R.string.ui_pts_n, it.title, it.points, words.customPrize(it))) }

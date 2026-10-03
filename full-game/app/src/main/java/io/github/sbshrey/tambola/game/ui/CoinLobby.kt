@@ -78,7 +78,7 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                     }
                 }
                 IconButton(onClick = { powerUps = true }, modifier = Modifier.size(48.dp).testTag("choose-powerup")
-                    .semantics { contentDescription = words(R.string.play_more) }) {
+                    .semantics { contentDescription = words(R.string.quick_tambola_help) }) {
                     Text("?", fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 }
                 LobbySettingsButton(settings)
@@ -214,11 +214,16 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
         text = { Text(words.message(error)) }, confirmButton = { TextButton(onClick = model::clearError) { Text(words(R.string.ui_got_it)) } }) }
     if (friendDialog) FriendEntryDialog(tickets, cost, enabled,
         enter = { code -> friendDialog = false; friends(tickets, code) }, close = { friendDialog = false })
-    if (powerUps) ArenaDialog(words(R.string.powerup_title), { powerUps = false }) {
-        Text(words(R.string.power_drop_rules))
-        Text(words(if (room?.options?.previewPowers != false) R.string.power_shield_activate_detail else R.string.power_shield_detail))
-        Text(words(R.string.power_auto_detail))
-        Text(words(R.string.power_bonus_detail))
+    if (powerUps) ArenaDialog(words(if (room?.options?.quickTambola != false) R.string.quick_tambola_help else R.string.powerup_title), { powerUps = false }) {
+        if (room?.options?.quickTambola != false) {
+            Text(words(R.string.quick_tambola_lobby_rules))
+            Text(words(R.string.quick_tambola_end))
+        } else {
+            Text(words(R.string.power_drop_rules))
+            Text(words(if (room?.options?.previewPowers == true) R.string.power_shield_activate_detail else R.string.power_shield_detail))
+            Text(words(R.string.power_auto_detail))
+            Text(words(R.string.power_bonus_detail))
+        }
     }
     if (resultDetails && finished) ArenaDialog(words(R.string.coin_results), { resultDetails = false }) {
         val ownWins = ownCoinWins(coins?.prizes.orEmpty(), room?.round?.awards.orEmpty(), room?.round?.ownTickets.orEmpty().map { it.id }.toSet())

@@ -351,6 +351,7 @@ private fun PrizeRail(table: TableRound, ink: Color, muted: Color, compact: Bool
             val short = when (prize) {
                 Prize.EARLY_FIVE -> R.string.play_early
                 Prize.CORNERS -> R.string.play_corners
+                Prize.ANY_LINE -> R.string.prize_any_line
                 Prize.TOP_LINE -> R.string.play_top
                 Prize.MIDDLE_LINE -> R.string.play_middle
                 Prize.BOTTOM_LINE -> R.string.play_bottom
@@ -369,7 +370,7 @@ private fun PrizeRail(table: TableRound, ink: Color, muted: Color, compact: Bool
                         drawLine(ink, Offset(size.width * .4f, size.height - 3f), Offset(size.width - 3f, 2f), 2.dp.toPx())
                     } else repeat(15) { cell ->
                         val active = when (prize) {
-                            Prize.TOP_LINE, Prize.EARLY_FIVE -> cell < 5
+                            Prize.TOP_LINE, Prize.EARLY_FIVE, Prize.ANY_LINE -> cell < 5
                             Prize.MIDDLE_LINE -> cell in 5..9
                             Prize.BOTTOM_LINE -> cell >= 10
                             Prize.CORNERS -> cell in setOf(0, 4, 10, 14)

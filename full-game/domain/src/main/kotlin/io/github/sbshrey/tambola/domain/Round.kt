@@ -23,12 +23,13 @@ const val AVATAR_COUNT = 8
     MIDDLE_LINE("Middle line", 15, "All five numbers in the middle row."),
     BOTTOM_LINE("Bottom line", 15, "All five numbers in the bottom row."),
     CORNERS("Four corners", 15, "Leftmost and rightmost numbers in the top and bottom rows."),
+    ANY_LINE("Any line", 20, "All five numbers in any one row."),
     FULL_HOUSE("Full house", 100, "All fifteen numbers on one ticket."),
     HOUSE_ONE("House one", 100, "The first group of tickets to complete all fifteen numbers."),
     HOUSE_TWO("House two", 75, "The next group of newly completed tickets after House one."),
     HOUSE_THREE("House three", 50, "The next group of newly completed tickets after House two.");
 
-    fun matches(ticket: Ticket, called: Set<Int>): Boolean = condition().matches(ticket, called)
+    fun matches(ticket: Ticket, called: Set<Int>): Boolean = conditions().any { it.matches(ticket, called) }
     val isRankedHouse: Boolean get() = this in setOf(HOUSE_ONE, HOUSE_TWO, HOUSE_THREE)
     companion object {
         val defaults = listOf(EARLY_FIVE, TOP_LINE, MIDDLE_LINE, BOTTOM_LINE, FULL_HOUSE)
@@ -47,10 +48,12 @@ data class RoundSettings(
     val manualClaims: Boolean = false,
     /** Minimum distinct winners; everyone tying on the final call is included. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val winnersPerPrize: Int = 1,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val maxCalls: Int = 90,
 ) {
     init {
         require(ticketsPerPlayer in 1..6)
         require(winnersPerPrize in 1..5)
+        require(maxCalls in 1..90)
         require(winnersPerPrize == 1 || (manualClaims && customPrizes.isEmpty() && prizes.none { it.isRankedHouse }))
         require(prizes.isNotEmpty() && prizes.distinct().size == prizes.size)
         require(!(Prize.FULL_HOUSE in prizes && prizes.any { it.isRankedHouse }))
@@ -98,11 +101,11 @@ data class Round(
 
     fun draw(): Round {
         if (settings.manualClaims) return drawManual()
-        if (status != RoundStatus.PLAYING || called.size == 90) return this
+        if (status != RoundStatus.PLAYING || called.size == settings.maxCalls) return this
         val next = called + drawOrder[called.size]
         val nextAwards = awardsFor(next)
         val nextCustomAwards = customAwardsFor(next)
-        val done = next.size == 90 || (!settings.playAllNumbers && terminalAward(nextAwards, nextCustomAwards))
+        val done = next.size == settings.maxCalls || (!settings.playAllNumbers && terminalAward(nextAwards, nextCustomAwards))
         val nextMarks = marks.toMutableMap()
         tickets.filter { settings.assistedMarking || players.first { p -> p.id == it.playerId }.computer }.forEach { ticket ->
             nextMarks[ticket.id] = ticket.numbers.filter { it in next }.toSet()
@@ -134,7 +137,8 @@ data class Round(
         val finalPrize = settings.prizes.filter { it.isRankedHouse }.maxByOrNull { it.ordinal }
             ?: settings.prizes.firstOrNull { it == Prize.FULL_HOUSE }
         return if (finalPrize != null) results.any { it.prize == finalPrize && it.playerIds.size >= settings.winnersPerPrize }
-        else results.size == settings.prizes.size && customResults.size == settings.customPrizes.size
+        else settings.prizes.all { prize -> results.any { it.prize == prize && it.playerIds.size >= settings.winnersPerPrize } } &&
+            customResults.size == settings.customPrizes.size
     }
 
     private fun customAwardsFor(next: List<Int>): List<CustomAward> {
@@ -176,7 +180,7 @@ data class Round(
         require(tickets.all { t -> players.any { it.id == t.playerId } })
         require(players.all { p -> tickets.count { it.playerId == p.id } == (ticketCounts[p.id] ?: settings.ticketsPerPlayer) })
         require(drawOrder.size == 90 && drawOrder.toSet() == (1..90).toSet())
-        require(called.size <= 90 && called == drawOrder.take(called.size))
+        require(called.size <= settings.maxCalls && called == drawOrder.take(called.size))
         require(marks.all { (id, values) -> tickets.any { it.id == id && it.numbers.containsAll(values) } })
         require(status != RoundStatus.READY || called.isEmpty())
         if (settings.manualClaims) {

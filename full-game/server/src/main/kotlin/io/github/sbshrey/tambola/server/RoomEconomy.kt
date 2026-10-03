@@ -10,12 +10,12 @@ internal const val FRIEND_LOBBY_LIFETIME = 15 * 60_000L
 internal const val COMPUTER_TICKETS = 3
 
 /** Stable across restarts, unrelated to the draw order or anyone's chance of winning. */
-internal fun RoomRecord.matchPopulation(): Int = 30 + Math.floorMod(id.hashCode(), 21)
+internal fun RoomRecord.matchPopulation(): Int = if (options.quickTambola) 15 else 30 + Math.floorMod(id.hashCode(), 21)
 
 /** Stable per-seat purchases, chosen independently of the hidden draw and player tickets. */
 internal fun RoomRecord.computerTicketCounts(count: Int = options.computerPlayers): Map<String, Int> =
     (1..count).associate { index ->
-        val tickets = if (options.largeMatch) 1 + (digest("$id:ticket-count:$index").take(8).toLong(16) % 6).toInt()
+        val tickets = if (options.quickTambola) 2 else if (options.largeMatch) 1 + (digest("$id:ticket-count:$index").take(8).toLong(16) % 6).toInt()
             else COMPUTER_TICKETS
         computerPlayer(id, index).id to tickets
     }
@@ -40,9 +40,9 @@ internal fun RoomRecord.coinLobby(): RoomRecord {
         else -> (4 - members.size).coerceAtLeast(0).coerceAtMost(if (options.powersEnabled) practiceSeats else 3)
     }
     val tickets = purchases.values.sum() + computerTicketCounts(computers).values.sum()
-    val prizes = CoinPool(tickets.coerceAtLeast(2), options.coinRulesVersion).prizes.map { it.prize }
+    val prizes = CoinPool(tickets.coerceAtLeast(2), options.coinRulesVersion, options.quickTambola).prizes.map { it.prize }
     val players = (members.size + computers).coerceAtLeast(1)
-    val winners = if (options.coinRulesVersion == 1) 1 else ((players + 9) / 10).coerceAtLeast(2).coerceAtMost(players)
+    val winners = if (options.quickTambola) 5 else if (options.coinRulesVersion == 1) 1 else ((players + 9) / 10).coerceAtLeast(2).coerceAtMost(players)
     return copy(options = options.copy(computerPlayers = computers,
         game = options.game.copy(prizes = prizes, winnersPerPrize = winners)))
 }
@@ -54,7 +54,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
         computerPlayer(id, index)
     }
     val counts = purchases + lobby.computerTicketCounts()
-    val pool = CoinPool(counts.values.sum(), options.coinRulesVersion)
+    val pool = CoinPool(counts.values.sum(), options.coinRulesVersion, options.quickTambola)
     val settings = lobby.options.game.copy(prizes = pool.prizes.map { it.prize })
     val game = Round.create(members.map { Player(it.id, it.name, avatar = it.avatar) } + computers,
         settings, now = now, ticketCounts = counts).start()

@@ -59,6 +59,7 @@
     <string name="prize_middle_line">"Middle line"</string>
     <string name="prize_bottom_line">"Bottom line"</string>
     <string name="prize_corners">"Four corners"</string>
+    <string name="prize_any_line">"Any line"</string>
     <string name="prize_full_house">"Full house"</string>
     <string name="prize_house_one">"House one"</string>
     <string name="prize_house_two">"House two"</string>
@@ -69,6 +70,13 @@
     <string name="prize_middle_line_detail">"All five numbers in the middle row."</string>
     <string name="prize_bottom_line_detail">"All five numbers in the bottom row."</string>
     <string name="prize_corners_detail">"Leftmost and rightmost numbers in the top and bottom rows."</string>
+    <string name="prize_any_line_detail">"Mark all five numbers in any one row on this ticket."</string>
+    <string name="quick_tambola_claim_now">"Ticket %1$d ready · Claim %2$s now!"</string>
+    <string name="quick_tambola_watch">"Auto dabs are on · Early Five or Any Line wins"</string>
+    <string name="quick_tambola_places">"%1$d winning places left"</string>
+    <string name="quick_tambola_end">"Ends when both goals fill or after 60 calls."</string>
+    <string name="quick_tambola_lobby_rules">"Numbers dab automatically. Tap Claim when Early Five or Any Line lights up. Five players can win each goal."</string>
+    <string name="quick_tambola_help">"How Quick Tambola works"</string>
     <string name="prize_full_house_detail">"All fifteen numbers on one ticket."</string>
     <string name="prize_house_one_detail">"The first group of tickets to complete all fifteen numbers."</string>
     <string name="prize_house_two_detail">"The next group of newly completed tickets after House one."</string>

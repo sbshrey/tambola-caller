@@ -32,6 +32,9 @@ internal fun CoinRoundLayout(
 ) {
     val words = gameText()
     val largeText = LocalDensity.current.fontScale > 1.3f
+    val quickPlaces = table.settings.prizes.sumOf { prize ->
+        (table.settings.winnersPerPrize - (table.awards.firstOrNull { it.prize == prize }?.playerIds?.size ?: 0)).coerceAtLeast(0)
+    }
     var showBoard by rememberSaveable(table.id) { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().testTag("coin-round-layout"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth().height(if (largeText) 84.dp else 64.dp)
@@ -64,7 +67,7 @@ internal fun CoinRoundLayout(
                 }
             }
             Box(Modifier.width(if (largeText) 100.dp else 72.dp).fillMaxHeight().testTag("round-clock-slot"), contentAlignment = Alignment.Center) { clock() }
-            Box(Modifier.width(if (largeText) 180.dp else 150.dp).fillMaxHeight().testTag("round-power-slot")) { power() }
+            if (table.powers != null) Box(Modifier.width(if (largeText) 180.dp else 150.dp).fillMaxHeight().testTag("round-power-slot")) { power() }
         }
         Row(Modifier.fillMaxWidth().height(48.dp), verticalAlignment = Alignment.CenterVertically) {
             Row(Modifier.weight(1f).selectableGroup()) {
@@ -78,7 +81,8 @@ internal fun CoinRoundLayout(
                 Text(words(R.string.play_players_short, table.players.size), fontSize = 12.sp)
             }
             TextButton(onClick = prizes, modifier = Modifier.testTag("round-prizes")) {
-                Text(words(R.string.play_prizes_left, remaining), fontSize = 12.sp)
+                Text(if (table.settings.maxCalls < 90) words(R.string.quick_tambola_places, quickPlaces)
+                    else words(R.string.play_prizes_left, remaining), fontSize = 12.sp)
             }
         }
         Box(Modifier.weight(1f).fillMaxWidth()) {
@@ -97,7 +101,7 @@ internal fun CoinRoundLayout(
                 color = GameNightPalette.panel, shape = RoundedCornerShape(16.dp)) {
                 Column(Modifier.padding(8.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Text(words(R.string.ui_called_to_go, table.called.size, 90 - table.called.size), Modifier.weight(1f), fontSize = 12.sp)
+                        Text(words(R.string.ui_called_to_go, table.called.size, table.settings.maxCalls - table.called.size), Modifier.weight(1f), fontSize = 12.sp)
                         TextButton(onClick = board, modifier = Modifier.testTag("open-call-history")) { Text(words(R.string.board_history)) }
                     }
                     Box(Modifier.weight(1f)) { CalledNumberGrid(table.called, words) }
