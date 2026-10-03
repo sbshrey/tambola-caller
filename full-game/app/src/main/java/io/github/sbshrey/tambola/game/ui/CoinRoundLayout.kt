@@ -1,6 +1,7 @@
 package io.github.sbshrey.tambola.game.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -77,13 +78,30 @@ internal fun CoinRoundLayout(
                         text = { Text(words(label), maxLines = 1) })
                 }
             }
-            TextButton(onClick = players, modifier = Modifier.testTag("table-players")) {
-                Text(words(R.string.play_players_short, table.players.size), fontSize = 12.sp)
+            TextButton(onClick = players, contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
+                modifier = Modifier.testTag("table-players")) {
+                Column(horizontalAlignment = Alignment.Start) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Box(Modifier.size(6.dp).background(GameNightPalette.gold, CircleShape))
+                        Text(if (table.connectedHumanIds != null) words(R.string.arena_live_people, table.livePeople)
+                            else words(R.string.arena_people_seated, table.players.count { !it.computer }),
+                            color = GameNightPalette.cream, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
+                            maxLines = 1)
+                    }
+                    if (table.computerSeats > 0) Text(words(R.string.arena_computer_seats, table.computerSeats),
+                        color = GameNightPalette.muted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 1)
+                }
             }
-            TextButton(onClick = prizes, modifier = Modifier.testTag("round-prizes")) {
-                Text(if (table.settings.prizes == listOf(Prize.EARLY_FIVE, Prize.ANY_LINE)) words(R.string.quick_tambola_goal_places,
-                    places(Prize.EARLY_FIVE), places(Prize.ANY_LINE))
-                    else words(R.string.play_prizes_left, remaining), fontSize = 12.sp)
+            TextButton(onClick = prizes, contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
+                modifier = Modifier.testTag("round-prizes")) {
+                Column(horizontalAlignment = Alignment.Start) {
+                    Text(words(R.string.arena_prizes_remaining), color = GameNightPalette.muted,
+                        fontSize = 9.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                    Text(if (table.settings.prizes == listOf(Prize.EARLY_FIVE, Prize.ANY_LINE)) words(R.string.quick_tambola_goal_places,
+                        places(Prize.EARLY_FIVE), places(Prize.ANY_LINE))
+                        else words(R.string.play_prizes_left, remaining), color = GameNightPalette.gold,
+                        fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                }
             }
         }
         Box(Modifier.weight(1f).fillMaxWidth()) {

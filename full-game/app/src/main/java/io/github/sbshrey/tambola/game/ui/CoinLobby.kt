@@ -24,6 +24,8 @@ import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.online.*
 import io.github.sbshrey.tambola.game.presentation.ownCoinWins
 import io.github.sbshrey.tambola.game.presentation.affordableTickets
+import io.github.sbshrey.tambola.game.presentation.PrizeAvailability
+import io.github.sbshrey.tambola.game.presentation.PrizePlaceState
 import io.github.sbshrey.tambola.client.ServerTime
 import io.github.sbshrey.tambola.protocol.*
 
@@ -240,7 +242,8 @@ private fun GameText.powerUpTitle(powerUp: PowerUp): String = this(when (powerUp
 })
 
 @Composable
-internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifier, awarded: Set<Prize> = emptySet(), shared: Set<Prize> = emptySet(), onDark: Boolean = true) {
+internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifier, awarded: Set<Prize> = emptySet(), shared: Set<Prize> = emptySet(),
+    onDark: Boolean = true, availability: Map<Prize, PrizeAvailability> = emptyMap()) {
     val words = gameText()
     val fontScale = LocalDensity.current.fontScale
     BoxWithConstraints(modifier) {
@@ -255,6 +258,15 @@ internal fun CoinPrizeGrid(prizes: List<CoinPrize>, modifier: Modifier = Modifie
                         minLines = 2, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("coin-prize-title-${entry.prize.name}"))
                     Text("${entry.coins}", color = if (onDark) CoinGold else MaterialTheme.colorScheme.primary, fontSize = 18.sp, lineHeight = 22.sp, fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("coin-prize-value-${entry.prize.name}"))
+                    availability[entry.prize]?.let { places ->
+                        Text(words(R.string.prize_places_compact, places.remaining, places.total),
+                            color = if (places.remaining > 0) (if (onDark) GameNightPalette.gold else MaterialTheme.colorScheme.primary)
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("coin-prize-places-${entry.prize.name}"))
+                        if (places.state == PrizePlaceState.TIES_OPEN) Text(words(R.string.prize_ties_compact),
+                            fontSize = 10.sp, lineHeight = 13.sp, textAlign = TextAlign.Center)
+                    }
                     if (shared.isNotEmpty()) Text(if (entry.prize in shared) words(R.string.coin_shared) else "", fontSize = 11.sp, lineHeight = 15.sp, textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth().testTag("coin-prize-share-${entry.prize.name}"))
                 }

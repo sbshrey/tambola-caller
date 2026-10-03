@@ -75,6 +75,13 @@
     <string name="quick_tambola_watch">"Auto dabs are on · Early Five or Any Line wins"</string>
     <string name="quick_tambola_places">"%1$d winning places left"</string>
     <string name="quick_tambola_goal_places">"Five %1$d · Line %2$d"</string>
+    <string name="arena_live_people">"Live %1$d"</string>
+    <string name="arena_people_seated">"People %1$d"</string>
+    <string name="arena_computer_seats">"Computers %1$d"</string>
+    <string name="arena_prizes_remaining">"PRIZES LEFT"</string>
+    <string name="arena_player_away">"Away"</string>
+    <string name="arena_player_live">"Live"</string>
+    <string name="arena_recent_claim">"%1$s claimed %2$s · %3$d left"</string>
     <string name="quick_tambola_end">"Ends when both goals fill or after 60 calls."</string>
     <string name="quick_tambola_lobby_rules">"Numbers dab automatically. Tap Claim when Early Five or Any Line lights up. Five players can win each goal."</string>
     <string name="quick_tambola_help">"How Quick Tambola works"</string>

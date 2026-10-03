@@ -75,6 +75,13 @@
     <string name="quick_tambola_watch">"नंबर अपने आप कटेंगे · अर्ली फ़ाइव या कोई भी लाइन जीतें"</string>
     <string name="quick_tambola_places">"%1$d जीतने की जगह बाकी"</string>
     <string name="quick_tambola_goal_places">"पाँच %1$d · लाइन %2$d"</string>
+    <string name="arena_live_people">"लाइव %1$d"</string>
+    <string name="arena_people_seated">"लोग %1$d"</string>
+    <string name="arena_computer_seats">"कंप्यूटर %1$d"</string>
+    <string name="arena_prizes_remaining">"बाकी इनाम"</string>
+    <string name="arena_player_away">"ऑफ़लाइन"</string>
+    <string name="arena_player_live">"लाइव"</string>
+    <string name="arena_recent_claim">"%1$s ने %2$s जीता · %3$d बाकी"</string>
     <string name="quick_tambola_end">"दोनों लक्ष्य भरने पर या 60 नंबरों के बाद खेल खत्म होगा।"</string>
     <string name="quick_tambola_lobby_rules">"पुकारे गए नंबर अपने आप कटेंगे। अर्ली फ़ाइव या कोई भी लाइन पूरी होने पर क्लेम करें। हर लक्ष्य में पाँच लोग जीत सकते हैं।"</string>
     <string name="quick_tambola_help">"क्विक तंबोला कैसे खेलें"</string>

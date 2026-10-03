@@ -37,7 +37,8 @@ class CoinRoundLayoutTest {
         val called = ticket.row(0).take(2) + ticket.row(1).take(2) + ticket.row(2).take(1)
         assertFalse(Prize.ANY_LINE.matches(ticket, called.toSet()))
         var table by mutableStateOf(round.toTable().copy(called = called.take(4), marks = mapOf(ticket.id to called.take(4).toSet()),
-            coins = CoinTableView(4, 400, pool.prizes, 2, null), callIntervalSeconds = 5))
+            coins = CoinTableView(4, 400, pool.prizes, 2, null), callIntervalSeconds = 5,
+            connectedHumanIds = setOf("me")))
         var submitted: ClaimSelection? = null
         compose.setContent { TambolaTheme { MaterialTheme(colorScheme = GameNightPalette.colors) {
             ClaimArena(table, "me", Preferences(reducedMotion = true), "Live", { _, _ -> }, { submitted = it },
@@ -47,7 +48,20 @@ class CoinRoundLayoutTest {
         compose.onNodeWithTag("hand-ticket-1").assertIsDisplayed()
         compose.onNodeWithTag("round-power-slot").assertDoesNotExist()
         compose.onNodeWithText(compose.activity.getString(R.string.quick_tambola_goal_places, 5, 5)).assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.arena_live_people, 1)).assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.arena_computer_seats, 1)).assertIsDisplayed()
         compose.onNodeWithTag("claim-ticket-1").assertIsNotEnabled()
+        compose.runOnIdle { table = table.copy(
+            awards = listOf(Award(Prize.EARLY_FIVE, called.size - 1, listOf("peer-ticket"), listOf("peer"))),
+            connectedHumanIds = emptySet()) }
+        compose.onNodeWithText(compose.activity.getString(R.string.arena_live_people, 0)).assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.quick_tambola_goal_places, 4, 5)).assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.arena_recent_claim,
+            "Mira · ${compose.activity.getString(R.string.play_computer_short)}",
+            compose.activity.getString(R.string.prize_early_five), 4)).assertIsDisplayed()
+        compose.onNodeWithTag("round-prizes").performClick()
+        compose.onNodeWithTag("coin-prize-places-EARLY_FIVE").assertTextEquals(compose.activity.getString(R.string.prize_places_compact, 4, 5))
+        compose.onNodeWithText(compose.activity.getString(R.string.ui_back_to_game)).performClick()
         compose.runOnIdle { table = table.copy(called = called, marks = mapOf(ticket.id to called.toSet())) }
         compose.onNodeWithText(compose.activity.getString(R.string.quick_tambola_claim_now, 1,
             compose.activity.getString(R.string.prize_early_five))).assertIsDisplayed()

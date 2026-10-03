@@ -498,7 +498,7 @@ fun OnlineArena(state: OnlineUiState, model: OnlineViewModel, preferences: Prefe
         else -> words(R.string.play_live)
     }
     // A saved deadline is not a live countdown while the stream is disconnected.
-    val displayed = if (state.connection == Connection.LIVE) table else table.copy(nextDrawAt = null)
+    val displayed = if (state.connection == Connection.LIVE) table else table.copy(nextDrawAt = null, connectedHumanIds = null)
     PlayArena(displayed, state.playerId.orEmpty(), preferences, status, model::dabCalled, model::repeatCall, back,
         state.winMoment, model::dismissWin, enabled = if (table.powers != null) marksEnabled else !state.deletingProfile && !state.storageFailure && !state.sessionExpired,
         markNumber = model::mark, claim = model::claim, claimMessage = state.claimMessage?.let(words::message), claimEnabled = enabled,

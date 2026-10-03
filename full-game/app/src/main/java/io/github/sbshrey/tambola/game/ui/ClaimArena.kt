@@ -34,6 +34,7 @@ import io.github.sbshrey.tambola.domain.*
 import io.github.sbshrey.tambola.game.R
 import io.github.sbshrey.tambola.game.data.Preferences
 import io.github.sbshrey.tambola.game.presentation.WinMoment
+import io.github.sbshrey.tambola.game.presentation.prizeAvailability
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -80,8 +81,15 @@ internal fun ClaimArena(
     val readyGoal = if (quickTambola && claimEnabled) hand.tickets.withIndex().firstNotNullOfOrNull { (index, ticket) ->
         readyPrizes(ticket).firstOrNull()?.let { index + 1 to it }
     } else null
+    val recentClaim = table.awards.filter { it.drawIndex >= table.called.size - 1 }
+        .maxByOrNull { it.drawIndex }?.let { award ->
+            table.players.firstOrNull { it.id == award.playerIds.lastOrNull() }?.let { winner ->
+                words(R.string.arena_recent_claim, words.playerLabel(winner), words.prizeTitle(award.prize),
+                    (table.settings.winnersPerPrize - award.playerIds.distinct().size).coerceAtLeast(0))
+            }
+        }
     val quickFeedback = readyGoal?.let { (index, prize) -> words(R.string.quick_tambola_claim_now, index, words.prizeTitle(prize)) }
-        ?: if (quickTambola) words(R.string.quick_tambola_watch) else null
+        ?: if (quickTambola) recentClaim ?: words(R.string.quick_tambola_watch) else null
     BackHandler(claimTicket != null) { claimTicketId = null }
     var visiblePowerTickets by remember(table.id, ownerId) { mutableStateOf(hand.tickets.take(2).map { it.id }) }
     var lastPowerTicket by remember(table.id, ownerId) { mutableStateOf<String?>(null) }
@@ -119,7 +127,7 @@ internal fun ClaimArena(
                             DropdownMenuItem(text = { Text(words(R.string.ui_home)) }, onClick = { menu = false; back() }, modifier = Modifier.testTag("home"))
                             DropdownMenuItem(text = { Text(words(R.string.ui_number_board)) }, onClick = { menu = false; history = false; board = true })
                             DropdownMenuItem(text = { Text(words(R.string.play_prizes)) }, onClick = { menu = false; details = true })
-                            DropdownMenuItem(text = { Text(words(R.string.play_players_short, table.players.size)) }, onClick = { menu = false; players = true }, modifier = Modifier.testTag("table-players-menu"))
+                            DropdownMenuItem(text = { Text(table.playerCountText(words)) }, onClick = { menu = false; players = true }, modifier = Modifier.testTag("table-players-menu"))
                             DropdownMenuItem(text = { Text(words(R.string.ui_hear_again)) }, enabled = table.latest != null, onClick = { menu = false; repeatCall() })
                             extraMenu { menu = false }
                         }
@@ -258,7 +266,11 @@ internal fun ClaimArena(
         if (table.coins != null) {
             Text(words(R.string.coin_pool, table.coins.pool))
             if (table.settings.winnersPerPrize > 1) Text(words(R.string.multi_winner_rules, table.settings.winnersPerPrize))
-            CoinPrizeGrid(table.coins.prizes, awarded = table.awards.filter { table.finished || it.isClosed(table.settings, table.called.size) }.map { it.prize }.toSet(), onDark = MaterialTheme.colorScheme.background.luminance() < .5f)
+            CoinPrizeGrid(table.coins.prizes, awarded = table.awards.filter { table.finished || it.isClosed(table.settings, table.called.size) }.map { it.prize }.toSet(),
+                onDark = MaterialTheme.colorScheme.background.luminance() < .5f,
+                availability = if (table.finished) emptyMap() else table.settings.prizes.associateWith { prize ->
+                    prizeAvailability(table.awards.firstOrNull { it.prize == prize }, table.settings, table.called.size, false)
+                })
             Text(words(R.string.coin_ties), style = MaterialTheme.typography.bodySmall)
         } else {
             Text(words(R.string.play_claim_rules))
@@ -266,13 +278,17 @@ internal fun ClaimArena(
             table.players.forEach { player -> Text("${words.playerLabel(player)} · ${table.score(player.id)}") }
         }
     }
-    if (players) ArenaDialog(words(R.string.play_players_short, table.players.size), { players = false }) {
+    if (players) ArenaDialog(table.playerCountText(words), { players = false }) {
         table.players.sortedBy { it.id != ownerId }.forEach { player ->
             Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("table-player-${player.id}").semantics(mergeDescendants = true) {},
                 horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 AvatarBadge(player.avatar, size = 32.dp, modifier = Modifier.clearAndSetSemantics {})
                 Column(Modifier.weight(1f)) {
                     Text(words.playerLabel(player), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    if (!player.computer && table.connectedHumanIds != null)
+                        Text(words(if (player.id in table.connectedHumanIds) R.string.arena_player_live else R.string.arena_player_away),
+                            color = if (player.id in table.connectedHumanIds) GameNightPalette.gold else MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.labelSmall)
                 }
             }
         }
@@ -434,7 +450,7 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
                 drawLine(muted, Offset(size.width / 2, 6.dp.toPx()), Offset(size.width / 2 + 4.dp.toPx(), 2.dp.toPx()), 1.5.dp.toPx())
             }
         }
-        val playerSummary = words(R.string.play_players_short, table.players.size)
+        val playerSummary = table.playerCountText(words)
         val playerControl = Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .clickable(role = Role.Button, onClick = openPlayers).testTag("table-players")
             .semantics(mergeDescendants = true) { contentDescription = playerSummary }
@@ -442,7 +458,8 @@ private fun TableSidebar(table: TableRound, ownerId: String, ink: Color, muted: 
             Row(Modifier.clearAndSetSemantics {}, horizontalArrangement = Arrangement.spacedBy((-5).dp)) {
                 table.players.sortedBy { it.id != ownerId }.take(2).forEach { AvatarBadge(it.avatar, size = 20.dp) }
             }
-            Text("${table.players.size}", modifier = Modifier.weight(1f).testTag("player-count"), fontSize = 11.sp, lineHeight = 13.sp, color = muted, textAlign = TextAlign.Center)
+            Text("${table.livePeople.takeIf { table.connectedHumanIds != null } ?: table.players.count { !it.computer }} + ${table.computerSeats}",
+                modifier = Modifier.weight(1f).testTag("player-count"), fontSize = 11.sp, lineHeight = 13.sp, color = muted, textAlign = TextAlign.Center)
             PlayerChevron(muted)
         } else Column(playerControl.padding(horizontal = 6.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {

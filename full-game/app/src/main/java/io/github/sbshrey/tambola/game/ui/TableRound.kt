@@ -22,10 +22,20 @@ data class TableRound(
     val callIntervalSeconds: Int = 10,
     val powers: MatchPowers? = null,
     val pendingMarks: Map<String, Set<Int>> = emptyMap(),
+    /** Server presence for human seats. Null for an offline round. */
+    val connectedHumanIds: Set<String>? = null,
 ) {
     val latest: Int? get() = called.lastOrNull()
     val finished: Boolean get() = status == RoundStatus.COMPLETED || status == RoundStatus.CANCELLED
     fun score(playerId: String): Int = scores[playerId] ?: 0
+    val livePeople: Int get() = players.count { !it.computer && it.id in connectedHumanIds.orEmpty() }
+    val computerSeats: Int get() = players.count { it.computer }
+    fun playerCountText(words: GameText): String = listOfNotNull(
+        words(if (connectedHumanIds == null) io.github.sbshrey.tambola.game.R.string.arena_people_seated
+            else io.github.sbshrey.tambola.game.R.string.arena_live_people,
+            if (connectedHumanIds == null) players.count { !it.computer } else livePeople),
+        words(io.github.sbshrey.tambola.game.R.string.arena_computer_seats, computerSeats).takeIf { computerSeats > 0 },
+    ).joinToString(" · ")
 }
 
 fun Round.toTable(): TableRound = TableRound(id, settings, players, tickets, called, marks, awards,
@@ -39,7 +49,8 @@ fun RoomView.toTable(localMarks: Map<String, Set<Int>>): TableRound? = round?.le
         else (game.powers?.marks ?: localMarks)[ticket.id].orEmpty().intersect(ticket.numbers.toSet())) }
     val ownLabels = game.ownTickets.mapIndexed { index, ticket -> WinningTicket(ticket.id, ticket.playerId, index + 1) }
     TableRound(game.id, options.game, game.players, game.ownTickets, game.called, marks, game.awards,
-        game.customAwards, game.status, game.scores, (ownLabels + game.winningTickets).distinctBy { it.id }, coins, nextDrawAt, serverTime, options.intervalSeconds, game.powers)
+        game.customAwards, game.status, game.scores, (ownLabels + game.winningTickets).distinctBy { it.id }, coins, nextDrawAt, serverTime, options.intervalSeconds, game.powers,
+        connectedHumanIds = members.filter { it.connected }.map { it.playerId }.toSet())
 }
 
 /** Only correctly marked, already called numbers charge the nearest available standard prize. */
