@@ -35,11 +35,13 @@ import java.security.MessageDigest
     val queuedMarks: List<RoomAction.Mark> = emptyList(),
     val bingoRoom: BingoRoomView? = null,
     val preferredBingoCards: Int = 1,
+    val queuedBingoMarks: List<BingoAction.Mark> = emptyList(),
 ) {
     init {
         require(preferredBingoCards in 1..6)
         require(preferredTickets == null || preferredTickets in 1..6)
         require(queuedMarks.size <= 90 && queuedMarks.distinct().size == queuedMarks.size)
+        require(queuedBingoMarks.size <= 150 && queuedBingoMarks.distinct().size == queuedBingoMarks.size)
     }
     override fun toString(): String = "OnlineSaved(session=redacted, room=${room?.code}, pending=${pending != null})"
 }

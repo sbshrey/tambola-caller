@@ -34,6 +34,7 @@
     <string name="bingo_x">X pattern</string>
     <string name="bingo_blackout">Full card</string>
     <string name="bingo_marked">Marked</string>
+    <string name="bingo_mark_pending">Marking</string>
     <string name="bingo_unmarked">Not marked</string>
     <string name="bingo_ready_to_mark">Called — tap to mark</string>
     <string name="bingo_previous_card">Previous card</string>

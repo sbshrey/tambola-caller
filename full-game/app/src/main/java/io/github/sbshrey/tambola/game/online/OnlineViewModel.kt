@@ -55,6 +55,7 @@ data class OnlineUiState(
     val pending: Boolean = false,
     val markSending: Boolean = false,
     val pendingMarks: Map<String, Set<Int>> = emptyMap(),
+    val pendingBingoMarks: Map<String, Set<Int>> = emptyMap(),
     val deletingProfile: Boolean = false,
     val sessionExpired: Boolean = false,
     val storageFailure: Boolean = false,
@@ -105,13 +106,16 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 restored?.bingoRoom?.validateFor(restored.credentials.playerId)
                 restored?.wallet?.validate()
                 restored?.deviceIdentity?.validate()
-                saved = restored?.acceptWallet(restored.room?.wallet)?.let { it.copy(preferredTickets = it.ticketPreference()).pruneQueuedMarks() }
+                saved = restored?.acceptWallet(restored.room?.wallet)?.let {
+                    it.copy(preferredTickets = it.ticketPreference()).pruneQueuedMarks().pruneQueuedBingoMarks()
+                }
                 publish()
             } catch (_: Exception) {
                 mutable.update { it.copy(storageFailure = true, error = UiMessage(R.string.error_online_restore)) }
             }
             mutable.update { it.copy(loading = false) }
             connect()
+            if (saved?.pending.isBingoMark()) retry()
             refreshWallet()
         }
     }
@@ -122,8 +126,10 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             wallet = value?.wallet, marks = value?.marks.orEmpty(), history = value?.history.orEmpty(),
             loginRewards = it.loginRewards.takeIf { _ -> value?.credentials?.playerId == it.playerId && value != null },
             preferredTickets = value?.ticketPreference() ?: 3, serverTime = api?.serverTime,
-            badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null || value?.queuedMarks?.isNotEmpty() == true,
+            badges = value?.badgeProgress() ?: BadgeProgress(), pending = value?.pending != null ||
+                value?.queuedMarks?.isNotEmpty() == true || value?.queuedBingoMarks?.isNotEmpty() == true,
             pendingMarks = value?.pendingMarkNumbers().orEmpty(),
+            pendingBingoMarks = value?.pendingBingoMarkNumbers().orEmpty(),
             deletingProfile = value?.pending is PendingOperation.DeleteProfile,
             reactions = it.reactions.takeIf { snapshot -> snapshot?.roomId == value?.room?.roomId && snapshot?.roundId == value?.room?.round?.id && value?.room?.phase == RoomPhase.ACTIVE },
             reactionClock = it.reactionClock.takeIf { _ -> it.reactions?.roomId == value?.room?.roomId && it.reactions?.roundId == value?.room?.round?.id && value?.room?.phase == RoomPhase.ACTIVE },
@@ -134,7 +140,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                 ?.refreshPlayers(value?.room?.round?.players.orEmpty())) }
     }
     private suspend fun persist(value: OnlineSaved?) {
-        val clean = value?.pruneQueuedMarks()
+        val clean = value?.pruneQueuedMarks()?.pruneQueuedBingoMarks()
         try { store.write(clean) }
         catch (error: CancellationException) { throw error }
         catch (_: Exception) { mutable.update { it.copy(storageFailure = true) }; throw LocalStorageFailure() }
@@ -263,6 +269,24 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     }
     fun bingoCommand(action: BingoAction) {
         val room = saved?.bingoRoom ?: return
+        if (action is BingoAction.Mark && room.round?.prizes?.map { it.pattern } ==
+            listOf(io.github.sbshrey.tambola.domain.BingoPattern.ANY_LINE, io.github.sbshrey.tambola.domain.BingoPattern.FOUR_CORNERS)) {
+            val ui = mutable.value
+            if (ui.connection != Connection.LIVE || ui.storageFailure || ui.sessionExpired ||
+                (ui.busy && !ui.markSending) || (ui.pending && !ui.markSending)) return
+            viewModelScope.launch {
+                try {
+                    mutex.withLock {
+                        val current = saved ?: return@withLock
+                        val next = current.queueBingoMark(action.cardId, action.number)
+                        if (next != current) { persist(next); if (active) audio.effect(SoundCue.MARK) }
+                    }
+                    startBingoMarkDrain()
+                } catch (error: CancellationException) { throw error }
+                catch (error: Exception) { showFailure(error) }
+            }
+            return
+        }
         begin(PendingOperation.BingoCommand(room.code, BingoCommandRequest(UUID.randomUUID().toString(), room.revision, action)))
     }
     fun bingoLobby() {
@@ -366,11 +390,11 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
     fun retry() {
         if (mutable.value.busy || mutable.value.storageFailure) return
         if (saved?.pending == null) {
-            if (saved?.bingoRoom != null) { stream?.cancel(); stream = null; connect(); return }
+            if (saved?.bingoRoom != null) { stream?.cancel(); stream = null; connect(); startBingoMarkDrain(force = true); return }
             startMarkDrain(force = true); return
         }
         if (saved?.pending.pausesRoomStream()) { stream?.cancel(); stream = null; audio.stop() }
-        mutable.update { it.copy(busy = true, error = null, markSending = saved?.pending.isMark()) }
+        mutable.update { it.copy(busy = true, error = null, markSending = saved?.pending.isMark() || saved?.pending.isBingoMark()) }
         operation = viewModelScope.launch {
             try { performPending() }
             catch (error: CancellationException) { throw error }
@@ -378,6 +402,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
             finally {
                 mutable.update { it.copy(busy = false, markSending = false) }; connect()
                 startMarkDrain()
+                startBingoMarkDrain()
             }
         }
     }
@@ -597,6 +622,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
                         mutable.update { it.copy(connection = Connection.LIVE) }
                         received = true; failures = 0
                     }
+                    startBingoMarkDrain()
                 } catch (error: CancellationException) { throw error }
                 catch (error: RoomApiFailure) {
                     if (error.status in setOf(403, 404, 410)) {
@@ -677,6 +703,34 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     fun reconnect() { stream?.cancel(); stream = null; connect() }
+    private fun startBingoMarkDrain(force: Boolean = false) {
+        val ui = mutable.value
+        val current = saved ?: return
+        if (!active || ui.connection != Connection.LIVE || ui.busy || ui.storageFailure || ui.sessionExpired ||
+            current.pending != null || current.queuedBingoMarks.isEmpty() || (!force && ui.error != null)) return
+        mutable.update { it.copy(busy = true, markSending = true, error = null) }
+        operation = viewModelScope.launch {
+            try {
+                while (active && mutable.value.connection == Connection.LIVE) {
+                    val send = mutex.withLock {
+                        val latest = saved ?: return@withLock false
+                        if (latest.pending != null) return@withLock false
+                        val promoted = latest.promoteBingoMark(UUID.randomUUID().toString())
+                        persist(promoted)
+                        promoted.pending.isBingoMark()
+                    }
+                    if (!send) break
+                    performPending()
+                }
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { showFailure(error) }
+            finally {
+                mutable.update { it.copy(busy = false, markSending = false) }
+                connect()
+                startBingoMarkDrain()
+            }
+        }
+    }
     private fun startMarkDrain(force: Boolean = false) {
         val ui = mutable.value
         val current = saved ?: return
@@ -811,6 +865,6 @@ private class LocalStorageFailure : Exception("Local online storage unavailable"
 /** A leave may commit before its HTTP receipt arrives. Keep that receipt retryable;
  * losing room membership is expected until the exact command is confirmed. */
 private fun PendingOperation?.pausesRoomStream(): Boolean = this is PendingOperation.DeleteProfile ||
-    this is PendingOperation.BingoMatch || this is PendingOperation.BingoCommand ||
+    this is PendingOperation.BingoMatch || (this is PendingOperation.BingoCommand && request.action !is BingoAction.Mark) ||
     this is PendingOperation.Match || this == PendingOperation.Logout ||
     (this is PendingOperation.Command && request.action == RoomAction.Leave)

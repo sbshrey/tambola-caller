@@ -39,6 +39,6 @@
     <string name="bingo_live_wins">अभी की जीत</string>
     <string name="bingo_live_open">दोनों इनाम खुले हैं। चमकते नंबर निशान लगाएँ!</string>
     <string name="bingo_summary_win">आपने %1$d सिक्के जीते!</string>
-    <string name="bingo_summary_finish">दौर पूरा हुआ</string>
+    <string name="bingo_summary_finish">दौर पूरा हुआ · %1$d सिक्के मिले</string>
     <string name="bingo_summary_stats">स्थान %1$d/%2$d · %3$d निशान · %4$d जीत</string>
 </resources>

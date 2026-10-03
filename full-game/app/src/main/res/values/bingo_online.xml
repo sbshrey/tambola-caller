@@ -39,6 +39,6 @@
     <string name="bingo_live_wins">LIVE WINS</string>
     <string name="bingo_live_open">Both prizes are open. Dab the glowing numbers!</string>
     <string name="bingo_summary_win">You won %1$d coins!</string>
-    <string name="bingo_summary_finish">Round complete</string>
+    <string name="bingo_summary_finish">Round complete · %1$d coins earned</string>
     <string name="bingo_summary_stats">Rank %1$d of %2$d · %3$d dabs · %4$d goals won</string>
 </resources>

@@ -52,7 +52,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
     var elapsed by remember(room?.revision) { mutableLongStateOf(0) }
     LaunchedEffect(room?.revision) { while (true) { delay(1000); elapsed += 1000 } }
     LaunchedEffect(state.bingoWinSequence) { if (state.bingoWinSequence > 0) { delay(1600); model.dismissBingoWin() } }
-    val blocked = state.loading || state.busy || state.pending || state.storageFailure || state.sessionExpired || !state.available
+    val blocked = state.loading || (state.busy && !state.markSending) ||
+        (state.pending && !state.markSending) || state.storageFailure || state.sessionExpired || !state.available
+    val claimBlocked = blocked || state.busy || state.pending
     MaterialTheme(colorScheme = GameNightPalette.colors) {
     Surface(color = GameNightPalette.background, contentColor = GameNightPalette.cream) {
     Column(Modifier.fillMaxSize().background(GameNightPalette.background).safeDrawingPadding().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -69,7 +71,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                 maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         state.error?.let { message -> Text(stringResource(message.resource, *message.arguments.toTypedArray()), color = MaterialTheme.colorScheme.error) }
-        if (state.pending || state.connection == Connection.RECONNECTING || state.error != null) {
+        if ((state.pending && !state.markSending) || state.connection == Connection.RECONNECTING || state.error != null) {
             TextButton(onClick = model::retry, enabled = !state.busy && !state.storageFailure, modifier = Modifier.testTag("bingo-online-retry")) { Text(stringResource(R.string.bingo_retry)) }
         }
         when {
@@ -158,7 +160,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                     color = GameNightPalette.panel, border = BorderStroke(1.dp, GameNightPalette.mint)) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(if (ownGoals > 0) stringResource(R.string.bingo_summary_win, ownCoins)
-                            else stringResource(R.string.bingo_summary_finish), color = GameNightPalette.cream,
+                            else stringResource(R.string.bingo_summary_finish, ownCoins), color = GameNightPalette.cream,
                             style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
                         Text(stringResource(R.string.bingo_summary_stats, ownRank, ranked.size, ownMarks, ownGoals),
                             color = GameNightPalette.mint, style = MaterialTheme.typography.bodyMedium)
@@ -223,7 +225,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             }
                         }
                     }
-                    if (quick) BingoQuickGoals(game, card, state.playerId, blocked, false) { pattern ->
+                    if (quick) BingoQuickGoals(game, card, state.playerId, claimBlocked, false) { pattern ->
                         model.bingoCommand(BingoAction.Claim(game.id, card.id, pattern))
                     } else Button(onClick = { prizes = true }, enabled = !blocked,
                         modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("bingo-online-prizes")) {
@@ -249,12 +251,14 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                 val hand: @Composable ColumnScope.() -> Unit = {
                     Box(Modifier.weight(1f).fillMaxWidth()) {
                         BingoCardView(card, game.called, game.ownMarks[card.id].orEmpty(), !blocked && state.connection == Connection.LIVE,
-                            { cardId, number -> model.bingoCommand(BingoAction.Mark(game.id, cardId, number)) }, Modifier.fillMaxSize(), quick)
+                            { cardId, number -> model.bingoCommand(BingoAction.Mark(game.id, cardId, number)) }, Modifier.fillMaxSize(), quick,
+                            state.pendingBingoMarks[card.id].orEmpty())
                         if (state.bingoWinSequence > 0) WinConfetti("${game.id}:${state.bingoWinSequence}", reducedMotion, Modifier.matchParentSize(), intensity = .85f)
                     }
                     if (quick && game.ownCards.size > 1) Row(Modifier.fillMaxWidth().testTag("bingo-card-tabs"), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         game.ownCards.forEachIndexed { index, own ->
-                            val due = own.numbers.count { it in game.called && it !in game.ownMarks[own.id].orEmpty() }
+                            val due = own.numbers.count { it in game.called && it !in game.ownMarks[own.id].orEmpty() &&
+                                it !in state.pendingBingoMarks[own.id].orEmpty() }
                             Surface(onClick = { page = index }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)
                                 .testTag("bingo-card-tab-${index + 1}"), shape = RoundedCornerShape(10.dp),
                                 color = if (page == index) GameNightPalette.mint else GameNightPalette.panel,
@@ -301,7 +305,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                 maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     }
-                    if (quick) BingoQuickGoals(game, card, state.playerId, blocked, true) { pattern ->
+                    if (quick) BingoQuickGoals(game, card, state.playerId, claimBlocked, true) { pattern ->
                         model.bingoCommand(BingoAction.Claim(game.id, card.id, pattern))
                     } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedButton(onClick = { history = true }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) {

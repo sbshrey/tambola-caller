@@ -9,6 +9,28 @@ import org.junit.Test
 import kotlinx.serialization.encodeToString
 
 class BingoOnlineStateTest {
+    @Test fun `quick Bingo queues rapid dabs durably and never counts them as claimed marks`() {
+        val first = cards.first().numbers[0]
+        val second = cards.first().numbers[1]
+        val quick = view().let { it.copy(round = it.round!!.copy(called = listOf(first, second),
+            winnersPerPattern = 5, prizes = BingoCoinPool(2, 2).prizes)) }
+        val queued = saved().copy(bingoRoom = quick).queueBingoMark(cards.first().id, first)
+            .queueBingoMark(cards.first().id, second)
+        assertEquals(2, queued.queuedBingoMarks.size)
+        assertEquals(setOf(first, second), queued.pendingBingoMarkNumbers()[cards.first().id])
+        assertEquals(queued, queued.queueBingoMark(cards.first().id, first))
+        assertEquals(queued, queued.queueBingoMark(cards.first().id, 0))
+        val restored = WireJson.decodeFromString<OnlineSaved>(WireJson.encodeToString(queued))
+        val sending = restored.promoteBingoMark("first-request")
+        assertEquals(first, (sending.pending as PendingOperation.BingoCommand).request.action.let { (it as BingoAction.Mark).number })
+        assertEquals(1, sending.queuedBingoMarks.size)
+        val confirmed = sending.copy(bingoRoom = quick.copy(revision = 3,
+            round = quick.round!!.copy(ownMarks = mapOf(cards.first().id to setOf(first)))), pending = null)
+            .pruneQueuedBingoMarks()
+        assertEquals(setOf(second), confirmed.pendingBingoMarkNumbers()[cards.first().id])
+        assertEquals(second, ((confirmed.promoteBingoMark("second-request").pending as PendingOperation.BingoCommand)
+            .request.action as BingoAction.Mark).number)
+    }
     @Test fun `called Bingo mark rebases after a draw advances the table`() {
         val first = cards.first().numbers.first()
         val pending = PendingOperation.BingoCommand("B-ABCD2345",

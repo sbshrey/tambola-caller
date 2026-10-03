@@ -166,7 +166,7 @@ private fun BingoCardView(card: BingoCard, round: BingoRound, mark: (String, Int
 
 @Composable
 internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, enabled: Boolean, mark: (String, Int) -> Unit,
-    modifier: Modifier, permanent: Boolean = false) {
+    modifier: Modifier, permanent: Boolean = false, pending: Set<Int> = emptySet()) {
     BoxWithConstraints(modifier.testTag("bingo-card")) {
         val heading = 30.dp
         val side = minOf(maxWidth, (maxHeight - heading - 4.dp).coerceAtLeast(0.dp))
@@ -182,20 +182,23 @@ internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, 
                     repeat(5) { column ->
                         val number = card.cells[row * 5 + column]
                         val marked = number == 0 || number in marks
-                        val ready = number != 0 && number in called && !marked
+                        val queued = number != 0 && number in pending && !marked
+                        val ready = number != 0 && number in called && !marked && !queued
                         val description = if (number == 0) stringResource(R.string.bingo_free) else bingoCallLabel(number)
                         val markState = stringResource(when {
                             marked -> R.string.bingo_marked
+                            queued -> R.string.bingo_mark_pending
                             ready -> R.string.bingo_ready_to_mark
                             else -> R.string.bingo_unmarked
                         })
-                        Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called && (!permanent || !marked),
+                        Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called && !queued && (!permanent || !marked),
                             modifier = Modifier.weight(1f).fillMaxHeight().testTag("bingo-cell-$number").semantics {
                                 contentDescription = description; stateDescription = markState
                             }, shape = RoundedCornerShape(10.dp),
-                            border = if (ready) BorderStroke(2.dp, GameNightPalette.gold) else null,
-                            color = if (marked) Jade else if (ready) GameNightPalette.gold.copy(alpha = .18f) else Panel,
-                            contentColor = if (marked) MaterialTheme.colorScheme.onSecondary else if (ready) GameNightPalette.gold else MaterialTheme.colorScheme.onSurface) {
+                            border = if (ready || queued) BorderStroke(2.dp, GameNightPalette.gold) else null,
+                            color = if (marked) Jade else if (queued) GameNightPalette.gold.copy(alpha = .4f)
+                                else if (ready) GameNightPalette.gold.copy(alpha = .18f) else Panel,
+                            contentColor = if (marked) MaterialTheme.colorScheme.onSecondary else if (ready || queued) GameNightPalette.gold else MaterialTheme.colorScheme.onSurface) {
                             BoxWithConstraints(contentAlignment = Alignment.Center) {
                                 val scale = LocalDensity.current.fontScale
                                 val font = minOf(24f * scale, maxHeight.value * .65f) / scale

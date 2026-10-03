@@ -16,7 +16,9 @@ beside the card and enables a direct claim when the selected card is ready.
 Numbered card tabs display missed marks on each owned card. The results view
 keeps the player's rank, marks, goals and coins visible above the standings.
 Quick-round dabs are permanent, so an accidental second tap cannot undo a
-correct mark. Version 1 cards retain their original toggle behavior.
+correct mark. Rapid dabs are persisted in a per-round queue; a pending mark
+stays distinct until the server confirms it. A restart retries the same
+in-flight receipt. Version 1 cards retain their original toggle behavior.
 
 `BingoMatchRequest.quickPlay` separates new quick tables from older four-prize
 tables. Existing lobby and active rounds retain version 1 rules, eight-second

@@ -34,6 +34,7 @@
     <string name="bingo_x">X पैटर्न</string>
     <string name="bingo_blackout">पूरा कार्ड</string>
     <string name="bingo_marked">चिह्नित</string>
+    <string name="bingo_mark_pending">निशान भेजा जा रहा है</string>
     <string name="bingo_unmarked">चिह्नित नहीं</string>
     <string name="bingo_ready_to_mark">पुकारा गया — चिह्नित करें</string>
     <string name="bingo_previous_card">पिछला कार्ड</string>
