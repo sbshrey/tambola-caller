@@ -71,6 +71,28 @@ class BingoRoundTest {
         rejected { round.claim("b", "b-card", BingoPattern.BLACKOUT) }
     }
 
+    @Test fun `quick round only awards short goals and ends after its last claim window`() {
+        var round = round().copy(version = 2, winnersPerPattern = 5)
+        assertEquals(listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS), round.activePatterns)
+        repeat(45) { round = round.next() }
+        assertEquals(45, round.draw.count)
+        assertFalse(round.finished)
+        cards.forEach { card -> card.numbers.filter { it in round.draw.called }.forEach { round = round.mark(card.playerId, card.id, it) } }
+        rejected { round.claim("a", "a-card", BingoPattern.BLACKOUT) }
+        round = round.next()
+        assertTrue(round.finished)
+        assertEquals(45, round.draw.count)
+        assertEquals(round, BingoRoundCodec.decode(BingoRoundCodec.encode(round)))
+    }
+
+    @Test fun `quick dabs stay marked after an accidental second tap`() {
+        val first = line.first()
+        val quick = round().copy(version = 2, winnersPerPattern = 5).next().mark("a", "a-card", first)
+        assertEquals(quick, quick.mark("a", "a-card", first))
+        val classic = round().next().mark("a", "a-card", first)
+        assertTrue(first !in classic.mark("a", "a-card", first).marks["a-card"].orEmpty())
+    }
+
     @Test fun `practice populations vary and complete with ranked conserved awards`() {
         val sizes = mutableSetOf<Int>()
         val counts = mutableSetOf<Int>()
@@ -97,6 +119,6 @@ class BingoRoundTest {
         rejected { round.copy(marks = round.marks + ("a-card" to setOf(99))) }
         rejected { round.copy(claims = listOf(BingoClaim("a", "b-card", BingoPattern.ANY_LINE, 5))) }
         rejected { round.copy(claims = listOf(BingoClaim("a", "a-card", BingoPattern.BLACKOUT, 5))) }
-        rejected { round.copy(version = 2) }
+        rejected { round.copy(version = 3) }
     }
 }

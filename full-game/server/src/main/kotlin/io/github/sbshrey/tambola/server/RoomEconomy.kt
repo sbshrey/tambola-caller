@@ -66,7 +66,7 @@ internal fun RoomRecord.startCoinRound(now: Long): RoomRecord {
         matchPowers = if (options.previewPowers) members.associate { it.id to MatchPowers(nextPower = randomMatchPower()) } else matchPowers)
 }
 
-internal fun randomMatchPower(): MatchPower = MatchPower.entries[java.security.SecureRandom().nextInt(MatchPower.entries.size)]
+internal fun randomMatchPower(): MatchPower = listOf(MatchPower.AUTO_DAB, MatchPower.PRIZE_BONUS)[java.security.SecureRandom().nextInt(2)]
 
 internal object RoomEconomy {
     /** Called under the room lock, in the same transaction as its snapshot/receipt. */

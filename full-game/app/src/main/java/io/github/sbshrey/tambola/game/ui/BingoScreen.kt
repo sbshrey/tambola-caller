@@ -165,7 +165,8 @@ private fun BingoCardView(card: BingoCard, round: BingoRound, mark: (String, Int
 }
 
 @Composable
-internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, enabled: Boolean, mark: (String, Int) -> Unit, modifier: Modifier) {
+internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, enabled: Boolean, mark: (String, Int) -> Unit,
+    modifier: Modifier, permanent: Boolean = false) {
     BoxWithConstraints(modifier.testTag("bingo-card")) {
         val heading = 30.dp
         val side = minOf(maxWidth, (maxHeight - heading - 4.dp).coerceAtLeast(0.dp))
@@ -188,7 +189,7 @@ internal fun BingoCardView(card: BingoCard, called: List<Int>, marks: Set<Int>, 
                             ready -> R.string.bingo_ready_to_mark
                             else -> R.string.bingo_unmarked
                         })
-                        Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called,
+                        Surface(onClick = { mark(card.id, number) }, enabled = enabled && number != 0 && number in called && (!permanent || !marked),
                             modifier = Modifier.weight(1f).fillMaxHeight().testTag("bingo-cell-$number").semantics {
                                 contentDescription = description; stateDescription = markState
                             }, shape = RoundedCornerShape(10.dp),

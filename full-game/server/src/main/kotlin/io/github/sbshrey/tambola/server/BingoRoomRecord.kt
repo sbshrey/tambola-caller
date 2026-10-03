@@ -7,6 +7,7 @@ import java.security.SecureRandom
 import java.util.UUID
 
 internal const val BINGO_INTERVAL = 8_000L
+internal const val QUICK_BINGO_INTERVAL = 5_000L
 internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-75-draw-v1\n${round.id}\n$nonce\n${round.draw.order.joinToString(",")}")
 
 /** Persisted authoritative state. Its public projection is an explicit allow-list. */
@@ -18,6 +19,7 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
     val round: BingoRound? = null, val pool: BingoCoinPool? = null, val nonce: String? = null,
     val variant: GameVariant = GameVariant.BINGO_75,
     val realPlayersOnly: Boolean = false,
+    val quickPlay: Boolean = false,
 ) {
     init {
         require(variant == GameVariant.BINGO_75 && code.matches(Regex("B-[A-Z2-9]{8}")))
@@ -26,11 +28,12 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
         require(createdAt >= 0 && expiresAt > createdAt)
         require(phase != RoomPhase.LOBBY || (round == null && pool == null && purchases.keys == members.map { it.id }.toSet()))
         require(phase !in setOf(RoomPhase.ACTIVE, RoomPhase.FINISHED) || (round != null && pool != null && nonce != null))
-        require(round == null || (pool?.soldCards == round.cards.size && nonce != null))
+        require(round == null || (pool?.soldCards == round.cards.size && pool.version == round.version &&
+            round.version == (if (quickPlay) 2 else 1) && nonce != null))
     }
     fun population() = 30 + Math.floorMod(id.hashCode(), 21)
     private fun computerCounts(number: Int) = (1..number).associate { index ->
-        practicePersona(id, index).id to 1 + (digest("$id:bingo-card-count:$index").take(8).toLong(16) % 6).toInt()
+        practicePersona(id, index).id to if (quickPlay) 1 else 1 + (digest("$id:bingo-card-count:$index").take(8).toLong(16) % 6).toInt()
     }
     fun lobbyPlayers(): List<Player> {
         val count = if (friendTable || realPlayersOnly) 0 else (1 + practiceSeats.coerceAtMost(population() - 1) - members.size).coerceAtLeast(0)
@@ -44,10 +47,10 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
         val counts = filled.lobbyCounts()
         val generator = BingoCardGenerator(SecureRandom())
         val cards = players.flatMap { generator.deal(it.id, counts.getValue(it.id)) }
-        val game = BingoRound(id = UUID.randomUUID().toString(), createdAt = now, players = players,
-            cards = cards, draw = BingoDraw.shuffled(), winnersPerPattern = 2).start()
-        return filled.copy(phase = RoomPhase.ACTIVE, startsAt = null, nextDrawAt = now + BINGO_INTERVAL,
-            expiresAt = now + ROOM_LIFETIME, round = game, pool = BingoCoinPool(cards.size), nonce = secret())
+        val game = BingoRound(version = if (quickPlay) 2 else 1, id = UUID.randomUUID().toString(), createdAt = now, players = players,
+            cards = cards, draw = BingoDraw.shuffled(), winnersPerPattern = if (quickPlay) 5 else 2).start()
+        return filled.copy(phase = RoomPhase.ACTIVE, startsAt = null, nextDrawAt = now + if (quickPlay) QUICK_BINGO_INTERVAL else BINGO_INTERVAL,
+            expiresAt = now + ROOM_LIFETIME, round = game, pool = BingoCoinPool(cards.size, game.version), nonce = secret())
     }
     fun tick(now: Long): BingoRoomRecord {
         if (phase == RoomPhase.CLOSED) return this
@@ -62,7 +65,7 @@ internal fun bingoCommitment(round: BingoRound, nonce: String) = digest("bingo-7
         if (phase == RoomPhase.ACTIVE && requireNotNull(nextDrawAt) <= now) {
             val game = requireNotNull(round).next().playComputers()
             return copy(round = game, phase = if (game.finished) RoomPhase.FINISHED else RoomPhase.ACTIVE,
-                nextDrawAt = if (game.finished) null else now + BINGO_INTERVAL)
+                nextDrawAt = if (game.finished) null else now + if (quickPlay) QUICK_BINGO_INTERVAL else BINGO_INTERVAL)
         }
         return this
     }

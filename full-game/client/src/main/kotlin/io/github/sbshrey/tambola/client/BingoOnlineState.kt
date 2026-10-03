@@ -27,9 +27,11 @@ fun BingoRoomView.validateFor(actor: String) {
     }
     check(phase != RoomPhase.LOBBY && startsAt == null)
     check(game.id.isNotBlank() && game.players == players && game.cardCounts == cardCounts)
-    check(game.called.size <= 75 && game.called.distinct().size == game.called.size && game.called.all { it in 1..75 })
-    check(game.winnersPerPattern == 2)
-    check(game.prizes == BingoCoinPool(cardCounts.values.sum()).prizes)
+    val quick = game.prizes.map { it.pattern } == listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS)
+    check(game.called.size <= (if (quick) 45 else 75))
+    check(game.called.distinct().size == game.called.size && game.called.all { it in 1..75 })
+    check(game.winnersPerPattern == (if (quick) 5 else 2))
+    check(game.prizes == BingoCoinPool(cardCounts.values.sum(), if (quick) 2 else 1).prizes)
     check(game.ownCards.size == (cardCounts[actor] ?: 0) && game.ownCards.all { it.playerId == actor })
     check(game.ownCards.map { it.id }.distinct().size == game.ownCards.size)
     check(game.ownCards.map { it.fingerprint }.distinct().size == game.ownCards.size)
@@ -38,7 +40,8 @@ fun BingoRoomView.validateFor(actor: String) {
     check(game.claims.map { it.playerId to it.pattern }.distinct().size == game.claims.size)
     check(game.claims.zipWithNext().all { (a, b) -> a.drawCount <= b.drawCount })
     game.claims.forEachIndexed { index, claim ->
-        check(claim.playerId in ids && claim.cardId.isNotBlank() && claim.drawCount in 1..game.called.size)
+        check(claim.playerId in ids && claim.cardId.isNotBlank() && claim.drawCount in 1..game.called.size &&
+            game.prizes.any { it.pattern == claim.pattern })
         val earlier = game.claims.take(index).filter { it.pattern == claim.pattern }
         check(earlier.size < game.winnersPerPattern || earlier.last().drawCount == claim.drawCount)
         if (claim.playerId == actor) check(cards[claim.cardId]?.let {

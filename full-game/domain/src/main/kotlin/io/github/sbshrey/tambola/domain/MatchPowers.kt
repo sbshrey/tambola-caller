@@ -43,7 +43,7 @@ import kotlinx.serialization.EncodeDefault
         require(power != MatchPower.SHIELD || nextPower != null)
         val next = copy(inventory = inventory.toMutableList().also { it.remove(power) },
             used = used + (ticket.id to (used[ticket.id].orEmpty() + power)),
-            autoUntil = if (power == MatchPower.AUTO_DAB) autoUntil + (ticket.id to now + 15_000L) else autoUntil,
+            autoUntil = if (power == MatchPower.AUTO_DAB) autoUntil + (ticket.id to now + 35_000L) else autoUntil,
             armedBonus = if (power == MatchPower.PRIZE_BONUS) armedBonus + ticket.id else armedBonus,
             armedShield = if (power == MatchPower.SHIELD) armedShield + ticket.id else armedShield,
             notice = PowerNotice.ACTIVATED, noticeSequence = noticeSequence + 1)

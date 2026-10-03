@@ -25,7 +25,8 @@ data class BingoRound(
     val winnersPerPattern: Int = 2,
 ) {
     init {
-        require(version == 1 && id.isNotBlank() && createdAt >= 0)
+        require(version in 1..2 && id.isNotBlank() && createdAt >= 0)
+        require(version != 2 || (draw.count <= 45 && winnersPerPattern == 5))
         require(players.size in 1..50 && players.map { it.id }.distinct().size == players.size)
         require(cards.map { it.id }.distinct().size == cards.size)
         require(cards.all { card -> players.any { it.id == card.playerId } })
@@ -38,6 +39,7 @@ data class BingoRound(
         require(claims.map { it.playerId to it.pattern }.distinct().size == claims.size)
         require(claims.zipWithNext().all { (a, b) -> a.drawCount <= b.drawCount })
         claims.forEachIndexed { index, claim ->
+            require(claim.pattern in activePatterns)
             val card = cards.find { it.id == claim.cardId }
             require(card != null && card.playerId == claim.playerId && claim.drawCount in 1..draw.count)
             require(claim.pattern.isComplete(card, draw.order.take(claim.drawCount).toSet()))
@@ -48,19 +50,23 @@ data class BingoRound(
     }
 
     val finished: Boolean get() = status in setOf(RoundStatus.COMPLETED, RoundStatus.CANCELLED)
+    val activePatterns: List<BingoPattern> get() = if (version == 2)
+        listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS) else BingoPattern.entries
+    val callLimit: Int get() = if (version == 2) 45 else 75
     fun start(): BingoRound = if (status in setOf(RoundStatus.READY, RoundStatus.PAUSED)) copy(status = RoundStatus.PLAYING) else this
     fun pause(): BingoRound = if (status == RoundStatus.PLAYING) copy(status = RoundStatus.PAUSED) else this
     fun cancel(): BingoRound = if (finished) this else copy(status = RoundStatus.CANCELLED)
-    fun remaining(pattern: BingoPattern): Int = (winnersPerPattern - claims.count { it.pattern == pattern }).coerceAtLeast(0)
+    fun remaining(pattern: BingoPattern): Int = if (pattern !in activePatterns) 0 else
+        (winnersPerPattern - claims.count { it.pattern == pattern }).coerceAtLeast(0)
     fun closed(pattern: BingoPattern): Boolean {
         val awards = claims.filter { it.pattern == pattern }
-        return finished || (awards.size >= winnersPerPattern && awards.last().drawCount < draw.count)
+        return pattern !in activePatterns || finished || (awards.size >= winnersPerPattern && awards.last().drawCount < draw.count)
     }
 
     /** Called on the next timer tick, leaving a full final-call claim window. */
     fun next(): BingoRound {
         if (status != RoundStatus.PLAYING) return this
-        if (draw.finished || BingoPattern.entries.all { remaining(it) == 0 }) return copy(status = RoundStatus.COMPLETED)
+        if (draw.count >= callLimit || activePatterns.all { remaining(it) == 0 }) return copy(status = RoundStatus.COMPLETED)
         return copy(draw = draw.next())
     }
 
@@ -69,6 +75,7 @@ data class BingoRound(
         val card = cards.single { it.id == cardId }
         require(card.playerId == playerId && number in card.numbers && number in draw.called)
         val current = marks[cardId].orEmpty()
+        if (version == 2 && number in current) return this
         return copy(marks = marks + (cardId to if (number in current) current - number else current + number))
     }
 
@@ -83,10 +90,10 @@ data class BingoRound(
     }
 
     /** Practice points; online wallet credit is a separate server transaction. */
-    fun points(playerId: String): Int = BingoPattern.entries.sumOf { pattern ->
+    fun points(playerId: String): Int = activePatterns.sumOf { pattern ->
         val winners = claims.filter { it.pattern == pattern }.map { it.playerId }.sorted()
         val position = winners.indexOf(playerId)
-        val pool = if (pattern == BingoPattern.BLACKOUT) 40 else 20
+        val pool = if (version == 2) 50 else if (pattern == BingoPattern.BLACKOUT) 40 else 20
         if (position < 0) 0 else pool / winners.size + if (position < pool % winners.size) 1 else 0
     }
 
@@ -101,7 +108,7 @@ data class BingoRound(
             .associate { it.id to it.numbers.filter { n -> n in called }.toSet() })
         for (player in players.filter { it.computer }) {
             for (card in cards.filter { it.playerId == player.id }) {
-                for (pattern in BingoPattern.entries) {
+                for (pattern in activePatterns) {
                     if (!next.closed(pattern) && pattern.isComplete(card, called, next.marks[card.id].orEmpty()))
                         next = next.claim(player.id, card.id, pattern)
                 }

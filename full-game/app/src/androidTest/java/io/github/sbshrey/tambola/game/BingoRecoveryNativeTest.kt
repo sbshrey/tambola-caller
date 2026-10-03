@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.test.platform.app.InstrumentationRegistry
 import io.github.sbshrey.tambola.client.*
 import io.github.sbshrey.tambola.domain.BingoPattern
+import io.github.sbshrey.tambola.domain.isComplete
 import io.github.sbshrey.tambola.game.online.*
 import io.github.sbshrey.tambola.game.ui.*
 import io.github.sbshrey.tambola.protocol.*
@@ -72,16 +73,18 @@ class BingoRecoveryNativeTest {
             assertEquals(charged, model!!.state.value.wallet!!.balance)
             val code = model!!.state.value.bingoRoom!!.code
             peer = runBlocking { api.guest(GuestRequest("Bingo recovery peer")) }
-            runBlocking { api.bingoMatch(peer!!.token, BingoMatchRequest(UUID.randomUUID().toString(), 1, true, code)) }
+            runBlocking { api.bingoMatch(peer!!.token, BingoMatchRequest(UUID.randomUUID().toString(), 1, true, code, quickPlay = true)) }
             until { model!!.state.value.bingoRoom!!.members.size == 2 }
             compose.runOnIdle { model!!.bingoCommand(BingoAction.Start) }
             until { !model!!.state.value.busy && model!!.state.value.bingoRoom?.phase == RoomPhase.ACTIVE }
-            post(8080, "qa/bingo/tick/75")
-            assertEquals(75, runBlocking { api.bingoRead(saved()!!.credentials.token, code) }.round!!.called.size)
-            until { model!!.state.value.bingoRoom!!.round!!.called.size == 75 }
+            post(8080, "qa/bingo/tick/45")
+            assertEquals(45, runBlocking { api.bingoRead(saved()!!.credentials.token, code) }.round!!.called.size)
+            until { model!!.state.value.bingoRoom!!.round!!.called.size == 45 }
             val game = model!!.state.value.bingoRoom!!.round!!
-            val card = game.ownCards.first()
-            val number = card.numbers.first()
+            val card = game.ownCards.firstOrNull { own -> game.prizes.any { it.pattern.isComplete(own, game.called.toSet()) } }
+                ?: error("Six cards should contain a quick goal by call 45")
+            compose.onNodeWithTag("bingo-card-tab-${game.ownCards.indexOf(card) + 1}").performClick()
+            val number = card.numbers.first { it in game.called }
             post(8082, "arm-command-drop")
             compose.onNodeWithTag("bingo-cell-$number").performClick()
             until { !model!!.state.value.busy && model!!.state.value.pending && model!!.state.value.error != null }
@@ -95,20 +98,22 @@ class BingoRecoveryNativeTest {
             until { !model!!.state.value.pending && !model!!.state.value.busy }
             assertTrue(number in model!!.state.value.bingoRoom!!.round!!.ownMarks.getValue(card.id))
             until { model!!.state.value.connection == Connection.LIVE }
-            card.numbers.filter { it != number }.forEach { mark ->
+            card.numbers.filter { it != number && it in game.called }.forEach { mark ->
                 compose.onNodeWithTag("bingo-cell-$mark").performClick()
                 until { !model!!.state.value.busy && mark in model!!.state.value.bingoRoom!!.round!!.ownMarks[card.id].orEmpty() }
             }
-            BingoPattern.entries.forEach { pattern ->
-                compose.onNodeWithTag("bingo-online-prizes").performClick()
-                compose.onNodeWithTag("bingo-online-claim-${pattern.name}").assertIsEnabled().performClick()
+            val readyGoals = game.prizes.map { it.pattern }.filter { it.isComplete(card, game.called.toSet()) }
+            readyGoals.forEach { pattern ->
+                compose.onNodeWithTag("bingo-quick-claim-${pattern.name}").assertIsEnabled().performClick()
                 until { !model!!.state.value.busy && model!!.state.value.bingoRoom!!.round!!.claims.any { it.playerId == model!!.state.value.playerId && it.pattern == pattern } }
             }
             assertEquals(charged, model!!.state.value.wallet!!.balance)
             post(8080, "qa/bingo/tick/1")
             until { model!!.state.value.bingoRoom?.phase == RoomPhase.FINISHED }
             compose.onNodeWithTag("bingo-online-ranking").assertIsDisplayed()
-            assertEquals(charged + 700L, model!!.state.value.wallet!!.balance)
+            compose.onNodeWithTag("bingo-results-summary").assertIsDisplayed()
+            val settlement = model!!.state.value.bingoRoom!!.round!!.winnings.getValue(model!!.state.value.playerId!!).total
+            assertEquals(charged + settlement, model!!.state.value.wallet!!.balance)
             captureTestScreen("bingo-online-results")
             compose.onNodeWithTag("bingo-online-again").performClick()
             compose.onNodeWithTag("bingo-online-cards-6").assertIsSelected()

@@ -46,16 +46,15 @@ class BingoOnlineNativeTest {
             until { model!!.state.value.bingoRoom?.phase == RoomPhase.ACTIVE && !model!!.state.value.busy }
             val roomId = model!!.state.value.bingoRoom!!.roomId
             assertEquals(6, model!!.state.value.bingoRoom!!.round!!.ownCards.size)
-            repeat(5) { compose.onNodeWithTag("bingo-online-next").performClick() }
-            compose.onNodeWithTag("bingo-online-next").assertIsNotEnabled()
+            compose.onNodeWithTag("bingo-card-tab-6").performClick()
             captureTestScreen("bingo-online-six-cards")
-            repeat(5) { compose.onNodeWithTag("bingo-online-previous").performClick() }
+            compose.onNodeWithTag("bingo-card-tab-1").performClick()
             until {
                 model!!.state.value.bingoRoom!!.round!!.let { game -> game.ownCards.any { card -> card.numbers.any { it in game.called } } }
             }
             val game = model!!.state.value.bingoRoom!!.round!!
             val index = game.ownCards.indexOfFirst { card -> card.numbers.any { it in game.called } }
-            repeat(index) { compose.onNodeWithTag("bingo-online-next").performClick() }
+            compose.onNodeWithTag("bingo-card-tab-${index + 1}").performClick()
             val card = game.ownCards[index]
             val number = card.numbers.first { it in game.called }
             compose.onNodeWithTag("bingo-cell-$number").performClick()

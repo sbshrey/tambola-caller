@@ -1,5 +1,17 @@
 # Power rooms
 
+## Current Tambola Jalsa beta rules
+
+New Tambola tables always use earned powers; the Classic choice is removed from
+the lobby. Every five new correct manual marks earns one free power, up to two
+held at a time. New drops are Auto-Dab or Prize Boost. Auto-Dab catches up on a
+selected ticket and covers new calls for 35 seconds. Prize Boost adds 25% to
+that ticket's next successful prize without reducing anyone else's share. The
+arena's ready control names the target ticket and effect before activation.
+Saved Classic tables remain readable and playable to completion; legacy Shield
+inventory also remains usable. This prevents a client update from rewriting an
+already purchased table. The earlier alpha behavior below is historical.
+
 ## Upcoming power and one-tap activation (included in v41)
 
 New clients opt into `previewPowers`. At round start the server independently

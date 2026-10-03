@@ -19,6 +19,30 @@ class BingoRoomServiceTest : PostgresTest() {
         c.query("SELECT payload FROM bingo_rooms WHERE code = ?", code) { WireJson.decodeFromString<BingoRoomRecord>(it.getString(1)) }.single()
     }
 
+    @Test fun `quick Bingo stays separate from older tables and uses short prizes`() {
+        val older = service.bingo.match(guest("Older").token, BingoMatchRequest(id(), 1))
+        val player = guest("Quick")
+        val lobby = service.bingo.match(player.token, BingoMatchRequest(id(), 2, quickPlay = true))
+        assertNotEquals(older.code, lobby.code)
+        now.set(lobby.startsAt!!); service.tick()
+        val active = service.bingo.read(player.token, lobby.code)
+        assertEquals(RoomPhase.ACTIVE, active.phase)
+        assertEquals(5, active.round!!.winnersPerPattern)
+        assertEquals(listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS), active.round!!.prizes.map { it.pattern })
+        assertTrue(active.round!!.cardCounts.filterKeys { it != player.playerId }.values.all { it == 1 })
+        assertEquals(now.get() + QUICK_BINGO_INTERVAL, active.nextDrawAt)
+        val card = active.round!!.ownCards.first()
+        var latest = active
+        while (latest.round!!.called.none { it in card.numbers }) {
+            now.set(stored(lobby.code).nextDrawAt!!); service.tick()
+            latest = service.bingo.read(player.token, lobby.code)
+        }
+        val number = latest.round!!.called.first { it in card.numbers }
+        val marked = service.bingo.command(player.token, lobby.code,
+            BingoCommandRequest(id(), active.revision, BingoAction.Mark(active.round!!.id, card.id, number)))
+        assertTrue(number in marked.round!!.ownMarks[card.id].orEmpty())
+    }
+
     @Test fun `quick Bingo starts after ten seconds with clearly flagged computer seats`() {
         val actor = guest("Early player")
         val room = service.bingo.match(actor.token, BingoMatchRequest(id(), 2, realPlayersOnly = false))

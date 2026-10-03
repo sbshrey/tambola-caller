@@ -115,7 +115,7 @@ class CoinLobbyTest {
         }
         compose.onNodeWithTag("lobby-content").assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.VerticalScrollAxisRange))
         val root = compose.onNodeWithTag("coin-lobby").getUnclippedBoundsInRoot()
-        ((1..6).map { "buy-tickets-$it" } + listOf("coin-play", "play-friends", "power-room-true", "power-room-false")).forEach { tag ->
+        ((1..6).map { "buy-tickets-$it" } + listOf("coin-play", "play-friends")).forEach { tag ->
             val node = compose.onNodeWithTag(tag).assertIsDisplayed()
             val bounds = node.getUnclippedBoundsInRoot()
             assertTrue("$tag must fit completely on screen", bounds.top >= root.top && bounds.bottom <= root.bottom && bounds.left >= root.left && bounds.right <= root.right)

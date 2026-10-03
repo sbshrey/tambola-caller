@@ -24,7 +24,34 @@ import java.util.Random
 
 class BingoOnlineAccessibilityTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
-    @Test fun livePortraitHindiLargeTextKeepsCallAndClaimVisible() {
+    @Test fun quickRoundShowsDirectClaimAndCardTabsInLandscape() {
+        check(isAndroidEmulator())
+        compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+        compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE }
+        val model = compose.runOnIdle { ViewModelProvider(compose.activity)[OnlineViewModel::class.java] }
+        val player = Player("me", "QA")
+        val cards = BingoCardGenerator(Random(71)).deal("me", 2)
+        val line = cards.first().cells.take(5)
+        val game = PublicBingoRound("qa-fast", RoundStatus.PLAYING, line, cards,
+            mapOf(cards.first().id to line.toSet()), emptyList(), listOf(player), mapOf("me" to 2),
+            5, BingoCoinPool(2, 2).prizes, "0".repeat(64))
+        val room = BingoRoomView("qa-room", "B-ABCD2345", 1, RoomPhase.ACTIVE, "me", true,
+            listOf(MemberView("me", "QA", 0, true, true)), listOf(player), mapOf("me" to 2),
+            null, 6000, 100000, 1000, 200, game, WalletView(50000, 1, 0))
+        compose.setContent { TambolaTheme(dark = true) { Surface {
+            BingoOnlineScreen(OnlineUiState(loading = false, available = true, playerId = "me",
+                bingoRoom = room, wallet = room.wallet, connection = Connection.LIVE), model, true, {})
+        } } }
+        compose.onNodeWithTag("bingo-card").assertIsDisplayed()
+        compose.onNodeWithTag("bingo-quick-goals").assertIsDisplayed()
+        compose.onNodeWithTag("bingo-quick-claim-ANY_LINE").assertIsDisplayed().assertIsEnabled()
+        compose.onNodeWithTag("bingo-quick-claim-FOUR_CORNERS").assertIsDisplayed().assertIsNotEnabled()
+        captureTestScreen("bingo-quick-direct-claim")
+        compose.onNodeWithTag("bingo-card-tab-2").assertIsDisplayed().performClick()
+        compose.onNodeWithTag("bingo-cell-${cards[1].numbers.first()}").assertIsDisplayed()
+        captureTestScreen("bingo-quick-card-tabs")
+    }
+    @Test fun quickPortraitHindiLargeTextKeepsCallAndGoalsVisible() {
         check(isAndroidEmulator())
         compose.runOnUiThread { compose.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
         compose.waitUntil(10000) { compose.activity.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
@@ -34,7 +61,7 @@ class BingoOnlineAccessibilityTest {
         val player = Player("me", "QA")
         val cards = BingoCardGenerator(Random(75)).deal("me", 1)
         val game = PublicBingoRound("qa-portrait", RoundStatus.PLAYING, listOf(75), cards,
-            emptyMap(), emptyList(), listOf(player), mapOf("me" to 1), 2, BingoCoinPool(1).prizes, "0".repeat(64))
+            emptyMap(), emptyList(), listOf(player), mapOf("me" to 1), 5, BingoCoinPool(1, 2).prizes, "0".repeat(64))
         val room = BingoRoomView("qa-room", "B-ABCD2345", 1, RoomPhase.ACTIVE, "me", true,
             listOf(MemberView("me", "QA", 0, true, true)), listOf(player), mapOf("me" to 1),
             null, 9000, 100000, 1000, 600, game, WalletView(50000, 1, 0))
@@ -47,10 +74,11 @@ class BingoOnlineAccessibilityTest {
                 } }
             }
         }
-        captureTestScreen("bingo-online-hi-portrait-call")
+        captureTestScreen("bingo-quick-hi-portrait")
         compose.onNodeWithTag("bingo-card").assertIsDisplayed()
         compose.onNodeWithTag("bingo-current-call").assertIsDisplayed()
-        compose.onNodeWithTag("bingo-online-prizes").assertIsDisplayed()
+        compose.onNodeWithTag("bingo-quick-goals").assertIsDisplayed()
+        compose.onNodeWithTag("bingo-cell-${cards.first().numbers.last()}").assertIsDisplayed()
     }
     @Test fun liveLandscapeHasSquareCardReadyCellsAndPatternChase() {
         check(isAndroidEmulator())

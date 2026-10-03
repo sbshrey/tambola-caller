@@ -60,6 +60,16 @@ class BingoOnlineStateTest {
         invalid(room.copy(round = round.copy(prizes = round.prizes.map { it.copy(coins = it.coins + 1) })))
     }
 
+    @Test fun `quick projection accepts only short prizes five places and at most 45 calls`() {
+        val room = view().let { it.copy(round = it.round!!.copy(
+            winnersPerPattern = 5, prizes = BingoCoinPool(2, 2).prizes)) }
+        room.validateFor("me")
+        val game = room.round!!
+        invalid(room.copy(round = game.copy(winnersPerPattern = 2)))
+        invalid(room.copy(round = game.copy(called = (1..46).toList())))
+        invalid(room.copy(round = game.copy(claims = listOf(BingoClaim("peer", "peer-card", BingoPattern.BLACKOUT, 1)))))
+    }
+
     @Test fun `stale receipts cannot rewind wallet or cards and same revision cannot mutate game`() {
         val old = view()
         val newer = old.copy(revision = 4, round = old.round!!.copy(called = listOf(1, 2)), wallet = WalletView(1600, 4, 0))

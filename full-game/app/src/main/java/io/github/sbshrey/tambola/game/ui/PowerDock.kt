@@ -56,7 +56,11 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
     }
     val shownPower = power ?: powers.nextPower
     val title = shownPower?.let(words::matchPowerName)
-    val caption = if (target != null) words(R.string.power_use_ticket, ordinal)
+    val caption = if (target != null) words(when (power) {
+        MatchPower.AUTO_DAB -> R.string.power_auto_action
+        MatchPower.PRIZE_BONUS -> R.string.power_bonus_action
+        else -> R.string.power_shield_action
+    }, ordinal)
         else if (power != null && powers.nextPower != null) words(R.string.power_no_visible_target)
         else words(R.string.power_progress, powers.correctMarks % 5)
     Surface(onClick = { if (target != null && power != null) activate(target, power) },
@@ -96,11 +100,11 @@ internal fun powerNoticeText(powers: MatchPowers, words: GameText): String? = po
         horizontalArrangement = Arrangement.SpaceBetween, itemVerticalAlignment = Alignment.CenterVertically) {
         Text(words(R.string.power_progress, powers.correctMarks % 5),
             style = MaterialTheme.typography.labelSmall)
-        MatchPower.entries.forEach { power ->
+        powers.inventory.distinct().forEach { power ->
             val count = powers.inventory.count { it == power }
             TextButton(onClick = { selected = power }, modifier = Modifier.sizeIn(minWidth = 56.dp, minHeight = 48.dp)
                 .testTag("match-power-${power.name}").semantics { contentDescription = "${words.matchPowerName(power)}: $count" }) {
-                Text("${when (power) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; MatchPower.PRIZE_BONUS -> "+25%" }} $count",
+                Text("${when (power) { MatchPower.SHIELD -> "🛡"; MatchPower.AUTO_DAB -> "⚡"; MatchPower.PRIZE_BONUS -> "+25%" }} ×$count",
                     style = MaterialTheme.typography.labelSmall, maxLines = 1)
             }
         }

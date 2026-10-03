@@ -59,10 +59,9 @@ class MatchPowersUiTest {
                 usePower = { ticketId, power -> powers = powers.activate(hand.first { it.id == ticketId }, power, called, 100_000) },
                 footer = { Text("Next call") })
         } }
-        compose.onNodeWithTag("power-dock").assertIsDisplayed()
-        compose.onNodeWithTag("match-power-AUTO_DAB").assertHeightIsAtLeast(androidx.compose.ui.unit.Dp(48f)).performClick()
-        compose.onNodeWithTag("use-power-ticket-1").performClick()
-        assertEquals(115_000L, powers.autoUntil[hand[0].id])
+        captureTestScreen("power-header-layout")
+        compose.onNodeWithTag("top-power-control").assertIsDisplayed().assertIsEnabled().performClick()
+        assertEquals(135_000L, powers.autoUntil[hand[0].id])
         assertEquals(0, powers.correctMarks)
         compose.onNodeWithTag("dab-${called.first()}").assertIsNotEnabled()
         repeat(2) {

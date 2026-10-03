@@ -32,17 +32,19 @@ internal class BingoRoomService(
                     request.friendCode != null -> load(connection, requireNotNull(request.friendCode)).also {
                         demand(it.friendTable && it.phase == RoomPhase.LOBBY && it.members.size < 50,
                             409, "bingo_table_closed", "This Bingo table is not accepting players.")
+                        demand(it.quickPlay == request.quickPlay, 409, "bingo_mode_mismatch", "Update the app to join this Bingo table.")
                     }
                     request.friendTable -> null
                     else -> connection.query("""SELECT payload FROM bingo_rooms WHERE phase = 'LOBBY' AND NOT friend_table
                         AND starts_at > ? AND expires_at > ? AND jsonb_array_length(payload::jsonb->'members') < 50
                         AND coalesce((payload::jsonb->>'realPlayersOnly')::boolean, false) = ${request.realPlayersOnly}
+                        AND coalesce((payload::jsonb->>'quickPlay')::boolean, false) = ${request.quickPlay}
                         ORDER BY starts_at, id LIMIT 1 FOR UPDATE""", at, at) { decode(it.getString(1)) }.singleOrNull()
                 }
                 val room = waiting ?: BingoRoomRecord(UUID.randomUUID().toString(), "B-" + roomCode(), guest.id,
                     emptyList(), emptyMap(), at, at + if (request.friendTable) FRIEND_LOBBY_LIFETIME else ROOM_LIFETIME,
                     friendTable = request.friendTable, startsAt = (at + MATCH_COUNTDOWN).takeUnless { request.friendTable },
-                    realPlayersOnly = request.realPlayersOnly).also {
+                    realPlayersOnly = request.realPlayersOnly, quickPlay = request.quickPlay).also {
                     connection.execute("INSERT INTO bingo_rooms (id, code, phase, expires_at, starts_at, friend_table, payload) VALUES (?, ?, ?, ?, ?, ?, ?)",
                         it.id, it.code, it.phase.name, it.expiresAt, it.startsAt, it.friendTable, WireJson.encodeToString(it))
                 }
@@ -75,7 +77,9 @@ internal class BingoRoomService(
             receipt(connection, guest.id, request.id, hash)?.let { return@transaction it }
             val room = load(connection, code)
             member(room, guest.id)
-            demand(room.revision == request.expectedRevision, 409, "room_changed", "The Bingo table changed. Refresh and try again.")
+            demand(room.revision == request.expectedRevision ||
+                ((request.action is BingoAction.Mark || request.action is BingoAction.Claim) && request.expectedRevision < room.revision),
+                409, "room_changed", "The Bingo table changed. Refresh and try again.")
             val now = clock()
             val next = when (val action = request.action) {
                 BingoAction.Start -> {

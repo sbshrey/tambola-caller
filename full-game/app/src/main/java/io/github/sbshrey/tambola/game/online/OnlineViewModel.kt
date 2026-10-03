@@ -217,7 +217,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("[A-HJ-NP-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         val request = MatchRequest(UUID.randomUUID().toString(), tickets, friendTable, code, rulesVersion = 2,
-            powersEnabled = mutable.value.powersEnabled, largeMatch = !friendTable, previewPowers = mutable.value.powersEnabled, roundSummary = true,
+            powersEnabled = true, largeMatch = !friendTable, previewPowers = true, roundSummary = true,
             realPlayersOnly = friendTable)
         if (saved != null) { begin(PendingOperation.Match(request)); return }
         mutable.update { it.copy(busy = true, error = null) }
@@ -246,7 +246,7 @@ class OnlineViewModel(application: Application) : AndroidViewModel(application) 
         val code = friendCode?.trim()?.uppercase(java.util.Locale.ROOT)
         if (code != null && !Regex("B-[A-Z2-9]{8}").matches(code)) { mutable.update { it.copy(error = UiMessage(R.string.error_room_code)) }; return }
         val pending = PendingOperation.BingoMatch(BingoMatchRequest(UUID.randomUUID().toString(), cards, friendTable, code,
-            realPlayersOnly = friendTable))
+            realPlayersOnly = friendTable, quickPlay = true))
         if (saved != null) { begin(pending); return }
         mutable.update { it.copy(busy = true, error = null) }
         operation = viewModelScope.launch {

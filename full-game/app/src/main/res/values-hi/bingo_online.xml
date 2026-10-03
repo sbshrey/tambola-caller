@@ -26,4 +26,19 @@
     <string name="bingo_recent_calls">हाल के नंबर</string>
     <string name="bingo_your_chase">आपके पैटर्न की दौड़</string>
     <string name="bingo_ready_count">इस कार्ड पर %1$d पुकारे गए</string>
+    <string name="bingo_quick_intro">तेज़ दौर · एक लाइन या चार कोने · अधिकतम 45 नंबर</string>
+    <string name="bingo_quick_title">बिंगो नाइट</string>
+    <string name="bingo_quick_called">%1$d/45 नंबर · %2$d खिलाड़ी</string>
+    <string name="bingo_next_in">अगला नंबर %1$d सेकंड में</string>
+    <string name="bingo_quick_goals">जीतने के दो तरीके</string>
+    <string name="bingo_goal_progress">%1$d/%2$d निशान लगे</string>
+    <string name="bingo_goal_claim_now">अभी दावा करें →</string>
+    <string name="bingo_goal_won">यह इनाम आपने जीता</string>
+    <string name="bingo_goal_closed">इनाम पूरा हुआ</string>
+    <string name="bingo_goal_reward">%1$d सिक्के · %2$d जगह</string>
+    <string name="bingo_live_wins">अभी की जीत</string>
+    <string name="bingo_live_open">दोनों इनाम खुले हैं। चमकते नंबर निशान लगाएँ!</string>
+    <string name="bingo_summary_win">आपने %1$d सिक्के जीते!</string>
+    <string name="bingo_summary_finish">दौर पूरा हुआ</string>
+    <string name="bingo_summary_stats">स्थान %1$d/%2$d · %3$d निशान · %4$d जीत</string>
 </resources>

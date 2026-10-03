@@ -38,6 +38,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
     val nextCard = stringResource(R.string.bingo_next_card)
     val room = state.bingoRoom
     val game = room?.round
+    val quick = game?.prizes?.map { it.pattern } == listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS)
     val config = LocalConfiguration.current
     val widePlay = config.screenWidthDp > config.screenHeightDp && room?.phase == RoomPhase.ACTIVE
     val shortLandscape = config.screenWidthDp > config.screenHeightDp && config.screenHeightDp < 430
@@ -74,7 +75,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
         when {
             state.loading -> CircularProgressIndicator()
             room == null -> {
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Center) {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)) {
+                if (shortLandscape) BingoLobbyArt()
                 Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp), color = GameNightPalette.panel,
                     border = BorderStroke(1.dp, GameNightPalette.mint.copy(alpha = .5f))) {
                     Column(Modifier.padding(if (shortLandscape) 12.dp else 16.dp),
@@ -83,7 +86,7 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                         Text(stringResource(R.string.bingo_pick_cards), style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Black)
-                        if (!shortLandscape) Text(stringResource(R.string.hub_bingo), color = GameNightPalette.muted)
+                        if (!shortLandscape) Text(stringResource(R.string.bingo_quick_intro), color = GameNightPalette.muted)
                         BoxWithConstraints(Modifier.fillMaxWidth()) {
                             val columns = if (shortLandscape || maxWidth >= 480.dp && !compactPlay) 6 else 3
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -146,10 +149,24 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                 }
             }
             game != null && room.phase == RoomPhase.FINISHED -> {
-                Text(stringResource(R.string.bingo_results), style = MaterialTheme.typography.headlineSmall)
                 val ranked = game.players.sortedWith(compareByDescending<Player> { game.winnings[it.id]?.total ?: 0 }.thenBy { it.id })
+                val ownRank = ranked.indexOfFirst { it.id == state.playerId } + 1
+                val ownCoins = game.winnings[state.playerId]?.total ?: 0
+                val ownGoals = game.claims.count { it.playerId == state.playerId }
+                val ownMarks = game.ownMarks.values.sumOf { it.size }
+                Surface(Modifier.fillMaxWidth().testTag("bingo-results-summary"), shape = RoundedCornerShape(22.dp),
+                    color = GameNightPalette.panel, border = BorderStroke(1.dp, GameNightPalette.mint)) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(if (ownGoals > 0) stringResource(R.string.bingo_summary_win, ownCoins)
+                            else stringResource(R.string.bingo_summary_finish), color = GameNightPalette.cream,
+                            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
+                        Text(stringResource(R.string.bingo_summary_stats, ownRank, ranked.size, ownMarks, ownGoals),
+                            color = GameNightPalette.mint, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+                Text(stringResource(R.string.bingo_results), style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold)
                 val list = rememberLazyListState()
-                LaunchedEffect(game.id) { list.scrollToItem(ranked.indexOfFirst { it.id == state.playerId }.coerceAtLeast(0)) }
                 LazyColumn(Modifier.weight(1f).testTag("bingo-online-ranking"), state = list, verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     itemsIndexed(ranked, key = { _, player -> player.id }) { index, player ->
                         Card(colors = CardDefaults.cardColors(containerColor = if (player.id == state.playerId) MaterialTheme.colorScheme.secondaryContainer else Panel)) {
@@ -192,17 +209,23 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(stringResource(R.string.bingo_live_table), color = GameNightPalette.mint,
                                     style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
-                                Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
-                                    color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
-                                LinearProgressIndicator(progress = { game.called.size / 75f },
-                                    modifier = Modifier.fillMaxWidth(), color = GameNightPalette.mint)
+                                 Text(if (quick) stringResource(R.string.bingo_quick_called, game.called.size, game.players.size)
+                                     else stringResource(R.string.bingo_called, game.called.size, game.players.size),
+                                     color = GameNightPalette.cream, style = MaterialTheme.typography.labelMedium)
+                                 LinearProgressIndicator(progress = { game.called.size / if (quick) 45f else 75f },
+                                     modifier = Modifier.fillMaxWidth(), color = GameNightPalette.mint)
+                                 if (quick) room.nextDrawAt?.let { next -> Text(stringResource(R.string.bingo_next_in,
+                                     ((next - room.serverTime - elapsed).coerceAtLeast(0) + 999) / 1000),
+                                     color = GameNightPalette.gold, style = MaterialTheme.typography.labelSmall) }
                                 Text(stringResource(R.string.bingo_table_mix,
                                     game.players.count { !it.computer }, game.players.count { it.computer }),
                                     color = GameNightPalette.mint, style = MaterialTheme.typography.labelSmall)
                             }
                         }
                     }
-                    Button(onClick = { prizes = true }, enabled = !blocked,
+                    if (quick) BingoQuickGoals(game, card, state.playerId, blocked, false) { pattern ->
+                        model.bingoCommand(BingoAction.Claim(game.id, card.id, pattern))
+                    } else Button(onClick = { prizes = true }, enabled = !blocked,
                         modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("bingo-online-prizes")) {
                         Text(stringResource(R.string.bingo_claim))
                     }
@@ -220,16 +243,30 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                 }
                             }
                         }
-                        BingoChasePanel(card, game.ownMarks[card.id].orEmpty(), shortLandscape)
+                        if (quick) BingoLiveWins(game) else BingoChasePanel(card, game.ownMarks[card.id].orEmpty(), shortLandscape)
                     }
                 }
                 val hand: @Composable ColumnScope.() -> Unit = {
                     Box(Modifier.weight(1f).fillMaxWidth()) {
                         BingoCardView(card, game.called, game.ownMarks[card.id].orEmpty(), !blocked && state.connection == Connection.LIVE,
-                            { cardId, number -> model.bingoCommand(BingoAction.Mark(game.id, cardId, number)) }, Modifier.fillMaxSize())
+                            { cardId, number -> model.bingoCommand(BingoAction.Mark(game.id, cardId, number)) }, Modifier.fillMaxSize(), quick)
                         if (state.bingoWinSequence > 0) WinConfetti("${game.id}:${state.bingoWinSequence}", reducedMotion, Modifier.matchParentSize(), intensity = .85f)
                     }
-                    if (game.ownCards.size > 1) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    if (quick && game.ownCards.size > 1) Row(Modifier.fillMaxWidth().testTag("bingo-card-tabs"), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        game.ownCards.forEachIndexed { index, own ->
+                            val due = own.numbers.count { it in game.called && it !in game.ownMarks[own.id].orEmpty() }
+                            Surface(onClick = { page = index }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)
+                                .testTag("bingo-card-tab-${index + 1}"), shape = RoundedCornerShape(10.dp),
+                                color = if (page == index) GameNightPalette.mint else GameNightPalette.panel,
+                                contentColor = if (page == index) GameNightPalette.background else GameNightPalette.cream) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(if (due > 0) "${index + 1} · $due" else "${index + 1}",
+                                        style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Black,
+                                        maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                }
+                            }
+                        }
+                    } else if (game.ownCards.size > 1) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         OutlinedButton(onClick = { page-- }, enabled = page > 0, modifier = Modifier.testTag("bingo-online-previous").semantics { contentDescription = previousCard }) { Text("←") }
                         Text(stringResource(R.string.bingo_card_page, page + 1, game.ownCards.size), style = MaterialTheme.typography.labelLarge)
                         OutlinedButton(onClick = { page++ }, enabled = page < game.ownCards.lastIndex, modifier = Modifier.testTag("bingo-online-next").semantics { contentDescription = nextCard }) { Text("→") }
@@ -251,7 +288,8 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                             }
                         }
                         Column(Modifier.weight(1f)) {
-                            Text(stringResource(R.string.bingo_called, game.called.size, game.players.size),
+                            Text(if (quick) stringResource(R.string.bingo_quick_called, game.called.size, game.players.size)
+                                else stringResource(R.string.bingo_called, game.called.size, game.players.size),
                                 style = MaterialTheme.typography.labelMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                             Text(stringResource(R.string.bingo_table_mix,
                                 game.players.count { !it.computer }, game.players.count { it.computer }),
@@ -263,7 +301,9 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
                                 maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     }
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (quick) BingoQuickGoals(game, card, state.playerId, blocked, true) { pattern ->
+                        model.bingoCommand(BingoAction.Claim(game.id, card.id, pattern))
+                    } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedButton(onClick = { history = true }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)) {
                             Text(stringResource(R.string.bingo_history), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
@@ -304,6 +344,103 @@ fun BingoOnlineScreen(state: OnlineUiState, model: OnlineViewModel, reducedMotio
     if (history && game != null) AlertDialog(onDismissRequest = { history = false }, title = { Text(stringResource(R.string.bingo_history)) },
         text = { LazyColumn { itemsIndexed(game.called.reversed()) { _, number -> Text(bingoCallLabel(number), Modifier.padding(4.dp)) } } },
         confirmButton = { TextButton(onClick = { history = false }) { Text(stringResource(R.string.ui_got_it)) } })
+    }
+}
+
+@Composable
+private fun BingoLiveWins(game: PublicBingoRound) {
+    Surface(Modifier.fillMaxWidth().testTag("bingo-live-wins"), shape = RoundedCornerShape(18.dp),
+        color = GameNightPalette.panel) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(stringResource(R.string.bingo_live_wins), color = GameNightPalette.mint,
+                style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
+            val latest = game.claims.takeLast(3).reversed()
+            if (latest.isEmpty()) Text(stringResource(R.string.bingo_live_open),
+                color = GameNightPalette.cream, style = MaterialTheme.typography.bodySmall)
+            latest.forEach { win ->
+                val player = game.players.firstOrNull { it.id == win.playerId }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(listOfNotNull(player?.name, if (player?.computer == true)
+                        stringResource(R.string.play_computer_short) else null).joinToString(" · "),
+                        Modifier.weight(1f), color = GameNightPalette.cream,
+                        style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(patternTitle(win.pattern), color = GameNightPalette.gold,
+                        style = MaterialTheme.typography.labelMedium, maxLines = 1)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BingoLobbyArt() {
+    Row(Modifier.fillMaxWidth().height(108.dp).padding(horizontal = 14.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text(stringResource(R.string.bingo_quick_title), color = GameNightPalette.gold,
+                style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+            Text(stringResource(R.string.bingo_quick_intro), color = GameNightPalette.mint,
+                style = MaterialTheme.typography.labelMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            repeat(5) { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                    repeat(5) { column ->
+                        val special = (row == 2 && column == 2) || (row in listOf(0, 4) && column in listOf(0, 4))
+                        Surface(Modifier.size(18.dp), shape = RoundedCornerShape(4.dp),
+                            color = if (special) GameNightPalette.mint else GameNightPalette.raised) {
+                            if (row == 2 && column == 2) Box(contentAlignment = Alignment.Center) {
+                                Text("★", fontSize = 10.sp, color = GameNightPalette.background)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BingoQuickGoals(game: PublicBingoRound, card: BingoCard, playerId: String?, blocked: Boolean,
+    horizontal: Boolean, claim: (BingoPattern) -> Unit) {
+    val marks = game.ownMarks[card.id].orEmpty()
+    val called = game.called.toSet()
+    val goals: @Composable RowScope.(BingoCoinPrize) -> Unit = { prize ->
+        val pattern = prize.pattern
+        val wins = game.claims.filter { it.pattern == pattern }
+        val won = wins.any { it.playerId == playerId }
+        val open = wins.size < game.winnersPerPattern || wins.last().drawCount == game.called.size
+        val mask = pattern.masks().maxBy { candidate -> candidate.count { it == 12 || card.cells[it] in marks } }
+        val done = mask.count { it == 12 || card.cells[it] in marks }
+        val ready = pattern.isComplete(card, called, marks) && open && !won
+        Surface(onClick = { claim(pattern) }, enabled = ready && !blocked,
+            modifier = Modifier.weight(1f).heightIn(min = if (horizontal) 88.dp else 120.dp)
+                .testTag("bingo-quick-claim-${pattern.name}"), shape = RoundedCornerShape(18.dp),
+            color = if (ready) GameNightPalette.mint else GameNightPalette.panel,
+            contentColor = if (ready) GameNightPalette.background else GameNightPalette.cream,
+            border = BorderStroke(1.dp, if (ready) GameNightPalette.mint else GameNightPalette.raised)) {
+            Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalArrangement = Arrangement.SpaceBetween) {
+                Text(patternTitle(pattern), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Black,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(when {
+                    won -> stringResource(R.string.bingo_goal_won)
+                    !open -> stringResource(R.string.bingo_goal_closed)
+                    ready -> stringResource(R.string.bingo_goal_claim_now)
+                    else -> stringResource(R.string.bingo_goal_progress, done, mask.size)
+                }, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(stringResource(R.string.bingo_goal_reward, prize.coins,
+                    (game.winnersPerPattern - wins.size).coerceAtLeast(0)), style = MaterialTheme.typography.labelSmall,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+    Column(Modifier.fillMaxWidth().testTag("bingo-quick-goals"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(stringResource(R.string.bingo_quick_goals), color = GameNightPalette.mint,
+            style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            game.prizes.forEach { goals(it) }
+        }
     }
 }
 

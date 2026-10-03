@@ -139,12 +139,8 @@ fun CoinLobby(state: OnlineUiState, model: OnlineViewModel, play: (Int) -> Unit,
                         Text(words(R.string.coin_pool, coins?.pool ?: 0), fontSize = 24.sp, fontWeight = FontWeight.Black)
                         Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("resume-match")) { Text(words(R.string.coin_resume)) }
                     } else {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            listOf(false to R.string.power_classic_room, true to R.string.power_room).forEach { (value, label) ->
-                                FilterChip(selected = state.powersEnabled == value, onClick = { model.choosePowerRoom(value) }, enabled = enabled,
-                                    label = { Text(words(label), fontSize = 13.sp) }, modifier = Modifier.weight(1f).testTag("power-room-$value"))
-                            }
-                        }
+                        Text(words(R.string.power_room_summary), color = GameNightPalette.mint,
+                            fontSize = 12.sp, lineHeight = 15.sp, maxLines = 2)
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Text(pluralStringResource(R.plurals.lobby_ticket_count, tickets, tickets), fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))

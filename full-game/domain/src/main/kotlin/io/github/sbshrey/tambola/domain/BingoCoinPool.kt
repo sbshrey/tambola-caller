@@ -5,19 +5,21 @@ import kotlinx.serialization.Serializable
 @Serializable data class BingoCoinPrize(val pattern: BingoPattern, val coins: Long)
 data class BingoCoinAllocation(val key: String, val playerId: String, val coins: Long, val pattern: BingoPattern? = null)
 
-/** Versioned free-play coin policy: 20/20/20/40, one share per winning player in each category. */
+/** Versioned free-play coin policy: four legacy prizes or two equal quick prizes. */
 @Serializable
 data class BingoCoinPool(val soldCards: Int, val version: Int = 1) {
-    init { require(version == 1 && soldCards in 1..300) }
+    init { require(version in 1..2 && soldCards in 1..300) }
     val coins: Long get() = soldCards * COIN_TICKET_PRICE
-    val prizes: List<BingoCoinPrize> get() = BingoPattern.entries.map {
-        BingoCoinPrize(it, coins * (if (it == BingoPattern.BLACKOUT) 40 else 20) / 100)
+    val prizes: List<BingoCoinPrize> get() = (if (version == 2)
+        listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS) else BingoPattern.entries).map {
+        BingoCoinPrize(it, coins * (if (version == 2) 50 else if (it == BingoPattern.BLACKOUT) 40 else 20) / 100)
     }
 
     /** Entitlements become immutable only after that category closes, including all same-call ties.
      * Unawarded pools return pro rata per purchased card at completion/cancellation. */
     fun allocations(round: BingoRound): List<BingoCoinAllocation> {
         require(round.cards.size == soldCards)
+        require(round.version == version)
         val result = mutableListOf<BingoCoinAllocation>()
         for (prize in prizes) {
             val winners = round.claims.filter { it.pattern == prize.pattern }.map { it.playerId }

@@ -26,4 +26,19 @@
     <string name="bingo_recent_calls">RECENT CALLS</string>
     <string name="bingo_your_chase">YOUR PATTERN CHASE</string>
     <string name="bingo_ready_count">%1$d called on this card</string>
+    <string name="bingo_quick_intro">Fast round · One line or four corners · Up to 45 calls</string>
+    <string name="bingo_quick_title">BINGO NIGHT</string>
+    <string name="bingo_quick_called">%1$d/45 calls · %2$d players</string>
+    <string name="bingo_next_in">Next ball in %1$d sec</string>
+    <string name="bingo_quick_goals">TWO WAYS TO WIN</string>
+    <string name="bingo_goal_progress">%1$d/%2$d marked</string>
+    <string name="bingo_goal_claim_now">CLAIM NOW →</string>
+    <string name="bingo_goal_won">You won this goal</string>
+    <string name="bingo_goal_closed">Prize filled</string>
+    <string name="bingo_goal_reward">%1$d coins · %2$d spots</string>
+    <string name="bingo_live_wins">LIVE WINS</string>
+    <string name="bingo_live_open">Both prizes are open. Dab the glowing numbers!</string>
+    <string name="bingo_summary_win">You won %1$d coins!</string>
+    <string name="bingo_summary_finish">Round complete</string>
+    <string name="bingo_summary_stats">Rank %1$d of %2$d · %3$d dabs · %4$d goals won</string>
 </resources>

@@ -67,9 +67,9 @@ class MatchPowersTest {
         val numbers = ticket.numbers.toList()
         val active = MatchPowers(inventory = listOf(MatchPower.AUTO_DAB)).activate(ticket, MatchPower.AUTO_DAB, numbers.take(3), 100_000)
         assertEquals(3, active.marks.getValue(ticket.id).size)
-        val before = active.autoMark(tickets, numbers.take(7), 114_999)
+        val before = active.autoMark(tickets, numbers.take(7), 134_999)
         assertEquals(7, before.marks.getValue(ticket.id).size)
-        assertEquals(before, before.autoMark(tickets, numbers, 115_000))
+        assertEquals(before, before.autoMark(tickets, numbers, 135_000))
         assertEquals(before, before.mark(ticket, numbers.first(), numbers) { error("Auto marks must not drop powers") })
         assertEquals(0, before.correctMarks)
         assertThrows(IllegalArgumentException::class.java) { before.copy(inventory = listOf(MatchPower.AUTO_DAB)).activate(ticket, MatchPower.AUTO_DAB, numbers, 200_000) }

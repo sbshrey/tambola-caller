@@ -224,7 +224,8 @@ internal fun ClaimArena(
                                 color = if (win != null && dark) gold else muted, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.fillMaxWidth().semantics { if (winText != null || claimMessage != null || powerFeedback != null || reactionMessage != null) liveRegion = LiveRegionMode.Polite }.testTag("claim-feedback"))
                         }
-                        if (table.powers != null && usePower != null && !table.finished) PowerDock(hand, claimEnabled, preferences.haptics, usePower)
+                        if (!landscape && table.powers != null && usePower != null && !table.finished)
+                            PowerDock(hand, claimEnabled, preferences.haptics, usePower)
                         if (!landscape || table.finished) Box(Modifier.fillMaxWidth().heightIn(min = 48.dp)) { footer() }
                     }
                 }

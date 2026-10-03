@@ -21,7 +21,7 @@ class FriendModeJoinOnlineTest {
     private fun id() = UUID.randomUUID().toString()
     private fun until(predicate: () -> Boolean) = compose.waitUntil(25_000, predicate)
     @Test fun classicSelectionJoinsPowerHost() = joinHost(true)
-    @Test fun powerSelectionJoinsClassicHost() = joinHost(false)
+    @Test fun classicHostRejectsNewPowerOnlyClientWithoutPurchase() = joinHost(false)
 
     private fun joinHost(power: Boolean) = runBlocking<Unit> {
         assumeTrue(InstrumentationRegistry.getArguments().getString("tambolaFriendsLocal") == "true")
@@ -46,6 +46,12 @@ class FriendModeJoinOnlineTest {
             compose.onNodeWithTag("friend-code-input").performImeAction()
             android.os.SystemClock.sleep(800)
             compose.onNodeWithTag("friend-enter").performClick()
+            if (!power) {
+                until { model.state.value.error != null && !model.state.value.busy }
+                assertNull(model.state.value.room)
+                assertEquals(balance, model.state.value.wallet!!.balance)
+                return@runBlocking
+            }
             until {
                 check(model.state.value.error == null) { "Join failed: resource ${model.state.value.error?.resource}" }
                 model.state.value.room?.code == lobby.code && !model.state.value.busy && model.state.value.connection == Connection.LIVE

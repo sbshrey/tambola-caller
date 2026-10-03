@@ -47,7 +47,17 @@ class BingoCoinPoolTest {
 
     @Test fun `policy rejects mismatched card inventory and unknown versions`() {
         assertThrows(IllegalArgumentException::class.java) { BingoCoinPool(2).allocations(fixture()) }
-        assertThrows(IllegalArgumentException::class.java) { BingoCoinPool(3, 2) }
+        assertThrows(IllegalArgumentException::class.java) { BingoCoinPool(3, 3) }
+        assertThrows(IllegalArgumentException::class.java) { BingoCoinPool(3, 2).allocations(fixture()) }
         assertThrows(IllegalArgumentException::class.java) { BingoCoinPool(301) }
+    }
+
+    @Test fun `quick prizes split the full pool across two goals`() {
+        val round = fixture().copy(version = 2, winnersPerPattern = 5)
+        val pool = BingoCoinPool(3, 2)
+        assertEquals(listOf(BingoPattern.ANY_LINE, BingoPattern.FOUR_CORNERS), pool.prizes.map { it.pattern })
+        assertEquals(300L, pool.prizes.sumOf { it.coins })
+        val claimed = round.claim("a", "a-card", BingoPattern.ANY_LINE).cancel()
+        assertEquals(300L, pool.allocations(claimed).sumOf { it.coins })
     }
 }
