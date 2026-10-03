@@ -20,6 +20,24 @@ The power behavior and game server are unchanged.
 - The signed v68 APK installed over v67 on the main emulator with Android
   versionCode 68 and the 51,450-coin beta profile intact. The public server
   remains at protocol 9 and requires no upgrade for this string change.
+- The published prerelease is [Tambola Jalsa Beta v68](https://github.com/sbshrey/tambola-caller/releases/tag/full-game-alpha68-quick-bingo),
+  tagged at source commit `66346ef7cbb78d15554e05ff641bfb2ecd672c3e`.
+  GitHub reports the exact prepared asset name, 31,697,806-byte size and
+  SHA-256 digest. Public readiness returned HTTP 200 and protocol 9 after
+  publication.
+- On the separate Android 30 emulator, the v67 app found v68 through its
+  Settings update check, downloaded it, and opened Android's install
+  confirmation. After accepting, Android reported versionCode 68 and the
+  fictional `UpdateQA67` profile still had 50,500 coins. This repeated the
+  in-app update path after the v65-to-v67 trial.
+- A new six-ticket Tambola table on signed v68 filled after the ten-second
+  wait. Two tickets stayed aligned per landscape page and the power header
+  followed the visible target ticket. Five correct manual marks earned an
+  Auto-Dab, and another five earned a second. Activating one on ticket 6
+  immediately marked called numbers on that ticket and showed `Power
+  activated.` The observed random drops were both Auto-Dab, so the shorter
+  Prize Boost caption was validated by resource compilation and target-first
+  wording, not by a second live Prize Boost screenshot.
 
 ## Beta decision
 
