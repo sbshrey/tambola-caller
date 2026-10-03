@@ -24,7 +24,7 @@
     <string name="power_shield_detail">Shield automatically forgives one false prize claim. It can protect each ticket once per round. Without an available Shield, a false claim discards only that ticket; earlier wins remain valid.</string>
     <string name="power_auto_detail">Tap Auto-Dab to catch up on a ticket and mark new calls for 35 seconds. Automatic marks do not earn powers.</string>
     <string name="power_auto_action">Tap: mark Ticket %1$d for 35 sec</string>
-    <string name="power_bonus_action">Tap: +25%% on the next win for Ticket %1$d</string>
+    <string name="power_bonus_action">Tap: Ticket %1$d gets +25%% next win</string>
     <string name="power_shield_action">Tap: protect Ticket %1$d</string>
     <string name="power_bonus_detail" formatted="false">Arm a 25% bonus on one ticket before claiming. Its next successful prize earns extra virtual coins after the final pool split, rounded down. Use once per ticket. Other winners keep their full share.</string>
     <string name="power_drop_rules">Every five new correct manual marks across your tickets earns one free Auto-Dab or Prize Boost. Hold at most two. A full inventory skips that drop. Powers expire with the round. Wrong taps are rejected. Late and duplicate claims do not discard tickets. Older tables may still contain Shield. No cash value.</string>
