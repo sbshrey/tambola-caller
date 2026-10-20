@@ -1,3 +1,53 @@
+# Tambola Keyboard 1.4.0: host claims and tap-to-announce results
+
+Validated on 20 October 2026. Version code 7. The repository was cloned at `e3d0f21`; this is a local Android update on `feat/tap-winner-announcements`.
+
+## Behavior verified
+
+- One-time family setup adds the supplied 11 players and 42 catalog schemes, including T, individual First–Ninth lines/boxes, and separate Seedhi/Ulti family planning. Existing names, awards, configured amounts and renamed entries are reused. The four legacy line/house defaults remain, for 46 entries on a fresh setup.
+- Varsha can insert her own claim, then separately select confirmed claimants and announce a result. Claims alone never award a prize. The app does not read incoming WhatsApp claims or validate paper tickets.
+- One claimant receives the configured total (default ₹10); two split it (default ₹5 each); three or more produce **Bogie, no payout**. Bogie claimants are saved, included in results and excluded from payout totals. The same rule applies to optional winner dictation.
+- Draft protection, cancellation, editor restart, changed player/prize setup, minimum call counts, failed editor insertion recovery, result corrections, undo and new rounds are covered. Correcting paid winners retains their recorded payout and call position; correcting a Bogie uses the configured prize amount and original call position.
+- Version 1 prize records migrate to version 2 without losing names, awards or amounts. Bogie results survive storage reopening. Corrupt Bogie records are rejected. Version 2 is not readable by older APKs.
+
+## Automated checks
+
+| Check | Result |
+| --- | --- |
+| JVM unit suite | 35 passed; includes all 462 scheme/player combinations and claimant counts 1–11 |
+| Android regression suite, API 35 ARM64 Pixel 4 emulator | All 41 cases passed across the main run and focused reruns |
+| Microphone denied + permission recovery | Host claim/split flow passed with RECORD_AUDIO denied; deny-then-grant UI test passed (42 distinct Android cases total) |
+| Large text and landscape | 160% font-scale selection/cancellation/insertion passed; full host-claim/shared-result flow passed at 2280×1080 landscape; screenshots inspected |
+| Website tests | 69 passed |
+| Website static build | Passed |
+| Debug APK, instrumentation APK, release APK builds | Passed |
+| Debug and release lint | No issues found |
+| Bundled audio integrity | All 270 recordings verified; playback/decoding checks passed |
+| Release fixture exclusion | Debug editor and recognition-provider fixtures absent from production DEX |
+| Debug APK signature | Verified with apksigner |
+
+The final regression run passed 37 cases and exposed four test synchronization assumptions (a pending tap callback, TextView restarting its editor, a stale accessibility node, and a dialog not yet rendered). Tests now await the observable state and reacquire views; all four focused reruns passed on the same production build. An earlier run also caught and fixed the tap panel reopening on the previously selected prize group.
+
+## Reproduce
+
+Use the documented Java 17 toolchain and Android SDK 35. This run used local OpenJDK 20.0.1, Gradle 8.9 and AGP 8.7.3. Build from `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug assembleRelease lintRelease
+```
+
+Install the debug and instrumentation APKs on a **dedicated emulator**; the tests reset its saved games. Enable/select the Tambola IME. Run the classes listed in README, then the separate microphone-permission test after revoking RECORD_AUDIO. Use `npm test` and `npm run build` from the repository root for the website.
+
+For large text, set emulator `font_scale` to `1.6` and run `QuickWinnerTest#lastPlayerIsReachableAndSelectionCanBeReplacedOrCancelled`; restore it to `1.0` afterward. For landscape, enable `adb shell wm fixed-to-user-rotation enabled`, pass `-e landscape true` to the host-claim test, and restore fixed rotation to `default` afterward. The test asserts a wide display so a silent portrait fallback cannot pass as a landscape check.
+
+## Artifacts and limits
+
+The ignored `releases/1.4.0/` directory contains a debug-signed test APK, unsigned production APK, SHA-256 checksums, installation notes, and validation logs/screenshots. No release was pushed or published. The existing production signing key is not available in this clone. Use that original key to build/sign an update for the phone; the debug APK cannot replace the published app. Do not uninstall a live installation to work around a signature mismatch.
+
+UI tests exercised the actual Android IME and editor connection in a local test chat. Speech tests exercised Android's recognition binder with the debug deterministic provider; no live microphone/provider transcription was revalidated in this task. No physical phone, WhatsApp account, WhatsApp Send action, or delivered group message was used. On the actual phone, confirm the recipient and draft, check long-name layout, then send a claim, two-winner result and Bogie in a private test chat before group play. The host must still verify tickets.
+
+---
+
 # Tambola Keyboard 1.3.1: actual speech-service testing
 
 Validated on 25 September 2026, version code 6. Testing the published v1.3.0 APK through the real Android Google speech service found two command-matching problems: “Early five” was transcribed as **“only 5”**, and “Top line” as **“Topline”**. Both left the award unchanged and displayed a retry message. v1.3.1 accepts joined scheme words and the observed “only 5” variant when followed by an explicit winner marker. Collisions with a custom Only 5 prize still require clarification; unknown prizes are not guessed.

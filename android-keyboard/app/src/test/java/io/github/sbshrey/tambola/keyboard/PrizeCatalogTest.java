@@ -5,14 +5,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PrizeCatalogTest {
-    @Test public void all41CanBeAddedRepeatedlyWithoutLosingExistingAwardsOrDefaults() {
+    @Test public void all42CanBeAddedRepeatedlyWithoutLosingExistingAwardsOrDefaults() {
         Map<String, String> names = new LinkedHashMap<>(); names.put("a", "Asha"); names.put("b", "Bina");
         PrizeBook original = new PrizeBook(names, PrizeBook.defaults().schemes).award("prize-0", Arrays.asList("a", "b"), 11, 5);
-        assertEquals(41, PrizeCatalog.ALL.size()); assertEquals(41, new HashSet<>(PrizeCatalog.allIds()).size());
+        assertEquals(42, PrizeCatalog.ALL.size()); assertEquals(42, new HashSet<>(PrizeCatalog.allIds()).size());
         PrizeBook added = original.addPresets(PrizeCatalog.allIds());
-        assertEquals(45, added.schemes.size()); assertEquals(5, original.schemes.size());
+        assertEquals(46, added.schemes.size()); assertEquals(5, original.schemes.size());
         assertEquals(original.players, added.players); assertEquals(550, added.scheme("prize-0").eachPaise());
-        assertEquals(45, added.addPresets(PrizeCatalog.allIds()).schemes.size());
+        assertEquals(46, added.addPresets(PrizeCatalog.allIds()).schemes.size());
         for (PrizeCatalog.Preset preset : PrizeCatalog.ALL) { PrizeBook.Scheme scheme = PrizeCatalog.existing(added, preset); assertNotNull(scheme); assertTrue(scheme.enabled); assertEquals(10, scheme.rupees); }
     }
     @Test public void existingCustomAndRenamedPrizesAreReusedWithTheirAmounts() {
@@ -31,7 +31,7 @@ public class PrizeCatalogTest {
         assertThrows(IllegalArgumentException.class, () -> book.award("catalog-house-3", Arrays.asList("a"), 10, 14));
         PrizeBook awarded = book.award("catalog-ninth-box", Arrays.asList("a", "b"), 10, 20).award("catalog-house-3", Arrays.asList("a"), 10, 20);
         assertEquals(500, awarded.scheme("catalog-ninth-box").eachPaise()); assertTrue(awarded.results(20).contains("Ninth box: Asha & Bina"));
-        assertEquals(45, awarded.newRound().schemes.size()); assertFalse(awarded.newRound().hasWinners());
+        assertEquals(46, awarded.newRound().schemes.size()); assertFalse(awarded.newRound().hasWinners());
     }
     @Test public void badSelectionsAndOverLimitDoNotPartiallyMutateSetup() {
         PrizeBook base = PrizeBook.defaults();

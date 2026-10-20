@@ -3,30 +3,36 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { readFile, access } from 'node:fs/promises';
 
-async function worker() {
+async function worker(windows = []) {
   const listeners = {};
   const deleted = [];
   const assets = [];
   const entries = new Map();
   const scope = 'https://example.test/tambola/';
   let claimed = false;
+  let skippedWaiting = false;
+  const navigated = [];
   const cache = { async addAll(urls) { assets.push(...urls); }, async match(key) {
     return entries.get(typeof key === 'string' ? key : key.url);
   } };
   vm.runInNewContext(await readFile(new URL('../sw.js', import.meta.url), 'utf8'), {
-    URL, Response, self: { registration: { scope }, clients: { async claim() { claimed = true; } },
+    URL, Response, self: { registration: { scope }, async skipWaiting() { skippedWaiting = true; },
+      clients: { async claim() { claimed = true; }, async matchAll() {
+        return windows.map(url => ({ url, async navigate(target) { navigated.push(target); } }));
+      } },
       addEventListener: (name, handler) => { listeners[name] = handler; } },
     caches: { async open() { return cache; }, async keys() { return [`tambola-caller-${scope}-old`, `tambola-caller-${scope}-v1.6.0`, 'another-app']; },
       async delete(key) { deleted.push(key); } },
     fetch: async () => { throw new Error('offline'); },
   });
-  return { listeners, deleted, assets, entries, get claimed() { return claimed; } };
+  return { listeners, deleted, assets, entries, navigated, get claimed() { return claimed; }, get skippedWaiting() { return skippedWaiting; } };
 }
 test('offline install precaches every asset and each asset exists', async () => {
   const w = await worker();
   let done;
   w.listeners.install({ waitUntil(promise) { done = promise; } });
   await done;
+  assert.equal(w.skippedWaiting, true);
   assert.ok(w.assets.includes('./index.html'));
   assert.ok(w.assets.includes('./src/game.js'));
   assert.ok(w.assets.includes('./src/sharing.js'));
@@ -60,12 +66,13 @@ test('worker reports the installed pack so an older worker cannot claim audio is
   assert.equal(status.audioClips, 270);
 });
 test('activation only removes this app scope’s older caches', async () => {
-  const w = await worker();
+  const w = await worker(['https://example.test/tambola/friends/?invite=123', 'https://example.test/tambola/', 'https://other.test/tambola/friends/']);
   let done;
   w.listeners.activate({ waitUntil(promise) { done = promise; } });
   await done;
   assert.deepEqual(w.deleted, ['tambola-caller-https://example.test/tambola/-old']);
   assert.equal(w.claimed, true);
+  assert.deepEqual(w.navigated, ['https://example.test/tambola/friends/?invite=123']);
 });
 test('offline navigations with a query and module requests return cached assets', async () => {
   const w = await worker();
@@ -84,7 +91,7 @@ test('offline navigations with a query and module requests return cached assets'
 });
 test('worker leaves unrelated origins, paths and mutations alone', async () => {
   const w = await worker();
-  for (const [url, method] of [['https://other.test/', 'GET'], ['https://example.test/other/', 'GET'], ['https://example.test/tambola/', 'POST']]) {
+  for (const [url, method] of [['https://other.test/', 'GET'], ['https://example.test/other/', 'GET'], ['https://example.test/tambola/', 'POST'], ['https://example.test/tambola/friends/?invite=123', 'GET']]) {
     w.listeners.fetch({ request: { url, method }, respondWith() { assert.fail('Unrelated request intercepted'); } });
   }
 });

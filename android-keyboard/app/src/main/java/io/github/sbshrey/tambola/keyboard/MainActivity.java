@@ -84,7 +84,8 @@ public final class MainActivity extends Activity {
         text("To play", 25); text("Open the right WhatsApp group and tap its message box.\n\nNext number puts the emoji number into the box. Tap WhatsApp Send. Repeat for each call.", 20);
         text("Useful buttons", 25); text("Hear again: hear the same number.\nInsert again: put the same number in the box.\nABC: return to normal typing.\nBoard: see called numbers.\nWinners: optional prize tracking.", 19);
         text("Swipe up inside the keyboard to see more buttons. Tap Call at the top to return to Next number.", 19);
-        text("Speak a winner", 25); text("In the chat: Winners → Speak prize + winner. Allow microphone once and return to your chat. Say Early five winner Asha Sharma, or King winners Asha aur Bina. Use Speech · change for Hindi. The prize must be enabled. Names are added and winners saved automatically, using the configured prize amount. Check the name in the message box, then WhatsApp Send. Two winners split the prize equally.", 19);
+        text("Tap a winner", 25); text("In the chat: Winners → Tap prize + winner → Add family players & schemes once. Choose a prize group and prize. Claim for Varsha inserts her claim without awarding it. After checking all claims, tap each claimant. Insert winner announcement fills the message box and saves the award. Check it, then WhatsApp Send. No typing or microphone needed.", 19);
+        text("Speak a winner", 25); text("In the chat: Winners → Speak prize + winner. Allow microphone once and return to your chat. Say Early five winner Asha Sharma, or King winners Asha aur Bina. Use Speech · change for Hindi. The prize must be enabled. Names are added and winners saved automatically, using the configured prize amount. Check the name in the message box, then WhatsApp Send. Two winners split the prize equally; three or more means Bogie with no payout.", 19);
         text("Pictures and voice clips", 25); text("Tap Share in the keyboard. Choose a picture or voice clip. If a chooser opens, select WhatsApp and your group. Check the preview, then Send. Sound played aloud stays on this phone.", 19);
         text("Your privacy", 25); text("No accounts, ads, Internet or contacts permission in this app. Optional winner dictation asks for microphone access; your phone's speech service may process audio online. The app does not save microphone recordings. It saves winner names on this phone and checks the current draft to avoid overwriting it; chat text is not saved. Number voice clips are AI-generated and included in the app.", 17);
     }
@@ -126,7 +127,7 @@ public final class MainActivity extends Activity {
         for (Map.Entry<String, String> person : book.players.entrySet()) action(person.getValue() + " · edit", Ui.PAPER, () -> editPlayer(person.getKey()));
         text("Prizes", 26); text("Default total ₹10. Two winners receive ₹5 each. Tap a prize to choose winners after checking their tickets.", 19);
         for (PrizeBook.Scheme item : book.schemes) {
-            if (item.enabled) action(item.name + " · " + PrizeBook.money((item.winners.isEmpty() ? item.rupees : item.awardedRupees) * 100) + "\n" + (item.winners.isEmpty() ? "Choose winners" : book.winners(item)), Ui.PINK, () -> { awardId = item.id; go("award"); });
+            if (item.enabled) action(item.name + " · " + PrizeBook.money((item.resolved() ? item.awardedRupees : item.rupees) * 100) + "\n" + (item.resolved() ? book.winners(item) : "Choose winners"), Ui.PINK, () -> { awardId = item.id; go("award"); });
             action("Change " + item.name + (item.enabled ? "" : " (off)"), Ui.PAPER, () -> editScheme(item.id));
         }
         action("Add another prize", Ui.PAPER, () -> editScheme(null)); action("See / share results", Ui.GREEN, () -> go("results"));
@@ -139,7 +140,7 @@ public final class MainActivity extends Activity {
             int count = 0; for (PrizeCatalog.Preset item : PrizeCatalog.ALL) if (item.group.equals(group)) count++;
             action(group + " · " + count + " choices", Ui.PAPER, () -> choosePresets(group));
         }
-        action("Add all 41 schemes", Ui.PINK, () -> confirm("Add all 41 schemes?", "All listed prizes will turn on. New prizes start at ₹10 each. Existing amounts and winners stay. You can switch unused prizes off under Players & prizes.", () -> { store.prizes(store.prizes().addPresets(PrizeCatalog.allIds())); go("players"); toast("Prize schemes added. Your game continues."); }));
+        action("Add all " + PrizeCatalog.ALL.size() + " schemes", Ui.PINK, () -> confirm("Add all " + PrizeCatalog.ALL.size() + " schemes?", "All listed prizes will turn on. New prizes start at ₹10 each. Existing amounts and winners stay. You can switch unused prizes off under Players & prizes.", () -> { store.prizes(store.prizes().addPresets(PrizeCatalog.allIds())); go("players"); toast("Prize schemes added. Your game continues."); }));
         action("‹ Players & prizes", Ui.PAPER, () -> go("players"));
     }
     private void choosePresets(String group) {

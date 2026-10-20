@@ -11,6 +11,7 @@ import android.view.*;
 import android.view.inputmethod.*;
 import android.widget.*;
 import java.security.SecureRandom;
+import java.util.*;
 
 public final class TambolaInputMethod extends InputMethodService {
     static final String PRACTICE = "tambola-practice";
@@ -26,9 +27,11 @@ public final class TambolaInputMethod extends InputMethodService {
     private int session;
     private String panel = "Call", awardId;
     private String shownRound;
+    private String quickGroup = "Quick prizes", quickId, quickRound, quickPrizes;
+    private int quickSession;
     private WinnerSpeech winnerSpeech;
     private int speechSession;
-    private String speechMessage = "Say the prize, then one or two names.";
+    private String speechMessage = "Say the prize, then the claimant names. Three or more means Bogie.";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRound = this::refreshSavedRound;
     private final SharedPreferences.OnSharedPreferenceChangeListener roundListener = (preferences, key) -> {
@@ -102,6 +105,8 @@ public final class TambolaInputMethod extends InputMethodService {
             if (panel.equals("Call")) call(game);
             else if (panel.equals("Board")) board(game);
             else if (panel.equals("Winners")) winners(game);
+            else if (panel.equals("Tap winners")) quickSchemes();
+            else if (panel.equals("Tap names")) quickNames(game);
             else if (panel.equals("Voice")) voice();
             else if (panel.equals("Speak winner")) speakWinnerPanel();
             else if (panel.equals("Share")) share(game);
@@ -181,17 +186,96 @@ public final class TambolaInputMethod extends InputMethodService {
     private void winners(Game game) {
         if (practice) { Ui.add(body, Ui.text(this, "Winners are for your live game. Practice does not change them.", 20), -2); return; }
         PrizeBook book = store.prizes(); Ui.add(body, Ui.text(this, "Winners (optional)", 23), -2);
+        Ui.action(body, "Tap prize + winner", Ui.GREEN, () -> { quickGroup = "Quick prizes"; navigate("Tap winners"); }).setEnabled(!mediaBusy);
         Ui.action(body, "Speak prize + winner", Ui.GREEN, this::startWinnerSpeech).setEnabled(!mediaBusy);
         Ui.action(body, "Speech: " + (preferences.dictationLanguage().equals("hi-IN") ? "Hindi" : "English / Hinglish") + " · change", Ui.PAPER, () -> { preferences.dictationLanguage(preferences.dictationLanguage().equals("hi-IN") ? "en-IN" : "hi-IN"); render(); });
         Ui.add(body, Ui.text(this, "Say: Early five winner Asha Sharma. We save the winner and fill the message. Check it, then Send.", 18), -2);
         Ui.action(body, "Choose prize schemes", Ui.PAPER, () -> open("catalog"));
         Ui.action(body, "Players & prize amounts", Ui.PAPER, () -> open("players"));
+        Ui.action(body, "Add family players & schemes", Ui.PAPER, this::addFamilySetup);
         if (book.players.isEmpty()) Ui.add(body, Ui.text(this, "Speaking adds new names automatically. Or add names above to choose manually.", 18), -2);
         if (book.hasWinners()) Ui.action(body, "Insert all results", Ui.GREEN, () -> insertText(store.prizes().results(store.load().count())));
         for (PrizeBook.Scheme item : book.schemes) if (item.enabled) {
-            Ui.action(body, item.name + " · " + PrizeBook.money((item.winners.isEmpty() ? item.rupees : item.awardedRupees) * 100) + "\n" + (item.winners.isEmpty() ? "Choose winners" : book.winners(item)), Ui.PAPER, () -> { awardId = item.id; navigate("Award"); });
-            if (!item.winners.isEmpty()) Ui.action(body, "Insert " + item.name + " announcement", Ui.GREEN, () -> { PrizeBook current = store.prizes(); insertText(current.announcement(current.scheme(item.id))); });
+            Ui.action(body, item.name + " · " + PrizeBook.money((item.resolved() ? item.awardedRupees : item.rupees) * 100) + "\n" + (item.resolved() ? book.winners(item) : "Choose winners"), Ui.PAPER, () -> { awardId = item.id; navigate("Award"); });
+            if (item.resolved()) Ui.action(body, "Insert " + item.name + " announcement", Ui.GREEN, () -> { PrizeBook current = store.prizes(); insertText(current.announcement(current.scheme(item.id))); });
         }
+    }
+    private void addFamilySetup() {
+        try {
+            store.prizes(FamilySetup.addTo(store.prizes()));
+            quickGroup = "Quick prizes";
+            navigate("Tap winners");
+            say("Family list ready. Choose a prize, then tap the winner.");
+        } catch (IllegalArgumentException | IllegalStateException error) { say(error.getMessage()); }
+    }
+    private void quickSchemes() {
+        if (practice) return;
+        PrizeBook book = store.prizes();
+        Ui.add(body, Ui.text(this, "1. Choose a prize", 23), -2);
+        if (!FamilySetup.hasPlayers(book)) {
+            Ui.action(body, "Add family players & schemes", Ui.GREEN, this::addFamilySetup);
+            Ui.add(body, Ui.text(this, "Adds your 11 players and " + PrizeCatalog.ALL.size() + " schemes. Existing names, amounts and winners stay.", 17), -2);
+        }
+        List<String> groups = new ArrayList<>(PrizeCatalog.GROUPS); groups.add("Other prizes");
+        for (int i = 0; i < groups.size(); i += 2) {
+            LinearLayout row = new LinearLayout(this);
+            for (int j = i; j < Math.min(i + 2, groups.size()); j++) {
+                String group = groups.get(j);
+                Button button = Ui.button(this, group + (quickGroup.equals(group) ? " ✓" : ""), quickGroup.equals(group) ? Ui.PINK : Ui.PAPER,
+                    () -> { quickGroup = group; navigate("Tap winners"); });
+                button.setContentDescription("Prize group: " + group);
+                LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(0, -2, 1);
+                size.setMargins(Ui.dp(this, 3), 0, Ui.dp(this, 3), 0); row.addView(button, size);
+            }
+            Ui.add(body, row, -2);
+        }
+        int available = 0;
+        for (PrizeBook.Scheme scheme : book.schemes) if (scheme.enabled && quickGroup.equals(PrizeCatalog.group(book, scheme))) {
+            available++;
+            Ui.action(body, scheme.name + (scheme.resolved() ? " · " + book.winners(scheme) : ""), Ui.PAPER, () -> {
+                quickId = scheme.id; quickSession = session; quickRound = store.load().encode(); quickPrizes = PrizeJson.encode(store.prizes());
+                navigate("Tap names");
+            }).setContentDescription("Choose prize: " + scheme.name);
+        }
+        if (available == 0) Ui.add(body, Ui.text(this, "No enabled prizes in this group. Add the family list or choose prize schemes.", 18), -2);
+        Ui.action(body, "‹ More winner options", Ui.PAPER, () -> navigate("Winners"));
+    }
+    private void quickNames(Game game) {
+        if (practice) return;
+        Ui.action(body, "‹ Choose another prize", Ui.PAPER, () -> navigate("Tap winners"));
+        if (quickSession != session || !game.encode().equals(quickRound) || !PrizeJson.encode(store.prizes()).equals(quickPrizes)) {
+            Ui.add(body, Ui.text(this, "Game or prizes changed. Choose the prize again.", 20), -2); return;
+        }
+        PrizeBook book = store.prizes(); PrizeBook.Scheme scheme = book.scheme(quickId);
+        String host = FamilySetup.hostId(book);
+        if (host != null && !scheme.resolved()) {
+            Ui.action(body, "Claim for " + book.players.get(host), Ui.PINK, () -> {
+                try {
+                    if (quickSession != session || !store.load().encode().equals(quickRound) || !PrizeJson.encode(store.prizes()).equals(quickPrizes)) {
+                        navigate("Tap winners"); say("Game or prizes changed. Choose the prize again."); return;
+                    }
+                    String claim = book.claim(scheme.id, host, game.count());
+                    InputConnection editor = emptyEditor(); if (editor == null) return;
+                    boolean inserted = editor.commitText(claim, 1);
+                    if (inserted) { navigate("Winners"); say("Claim ready · WhatsApp Send. Confirm winners after checking claims."); }
+                    else say("Could not insert claim. Tap the empty message box and try again.");
+                } catch (IllegalArgumentException | IllegalStateException error) { say(error.getMessage()); }
+            }).setEnabled(game.count() >= scheme.minimumCalls);
+        }
+        QuickWinnerViews.choose(body, book, scheme, game.count(), selected -> {
+            try {
+                if (quickSession != session || !isInputViewShown() || !store.load().encode().equals(quickRound)
+                    || !PrizeJson.encode(store.prizes()).equals(quickPrizes)) {
+                    navigate("Tap winners"); say("Game or prizes changed. Choose the prize again."); return;
+                }
+                InputConnection editor = emptyEditor(); if (editor == null) return;
+                PrizeBook updated = book.resolve(scheme.id, selected, game.count());
+                store.prizes(updated); // Recoverable via the existing Insert announcement action if the editor rejects text.
+                boolean inserted = editor.commitText(updated.announcement(updated.scheme(scheme.id)), 1);
+                navigate("Winners");
+                say(inserted ? (selected.size() >= 3 ? "Bogie saved · no payout. Check the message, then Send" : "Winner saved · check the message, then WhatsApp Send") : "Result saved. Tap Insert announcement to try again.");
+            } catch (IllegalArgumentException | IllegalStateException error) { say(error.getMessage()); }
+        }, () -> scroll.scrollTo(0, 0));
     }
     private void cancelWinnerSpeech() {
         speechSession++;
@@ -213,7 +297,7 @@ public final class TambolaInputMethod extends InputMethodService {
             String label = code.equals("hi-IN") ? "Hindi · हिन्दी" : "English / Hinglish";
             Ui.action(body, label + (code.equals(preferences.dictationLanguage()) ? " ✓" : ""), Ui.PAPER, () -> { preferences.dictationLanguage(code); render(); });
         }
-        Ui.add(body, Ui.text(this, "Uses the enabled prize's amount. Two names split it equally. Your phone's speech service may need Internet. To change a saved award, use its prize button.", 17), -2);
+        Ui.add(body, Ui.text(this, "Uses the enabled prize's amount. Two names split it equally; three or more means Bogie with no payout. Your phone's speech service may need Internet. To change a saved award, use its prize button.", 17), -2);
     }
     private void startWinnerSpeech() {
         if (practice || mediaBusy || winnerSpeech != null) return;
@@ -239,8 +323,9 @@ public final class TambolaInputMethod extends InputMethodService {
                     // Persist before handing off; a failed insertion remains recoverable from Winners.
                     store.prizes(command.book);
                     boolean inserted = editor.commitText(command.announcement, 1);
-                    speechMessage = inserted ? "Winner saved. Check the name in the message box, then WhatsApp Send."
-                        : "Winner saved. Return to Winners and tap Insert announcement.";
+                    speechMessage = inserted ? (command.bogie ? "Bogie saved. Check the claimants in the message box, then WhatsApp Send."
+                        : "Winner saved. Check the name in the message box, then WhatsApp Send.")
+                        : "Result saved. Return to Winners and tap Insert announcement.";
                     render(); scroll.scrollTo(0, 0); say(inserted ? "Ready · check name, then WhatsApp Send" : "Winner saved; message could not be inserted.");
                 } catch (IllegalArgumentException | IllegalStateException error) { speechMessage = "Heard: " + spoken + "\n\n" + error.getMessage(); render(); scroll.scrollTo(0, 0); }
             }, error -> {

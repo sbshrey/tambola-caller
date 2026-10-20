@@ -1,8 +1,10 @@
-# Tambola Keyboard 1.3.1 for Android
+# Tambola Keyboard 1.4.0 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-**[Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk)** — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
+**Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
+
+The 1.4.0 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
 
 ## Set up once
 
@@ -39,6 +41,24 @@ Pictures and audio can also be shared from the app's **See board / New game** sc
 
 ## Players and prizes are optional
 
+### Tap the prize and winner — no typing needed
+
+In your chat, tap **Winners → Tap prize + winner → Add family players & schemes** once. This adds Varsha, Rekha, Kamlesh Bhabhi, Laxmi Bhabhi, Leela jiji, Nirmala, Rekha totla, Sandhya, Sangita jiji, Saroj and Suman, plus all 42 catalog schemes including **T**. Existing players, calls, winners and amounts are preserved. Matching names are reused without changing their spelling; Rekha and Rekha totla remain separate players. Repeating setup preserves renamed family entries and re-enables catalog prizes.
+
+1. Choose a group (Quick prizes, Lines, Boxes, Special prizes, Houses or Other prizes), then a prize.
+2. If Varsha is claiming for herself, tap **Claim for Varsha**, then WhatsApp Send. This inserts `🙋 Varsha claims Early 5` with `Please check my ticket.` It does not save a winner or pay a prize.
+3. After other players claim in the chat and the host checks their tickets, reopen the scheme and tap **every confirmed claimant**, including Varsha when applicable. A tick marks each selected name; tap it again to deselect. Scroll to reach every name.
+4. Review the announcement and prize split. Tap **Review announcement ↑** at the bottom or scroll back to **Insert winner announcement** (one or two claimants) or **Insert Bogie announcement** (three or more). This saves the award and fills the empty chat draft, for example `🏆 Early 5: Varsha` with `₹10 prize`.
+5. Check the message, then tap **WhatsApp Send**.
+
+**One claimant receives ₹10; two receive ₹5 each; three or more means Bogie with no payout.** Existing custom prize totals are preserved. Bogie results list the claimants, appear in shared results, and contribute nothing to prize totals. The app does not read other players’ WhatsApp messages or verify tickets; Varsha selects the confirmed claimants.
+
+No microphone, speech service, Internet or keyboard switch is needed for this flow. Existing drafts are preserved, and a blocked insertion does not save a new award. If an editor rejects text after the award is saved, use **Insert [prize] announcement** to retry. Android can acknowledge queuing text before an editor accepts it, so always check the draft. Choosing names or leaving the screen alone does not save anything. An editor restart, new round or changed prize setup invalidates a pending selection.
+
+Reopen a resolved prize to correct its claimants with **Update winner announcement** or **Insert Bogie announcement**. Correcting paid winners keeps their recorded amount. Reducing a Bogie to one/two valid claimants restores a payout using the configured prize total. Both corrections keep the original call position. Use the existing manual prize controls to clear an award or change its recorded amount. New games keep the family list and scheme choices and clear both awards and Bogies. Undo clears results recorded on the removed call.
+
+The line/box shorthand is interpreted as individual First–Ninth prizes, allowing games with six or nine of each. Ulti and Seedhi family planning are separate schemes; saved entries using the old Siddi spelling are reused. “Pati patni vah”, “Ilove you” and “10 early” map to the existing Pati patni or vo, I love you and Early 10 names. Turn unused prizes off in Players & prizes.
+
 ### Speak the prize and winner
 
 In your WhatsApp group, leave the message box empty. Tap **Winners → Speak prize + winner**. Allow microphone access once, return to your chat, and tap **Speak prize + winner** again. Say:
@@ -49,9 +69,9 @@ In your WhatsApp group, leave the message box empty. Tap **Winners → Speak pri
 
 The announcement goes into the current chat draft automatically. **Check the spelling, then tap WhatsApp Send.** There is no automatic sending or delivery confirmation. Recognition can finish when you stop speaking, or tap **Done speaking**. **Cancel listening** discards the request.
 
-Enable the prize first under **Choose prize schemes**. The command uses that prize's configured rupee amount; speak the scheme and names, not a different amount. Up to two names are accepted, separated by **and / aur / और**. Exact existing names are reused; new names are added automatically. Similar spellings or Hindi/Latin versions are not guessed to be the same person. Stay with one spelling/script or correct names under Players & prize amounts.
+Enable the prize first under **Choose prize schemes**. The command uses that prize's configured rupee amount; speak the scheme and names, not a different amount. Separate claimant names with **and / aur / और**. One/two names create a paid result; three or more create a Bogie with no payout. Exact existing names are reused; new names are added automatically. Similar spellings or Hindi/Latin versions are not guessed to be the same person. Stay with one spelling/script or correct names under Players & prize amounts.
 
-All 41 catalog names, the original defaults and custom prize names can be spoken. Common Hindi/Hinglish aliases are included, with number words such as Early five and House one. v1.3.1 also handles joined words such as “Topline” and the speech service's observed “only 5 winner” transcription of “Early five winner”. This is a small command vocabulary, not unrestricted conversational AI. An unclear/ambiguous prize, an already-awarded prize or too few calls leaves awards unchanged. Correct existing awards using the prize's manual dropdowns. If a winner saves but insertion fails, use **Insert [prize] announcement**; do not award the prize again.
+All 42 catalog names, the original defaults and custom prize names can be spoken. Common Hindi/Hinglish aliases are included, with number words such as Early five and House one. v1.3.1 also handles joined words such as “Topline” and the speech service's observed “only 5 winner” transcription of “Early five winner”. This is a small command vocabulary, not unrestricted conversational AI. An unclear/ambiguous prize, an already-awarded prize or too few calls leaves awards unchanged. Correct existing awards using the prize's manual dropdowns. If a winner saves but insertion fails, use **Insert [prize] announcement**; do not award the prize again.
 
 Voice typing requires an enabled Android speech recognition service and may require Internet through that service. It is optional; manual winner tracking and number calls still work without microphone permission. Speech stops when the keyboard closes, the editor changes, you navigate away or cancel; a changed round, prize setup or nonempty draft prevents a pending award. Dictation is disabled in practice. No microphone recordings are stored by this app, and no OpenAI key is needed. Phone/provider recognition quality needs a real-device check.
 
@@ -59,13 +79,13 @@ Voice typing requires an enabled Android speech recognition service and may requ
 
 Tap **Winners → Players & prize amounts**, or open that screen from the app. Add names one per line or separated by commas. Use **ABC** / the normal keyboard picker to type names, then choose Tambola Keyboard again when returning to WhatsApp.
 
-- **Winners → Choose prize schemes** offers [all 41 supplied prize names](SCHEMES.md), grouped into quick prizes, lines, boxes, special prizes and houses. Tick choices and tap **Add selected**, or use **Add all 41 schemes** and confirm. Current calls and winners stay. Already-active choices cannot be accidentally unticked here; turn unwanted prizes off under Players & prizes after clearing any winners. Existing matching prizes are reused with their amounts and awards.
+- **Winners → Choose prize schemes** offers [all 42 supplied prize names](SCHEMES.md), grouped into quick prizes, lines, boxes, special prizes and houses. Tick choices and tap **Add selected**, or use **Add all 42 schemes** and confirm. Current calls and winners stay. Already-active choices cannot be accidentally unticked here; turn unwanted prizes off under Players & prizes after clearing any winners. Existing matching prizes are reused with their amounts and awards.
 - Early 5, Top line, Middle line, Bottom line and Full house start at **₹10 total**. Add custom prizes, change names/amounts, or turn unused prizes off before or during the game.
-- After checking a paper ticket, tap a prize and choose one or two players from the dropdowns. The split is shown before **Save winners**: one winner receives ₹10; two receive ₹5 each. Odd amounts split to paise, for example ₹11 gives ₹5.50 each.
+- After checking a paper ticket, tap a prize and choose one or two players from the dropdowns. Use **Tap prize + winner** for three or more claimants and Bogie. The split is shown before **Save winners**: one winner receives ₹10; two receive ₹5 each. Odd amounts split to paise, for example ₹11 gives ₹5.50 each.
 - Standard line/Early 5 prizes require at least five calls; Full house requires fifteen. Custom prizes require one. These limits do not verify a physical ticket: the host checks it.
 - Tap **Insert [prize] announcement** or **Insert all results** in the keyboard, then WhatsApp Send. Alternatively, the app's **Results to share** screen opens the share chooser.
 - Rename players without losing their awards. Clear wins before removing a winning player or turning off an awarded prize. Editing a default prize changes future awards; edit its winners in the full app to change a recorded payout.
-- Player names are typed or dictated; the app does not read contacts or WhatsApp group members. Limits: 100 players, 60 prize schemes, 2 winners per scheme, ₹0–₹100000 per prize. No payments are made.
+- Player names are typed or dictated; the app does not read contacts or WhatsApp group members. Limits: 100 players, 60 prize schemes, 2 paid winners per scheme (3+ claimants = Bogie), ₹0–₹100000 per prize. No payments are made.
 
 ## Undo and new game
 
@@ -101,7 +121,7 @@ To use another signing key, set `TAMBOLA_KEYSTORE_PATH` and `TAMBOLA_KEYSTORE_PA
 Instrumented tests reset both game stores. Use a dedicated emulator, never a phone with an active game. Install debug and test APKs, enable/select the IME, then run:
 
 ```text
-adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.WinnerSpeechTest,io.github.sbshrey.tambola.keyboard.FeaturesTest,io.github.sbshrey.tambola.keyboard.KeyboardTest,io.github.sbshrey.tambola.keyboard.NewGameNavigationTest,io.github.sbshrey.tambola.keyboard.PrizeCatalogUiTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.PrizeJsonTest,io.github.sbshrey.tambola.keyboard.QuickWinnerTest,io.github.sbshrey.tambola.keyboard.WinnerSpeechTest,io.github.sbshrey.tambola.keyboard.FeaturesTest,io.github.sbshrey.tambola.keyboard.KeyboardTest,io.github.sbshrey.tambola.keyboard.NewGameNavigationTest,io.github.sbshrey.tambola.keyboard.PrizeCatalogUiTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
 Run the microphone permission UI test separately after revoking the permission on that **dedicated emulator** (revoking a permission can stop the app):
@@ -111,4 +131,6 @@ adb -s <emulator-serial> shell pm revoke io.github.sbshrey.tambola.keyboard andr
 adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.VoicePermissionTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
-Screenshots are written to the debug app's private files directory. Core logic is in `Game`, `PrizeBook` and `WinnerCommand`; persistence in `GameStore`/`PrizeJson`; recordings in `CallAudio`; optional recognition in `WinnerSpeech`; PNGs and attachment handoff in `Sharing`/`ShareProvider`; `PrizeViews` is shared by the keyboard and full-screen app. `WinnerSpeechTest` selects a debug-only speech provider and restores the previous provider after each test. It tests Android's recognition callback/binder path without recording audio; the fixture is excluded from the release APK.
+Screenshots are written to the debug app's private files directory. Prize storage upgrades version 1 records to version 2 on save while keeping players, amounts and awards; version 2 adds Bogie claimants. Older APKs cannot read version 2, so keep the upgraded app.
+
+Core logic is in `Game`, `PrizeBook`, `FamilySetup` and `WinnerCommand`; persistence in `GameStore`/`PrizeJson`; recordings in `CallAudio`; optional recognition in `WinnerSpeech`; PNGs and attachment handoff in `Sharing`/`ShareProvider`; `PrizeViews` is shared by the keyboard and full-screen app. `WinnerSpeechTest` selects a debug-only speech provider and restores the previous provider after each test. It tests Android's recognition callback/binder path without recording audio; the fixture is excluded from the release APK.

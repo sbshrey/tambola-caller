@@ -58,6 +58,11 @@ public class KeyboardTest {
     }
     private void clear() throws Exception { onMain(() -> input.setText("")); Thread.sleep(750); }
     private String message() { final String[] value = {null}; onMain(() -> value[0] = input.getText().toString()); return value[0]; }
+    private void assertMessage(String expected) {
+        long deadline = android.os.SystemClock.elapsedRealtime() + 3000;
+        while (!expected.equals(message()) && android.os.SystemClock.elapsedRealtime() < deadline) android.os.SystemClock.sleep(25);
+        assertEquals(expected, message());
+    }
     private void tap(String description) {
         UiObject2 button = visible(By.desc(description)); button.click(); device.waitForIdle();
     }
@@ -78,7 +83,7 @@ public class KeyboardTest {
         Game first = new GameStore(context, false).load(); assertEquals(1, first.count()); assertEquals(Game.emoji(first.latest()), message());
         assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), "keyboard-live.png")));
         clear(); focus(false, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        tap("Insert current number again"); assertEquals(Game.emoji(first.latest()), message()); assertEquals(1, new GameStore(context, false).load().count());
+        tap("Insert current number again"); assertMessage(Game.emoji(first.latest())); assertEquals(1, new GameStore(context, false).load().count());
         onMain(() -> { input.setText("Do not replace this draft"); input.selectAll(); });
         tap("Next number"); assertEquals("Do not replace this draft", message()); assertEquals(1, new GameStore(context, false).load().count());
         clear(); tap("Next number"); assertTrue(device.wait(Until.hasObject(By.text("2 / 90")), 5000));
@@ -128,6 +133,7 @@ public class KeyboardTest {
         new GameStore(context, true).save(Game.decode("47"));
         focus(false, InputType.TYPE_CLASS_TEXT);
         onMain(() -> { input.setText(Game.emoji(5)); input.selectAll(); });
+        device.waitForIdle();
         device.findObject(By.text("Board")).click(); device.waitForIdle();
         visible(By.text("Start a new game")).click(); device.waitForIdle();
         visible(By.text("Keep playing")).click(); device.waitForIdle();

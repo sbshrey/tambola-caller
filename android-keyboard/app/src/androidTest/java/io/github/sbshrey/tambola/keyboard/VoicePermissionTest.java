@@ -31,13 +31,13 @@ public class VoicePermissionTest {
         GameStore store = new GameStore(context, false); store.save(Game.decode("1,2,3,4,5")); store.prizes(PrizeBook.defaults()); new Preferences(context).voice(false);
         rule.launchActivity(new Intent()); device.waitForIdle(); focus();
         tap(By.text("Winners")); tap(By.text("Speak prize + winner")); tap(By.text("Allow microphone"));
-        tap(By.res("com.android.permissioncontroller:id/permission_deny_button"));
+        tap(By.res(java.util.regex.Pattern.compile(".*permissioncontroller:id/permission_deny_button")));
         tap(By.text("Return to chat")); tap(By.desc("Test chat draft")); focus();
         assertFalse(store.prizes().hasWinners()); tap(By.text("Next number"));
         assertTrue(device.wait(Until.hasObject(By.text("6 / 90")), 5000)); assertEquals(6, store.load().count());
         main(() -> rule.getActivity().draft.setText(""));
         tap(By.text("Winners")); tap(By.text("Speak prize + winner")); tap(By.text("Allow microphone"));
-        tap(By.res("com.android.permissioncontroller:id/permission_allow_foreground_only_button"));
+        tap(By.res(java.util.regex.Pattern.compile(".*permissioncontroller:id/permission_allow_foreground_only_button")));
         assertTrue(device.wait(Until.hasObject(By.textContains("Microphone is ready")), 5000));
         tap(By.text("Return to chat")); tap(By.desc("Test chat draft")); focus();
         assertEquals(PackageManager.PERMISSION_GRANTED, context.checkSelfPermission(Manifest.permission.RECORD_AUDIO));

@@ -40,11 +40,18 @@ public class WinnerCommandTest {
         assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(disabled, "King Asha", 5));
         assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(all(), "Early five Asha", 4));
     }
-    @Test public void rejectsAmbiguousMissingDuplicateAndTooManyNames() {
-        for (String speech : Arrays.asList("Early five", "Early five winner", "King and", "King Asha aur asha", "King Asha and Bina and Charu", "King Asha Queen", "Asha Sharma", "King winner Asha 10 rupees", "King Asha &", "King 123"))
+    @Test public void rejectsAmbiguousMissingDuplicateAndInvalidNames() {
+        for (String speech : Arrays.asList("Early five", "Early five winner", "King and", "King Asha aur asha", "King Asha Queen", "Asha Sharma", "King winner Asha 10 rupees", "King Asha &", "King 123"))
             assertThrows(speech, IllegalArgumentException.class, () -> WinnerCommand.prepare(all(), speech, 90));
         PrizeBook duplicate = all().configure(null, "King", 10, true);
         assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(duplicate, "King Asha", 5));
+    }
+    @Test public void threeSpokenClaimantsBecomeBogieWithoutPayout() {
+        WinnerCommand result = WinnerCommand.prepare(all(), "King winners Varsha and Rekha and Suman", 5);
+        assertTrue(result.book.scheme("catalog-king").bogie());
+        assertEquals("🚫 King: Bogie\n3 claimants: Varsha & Rekha & Suman\nNo payout", result.announcement);
+        assertEquals(0, result.book.scheme("catalog-king").eachPaise());
+        assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(result.book, "King Varsha", 5));
     }
     @Test public void doesNotGuessSimilarNamesOrTranslateSavedNames() {
         PrizeBook book = all().player(null, "Asha Sharma");

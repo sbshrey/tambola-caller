@@ -44,7 +44,13 @@ public class WinnerSpeechTest {
         main(() -> ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(rule.getActivity().draft, InputMethodManager.SHOW_IMPLICIT));
         assertNotNull(device.wait(Until.findObject(By.text("Call")), 10000)); device.waitForIdle();
     }
-    private void tap(String text) { UiObject2 item = device.wait(Until.findObject(By.text(text)), 5000); assertNotNull(text, item); item.click(); device.waitForIdle(); }
+    private void tap(String text) {
+        for (int attempt = 0; attempt < 3; attempt++) {
+            UiObject2 item = device.wait(Until.findObject(By.text(text)), 5000); assertNotNull(text, item);
+            try { item.click(); device.waitForIdle(); return; }
+            catch (StaleObjectException error) { if (attempt == 2) throw error; device.waitForIdle(); }
+        }
+    }
     private void speak() { tap("Winners"); tap("Speak prize + winner"); }
     private void expect(String text) { assertTrue(text, device.wait(Until.hasObject(By.textContains(text)), 10000)); }
     private void noAward() { assertFalse(store.prizes().hasWinners()); }
@@ -64,8 +70,14 @@ public class WinnerSpeechTest {
         main(() -> TestRecognitionService.transcript = "अर्ली फाइव की विनर आशा शर्मा और बीना");
         speak(); expect("Winner saved. Check"); assertEquals("🏆 Early 5: आशा शर्मा & बीना\n₹5 each", draft());
     }
+    @Test public void threeSpokenClaimantsSaveBogieWithNoPrizeMoney() {
+        main(() -> TestRecognitionService.transcript = "King winners Varsha aur Rekha aur Suman");
+        speak(); expect("Bogie saved. Check");
+        assertEquals("🚫 King: Bogie\n3 claimants: Varsha & Rekha & Suman\nNo payout", draft());
+        assertTrue(store.prizes().scheme("catalog-king").bogie()); assertFalse(store.prizes().results(5).contains("Total prizes"));
+    }
     @Test public void existingDraftBlocksVoiceAndPreservesGame() {
-        main(() -> rule.getActivity().draft.setText("Unsent message")); speak(); expect("Send or clear the current message first.");
+        main(() -> rule.getActivity().draft.setText("Unsent message")); focus(); speak(); expect("Send or clear the current message first.");
         noAward(); assertEquals("Unsent message", draft());
     }
     @Test public void cancelNeverAssignsOrInserts() {

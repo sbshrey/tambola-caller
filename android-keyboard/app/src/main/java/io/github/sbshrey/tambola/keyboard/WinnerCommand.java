@@ -4,13 +4,14 @@ import java.text.Normalizer;
 import java.util.*;
 import java.util.regex.*;
 
-/** A narrow spoken command: one enabled prize, followed (or preceded) by one or two names. */
+/** A narrow spoken command: one enabled prize and claimants; three or more is Bogie. */
 final class WinnerCommand {
     static final String EXAMPLE = "Say the prize and name, like Early five winner Asha Sharma.";
     private static final Pattern WINNER_MARKER = Pattern.compile("(?iu)^(?:(?:ki|ke|ka|के|की|का)\\s+)?(?:winners?|विनर|विनर्स|विजेता)(?:\\s|[:,]|$)");
     final PrizeBook book;
     final String announcement;
-    private WinnerCommand(PrizeBook book, String id) { this.book = book; announcement = book.announcement(book.scheme(id)); }
+    final boolean bogie;
+    private WinnerCommand(PrizeBook book, String id) { this.book = book; announcement = book.announcement(book.scheme(id)); bogie = book.scheme(id).bogie(); }
 
     static WinnerCommand prepare(PrizeBook book, String speech, int count) {
         if (speech == null || speech.length() > 250) throw new IllegalArgumentException(EXAMPLE);
@@ -36,23 +37,23 @@ final class WinnerCommand {
         if (!explicit.isEmpty()) matches = explicit;
         if (matches.size() != 1) throw new IllegalArgumentException(matches.isEmpty() ? "Prize not clear. Choose prize schemes to enable it. " + EXAMPLE : "More than one prize heard. Say one prize and its winner.");
         String id = matches.keySet().iterator().next(); PrizeBook.Scheme scheme = book.scheme(id);
-        if (!scheme.winners.isEmpty()) throw new IllegalArgumentException(scheme.name + " already has winners. Use its prize button to correct them, or Insert announcement.");
+        if (scheme.resolved()) throw new IllegalArgumentException(scheme.name + " already has winners or a Bogie result. Use its prize button to correct them, or Insert announcement.");
         if (count < scheme.minimumCalls) throw new IllegalArgumentException("Call at least " + scheme.minimumCalls + " numbers before awarding " + scheme.name + ".");
         String names = matches.get(id).replaceFirst("(?iu)^(?:(?:ki|ke|ka|के|की|का)\\s+)?(?:(?:winners?|विनर|विनर्स|विजेता)(?:\\s+(?:is|are|hai|hain|है|हैं))?\\s*[:,-]?\\s*|(?:ki|ke|ka|के|की|का)\\s+)", "")
             .replaceFirst("(?iu)\\s+(?:ki|ke|ka|के|की|का)$", "").trim();
         String[] people = names.split("(?iu)\\s+(?:and|aur|और|एंड)\\s+|\\s*[&,]\\s*", -1);
-        if (people.length > 2) throw new IllegalArgumentException("Say up to two winners, joined by and or aur.");
+        if (people.length > PrizeBook.MAX_PLAYERS) throw new IllegalArgumentException("Too many claimants.");
         Map<String, String> players = new LinkedHashMap<>(book.players); List<String> winners = new ArrayList<>(); Set<String> seen = new HashSet<>();
         for (String person : people) {
             String name = PrizeBook.clean(person);
             if (!name.matches("[\\p{L}\\p{M} .’'\\-]+") || name.split("\\s+").length > 8 || name.matches("(?iu)(?:winner|winners|विनर|विजेता|and|aur|और|hai|है)")) throw new IllegalArgumentException(EXAMPLE);
-            String key = key(name); if (!seen.add(key)) throw new IllegalArgumentException("Say two different winner names.");
+            String key = key(name); if (!seen.add(key)) throw new IllegalArgumentException("Say each claimant's name only once.");
             String playerId = null;
             for (Map.Entry<String, String> player : players.entrySet()) if (key(player.getValue()).equals(key)) { playerId = player.getKey(); break; }
             if (playerId == null) { playerId = UUID.randomUUID().toString(); players.put(playerId, name); }
             winners.add(playerId);
         }
-        PrizeBook updated = new PrizeBook(players, book.schemes).award(id, winners, scheme.rupees, count);
+        PrizeBook updated = new PrizeBook(players, book.schemes).resolve(id, winners, count);
         return new WinnerCommand(updated, id);
     }
     private static String key(String name) { return Normalizer.normalize(PrizeBook.clean(name), Normalizer.Form.NFC).toLowerCase(Locale.ROOT); }
@@ -71,7 +72,7 @@ final class WinnerCommand {
         }
         switch (key) {
             case "early 5": add(result, "early five|only five|only 5|अर्ली फाइव|अर्ली 5|अर्ली पांच|अर्ली पाँच"); break;
-            case "early 10": add(result, "early ten|अर्ली टेन|अर्ली 10|अर्ली दस"); break;
+            case "early 10": add(result, "early ten|10 early|ten early|अर्ली टेन|अर्ली 10|अर्ली दस"); break;
             case "king": add(result, "किंग"); break;
             case "queen": add(result, "क्वीन"); break;
             case "temperature with ladoo": add(result, "temperature with laddu|temperature with laddoo|टेंपरेचर विद लड्डू|टेम्परेचर विद लड्डू"); break;
@@ -84,10 +85,12 @@ final class WinnerCommand {
             case "kpn": add(result, "k p n|के पी एन|केपीएन"); break;
             case "i love you": add(result, "आई लव यू"); break;
             case "l": add(result, "एल"); break;
+            case "t": add(result, "टी"); break;
             case "photo frame": add(result, "फोटो फ्रेम"); break;
             case "honeymoon": add(result, "हनीमून"); break;
-            case "pati patni or vo": add(result, "pati patni aur woh|pati patni aur vo|पति पत्नी और वो|पति पत्नी और वह"); break;
-            case "siddi family planning": add(result, "seedhi family planning|sidhi family planning|सीधी फैमिली प्लानिंग"); break;
+            case "pati patni or vo": add(result, "pati patni vah|pati patni aur woh|pati patni aur vo|पति पत्नी और वो|पति पत्नी और वह"); break;
+            case "seedhi family planning":
+            case "siddi family planning": add(result, "siddi family planning|seedhi family planning|sidhi family planning|सीधी फैमिली प्लानिंग"); break;
             case "ulti family planning": add(result, "उल्टी फैमिली प्लानिंग"); break;
             case "gharwali baharwali": add(result, "ghar wali bahar wali|घरवाली बाहरवाली|घर वाली बाहर वाली"); break;
             case "house 1": add(result, "house one|हाउस वन|हाउस 1|हाउस एक"); break;

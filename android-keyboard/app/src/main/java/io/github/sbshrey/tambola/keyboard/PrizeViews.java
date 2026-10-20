@@ -39,8 +39,9 @@ final class PrizeViews {
             } catch (NumberFormatException error) { feedback.accept("Enter a whole-rupee prize from 0 to 100000."); }
             catch (IllegalArgumentException | IllegalStateException error) { feedback.accept(error.getMessage()); }
         });
-        if (!scheme.winners.isEmpty()) Ui.action(page, "Clear these winners", Ui.PAPER, () -> {
-            page.removeAllViews(); Ui.add(page, Ui.text(context, "Clear winners for " + scheme.name + "? Messages already sent stay unchanged.", 20), -2);
+        if (scheme.bogie()) Ui.add(page, Ui.text(context, book.announcement(scheme), 18), -2);
+        if (scheme.resolved()) Ui.action(page, scheme.bogie() ? "Clear Bogie result" : "Clear these winners", Ui.PAPER, () -> {
+            page.removeAllViews(); Ui.add(page, Ui.text(context, "Clear result for " + scheme.name + "? Messages already sent stay unchanged.", 20), -2);
             Ui.action(page, "Keep winners", Ui.GREEN, saved);
             Ui.action(page, "Yes, clear winners", Ui.PAPER, () -> { try { store.prizes(store.prizes().award(id, Collections.emptyList(), 0, 0)); saved.run(); } catch (RuntimeException error) { feedback.accept(error.getMessage()); } });
         });

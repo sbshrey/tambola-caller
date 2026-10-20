@@ -24,13 +24,16 @@ public class PrizeCatalogUiTest {
         rule.launchActivity(new Intent().putExtra("section", "catalog")); device.waitForIdle();
     }
     private void tap(BySelector selector) {
-        UiObject2 item = device.findObject(selector);
+        UiObject2 item = device.wait(Until.findObject(selector), 1500);
         for (int i = 0; item == null && i < 8; i++) { UiObject2 panel = device.findObject(By.clazz(ScrollView.class)); assertNotNull(panel); panel.scroll(Direction.DOWN, 0.65f); device.waitForIdle(); item = device.findObject(selector); }
         assertNotNull(selector.toString(), item); item.click(); device.waitForIdle();
+        if (selector.toString().contains("android:id/button")) assertTrue(device.wait(Until.gone(selector), 5000));
     }
     @Test public void selectionAndCancelKeepRoundAndExistingWinners() throws Exception {
         tap(By.text("Quick prizes · 9 choices")); tap(By.desc("King")); tap(By.res("android:id/button2")); assertEquals(5, store.prizes().schemes.size());
-        tap(By.text("Quick prizes · 9 choices")); assertTrue(device.findObject(By.desc("Early 5")).isChecked()); assertFalse(device.findObject(By.desc("Early 5")).isEnabled());
+        tap(By.text("Quick prizes · 9 choices"));
+        UiObject2 early = device.wait(Until.findObject(By.desc("Early 5")), 5000); assertNotNull(early);
+        assertTrue(early.isChecked()); assertFalse(early.isEnabled());
         tap(By.desc("King")); tap(By.desc("Queen"));
         assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), "prize-choices.png")));
         tap(By.res("android:id/button1"));
@@ -39,12 +42,12 @@ public class PrizeCatalogUiTest {
         assertTrue(store.prizes().scheme("catalog-king").enabled); assertEquals(10, store.prizes().scheme("catalog-queen").rupees);
     }
     @Test public void addAllConfirmsAndFullCatalogSurvivesStorageRoundTrip() {
-        tap(By.text("Add all 41 schemes")); tap(By.res("android:id/button2")); assertEquals(5, store.prizes().schemes.size());
-        tap(By.text("Add all 41 schemes")); tap(By.res("android:id/button1"));
+        tap(By.text("Add all 42 schemes")); tap(By.res("android:id/button2")); assertEquals(5, store.prizes().schemes.size());
+        tap(By.text("Add all 42 schemes")); tap(By.res("android:id/button1"));
         assertTrue(device.wait(Until.hasObject(By.text("Players & prizes")), 5000));
-        PrizeBook book = new GameStore(context, false).prizes(); assertEquals(45, book.schemes.size());
+        PrizeBook book = new GameStore(context, false).prizes(); assertEquals(46, book.schemes.size());
         assertTrue(book.scheme("catalog-ninth-line").enabled); assertTrue(book.scheme("catalog-ninth-box").enabled); assertTrue(book.scheme("catalog-house-3").enabled);
         assertEquals(500, book.scheme("prize-0").eachPaise()); assertEquals(2, book.players.size()); assertEquals(5, store.load().count());
-        store.newRound(); assertEquals(45, store.prizes().schemes.size()); assertFalse(store.prizes().hasWinners());
+        store.newRound(); assertEquals(46, store.prizes().schemes.size()); assertFalse(store.prizes().hasWinners());
     }
 }
