@@ -1,10 +1,10 @@
-# Tambola Keyboard 1.4.3 for Android
+# Tambola Keyboard 1.4.4 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
 **Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
 
-The 1.4.3 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
+The 1.4.4 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
 
 ## Set up once
 
@@ -117,9 +117,9 @@ Tap **Winners → Players & prize amounts**, or open that screen from the app. A
 
 In the keyboard, tap **Winners → Share results picture**, check the image, then WhatsApp Send. The same button appears on **Call** after all 90 numbers and on **Board** when results exist. Before resetting, **Share results picture first** is also available on the new-game confirmation screen. You can share results whenever your game finishes, even before 90 calls.
 
-The screen and image use a table: **schemes down the rows, players across the columns, totals at the bottom**. A shared ₹10 prize shows ₹5 in each winner's column. A dash means no payout, and players without a win have a ₹0 total. Bogies have a clearly marked row with ₹0 paid. Only awarded schemes and Bogies occupy rows; the header counts selected schemes not awarded. Ticket-funded games also show purchased sets per player, collections and unpaid prizes. Totals include only recorded payouts.
+The screen and image group **player names into columns, with only that player's won schemes underneath and their total at the bottom**. Three columns form a group. A shared ₹10 prize appears under both winners with ₹5 and “shared”. Players without a win show “No prizes won” and ₹0. Bogies are listed separately with their claimants and ₹0. The header counts selected schemes not awarded. Ticket-funded games also show purchased sets per player, collections and unpaid prizes. Totals include only recorded payouts.
 
-Swipe the on-screen table sideways to see every player. **More schemes** and **More players** keep large tables manageable. Exported pictures paginate vertically and by player group, repeating scheme labels, player headings and full-game totals. Each scheme/player cell appears once across the pages; repeated totals always refer to the whole game.
+Swipe the on-screen columns sideways to see all three names. **More wins** and **More players** handle large lists. Exported pictures pack several groups onto a page and split long winning lists onto numbered pages. Each won scheme appears exactly once per winner. Continued columns repeat the player's name and full-game total, with “Continued” above the remaining wins.
 
 A small result fits one PNG. Large player lists or many prizes produce numbered pages to keep text readable. A supported chat editor receives a single image directly; otherwise choose WhatsApp and your group in Android's share chooser. For multiple pages the chooser shares them together. Nothing is sent automatically. An existing text draft must be sent or cleared first. Sharing does not draw a number or reset results. The full app also offers **Results to share → Share results picture**.
 

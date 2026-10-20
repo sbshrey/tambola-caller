@@ -1,3 +1,48 @@
+# Tambola Keyboard 1.4.4: player columns with their winnings
+
+Validated on 20 October 2026. Version code 11, local branch `feat/tap-winner-announcements`.
+
+## Behavior covered
+
+- Results on screen and in PNGs place names above individual player columns. Each column lists only that player's won schemes and actual payout amounts, with the full-game total underneath. Three columns form a group; several groups fit on an image. Players without prizes remain visible with ₹0. Bogies and their claimants appear separately with no payout.
+- Shared ₹10 schemes appear under both winners as ₹5 each. Older recorded amounts retain exact paise. Selected but unawarded schemes are counted in the header. Purchased sets, collection and unpaid prizes remain visible for funded games.
+- Long lists continue onto numbered images, repeating player names, a continuation label and full-game totals. Images stay at or below 4096 pixels high. The screen pages through 20 wins per player and 12 players at a time; horizontal scrolling reveals all three columns in a group.
+- The sample with all 42 catalog schemes resolved across 11 players fits one 1236 × 3298 PNG: 40 paid schemes, six shared awards, two Bogies and ₹400 total paid. Its ₹550 setup includes 13 additional selected prizes not awarded; ₹150 remains unpaid. This is synthetic sample data, not a real game's results.
+
+## Checks
+
+| Check | Result |
+| --- | --- |
+| JVM suite | 55 passed, no failures/errors/skips |
+| Android results suite | All 9 passed in 111.844 seconds |
+| Large text and landscape | Results screen and More wins navigation passed at 160% font scale (10.877 seconds) and in landscape (34.909 seconds); screenshots inspected |
+| Debug, test and release builds | Passed |
+| Debug/release lint | No issues |
+| Release inspection | Version 1.4.4/code 11; min SDK 26, target 35; debug editor/speech fixtures excluded; debug APK signature verified |
+
+Android coverage includes the 42-scheme sample, 100 long Hindi player names with 60 shared schemes (all 120 winning entries present exactly once), one player winning all 500 supported schemes, a Bogie-only game with zero totals, funded balances, on-screen navigation, read-only single/multiple PNG intents, keyboard image insertion, draft protection and sharing before a reset without altering calls or awards. Every generated page in the large fixtures is rendered and checked for its height bound. Native PNGs and screenshots were inspected.
+
+Two initial runs were interrupted after keyboard-focus setup failures. The emulator was still unlocking during the first launch, and Android Messages/System UI ANR dialogs subsequently covered the test editor. Logs and a screenshot retain that evidence. The unrelated Messages process was closed on the test emulator and the System UI dialog dismissed; the unchanged 9-case suite then passed. No assertion was removed or production keyboard behavior altered to make the tests pass.
+
+The three complete 90-number games documented under 1.4.2 remain prior evidence. They were not repeated for this results-layout-only change. Physical-phone and real WhatsApp delivery remain unverified.
+
+## Reproduce and artifacts
+
+Use the dedicated API 35 ARM64 emulator after boot/unlock completes and the home screen has no system error dialogs. From `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.ResultsImageTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`releases/1.4.4/` contains the test APK, unsigned release APK, checksums and installation notes. `validation/` contains logs, unit/lint XML, native PNG previews and screen captures. `run-displays.py` repeats the results screen/navigation scenario at font scale 1.6 and in landscape, restoring default settings afterward; adjust its SDK path for another machine.
+
+Nothing was pushed or published. Updating the existing phone installation requires its original release signing key. The debug-signed test APK cannot replace it; do not uninstall the live app to work around the signing mismatch.
+
+---
+
 # Tambola Keyboard 1.4.3: setup and start announcements
 
 Validated on 20 October 2026. Version code 10, local branch `feat/tap-winner-announcements`.

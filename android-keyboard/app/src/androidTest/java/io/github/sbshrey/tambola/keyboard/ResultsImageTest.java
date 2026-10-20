@@ -8,11 +8,13 @@ import androidx.test.uiautomator.By;
 import java.io.*;
 import java.util.*;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class ResultsImageTest extends KeyboardScenario {
+    @Before public void clearTicketPlan() { store.resetPlan(); }
     private PrizeBook sample() {
         PrizeBook book = store.prizes(); List<String> ids = new ArrayList<>(book.players.keySet());
         List<PrizeBook.Scheme> schemes = new ArrayList<>(book.schemes);
@@ -23,10 +25,10 @@ public class ResultsImageTest extends KeyboardScenario {
     @Test public void familyResultsPaginateWithAllNamesAndGrandTotal() throws Exception {
         PrizeBook book = sample(); ResultsImage image = new ResultsImage(book, 90);
         assertEquals(1, image.pages.size()); assertEquals(11, image.summary.players.size()); assertEquals(11000, image.summary.totalPaise);
-        assertEquals(12, image.table.rows.size());
-        StringBuilder text = new StringBuilder(); for (ResultsImage.Page page : image.pages) { for (android.text.StaticLayout name : page.names) text.append(name.getText()); for (ResultsImage.Row row : page.rows) text.append(row.label.getText()); }
+        assertEquals(11, image.summary.paidPrizes);
+        StringBuilder text = imageText(image);
         for (String name : book.players.values()) assertTrue(text.toString().contains(name));
-        assertTrue(text.toString().contains("Shared")); assertTrue(text.toString().contains("Bogie"));
+        assertTrue(text.toString().contains("shared")); assertTrue(text.toString().contains("BOGIE"));
         List<Uri> uris = Sharing.createResults(context, Game.decode("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"), book);
         assertEquals(image.pages.size(), uris.size()); assertEquals("image/png", context.getContentResolver().getType(uris.get(0)));
         try (InputStream input = context.getContentResolver().openInputStream(uris.get(0))) {
@@ -47,15 +49,19 @@ public class ResultsImageTest extends KeyboardScenario {
         Set<String> cells = new HashSet<>(); StringBuilder text = new StringBuilder();
         for (int i = 0; i < image.pages.size(); i++) {
             ResultsImage.Page page = image.pages.get(i); assertTrue(page.height <= ResultsImage.MAX_HEIGHT);
-            for (android.text.StaticLayout name : page.names) text.append(name.getText());
-            for (ResultsImage.Row row : page.rows) { text.append(row.label.getText()); for (int col = page.firstPlayer; col < page.endPlayer; col++) assertTrue("No repeated cell", cells.add(row.result.id + ":" + col)); }
+            for (ResultsImage.Band band : page.bands) for (ResultsImage.Column column : band.columns) {
+                text.append(column.name.getText());
+                for (ResultsImage.Entry entry : column.entries) {
+                    text.append(entry.label.getText()); assertTrue("No repeated win", cells.add(entry.win.id + ":" + column.player.id));
+                }
+            }
             Bitmap bitmap = image.picture(i); assertEquals(page.height, bitmap.getHeight());
             if (i == 0 || i == image.pages.size() - 1) try (OutputStream output = context.openFileOutput("results-long-page-" + i + ".png", Context.MODE_PRIVATE)) {
                 assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output));
             }
             bitmap.recycle();
         }
-        assertEquals(6000, cells.size()); // Every one of 100 players × 60 schemes is present exactly once.
+        assertEquals(120, cells.size()); // Only the two winners × 60 schemes, with no blank cells for 98 other players.
         for (String name : book.players.values()) assertTrue(text.toString().contains(name));
         for (PrizeBook.Scheme prize : book.schemes) assertTrue(text.toString().contains(prize.name));
         assertEquals(65500, image.summary.totalPaise);
@@ -69,12 +75,12 @@ public class ResultsImageTest extends KeyboardScenario {
         try (OutputStream output = context.openFileOutput("results-many-wins.png", Context.MODE_PRIVATE)) { assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)); } finally { bitmap.recycle(); }
         context.startActivity(new Intent(context, MainActivity.class).putExtra("section", "results").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         try {
-            expect("Schemes ↓ · Players →"); expect("Total paid: ₹460");
-            androidx.test.uiautomator.UiObject2 table = visible(By.desc("Results table, scroll sideways for players")); assertNotNull(table);
-            visible(By.desc("Early 5, Varsha, ₹10, Winner"));
+            visible(By.textContains("Each player's wins and total")); visible(By.text("Total paid: ₹460"));
+            androidx.test.uiautomator.UiObject2 table = visible(By.desc("Player results, scroll sideways for names")); assertNotNull(table);
+            visible(By.desc("Early 5, Varsha, ₹10, winner"));
             screenshot("results-table-screen");
-            tap("More schemes"); expect("Schemes 31–46");
-            screenshot("results-table-more-schemes");
+            tap("More wins"); visible(By.textContains("Wins 21–40"));
+            screenshot("results-table-more-wins");
         } finally {
             main(() -> {
                 androidx.test.runner.lifecycle.ActivityLifecycleMonitor monitor = androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance();
@@ -82,6 +88,71 @@ public class ResultsImageTest extends KeyboardScenario {
                     for (android.app.Activity activity : new ArrayList<>(monitor.getActivitiesInStage(stage))) if (activity instanceof MainActivity) activity.finish();
             }); device.waitForIdle();
         }
+    }
+    private StringBuilder imageText(ResultsImage image) {
+        StringBuilder text = new StringBuilder();
+        for (ResultsImage.Page page : image.pages) {
+            for (ResultsImage.Band band : page.bands) for (ResultsImage.Column column : band.columns) {
+                text.append(column.name.getText()); for (ResultsImage.Entry entry : column.entries) text.append(entry.label.getText());
+            }
+            for (android.text.StaticLayout bogie : page.bogies) text.append(bogie.getText());
+        }
+        return text;
+    }
+    @Test public void fortyTwoSchemeResultsFitReadablePlayerColumnsWithExactShares() throws Exception {
+        PrizeBook book = new PrizeBook(store.prizes().players, Collections.emptyList()).addPresets(PrizeCatalog.allIds());
+        assertEquals(42, book.schemes.size()); List<PrizeBook.Scheme> catalog = new ArrayList<>(book.schemes);
+        while (book.schemes.size() < 55) book = book.configure(null, "Extra prize " + book.schemes.size(), 10, true);
+        TicketPlan plan = TicketPlan.forPlayers(book).approve(book); List<String> people = new ArrayList<>(book.players.keySet());
+        for (int i = 0; i < catalog.size(); i++) {
+            List<String> winners = new ArrayList<>(); winners.add(people.get(i % people.size()));
+            if (i % 7 == 0 || i == 8 || i == 26) winners.add(people.get((i + 1) % people.size()));
+            if (i == 8 || i == 26) winners.add(people.get((i + 2) % people.size()));
+            book = book.resolve(catalog.get(i).id, winners, 90);
+        }
+        ResultsImage image = new ResultsImage(book, 90, plan);
+        assertEquals(1, image.pages.size()); assertEquals(40000, image.summary.totalPaise);
+        assertEquals(40, image.summary.paidPrizes); assertEquals(2, image.summary.bogies.size()); assertEquals(13, image.table.unawarded);
+        Set<String> entries = new HashSet<>(); int total = 0;
+        for (ResultsImage.Band band : image.pages.get(0).bands) {
+            assertTrue(band.columns.size() <= 3);
+            for (ResultsImage.Column column : band.columns) for (ResultsImage.Entry entry : column.entries) {
+                PrizeBook.Scheme prize = null; for (PrizeBook.Scheme candidate : book.schemes) if (candidate.id.equals(entry.win.id)) prize = candidate;
+                assertNotNull(prize); assertTrue(prize.winners.contains(column.player.id)); assertTrue(entries.add(column.player.id + ":" + entry.win.id)); total += entry.win.paise;
+            }
+        }
+        assertEquals(40000, total); assertEquals(46, entries.size());
+        Bitmap bitmap = image.picture(0); assertTrue(bitmap.getHeight() <= ResultsImage.MAX_HEIGHT);
+        try (OutputStream output = context.openFileOutput("results-player-columns-example.png", Context.MODE_PRIVATE)) { assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)); }
+        finally { bitmap.recycle(); }
+    }
+    @Test public void maximumWinsForOnePlayerContinueWithoutOmissionsOrRepeatedAwards() {
+        PrizeBook book = PrizeBook.defaults().player(null, "Varsha"); String player = book.players.keySet().iterator().next();
+        while (book.schemes.size() < PrizeBook.MAX_SCHEMES) book = book.configure(null, "Long prize " + book.schemes.size() + " with a name that wraps inside the column", 10, true);
+        for (PrizeBook.Scheme prize : new ArrayList<>(book.schemes)) book = book.resolve(prize.id, Collections.singletonList(player), 90);
+        ResultsImage image = new ResultsImage(book, 90); assertTrue(image.pages.size() > 1); assertEquals(500000, image.summary.totalPaise);
+        Set<String> ids = new HashSet<>();
+        for (int i = 0; i < image.pages.size(); i++) {
+            ResultsImage.Page page = image.pages.get(i); assertTrue(page.height <= ResultsImage.MAX_HEIGHT); assertFalse(page.bands.isEmpty());
+            for (ResultsImage.Band band : page.bands) for (ResultsImage.Column column : band.columns) {
+                assertEquals(500000, column.player.totalPaise); assertTrue(column.name.getText().toString().contains("Varsha"));
+                if (i > 0) assertTrue(column.name.getText().toString().contains("Continued"));
+                for (ResultsImage.Entry entry : column.entries) assertTrue(ids.add(entry.win.id));
+            }
+            Bitmap bitmap = image.picture(i); assertEquals(page.height, bitmap.getHeight()); bitmap.recycle();
+        }
+        assertEquals(500, ids.size());
+    }
+    @Test public void bogieOnlyGameKeepsNamesWithZeroTotalsAndNoWinningEntries() {
+        PrizeBook book = store.prizes();
+        book = book.resolve("prize-0", new ArrayList<>(book.players.keySet()), 5);
+        ResultsImage image = new ResultsImage(book, 5); assertEquals(0, image.summary.totalPaise); assertEquals(1, image.summary.bogies.size());
+        Set<String> names = new HashSet<>();
+        for (ResultsImage.Page page : image.pages) for (ResultsImage.Band band : page.bands) for (ResultsImage.Column column : band.columns) {
+            assertTrue(column.entries.isEmpty()); assertEquals(0, column.player.totalPaise); names.add(column.player.name);
+        }
+        assertEquals(new HashSet<>(book.players.values()), names); assertTrue(imageText(image).toString().contains("BOGIE · Early 5 · ₹0"));
+        Bitmap bitmap = image.picture(0); bitmap.recycle();
     }
     @Test public void imageShareIntentsGrantOnlyReadAccessToEveryPage() {
         List<Uri> uris = Arrays.asList(Uri.parse("content://example/one.png"), Uri.parse("content://example/two.png"));
@@ -98,7 +169,7 @@ public class ResultsImageTest extends KeyboardScenario {
         book = book.resolve("prize-0", Arrays.asList("family-varsha", "family-rekha"), 5)
             .resolve("catalog-queen", Arrays.asList("family-varsha", "family-rekha", "family-suman"), 5);
         ResultsImage image = new ResultsImage(book, 90, plan); assertEquals(600, image.plan.collection()); assertEquals(1000, image.summary.totalPaise);
-        assertTrue(image.pages.get(0).names.get(0).getText().toString().contains("2 sets"));
+        assertTrue(image.pages.get(0).bands.get(0).columns.get(0).name.getText().toString().contains("2 sets"));
         assertEquals("Collected ₹600 · Unallocated ₹0 · Unpaid prizes ₹590", image.table.balance());
         Bitmap bitmap = image.picture(0);
         try (OutputStream output = context.openFileOutput("results-funded-example.png", Context.MODE_PRIVATE)) { assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)); }

@@ -4,79 +4,125 @@ import android.graphics.*;
 import android.text.*;
 import java.util.*;
 
-/** A transposed results matrix. Repeat headings and full-game totals on every page. */
+/** Three readable player columns per band, with only their wins and full-game totals. */
 final class ResultsImage {
-    static final int MAX_HEIGHT = 4096, MAX_PLAYERS = 12, MARGIN = 40, SCHEME = 330, PLAYER = 150, TOTAL = 160, FOOTER = 100;
-    static final class Row {
-        final ResultsTable.Row result;
+    static final int MAX_HEIGHT = 4096, MARGIN = 32, GAP = 16, FOOTER = 90, TOTAL = 86;
+    static final class Entry {
+        final ResultsTable.Win win;
         final StaticLayout label;
         final int height;
-        Row(ResultsTable.Row result) { this.result = result; label = layout(result.label(), 27, false, SCHEME - 28); height = Math.max(80, label.getHeight() + 28); }
+        Entry(ResultsTable.Win win, int width) { this.win = win; label = layout(win.label(), 30, false, width - 36); height = label.getHeight() + 28; }
+    }
+    static final class Column {
+        final ResultsTable.Player player;
+        final StaticLayout name;
+        final List<Entry> entries = new ArrayList<>();
+        int height;
+        Column(ResultsTable.Player player, int start, int width) {
+            this.player = player; name = layout(player.label() + (start == 0 ? "" : "\nContinued"), 32, true, width - 36);
+        }
+    }
+    static final class Band {
+        final List<Column> columns = new ArrayList<>();
+        int heading = 0, body = 70;
+        int height() { return heading + body + TOTAL + 26; }
     }
     static final class Page {
-        final List<Row> rows = new ArrayList<>();
-        final List<StaticLayout> names;
-        final int firstPlayer, endPlayer, width, heading, tableTop, bannerTop;
+        final List<Band> bands = new ArrayList<>();
+        final List<StaticLayout> bogies = new ArrayList<>();
+        final int width, contentTop;
         int height;
-        Page(int firstPlayer, int endPlayer, List<StaticLayout> names, int heading, String balance) {
-            this.firstPlayer = firstPlayer; this.endPlayer = endPlayer; this.names = names; this.heading = heading;
-            width = MARGIN * 2 + SCHEME + (endPlayer - firstPlayer) * PLAYER + TOTAL;
-            bannerTop = balance.isEmpty() ? 232 : Math.max(232, 176 + layout(balance, 25, false, width - 2 * MARGIN).getHeight());
-            tableTop = bannerTop + 128 + heading; height = tableTop + 100 + FOOTER;
-        }
+        Page(int width, int top) { this.width = width; contentTop = top; height = top + FOOTER; }
     }
     final ResultsTable table;
     final PrizeSummary summary;
-    final int calls;
+    final int calls, width, columnWidth, contentTop;
     final TicketPlan plan;
+    final StaticLayout heading, details, balance;
     final List<Page> pages = new ArrayList<>();
     ResultsImage(PrizeBook book, int calls) { this(book, calls, null); }
     ResultsImage(PrizeBook book, int calls, TicketPlan plan) {
         if (!book.hasWinners()) throw new IllegalArgumentException("Save a prize result before sharing results.");
         table = new ResultsTable(book, plan); summary = table.summary; this.calls = calls; this.plan = plan;
-        for (int first = 0; first < table.players.size(); first += MAX_PLAYERS) {
-            int end = Math.min(first + MAX_PLAYERS, table.players.size()), heading = 100;
-            List<StaticLayout> names = new ArrayList<>();
-            for (int col = first; col < end; col++) { StaticLayout name = layout(table.players.get(col).label(), 27, true, PLAYER - 24); names.add(name); heading = Math.max(heading, name.getHeight() + 32); }
-            Page page = new Page(first, end, names, heading, table.balance()); pages.add(page);
-            for (ResultsTable.Row result : table.rows) {
-                Row row = new Row(result);
-                if (page.height + row.height > MAX_HEIGHT) { page = new Page(first, end, names, heading, table.balance()); pages.add(page); }
-                page.rows.add(row); page.height += row.height;
-            }
+        int columns = Math.min(3, table.players.size()); columnWidth = columns == 1 ? 640 : 380;
+        width = MARGIN * 2 + columns * columnWidth + (columns - 1) * GAP;
+        heading = layout("TAMBOLA · GAME RESULTS", 38, true, width - 2 * MARGIN);
+        details = layout(calls + " numbers · " + summary.paidPrizes + " paid · " + summary.bogies.size() + " Bogies · " + table.unawarded + " not awarded", 25, false, width - 2 * MARGIN);
+        balance = layout(table.balance(), 25, false, width - 2 * MARGIN);
+        contentTop = MARGIN + heading.getHeight() + 16 + details.getHeight() + (plan == null ? 0 : 16 + balance.getHeight()) + 118;
+        Page page = new Page(width, contentTop); pages.add(page);
+        int capacity = MAX_HEIGHT - contentTop - FOOTER;
+        for (int first = 0; first < table.players.size(); first += 3) {
+            int end = Math.min(first + 3, table.players.size()), maxWins = 0;
+            for (int col = first; col < end; col++) maxWins = Math.max(maxWins, table.players.get(col).wins.size());
+            int start = 0;
+            do {
+                Band band = new Band();
+                for (int col = first; col < end; col++) {
+                    ResultsTable.Player person = table.players.get(col);
+                    if (start > 0 && start >= person.wins.size()) continue;
+                    Column column = new Column(person, start, columnWidth); band.columns.add(column); band.heading = Math.max(band.heading, column.name.getHeight() + 32);
+                }
+                int next = start;
+                for (; next < maxWins; next++) {
+                    List<Entry> candidates = new ArrayList<>(); int body = band.body;
+                    for (Column column : band.columns) {
+                        Entry entry = next < column.player.wins.size() ? new Entry(column.player.wins.get(next), columnWidth) : null;
+                        candidates.add(entry); if (entry != null) body = Math.max(body, column.height + entry.height);
+                    }
+                    if (band.heading + body + TOTAL + 26 > capacity) break;
+                    for (int col = 0; col < candidates.size(); col++) if (candidates.get(col) != null) {
+                        Column column = band.columns.get(col); column.entries.add(candidates.get(col)); column.height += candidates.get(col).height;
+                    }
+                    band.body = body;
+                }
+                if (next == start && start < maxWins) throw new IllegalArgumentException("A result is too long to fit in a picture.");
+                if (page.height + band.height() > MAX_HEIGHT) { page = new Page(width, contentTop); pages.add(page); }
+                page.bands.add(band); page.height += band.height(); start = next;
+            } while (start < maxWins);
+        }
+        // Bogies belong outside player winnings because they have no payout.
+        for (PrizeSummary.Bogie bogie : summary.bogies) {
+            StaticLayout label = layout("BOGIE · " + bogie.prize + " · ₹0\n" + String.join(", ", bogie.names), 26, false, width - 2 * MARGIN - 36);
+            if (label.getHeight() + 32 > capacity) throw new IllegalArgumentException("A Bogie result is too long to fit in a picture.");
+            if (page.height + label.getHeight() + 32 > MAX_HEIGHT) { page = new Page(width, contentTop); pages.add(page); }
+            page.bogies.add(label); page.height += label.getHeight() + 32;
         }
     }
     Bitmap picture(int index) {
-        Page page = pages.get(index); Bitmap bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888);
+        Page page = pages.get(index); Bitmap bitmap = Bitmap.createBitmap(width, page.height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap); canvas.drawColor(Ui.PAPER); Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        text(canvas, paint, "TAMBOLA · GAME RESULTS", MARGIN, 65, 38, Ui.PINK);
-        draw(canvas, layout(calls + " numbers · " + summary.paidPrizes + " paid · " + summary.bogies.size() + " Bogies · " + table.unawarded + " not awarded", 24, false, page.width - 2 * MARGIN), MARGIN, 91);
-        if (plan != null) draw(canvas, layout(table.balance(), 25, false, page.width - 2 * MARGIN), MARGIN, 160);
-        paint.setColor(Ui.GREEN); canvas.drawRoundRect(MARGIN, page.bannerTop, page.width - MARGIN, page.bannerTop + 78, 15, 15, paint);
-        text(canvas, paint, "TOTAL PAID", MARGIN + 20, page.bannerTop + 51, 28, Color.WHITE);
-        paint.setTextAlign(Paint.Align.RIGHT); text(canvas, paint, PrizeBook.money(summary.totalPaise), page.width - MARGIN - 20, page.bannerTop + 54, 38, Color.WHITE); paint.setTextAlign(Paint.Align.LEFT);
-        text(canvas, paint, "Players " + (page.firstPlayer + 1) + "–" + page.endPlayer + " / " + table.players.size() + " · totals for full game", MARGIN, page.bannerTop + 112, 23, Ui.INK);
-        paint.setColor(Color.rgb(236, 230, 224)); canvas.drawRect(MARGIN, page.bannerTop + 128, page.width - MARGIN, page.tableTop, paint);
-        draw(canvas, layout("SCHEME / RESULT", 25, true, SCHEME - 24), MARGIN + 14, page.bannerTop + 144);
-        for (int col = page.firstPlayer; col < page.endPlayer; col++) draw(canvas, page.names.get(col - page.firstPlayer), MARGIN + SCHEME + (col - page.firstPlayer) * PLAYER + 12, page.bannerTop + 144);
-        draw(canvas, layout("PAID\nAll players", 25, true, TOTAL - 24), page.width - MARGIN - TOTAL + 12, page.bannerTop + 144);
-        int top = page.tableTop, rowIndex = 0;
-        for (Row row : page.rows) {
-            paint.setColor(row.result.bogie ? Color.rgb(247, 228, 234) : rowIndex++ % 2 == 0 ? Color.WHITE : Color.rgb(242, 240, 235));
-            canvas.drawRect(MARGIN, top, page.width - MARGIN, top + row.height, paint);
-            draw(canvas, row.label, MARGIN + 14, top + 14);
-            for (int col = page.firstPlayer; col < page.endPlayer; col++) center(canvas, paint, row.result.share(col), MARGIN + SCHEME + (col - page.firstPlayer) * PLAYER + PLAYER / 2, top + row.height / 2 + 10, 29, row.result.shares.get(col) > 0 ? Ui.GREEN : Color.GRAY);
-            center(canvas, paint, PrizeBook.money(row.result.totalPaise), page.width - MARGIN - TOTAL / 2, top + row.height / 2 + 10, 29, Ui.INK);
-            top += row.height;
+        int top = MARGIN; draw(canvas, heading, MARGIN, top); top += heading.getHeight() + 16;
+        draw(canvas, details, MARGIN, top); top += details.getHeight();
+        if (plan != null) { top += 16; draw(canvas, balance, MARGIN, top); top += balance.getHeight(); }
+        top += 20; fill(canvas, paint, MARGIN, top, width - 2 * MARGIN, 76, Ui.GREEN);
+        text(canvas, paint, "TOTAL PAID", MARGIN + 18, top + 49, 28, Color.WHITE);
+        paint.setTextAlign(Paint.Align.RIGHT); text(canvas, paint, PrizeBook.money(summary.totalPaise), width - MARGIN - 18, top + 51, 36, Color.WHITE); paint.setTextAlign(Paint.Align.LEFT);
+        top = page.contentTop;
+        for (Band band : page.bands) {
+            int col = 0;
+            for (Column column : band.columns) {
+                int left = MARGIN + col++ * (columnWidth + GAP);
+                fill(canvas, paint, left, top, columnWidth, band.heading, Color.rgb(246, 221, 231)); draw(canvas, column.name, left + 18, top + 16);
+                fill(canvas, paint, left, top + band.heading, columnWidth, band.body, Color.WHITE);
+                int y = top + band.heading;
+                if (column.entries.isEmpty()) draw(canvas, layout("No prizes won", 28, false, columnWidth - 36), left + 18, y + 18);
+                for (Entry entry : column.entries) {
+                    draw(canvas, entry.label, left + 18, y + 14); y += entry.height;
+                    fill(canvas, paint, left + 18, y - 1, columnWidth - 36, 1, Color.rgb(230, 226, 221));
+                }
+                y = top + band.heading + band.body;
+                fill(canvas, paint, left, y, columnWidth, TOTAL, Color.rgb(218, 238, 225));
+                draw(canvas, layout("TOTAL  " + PrizeBook.money(column.player.totalPaise), 30, true, columnWidth - 36), left + 18, y + 25);
+            }
+            top += band.height();
         }
-        paint.setColor(Color.rgb(218, 238, 225)); canvas.drawRect(MARGIN, top, page.width - MARGIN, top + 100, paint);
-        draw(canvas, layout("TOTAL\nFull game", 27, true, SCHEME - 24), MARGIN + 14, top + 16);
-        for (int col = page.firstPlayer; col < page.endPlayer; col++) center(canvas, paint, PrizeBook.money(table.players.get(col).totalPaise), MARGIN + SCHEME + (col - page.firstPlayer) * PLAYER + PLAYER / 2, top + 60, 29, Ui.GREEN);
-        center(canvas, paint, PrizeBook.money(summary.totalPaise), page.width - MARGIN - TOTAL / 2, top + 60, 29, Ui.GREEN);
-        paint.setColor(Color.rgb(211, 208, 202)); paint.setStrokeWidth(1);
-        for (int col = 0; col <= page.endPlayer - page.firstPlayer; col++) { int x = MARGIN + SCHEME + col * PLAYER; canvas.drawLine(x, page.bannerTop + 128, x, top + 100, paint); }
-        draw(canvas, layout("Each cell is that player's share. — = no payout. Bogies pay ₹0.", 23, false, page.width - 2 * MARGIN - 130), MARGIN, page.height - 72);
-        paint.setTextAlign(Paint.Align.RIGHT); text(canvas, paint, (index + 1) + " / " + pages.size(), page.width - MARGIN, page.height - 42, 23, Ui.INK);
+        for (StaticLayout bogie : page.bogies) {
+            fill(canvas, paint, MARGIN, top, width - 2 * MARGIN, bogie.getHeight() + 24, Color.rgb(246, 221, 231));
+            draw(canvas, bogie, MARGIN + 18, top + 12); top += bogie.getHeight() + 32;
+        }
+        draw(canvas, layout("Totals are for the full game. Shared amounts are per player.", 23, false, width - 2 * MARGIN - 110), MARGIN, page.height - 70);
+        paint.setTextAlign(Paint.Align.RIGHT); text(canvas, paint, (index + 1) + " / " + pages.size(), width - MARGIN, page.height - 40, 23, Ui.INK);
         return bitmap;
     }
     private static StaticLayout layout(String text, int size, boolean bold, int width) {
@@ -85,9 +131,7 @@ final class ResultsImage {
         return StaticLayout.Builder.obtain(text, 0, text.length(), paint, width).setIncludePad(false).setLineSpacing(4, 1).build();
     }
     private static void draw(Canvas canvas, StaticLayout text, int x, int y) { canvas.save(); canvas.translate(x, y); text.draw(canvas); canvas.restore(); }
-    private static void center(Canvas canvas, Paint paint, String value, int x, int y, int size, int color) { paint.setTextSize(size); paint.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-        int fitted = Math.min(size, (int) (size * (PLAYER - 20) / Math.max(1, paint.measureText(value))));
-        paint.setTextAlign(Paint.Align.CENTER); text(canvas, paint, value, x, y, fitted, color); paint.setTextAlign(Paint.Align.LEFT); }
+    private static void fill(Canvas canvas, Paint paint, int x, int y, int width, int height, int color) { paint.setColor(color); canvas.drawRect(x, y, x + width, y + height, paint); }
     private static void text(Canvas canvas, Paint paint, String value, int x, int y, int size, int color) {
         paint.setColor(color); paint.setTextSize(size); paint.setTypeface(Typeface.create("sans-serif", Typeface.BOLD)); canvas.drawText(value, x, y, paint);
     }
