@@ -49,9 +49,10 @@ public class WinnerCommandTest {
     @Test public void threeSpokenClaimantsBecomeBogieWithoutPayout() {
         WinnerCommand result = WinnerCommand.prepare(all(), "King winners Varsha and Rekha and Suman", 5);
         assertTrue(result.book.scheme("catalog-king").bogie());
-        assertEquals("🚫 King: Bogie\n3 claimants: Varsha & Rekha & Suman\nNo payout", result.announcement);
+        assertEquals("🚫 King: Bogie\n3 claimants: Varsha & Rekha & Suman\nNo payout · Scheme stays open for another claim.", result.announcement);
         assertEquals(0, result.book.scheme("catalog-king").eachPaise());
-        assertThrows(IllegalArgumentException.class, () -> WinnerCommand.prepare(result.book, "King Varsha", 5));
+        WinnerCommand next = WinnerCommand.prepare(result.book, "King Varsha", 6);
+        assertEquals("🏆 King: Varsha\n₹10 prize", next.announcement); assertEquals(6, next.book.scheme("catalog-king").callCount);
     }
     @Test public void doesNotGuessSimilarNamesOrTranslateSavedNames() {
         PrizeBook book = all().player(null, "Asha Sharma");

@@ -19,7 +19,7 @@ public class ResultsTableTest {
         assertTrue(table.players.get(2).wins.isEmpty()); assertTrue(table.players.get(3).wins.isEmpty());
         ResultsTable.Win shared = table.players.get(0).wins.get(0);
         assertEquals("prize-0", shared.id); assertTrue(shared.shared); assertEquals(500, shared.paise);
-        assertEquals("Early 5\n₹5 · shared", shared.label()); assertEquals(1, table.summary.bogies.size()); assertEquals(1, table.unawarded);
+        assertEquals("Early 5\n₹5 · shared", shared.label()); assertEquals(1, table.summary.bogies.size()); assertEquals(2, table.unawarded);
         assertEquals(1500, table.players.get(0).totalPaise); assertEquals(500, table.players.get(1).totalPaise); assertEquals(0, table.players.get(3).totalPaise);
         assertEquals(2000, table.summary.totalPaise);
     }

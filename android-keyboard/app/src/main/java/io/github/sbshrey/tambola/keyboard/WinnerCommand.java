@@ -37,7 +37,7 @@ final class WinnerCommand {
         if (!explicit.isEmpty()) matches = explicit;
         if (matches.size() != 1) throw new IllegalArgumentException(matches.isEmpty() ? "Prize not clear. Choose prize schemes to enable it. " + EXAMPLE : "More than one prize heard. Say one prize and its winner.");
         String id = matches.keySet().iterator().next(); PrizeBook.Scheme scheme = book.scheme(id);
-        if (scheme.resolved()) throw new IllegalArgumentException(scheme.name + " already has winners or a Bogie result. Use its prize button to correct them, or Insert announcement.");
+        if (!scheme.open()) throw new IllegalArgumentException(scheme.name + " already has winners. Use its prize button to correct them, or Insert announcement.");
         if (count < scheme.minimumCalls) throw new IllegalArgumentException("Call at least " + scheme.minimumCalls + " numbers before awarding " + scheme.name + ".");
         String names = matches.get(id).replaceFirst("(?iu)^(?:(?:ki|ke|ka|के|की|का)\\s+)?(?:(?:winners?|विनर|विनर्स|विजेता)(?:\\s+(?:is|are|hai|hain|है|हैं))?\\s*[:,-]?\\s*|(?:ki|ke|ka|के|की|का)\\s+)", "")
             .replaceFirst("(?iu)\\s+(?:ki|ke|ka|के|की|का)$", "").trim();

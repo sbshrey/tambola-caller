@@ -157,9 +157,9 @@ public class QuickWinnerTest {
         main(() -> rule.getActivity().draft.setText("")); device.waitForIdle(); focus(); tap("Winners"); tap("Insert Early 5 announcement");
         expect("Ready · tap WhatsApp Send"); assertTrue(draft().contains("3 claimants"));
         main(() -> rule.getActivity().draft.setText("")); device.waitForIdle(); quick(); choose("Early 5");
-        name("Saroj", false); tap("Insert Bogie announcement"); expect("Bogie saved"); assertTrue(draft().contains("4 claimants"));
+        tap("Use previous Bogie claimants"); name("Saroj", false); tap("Insert Bogie announcement"); expect("Bogie saved"); assertTrue(draft().contains("4 claimants"));
         main(() -> rule.getActivity().draft.setText("")); device.waitForIdle(); quick(); choose("Early 5");
-        name("Saroj", true); name("Suman", true); tap("Update winner announcement"); expect("Winner saved · check");
+        tap("Use previous Bogie claimants"); name("Saroj", true); name("Suman", true); tap("Insert winner announcement"); expect("Winner saved · check");
         assertEquals("🏆 Early 5: Varsha & Rekha\n₹5 each", draft()); assertFalse(store.prizes().scheme("prize-0").bogie());
     }
 }

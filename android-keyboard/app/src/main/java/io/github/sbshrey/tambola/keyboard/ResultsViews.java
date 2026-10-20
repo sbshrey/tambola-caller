@@ -50,9 +50,9 @@ final class ResultsViews {
             Ui.add(bands, Ui.text(section.getContext(), "", 8), 16);
         }
         if (!results.summary.bogies.isEmpty()) {
-            Ui.add(section, Ui.text(section.getContext(), "Bogies · no payout", 22), -2);
+            Ui.add(section, Ui.text(section.getContext(), "Bogies · still open · no payout", 22), -2);
             for (PrizeSummary.Bogie bogie : results.summary.bogies)
-                Ui.add(section, Ui.text(section.getContext(), bogie.prize + " · ₹0\n" + String.join(", ", bogie.names), 18), -2);
+                Ui.add(section, Ui.text(section.getContext(), bogie.prize + " · ₹0 · still open\n" + String.join(", ", bogie.names), 18), -2);
         }
     }
     private static void navigation(LinearLayout parent, String previous, String next, boolean hasPrevious, boolean hasNext, Runnable back, Runnable forward) {

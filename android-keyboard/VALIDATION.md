@@ -1,3 +1,48 @@
+# Tambola Keyboard 1.4.7: open Bogies and correct winners during play
+
+Validated on 20 October 2026. Version code 14, local branch `feat/tap-winner-announcements`.
+
+## Behavior covered
+
+- Three or more claimants records **Bogie with no payout**, but the scheme stays open at its full prize amount. The next attempt starts with no names selected. Varsha can claim again, and spoken winner entry accepts the open scheme. **Use previous Bogie claimants** reloads the prior names if the host wants to correct that decision.
+- During play, reopen **Winners → Tap prize + winner → the scheme**, remove the wrong name or tap **Choose different winners**, select the correct names, then **Update winner announcement**. Corrections replace the saved award and recalculate player totals and future images without counting the prize twice. The manual dropdowns follow the same rules. Already-sent messages and pictures remain unchanged.
+- Correcting a paid award preserves its recorded amount and original call position. A new award after Bogie uses the scheme amount and current call position. Undoing that later call clears that award; undoing a later unrelated call keeps a corrected earlier award. Changing a paid result to Bogie removes its payout and reopens the scheme.
+- Progress images count Bogies within **Remaining**, with previous claimants and the amount still available. A later winner moves the scheme to **Won**. Final results count open Bogies as unawarded and pay them ₹0. Results show the latest decision, not a history of every attempt. Existing stored Bogies become claimable without a data-format migration.
+- Number calling, draft clearing, undo, claims, winner corrections and image sharing remain inside the keyboard. Pre-game player/ticket/scheme setup opens the larger Tambola setup screen from the keyboard and returns to the chat. The host still checks and sends prepared messages in WhatsApp.
+
+## Checks
+
+All **62 JVM tests** passed with no failures, errors or skips. Debug, test and release builds passed. Debug/release lint passed with one existing `SetTextI18n` warning for the “Playing this game” label and no errors. Release inspection confirmed version 1.4.7/code 14, no debug editor/speech fixtures, and a valid debug APK signature.
+
+All **18 distinct Android scenarios** passed: 13 in `validation/android.log` (204.733 seconds) and five in `validation/android-corrections.log` (180.018 seconds). The coverage manifest lists each passing case. The real keyboard flow uses a confirmed ₹150 plan with three players and 15 prizes: three claims → Bogie → next call → fresh Varsha claim → Varsha win → next call → replace Varsha with Rekha. It verifies ₹10 total, Varsha ₹0, Rekha ₹10, the original award call position, persistence and undo. Actual PNG handoffs are compared pixel for pixel with the current saved state. Choosing replacement names alone does not change the saved award.
+
+Additional coverage includes two-winner splits, repeat Bogies, reopening a paid result, manual dropdown correction, spoken Bogie entry, older JSON records, invalid data, draft protection, pre-game sharing gates, next-game reset, 500 schemes and long Hindi names. The mixed **42-scheme image remains one 1200 × 3866 PNG**, with 31 remaining (including two Bogies), 11 won and ₹110 paid. This synthetic layout fixture is separate from the funded game scenario. The one-page assertion passed again in `android-layout.log` (1.014 seconds).
+
+The Bogie/correction controls also passed at **160% font scale (65.668 seconds)** and in **landscape (125.475 seconds)**. Screenshots were inspected for readable labels and reachable selection/announcement controls; both runs saved and inserted the corrected award. Default display settings were restored.
+
+There were no failed test runs for this update. The three full 90-number games under 1.4.2 remain prior evidence; they were not repeated for this change. Physical-phone speech recognition and real WhatsApp delivery remain unverified. The debug editor records locally; chooser tests intercept/cancel sharing without sending to another person.
+
+## Reproduce and artifacts
+
+Use a dedicated API 35 ARM64 emulator after boot and unlock complete. From `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.BogieClaimUiTest,io.github.sbshrey.tambola.keyboard.SchemeStatusImageTest,io.github.sbshrey.tambola.keyboard.SchemeStatusUiTest,io.github.sbshrey.tambola.keyboard.ResultsImageTest#fortyTwoSchemeResultsFitReadablePlayerColumnsWithExactShares,io.github.sbshrey.tambola.keyboard.ResultsImageTest#bogieOnlyGameKeepsNamesWithZeroTotalsAndNoWinningEntries,io.github.sbshrey.tambola.keyboard.PrizeJsonTest,io.github.sbshrey.tambola.keyboard.QuickWinnerTest#reinsertAndCorrectAwardKeepRecordedPayoutAndCallPosition,io.github.sbshrey.tambola.keyboard.QuickWinnerTest#threeOrMoreClaimsAnnounceBogieAndCanBeCorrected,io.github.sbshrey.tambola.keyboard.WinnerSpeechTest#threeSpokenClaimantsSaveBogieWithNoPrizeMoney,io.github.sbshrey.tambola.keyboard.FeaturesTest#twoWinnerDropdownsShowSplitAndSaveToSharedStore io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`releases/1.4.7/` contains the newly signed release APK, debug-signed test APK, unsigned release APK, checksums, installation notes, public certificate and source commit. `validation/` contains build/test logs, the Android coverage manifest, JVM/lint XML, screenshots and generated pictures. `run-displays.py` repeats the Bogie and correction controls at 160% text and in landscape, restoring defaults afterward; adjust its SDK path on another machine.
+
+At the user’s explicit request, a new RSA-3072 release key was created outside the repository in a password-protected PKCS12 keystore, alias `tambola`, with 30-year certificate validity. Its directory is owner-only (700), and files are owner-only (600). The generated password is in a separate plaintext file protected by filesystem permissions; the private folder includes encrypted-backup and reuse instructions. No signing secret is in Git. The APK verifies with signature schemes v2 and v3. Every non-signature ZIP entry matches the tested unsigned release byte for byte; package alignment also verifies.
+
+The signed release passed a fresh install, launch, same-key reinstall and second launch on the dedicated API 35 emulator (`validation/release-install.log`). Its launch screenshot was inspected. Only disposable debug test data was removed from that emulator. This checks package installation and launch; it does not establish migration from the original signing key or retention of a real saved game.
+
+Nothing was pushed or published. This new signing key cannot update the existing installation signed with the original key. The new APK is for fresh installations; subsequent updates to those installations must reuse this new key. Keep Mom’s live installation intact.
+
+---
+
 # Tambola Keyboard 1.4.6: choose this round's players and revise setup
 
 Validated on 20 October 2026. Version code 13, local branch `feat/tap-winner-announcements`.

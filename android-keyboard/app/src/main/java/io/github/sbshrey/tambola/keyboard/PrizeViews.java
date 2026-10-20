@@ -30,7 +30,7 @@ final class PrizeViews {
                 List<String> winners = new ArrayList<>(); if (first.getSelectedItemPosition() > 0) winners.add(ids.get(first.getSelectedItemPosition())); if (second.getSelectedItemPosition() > 0) winners.add(ids.get(second.getSelectedItemPosition()));
                 if (winners.isEmpty()) throw new IllegalArgumentException("Choose at least one winner.");
                 if (new HashSet<>(winners).size() != winners.size()) throw new IllegalArgumentException("Choose two different players.");
-                store.prizes(store.prizes().award(id, winners, prize, store.load().count())); saved.run();
+                store.prizes(store.prizes().resolve(id, winners, store.load().count())); saved.run();
             } catch (IllegalArgumentException | IllegalStateException error) { feedback.accept(error.getMessage()); }
         });
         if (scheme.bogie()) Ui.add(page, Ui.text(context, book.announcement(scheme), 18), -2);

@@ -33,13 +33,13 @@ public class SchemeStatusImageTest {
     }
     @Test public void fortyTwoSchemesShareOpenAndWonNamesWithReadOnlyImages() throws Exception {
         PrizeBook book = sample(); String saved = PrizeJson.encode(book); SchemeStatusImage image = new SchemeStatusImage(book, game(), null);
-        assertEquals(29, image.status.remaining.size()); assertEquals(11, image.status.won.size()); assertEquals(2, image.status.bogies.size()); assertEquals(11000, image.status.paidPaise);
+        assertEquals(31, image.status.remaining.size()); assertEquals(11, image.status.won.size()); assertEquals(2, image.status.bogies.size()); assertEquals(11000, image.status.paidPaise);
         assertEquals(1, image.pages.size()); Set<String> ids = new HashSet<>();
-        for (SchemeStatusImage.Row row : image.pages.get(0).rows) for (SchemeStatusImage.Card card : row.cards) {
+        for (SchemeStatusImage.Page page : image.pages) for (SchemeStatusImage.Row row : page.rows) for (SchemeStatusImage.Card card : row.cards) {
             assertTrue(ids.add(card.entry.id)); assertEquals(card.entry.detail, card.detail.getText().toString());
         }
         assertEquals(42, ids.size()); save(image, 0, "scheme-status-example");
-        List<Uri> files = Sharing.createSchemeStatus(context, game(), book, null); assertEquals(1, files.size());
+        List<Uri> files = Sharing.createSchemeStatus(context, game(), book, null); assertEquals(image.pages.size(), files.size());
         assertEquals("image/png", context.getContentResolver().getType(files.get(0)));
         try (InputStream input = context.getContentResolver().openInputStream(files.get(0))) { Bitmap bitmap = BitmapFactory.decodeStream(input); assertEquals(image.pages.get(0).height, bitmap.getHeight()); bitmap.recycle(); }
         assertThrows(FileNotFoundException.class, () -> context.getContentResolver().openFileDescriptor(files.get(0), "w"));

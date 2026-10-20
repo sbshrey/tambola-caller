@@ -19,7 +19,9 @@ final class QuickWinnerViews {
             Ui.add(page, Ui.text(context, "Go back and add the family list, or add names under Players & prize amounts.", 18), -2);
             return;
         }
-        List<String> selected = new ArrayList<>(scheme.bogie() ? scheme.bogiePlayers : scheme.winners);
+        List<String> selected = new ArrayList<>(scheme.winners);
+        if (scheme.bogie()) Ui.add(page, Ui.text(context, "Bogie · still open for a new claim. Choose the next claimants below; previous claimants are not selected.", 18), -2);
+        else if (!scheme.winners.isEmpty()) Ui.add(page, Ui.text(context, "Correct this result: tap a selected name to remove it, then choose the correct winners and Update. Saved winnings and totals will be replaced. Messages already sent stay unchanged.", 18), -2);
         TextView preview = Ui.text(context, "", 18);
         preview.setContentDescription("Winner announcement preview");
         preview.setAccessibilityLiveRegion(android.view.View.ACCESSIBILITY_LIVE_REGION_POLITE);
@@ -30,7 +32,7 @@ final class QuickWinnerViews {
         Map<String, Button> buttons = new LinkedHashMap<>();
         Runnable refresh = () -> {
             announce.setEnabled(!selected.isEmpty());
-            announce.setText(selected.size() >= 3 ? R.string.insert_bogie : scheme.resolved() ? R.string.update_winner : R.string.insert_winner);
+            announce.setText(selected.size() >= 3 ? R.string.insert_bogie : !scheme.winners.isEmpty() ? R.string.update_winner : R.string.insert_winner);
             if (selected.isEmpty()) preview.setText(R.string.choose_winner_below);
             else {
                 PrizeBook proposed = book.resolve(scheme.id, selected, calls);
@@ -43,6 +45,8 @@ final class QuickWinnerViews {
                 button.setContentDescription(book.players.get(id) + (chosen ? ", selected claimant" : ", choose claimant"));
             });
         };
+        if (scheme.bogie()) Ui.action(page, "Use previous Bogie claimants", Ui.PAPER, () -> { selected.clear(); selected.addAll(scheme.bogiePlayers); refresh.run(); });
+        if (!scheme.winners.isEmpty()) Ui.action(page, "Choose different winners", Ui.PAPER, () -> { selected.clear(); refresh.run(); });
         LinearLayout row = null;
         for (Map.Entry<String, String> player : book.players.entrySet()) {
             if (buttons.size() % 2 == 0) { row = new LinearLayout(context); Ui.add(page, row, -2); }

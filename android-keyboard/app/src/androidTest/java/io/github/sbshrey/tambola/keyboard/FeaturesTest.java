@@ -82,5 +82,15 @@ public class FeaturesTest {
         assertTrue(UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).takeScreenshot(new File(context.getFilesDir(), "preview-winners.png")));
         InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> { for (int i = 0; i < panel[0].getChildCount(); i++) { View child = panel[0].getChildAt(i); if (child instanceof Button && ((Button) child).getText().toString().equals("Save winners")) child.performClick(); } });
         assertEquals(1, saved.get()); assertEquals(Arrays.asList("a", "b"), store.prizes().scheme("prize-0").winners); assertEquals(500, store.prizes().scheme("prize-0").eachPaise());
+        store.save(Game.decode("1,2,3,4,5,6"));
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+            panel[0].removeAllViews(); PrizeViews.award(panel[0], store, "prize-0", saved::incrementAndGet, value -> fail(value));
+            List<Spinner> selectors = new ArrayList<>(); for (int i = 0; i < panel[0].getChildCount(); i++) if (panel[0].getChildAt(i) instanceof Spinner) selectors.add((Spinner) panel[0].getChildAt(i));
+            selectors.get(0).setSelection(2); selectors.get(1).setSelection(0);
+            for (int i = 0; i < panel[0].getChildCount(); i++) { View child = panel[0].getChildAt(i); if (child instanceof Button && ((Button) child).getText().toString().equals("Save winners")) child.performClick(); }
+        });
+        assertEquals(2, saved.get()); assertEquals(Collections.singletonList("b"), store.prizes().scheme("prize-0").winners);
+        assertEquals(1000, store.prizes().scheme("prize-0").eachPaise()); assertEquals(5, store.prizes().scheme("prize-0").callCount);
+        assertEquals(1000, new PrizeSummary(store.prizes()).totalPaise); assertEquals(6, store.load().count());
     }
 }

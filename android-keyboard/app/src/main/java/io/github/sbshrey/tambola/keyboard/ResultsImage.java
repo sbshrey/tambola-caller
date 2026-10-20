@@ -47,7 +47,7 @@ final class ResultsImage {
         int columns = Math.min(3, table.players.size()); columnWidth = columns == 1 ? 640 : 380;
         width = MARGIN * 2 + columns * columnWidth + (columns - 1) * GAP;
         heading = layout("TAMBOLA · GAME RESULTS", 38, true, width - 2 * MARGIN);
-        details = layout(calls + " numbers · " + summary.paidPrizes + " paid · " + summary.bogies.size() + " Bogies · " + table.unawarded + " not awarded", 25, false, width - 2 * MARGIN);
+        details = layout(calls + " numbers · " + summary.paidPrizes + " paid · " + summary.bogies.size() + " Bogies still open · " + table.unawarded + " not awarded", 25, false, width - 2 * MARGIN);
         balance = layout(table.balance(), 25, false, width - 2 * MARGIN);
         contentTop = MARGIN + heading.getHeight() + 16 + details.getHeight() + (plan == null ? 0 : 16 + balance.getHeight()) + 118;
         Page page = new Page(width, contentTop); pages.add(page);
@@ -83,7 +83,7 @@ final class ResultsImage {
         }
         // Bogies belong outside player winnings because they have no payout.
         for (PrizeSummary.Bogie bogie : summary.bogies) {
-            StaticLayout label = layout("BOGIE · " + bogie.prize + " · ₹0\n" + String.join(", ", bogie.names), 26, false, width - 2 * MARGIN - 36);
+            StaticLayout label = layout("BOGIE · " + bogie.prize + " · ₹0 · still open\n" + String.join(", ", bogie.names), 26, false, width - 2 * MARGIN - 36);
             if (label.getHeight() + 32 > capacity) throw new IllegalArgumentException("A Bogie result is too long to fit in a picture.");
             if (page.height + label.getHeight() + 32 > MAX_HEIGHT) { page = new Page(width, contentTop); pages.add(page); }
             page.bogies.add(label); page.height += label.getHeight() + 32;

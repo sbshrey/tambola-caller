@@ -1,10 +1,10 @@
-# Tambola Keyboard 1.4.6 for Android
+# Tambola Keyboard 1.4.7 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
 **Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
 
-The 1.4.6 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
+Version 1.4.7 is built locally and signed with a new release key created at the owner’s request on 20 October 2026. It is for fresh installations; it cannot update the published app signed with the original key. Future updates to this new installation must reuse the new key. Do not uninstall a live installation with saved games to work around a signature mismatch. Nothing has been published.
 
 ## Set up once
 
@@ -24,7 +24,7 @@ The collected total and planned prize total must match exactly before **Confirm 
 
 Each new round keeps the previous purchased-set counts and schemes, clears results, and requires a fresh review/confirmation before calling. Adjust purchases and the number of selected schemes for the new game. The ₹50 price and six-ticket set size are fixed for this group's rules. Up to 20 sets per player and 100 sets total (500 prize schemes) are supported. A game already in progress from an older version retains its recorded amounts; new rounds use ₹10 for every scheme.
 
-The full collection is allocated **before play**. A Bogie still pays ₹0 under your rule. Money for Bogies or schemes not awarded remains unpaid; the results image shows that balance and does not silently redistribute it.
+The full collection is allocated **before play**. A Bogie pays ₹0 and stays open for another claim at the full scheme amount. Until someone wins it, that money remains unpaid; the results image shows that balance and does not silently redistribute it.
 
 ## Share the setup and start message
 
@@ -77,11 +77,11 @@ In your chat, tap **Winners → Tap prize + winner → Add family players & sche
 4. Review the announcement and prize split. Tap **Review announcement ↑** at the bottom or scroll back to **Insert winner announcement** (one or two claimants) or **Insert Bogie announcement** (three or more). This saves the award and fills the empty chat draft, for example `🏆 Early 5: Varsha` with `₹10 prize`.
 5. Check the message, then tap **WhatsApp Send**.
 
-**One claimant receives ₹10; two receive ₹5 each; three or more means Bogie with no payout.** Bogie results list the claimants, appear in shared results, and contribute nothing to prize totals. The app does not read other players’ WhatsApp messages or verify tickets; Varsha selects the confirmed claimants.
+**One claimant receives ₹10; two receive ₹5 each; three or more means Bogie with no payout.** A Bogie lists its claimants and pays nothing, but the scheme stays open for another claim. Reopening it starts with no names selected, so the previous Bogie claimants are not included in a new attempt. **Claim for Varsha** and voice winner entry work again. **Use previous Bogie claimants** loads the old selection if the host wants to correct that decision. The app does not read other players’ WhatsApp messages or verify tickets; Varsha selects the confirmed claimants.
 
 No microphone, speech service, Internet or keyboard switch is needed for this flow. Existing drafts are preserved, and a blocked insertion does not save a new award. If an editor rejects text after the award is saved, use **Insert [prize] announcement** to retry. Android can acknowledge queuing text before an editor accepts it, so always check the draft. Choosing names or leaving the screen alone does not save anything. An editor restart, new round or changed prize setup invalidates a pending selection.
 
-Reopen a resolved prize to correct its claimants with **Update winner announcement** or **Insert Bogie announcement**. Correcting paid winners keeps their recorded amount. Reducing a Bogie to one/two valid claimants restores a payout using the configured prize total. Both corrections keep the original call position. Use the existing manual prize controls to clear an award. New games keep the family list and scheme choices and clear both awards and Bogies. Undo clears results recorded on the removed call.
+To fix an incorrect winner during play, reopen **Winners → Tap prize + winner → the scheme**. Untick the wrong name and tick the right one, or tap **Choose different winners** to clear the selection first. Tap **Update winner announcement**, then send the corrected announcement. This replaces the saved winners and recalculates payouts, player totals and future images without counting the prize twice. Correcting paid winners keeps their recorded amount and original call position. A new award after a Bogie uses the scheme amount and the current call position, so undoing that later call clears the later award. A paid result changed to Bogie removes its payout and reopens the scheme. Use the existing manual prize controls to clear an award. New games keep the family list and scheme choices and clear both awards and Bogies. Undo clears results recorded on the removed call.
 
 The line/box shorthand is interpreted as individual First–Ninth prizes, allowing games with six or nine of each. Ulti and Seedhi family planning are separate schemes; saved entries using the old Siddi spelling are reused. “Pati patni vah”, “Ilove you” and “10 early” map to the existing Pati patni or vo, I love you and Early 10 names. Turn unused prizes off in Players & prizes.
 
@@ -117,15 +117,15 @@ Tap **Winners → Players & prize amounts**, or open that screen from the app. A
 
 Tap **Winners → Share scheme status picture**, or **Call → Share… → Share scheme status picture**. The full app also offers it under **Results to share**, even before any winner is saved.
 
-Each tap creates a fresh picture from the saved game: **Remaining** lists selected schemes still open and their prize amounts; **Won** lists the scheme, winner names and individual payouts (₹5 each for shared ₹10 prizes); **Bogie** lists claimants and no payout. Disabled schemes are omitted. The header gives the call count, latest number and totals for each status. Remaining and won schemes use two columns; long lists continue across numbered images with repeated headings. Long Bogie claimant lists continue without dropping names.
+Each tap creates a fresh picture from the saved game: **Remaining** lists selected schemes still open and their prize amounts; **Won** lists the scheme, winner names and individual payouts (₹5 each for shared ₹10 prizes); **Bogie** cards stay within **Remaining**, show the amount still available and the previous claimants, and pay nothing. The remaining count includes these Bogies; a later winner replaces the Bogie card and moves the scheme to Won. Disabled schemes are omitted. The header gives the call count, latest number and totals for each status. Remaining and won schemes use two columns; long lists continue across numbered images with repeated headings. Long Bogie claimant lists continue without dropping names.
 
-A claim or an unsaved winner selection stays open until the host checks it and saves the result. The picture reflects saved decisions, not whether a WhatsApp message was delivered. Send or clear the announcement text before preparing the picture, then check the attachment and tap Send. Sharing does not draw a number, award a scheme or send messages automatically. A confirmed ticket plan is required when ticket tracking is enabled. Before the first call, all selected schemes appear as remaining. Corrections, undo and a new round are reflected the next time you share.
+A claim or an unsaved winner selection stays open. Only saved winners close the scheme; a saved Bogie stays open for the next claim. The picture reflects saved decisions, not whether a WhatsApp message was delivered. Send or clear the announcement text before preparing the picture, then check the attachment and tap Send. Sharing does not draw a number, award a scheme or send messages automatically. A confirmed ticket plan is required when ticket tracking is enabled. Before the first call, all selected schemes appear as remaining. Corrections, undo and a new round are reflected the next time you share.
 
 ## Share the end-of-game results image
 
 In the keyboard, tap **Winners → Share results picture**, check the image, then WhatsApp Send. The same button appears on **Call** after all 90 numbers and on **Board** when results exist. Before resetting, **Share results picture first** is also available on the new-game confirmation screen. You can share results whenever your game finishes, even before 90 calls.
 
-The screen and image group **player names into columns, with only that player's won schemes underneath and their total at the bottom**. Three columns form a group. A shared ₹10 prize appears under both winners with ₹5 and “shared”. Participating players without a win show “No prizes won” and ₹0. Ticket-funded results omit saved names with zero sets; those names remain available in setup for later games. Bogies are listed separately with their claimants and ₹0. The header counts selected schemes not awarded. Ticket-funded games also show purchased sets per player, collections and unpaid prizes. Totals include only recorded payouts.
+The screen and image group **player names into columns, with only that player's won schemes underneath and their total at the bottom**. Three columns form a group. A shared ₹10 prize appears under both winners with ₹5 and “shared”. Participating players without a win show “No prizes won” and ₹0. Ticket-funded results omit saved names with zero sets; those names remain available in setup for later games. Current Bogies are listed separately with their claimants, ₹0 and “still open”. The header counts all selected schemes not awarded, including Bogies. Once a scheme is won, its previous Bogie entry is replaced; results show the latest decision, not a history of every attempt. Ticket-funded games also show purchased sets per player, collections and unpaid prizes. Totals include only recorded payouts.
 
 Swipe the on-screen columns sideways to see all three names. **More wins** and **More players** handle large lists. Exported pictures pack several groups onto a page and split long winning lists onto numbered pages. Each won scheme appears exactly once per winner. Continued columns repeat the player's name and full-game total, with “Continued” above the remaining wins.
 
@@ -166,6 +166,8 @@ The helper exports the signed APK, `INSTALL.txt` and `SHA256SUMS.txt` into the i
 
 To use another signing key, set `TAMBOLA_KEYSTORE_PATH` and `TAMBOLA_KEYSTORE_PASSWORD` and run `./gradlew.bat assembleRelease lintRelease`. Without signing variables, Gradle produces an unsigned release: do not distribute it.
 
+The new macOS key is a password-protected PKCS12 keystore, alias `tambola`, RSA 3072 bits, with 30-year certificate validity. It and its generated password are outside the repository under `~/Library/Application Support/TambolaKeyboard/signing/release-2026-10-20/`, with directory permissions 700 and file permissions 600. The password file is plaintext protected by filesystem permissions. Keep an encrypted backup of both files; neither should be committed or published. The folder’s README explains reuse. Certificate SHA-256: `e4fa16e16e5f96d188c7f96bf87af3ed8d3a11a7de2d608d2bc03c3ffff0394f`.
+
 Instrumented tests reset both game stores. Use a dedicated emulator, never a phone with an active game. Install debug and test APKs, enable/select the IME, then run:
 
 ```text
@@ -179,6 +181,8 @@ adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.ta
 ```
 
 `FullGameTest` taps Next number for every draw in three complete 90-number games, corrects one accidental draw in each game, claims and awards prizes, shares a results image, inserts Bogies/results, reopens the editor halfway through, resets, and starts a fourth round. The debug editor's Send button records and clears local test messages; it does not use WhatsApp. Progress is logged under `TambolaFullGame`. `CallCorrectionTest` also supports `-e landscape true` with fixed user rotation enabled, as described in VALIDATION.md. Run `ResultsImageTest` for family totals, image readability, large/Hindi-name pagination, read-only sharing and draft protection.
+
+Run `BogieClaimUiTest` for a funded Bogie → new host claim → winner → wrong-name correction flow, exact totals and image handoff, persistence and undo.
 
 Run `TicketPlanUiTest` for adding players, participation checkboxes, purchased sets, selection, extra named ₹10 prizes, exact budget approval, eligibility and next-round review. Pass `-e funded true` to `FullGameTest` to exercise three games with mixed one/two-set purchases and a ₹600 budget, including all three Houses and a Bogie. The long test supplies the plan data through the store; the planner UI is covered separately. Ticket-plan JSON is a separate version-1 preference; existing prize records keep their version-2 format.
 

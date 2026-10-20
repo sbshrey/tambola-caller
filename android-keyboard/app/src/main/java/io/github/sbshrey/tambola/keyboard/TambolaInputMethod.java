@@ -272,7 +272,7 @@ public final class TambolaInputMethod extends InputMethodService {
             Ui.action(body, "Insert all results", Ui.GREEN, () -> insertText(store.prizes().results(store.load().count())));
         }
         for (PrizeBook.Scheme item : book.schemes) if (item.enabled) {
-            Ui.action(body, item.name + " · " + PrizeBook.money((item.resolved() ? item.awardedRupees : item.rupees) * 100) + "\n" + (item.resolved() ? book.winners(item) : "Choose winners"), Ui.PAPER, () -> { awardId = item.id; navigate("Award"); });
+            Ui.action(body, item.name + " · " + PrizeBook.money((item.winners.isEmpty() ? item.rupees : item.awardedRupees) * 100) + "\n" + (item.resolved() ? book.winners(item) : "Choose winners"), Ui.PAPER, () -> { awardId = item.id; navigate("Award"); });
             if (item.resolved()) Ui.action(body, "Insert " + item.name + " announcement", Ui.GREEN, () -> { PrizeBook current = store.prizes(); insertText(current.announcement(current.scheme(item.id))); });
         }
     }
@@ -324,7 +324,7 @@ public final class TambolaInputMethod extends InputMethodService {
         }
         PrizeBook book = store.prizes(); PrizeBook.Scheme scheme = book.scheme(quickId); TicketPlan ticketPlan = store.plan();
         String host = FamilySetup.hostId(book);
-        if (host != null && !scheme.resolved()) {
+        if (host != null && scheme.open()) {
             Ui.action(body, "Claim for " + book.players.get(host), Ui.PINK, () -> {
                 try {
                     if (quickSession != session || !store.load().encode().equals(quickRound) || !PrizeJson.encode(store.prizes()).equals(quickPrizes)) {
@@ -349,7 +349,7 @@ public final class TambolaInputMethod extends InputMethodService {
                 store.prizes(updated); // Recoverable via the existing Insert announcement action if the editor rejects text.
                 boolean inserted = editor.commitText(updated.announcement(updated.scheme(scheme.id)), 1);
                 navigate("Winners");
-                say(inserted ? (selected.size() >= 3 ? "Bogie saved · no payout. Check the message, then Send" : "Winner saved · check the message, then WhatsApp Send") : "Result saved. Tap Insert announcement to try again.");
+                say(inserted ? (selected.size() >= 3 ? "Bogie saved · still open. Check the message, then Send" : "Winner saved · check the message, then WhatsApp Send") : "Result saved. Tap Insert announcement to try again.");
             } catch (IllegalArgumentException | IllegalStateException error) { say(error.getMessage()); }
         }, () -> scroll.scrollTo(0, 0));
     }

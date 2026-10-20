@@ -42,7 +42,7 @@ final class TicketPlanViews {
         PrizeBook book = store.prizes(); TicketPlan plan = store.plan();
         Ui.add(page, Ui.text(page.getContext(), "2. Schemes · ₹10 each", 25), -2);
         Ui.action(page, "‹ Change purchased sets", Ui.PAPER, back); totals(page, plan, book);
-        Ui.add(page, Ui.text(page.getContext(), "Every scheme pays ₹10. Two winners get ₹5 each; 3+ is Bogie with no payout. Select five prizes per purchased set to allocate the full collection.", 18), -2);
+        Ui.add(page, Ui.text(page.getContext(), "Every scheme pays ₹10. Two winners get ₹5 each; 3+ is Bogie with no payout; the scheme stays open. Select five prizes per purchased set to allocate the full collection.", 18), -2);
         Ui.action(page, "Add extra ₹10 prizes", Ui.GREEN, addPrizes);
         Ui.action(page, "Confirm setup · ready to call", Ui.PINK, () -> safe(() -> { store.plan(plan, book, true); ready.run(); }, feedback)).setEnabled(plan.problem(book) == null);
         LinearLayout choices = new LinearLayout(page.getContext());

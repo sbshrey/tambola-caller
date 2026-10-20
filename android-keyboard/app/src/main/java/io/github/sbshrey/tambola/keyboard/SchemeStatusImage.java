@@ -4,7 +4,7 @@ import android.graphics.*;
 import android.text.*;
 import java.util.*;
 
-/** Remaining schemes first, then winners and Bogies. Section headings repeat on new pages. */
+/** Remaining schemes (including open Bogies) first, then winners. Headings repeat on new pages. */
 final class SchemeStatusImage {
     static final int WIDTH = 1200, MAX_HEIGHT = 4096, MARGIN = 32, GAP = 16, FOOTER = 100, SECTION = 64;
     static final int FULL = WIDTH - MARGIN * 2, COLUMN = (FULL - GAP) / 2;
@@ -42,12 +42,12 @@ final class SchemeStatusImage {
         status = new SchemeStatus(book, plan);
         heading = layout("TAMBOLA · SCHEME STATUS", 40, true, FULL);
         progress = layout(game.count() == 0 ? "Before the first call" : "After " + game.count() + " calls · Latest number: " + game.latest(), 28, false, FULL);
-        counts = layout(status.selected + " selected · " + status.remaining.size() + " remaining · " + status.won.size() + " won · " + status.bogies.size() + " Bogie", 28, false, FULL - 40);
+        counts = layout(status.selected + " selected · " + status.remaining.size() + " remaining"
+            + (status.bogies.isEmpty() ? "" : " (" + status.bogies.size() + " Bogie)") + " · " + status.won.size() + " won", 28, false, FULL - 40);
         contentTop = MARGIN + heading.getHeight() + 16 + progress.getHeight() + 20 + counts.getHeight() + 40 + 16;
         pages.add(new Page(contentTop));
         append("REMAINING · " + status.remaining.size(), status.remaining);
         append("WON · " + status.won.size() + " · Paid " + PrizeBook.money(status.paidPaise), status.won);
-        append("BOGIE · " + status.bogies.size() + " · No payout", status.bogies);
     }
     private void append(String heading, List<SchemeStatus.Entry> entries) {
         List<Card> all = new ArrayList<>();
@@ -94,7 +94,7 @@ final class SchemeStatusImage {
             }
             top += body + GAP;
         }
-        draw(canvas, layout("Saved host results. Claims stay open until confirmed.\nShare an updated picture after the next result.", 23, false, FULL - 120), MARGIN, page.height - 78);
+        draw(canvas, layout("Bogie stays open. Only saved winners close schemes.\nShare an updated picture after the next result.", 23, false, FULL - 120), MARGIN, page.height - 78);
         draw(canvas, layout((index + 1) + " / " + pages.size(), 24, true, 100), WIDTH - MARGIN - 100, page.height - 48);
         return bitmap;
     }

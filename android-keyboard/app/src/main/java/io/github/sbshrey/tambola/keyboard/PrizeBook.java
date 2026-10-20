@@ -28,6 +28,8 @@ final class PrizeBook {
                 || (resolved() && (callCount < minimumCalls || !enabled)) || (!resolved() && callCount != 0)) throw new IllegalArgumentException("Unreadable prize details.");
         }
         boolean bogie() { return !bogiePlayers.isEmpty(); }
+        boolean open() { return enabled && winners.isEmpty(); }
+        // A saved decision can be a Bogie; it does not necessarily close the scheme.
         boolean resolved() { return bogie() || !winners.isEmpty(); }
         int eachPaise() { return winners.isEmpty() ? 0 : awardedRupees * 100 / winners.size(); }
         Scheme cleared() { return new Scheme(id, name, rupees, enabled, minimumCalls, Collections.emptyList(), 0, 0); }
@@ -64,7 +66,7 @@ final class PrizeBook {
     PrizeBook resolve(String id, List<String> claimants, int count) {
         Scheme old = scheme(id);
         if (claimants.isEmpty()) throw new IllegalArgumentException("Choose at least one claimant.");
-        int recordedCount = old.resolved() ? old.callCount : count;
+        int recordedCount = old.winners.isEmpty() ? count : old.callCount;
         if (claimants.size() < 3) return award(id, claimants, old.winners.isEmpty() ? old.rupees : old.awardedRupees, recordedCount);
         if (!old.enabled) throw new IllegalArgumentException("Turn this prize on first.");
         return replace(new Scheme(id, old.name, old.rupees, old.enabled, old.minimumCalls, Collections.emptyList(), 0, recordedCount, claimants), false);
@@ -88,17 +90,17 @@ final class PrizeBook {
     }
     PrizeBook newRound() { return afterUndo(0).fixedPrizes(); }
     String names(List<String> ids) { List<String> names = new ArrayList<>(); for (String id : ids) names.add(players.get(id)); return String.join(" & ", names); }
-    String winners(Scheme item) { return item.bogie() ? "Bogie · " + names(item.bogiePlayers) : names(item.winners); }
+    String winners(Scheme item) { return item.bogie() ? "Bogie · still open · " + names(item.bogiePlayers) : names(item.winners); }
     String claim(String schemeId, String playerId, int count) {
         Scheme item = scheme(schemeId);
         if (!players.containsKey(playerId)) throw new IllegalArgumentException("Add the player first.");
         if (!item.enabled) throw new IllegalArgumentException("Turn this prize on first.");
-        if (item.resolved()) throw new IllegalArgumentException("This prize already has a result.");
+        if (!item.open()) throw new IllegalArgumentException("This prize already has winners.");
         if (count < item.minimumCalls) throw new IllegalArgumentException("Call at least " + item.minimumCalls + " numbers before claiming this prize.");
         return "🙋 " + players.get(playerId) + " claims " + item.name + "\nPlease check my ticket.";
     }
     String announcement(Scheme item) {
-        if (item.bogie()) return "🚫 " + item.name + ": Bogie\n" + item.bogiePlayers.size() + " claimants: " + names(item.bogiePlayers) + "\nNo payout";
+        if (item.bogie()) return "🚫 " + item.name + ": Bogie\n" + item.bogiePlayers.size() + " claimants: " + names(item.bogiePlayers) + "\nNo payout · Scheme stays open for another claim.";
         return "🏆 " + item.name + ": " + winners(item) + "\n" + money(item.eachPaise()) + (item.winners.size() == 2 ? " each" : " prize");
     }
     boolean hasWinners() { for (Scheme item : schemes) if (item.resolved()) return true; return false; }

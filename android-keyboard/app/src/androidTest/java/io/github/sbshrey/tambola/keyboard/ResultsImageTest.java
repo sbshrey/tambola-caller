@@ -112,7 +112,7 @@ public class ResultsImageTest extends KeyboardScenario {
         }
         ResultsImage image = new ResultsImage(book, 90, plan);
         assertEquals(1, image.pages.size()); assertEquals(40000, image.summary.totalPaise);
-        assertEquals(40, image.summary.paidPrizes); assertEquals(2, image.summary.bogies.size()); assertEquals(13, image.table.unawarded);
+        assertEquals(40, image.summary.paidPrizes); assertEquals(2, image.summary.bogies.size()); assertEquals(15, image.table.unawarded);
         Set<String> entries = new HashSet<>(); int total = 0;
         for (ResultsImage.Band band : image.pages.get(0).bands) {
             assertTrue(band.columns.size() <= 3);

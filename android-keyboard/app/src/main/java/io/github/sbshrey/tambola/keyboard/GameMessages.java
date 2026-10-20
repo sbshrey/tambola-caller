@@ -59,6 +59,6 @@ final class GameMessages {
     private static String rules(PrizeBook book) {
         boolean ten = book.schemes.stream().filter(prize -> prize.enabled).allMatch(prize -> prize.rupees == PrizeBook.PRIZE_RUPEES);
         return (ten ? "One winner: ₹10. Two winners: ₹5 each." : "One winner receives the full prize. Two winners share it equally.")
-            + "\nThree or more valid claimants: Bogie — no payout.";
+            + "\nThree or more valid claimants: Bogie — no payout. The scheme stays open for another claim.";
     }
 }

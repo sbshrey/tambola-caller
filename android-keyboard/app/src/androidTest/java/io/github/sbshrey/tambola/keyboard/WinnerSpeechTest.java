@@ -73,7 +73,7 @@ public class WinnerSpeechTest {
     @Test public void threeSpokenClaimantsSaveBogieWithNoPrizeMoney() {
         main(() -> TestRecognitionService.transcript = "King winners Varsha aur Rekha aur Suman");
         speak(); expect("Bogie saved. Check");
-        assertEquals("🚫 King: Bogie\n3 claimants: Varsha & Rekha & Suman\nNo payout", draft());
+        assertEquals("🚫 King: Bogie\n3 claimants: Varsha & Rekha & Suman\nNo payout · Scheme stays open for another claim.", draft());
         assertTrue(store.prizes().scheme("catalog-king").bogie()); assertFalse(store.prizes().results(5).contains("Total prizes"));
     }
     @Test public void existingDraftBlocksVoiceAndPreservesGame() {

@@ -35,7 +35,7 @@ final class ResultsTable {
             for (PrizeBook.Scheme prize : book.schemes) if (prize.enabled && prize.winners.contains(person.getKey())) wins.add(new Win(prize));
             people.add(new Player(person.getKey(), person.getValue(), plan == null ? -1 : plan.sets(person.getKey()), wins));
         }
-        unawarded = TicketPlan.selected(book) - summary.paidPrizes - summary.bogies.size();
+        unawarded = TicketPlan.selected(book) - summary.paidPrizes;
         players = Collections.unmodifiableList(people);
     }
     String balance() {
