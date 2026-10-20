@@ -1,10 +1,10 @@
-# Tambola Keyboard 1.4.0 for Android
+# Tambola Keyboard 1.4.1 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
 **Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
 
-The 1.4.0 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
+The 1.4.1 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
 
 ## Set up once
 
@@ -13,6 +13,18 @@ The 1.4.0 changes below are built from this checkout. A production update must b
 3. Tap **Choose Tambola Keyboard** and select it.
 4. Tap **Practice safely**, then the practice box. Try **Next number**, then **Clear practice message**. Nothing is sent and the live game stays unchanged.
 5. Try your own WhatsApp chat first, then start a new live game before group play.
+
+## Before a game: purchased sets and prize budget
+
+Tap **Set tickets & schemes** on the empty Call screen or in the app. **One set contains 6 tickets and costs ₹50**: one set is ₹50, two sets/12 tickets are ₹100. Use the large −/+ buttons for each player; 0 means that person is not playing. New setup starts at one set per saved player so the host can adjust purchases. All participating players are eligible for every selected scheme, regardless of buying one or two sets. A player still counts once when choosing claimants for a prize.
+
+Tap **Choose schemes & amounts**. Select the schemes for this game by group; **Clear selection** lets you start with a small set. Change each prize using −/+ ₹5 or tap its amount to enter any whole-rupee value. **Split full collection equally** divides the ticket sales across the selected schemes, assigning any remaining rupees to the first schemes; all amounts remain editable before play. This is an optional allocation tool, not an automatic choice of schemes.
+
+The collected total and planned prize total must match exactly before **Confirm setup · ready to call** becomes available. For example, twelve purchased sets collect ₹600, so selected prizes must total ₹600. Returning to the chat enables the first call. Tickets and scheme amounts stay fixed during that game; players with 0 sets cannot claim. Editing names is still allowed. Existing installations can keep calling without ticket tracking until the host opens this optional planner.
+
+Each new round keeps the previous purchased-set counts, schemes and amounts, clears results, and requires a fresh review/confirmation before calling. Adjust purchases for the new game and rebalance if needed. The ₹50 price and six-ticket set size are fixed for this group's rules. Up to 20 sets per player are supported.
+
+The full collection is allocated **before play**. A Bogie still pays ₹0 under your rule. Money for Bogies or schemes not awarded remains unpaid; the results image shows that balance and does not silently redistribute it.
 
 ## Play the game
 
@@ -23,7 +35,9 @@ Open the right WhatsApp group, tap its message box, and select Tambola Keyboard.
 - **ABC** opens Android's keyboard picker for normal typing.
 - **Board** shows all 90 numbers. Pink means called; dark pink marks the latest.
 - **Voice** chooses English, Hindi or Hinglish, and turns automatic speech on/off. All 270 AI-generated recordings are bundled for offline use. No API key or new audio generation is needed. Button labels remain in English.
-- If a draft already contains text, the keyboard says **Send or clear the current message first** and does not overwrite it or draw another number. Send it, or tap **Clear unsent message… → Yes, clear message**, then **Next number**. Clearing asks for confirmation and does not change called numbers or sent messages.
+- **Clear message…** is always available below Next number. Confirm **Yes, clear message** to remove an unsent draft, including selected text, while keeping the call and saved prizes. Use **Insert again** to put that same number back.
+- **Undo last number → Yes, undo number** corrects an accidental call inside the keyboard. It returns the number to the pool and clears its unsent number text. Other draft text is preserved. Awards and Bogies recorded on that call are cleared; earlier results stay.
+- If a draft already contains text, the keyboard says **Send or clear the current message first** and does not overwrite it or draw another number. Send it, or use **Clear message…**. Clearing and undoing never delete sent messages.
 
 The keyboard and its setup app use one saved live round. Practice is separate. The website still runs its own independent game; use one caller for the whole round. Saved progress records generated calls, not confirmed delivery.
 
@@ -51,7 +65,7 @@ In your chat, tap **Winners → Tap prize + winner → Add family players & sche
 4. Review the announcement and prize split. Tap **Review announcement ↑** at the bottom or scroll back to **Insert winner announcement** (one or two claimants) or **Insert Bogie announcement** (three or more). This saves the award and fills the empty chat draft, for example `🏆 Early 5: Varsha` with `₹10 prize`.
 5. Check the message, then tap **WhatsApp Send**.
 
-**One claimant receives ₹10; two receive ₹5 each; three or more means Bogie with no payout.** Existing custom prize totals are preserved. Bogie results list the claimants, appear in shared results, and contribute nothing to prize totals. The app does not read other players’ WhatsApp messages or verify tickets; Varsha selects the confirmed claimants.
+**One claimant receives the full selected prize; two share it equally; three or more means Bogie with no payout.** For a ₹10 prize, two receive ₹5 each. The game uses the host’s configured amounts. Bogie results list the claimants, appear in shared results, and contribute nothing to prize totals. The app does not read other players’ WhatsApp messages or verify tickets; Varsha selects the confirmed claimants.
 
 No microphone, speech service, Internet or keyboard switch is needed for this flow. Existing drafts are preserved, and a blocked insertion does not save a new award. If an editor rejects text after the award is saved, use **Insert [prize] announcement** to retry. Android can acknowledge queuing text before an editor accepts it, so always check the draft. Choosing names or leaving the screen alone does not save anything. An editor restart, new round or changed prize setup invalidates a pending selection.
 
@@ -69,7 +83,7 @@ In your WhatsApp group, leave the message box empty. Tap **Winners → Speak pri
 
 The announcement goes into the current chat draft automatically. **Check the spelling, then tap WhatsApp Send.** There is no automatic sending or delivery confirmation. Recognition can finish when you stop speaking, or tap **Done speaking**. **Cancel listening** discards the request.
 
-Enable the prize first under **Choose prize schemes**. The command uses that prize's configured rupee amount; speak the scheme and names, not a different amount. Separate claimant names with **and / aur / और**. One/two names create a paid result; three or more create a Bogie with no payout. Exact existing names are reused; new names are added automatically. Similar spellings or Hindi/Latin versions are not guessed to be the same person. Stay with one spelling/script or correct names under Players & prize amounts.
+Enable the prize first under **Choose prize schemes**. The command uses that prize's configured rupee amount; speak the scheme and names, not a different amount. Separate claimant names with **and / aur / और**. One/two names create a paid result; three or more create a Bogie with no payout. Exact existing names are reused. Without a ticket plan, new names are added automatically; with a ticket plan, only saved participating players can win. Similar spellings or Hindi/Latin versions are not guessed to be the same person. Stay with one spelling/script or correct names under Players & prize amounts.
 
 All 42 catalog names, the original defaults and custom prize names can be spoken. Common Hindi/Hinglish aliases are included, with number words such as Early five and House one. v1.3.1 also handles joined words such as “Topline” and the speech service's observed “only 5 winner” transcription of “Early five winner”. This is a small command vocabulary, not unrestricted conversational AI. An unclear/ambiguous prize, an already-awarded prize or too few calls leaves awards unchanged. Correct existing awards using the prize's manual dropdowns. If a winner saves but insertion fails, use **Insert [prize] announcement**; do not award the prize again.
 
@@ -80,18 +94,30 @@ Voice typing requires an enabled Android speech recognition service and may requ
 Tap **Winners → Players & prize amounts**, or open that screen from the app. Add names one per line or separated by commas. Use **ABC** / the normal keyboard picker to type names, then choose Tambola Keyboard again when returning to WhatsApp.
 
 - **Winners → Choose prize schemes** offers [all 42 supplied prize names](SCHEMES.md), grouped into quick prizes, lines, boxes, special prizes and houses. Tick choices and tap **Add selected**, or use **Add all 42 schemes** and confirm. Current calls and winners stay. Already-active choices cannot be accidentally unticked here; turn unwanted prizes off under Players & prizes after clearing any winners. Existing matching prizes are reused with their amounts and awards.
-- Early 5, Top line, Middle line, Bottom line and Full house start at **₹10 total**. Add custom prizes, change names/amounts, or turn unused prizes off before or during the game.
+- Early 5, Top line, Middle line, Bottom line and Full house start at **₹10 total**. Add custom prizes, change names/amounts, or turn unused prizes off. With a ticket plan, choose schemes and amounts before the first call; they stay fixed during play.
 - After checking a paper ticket, tap a prize and choose one or two players from the dropdowns. Use **Tap prize + winner** for three or more claimants and Bogie. The split is shown before **Save winners**: one winner receives ₹10; two receive ₹5 each. Odd amounts split to paise, for example ₹11 gives ₹5.50 each.
 - Standard line/Early 5 prizes require at least five calls; Full house requires fifteen. Custom prizes require one. These limits do not verify a physical ticket: the host checks it.
 - Tap **Insert [prize] announcement** or **Insert all results** in the keyboard, then WhatsApp Send. Alternatively, the app's **Results to share** screen opens the share chooser.
-- Rename players without losing their awards. Clear wins before removing a winning player or turning off an awarded prize. Editing a default prize changes future awards; edit its winners in the full app to change a recorded payout.
+- Rename players without losing their awards. Clear wins before removing a winning player or turning off an awarded prize. Editing a default prize changes future awards; edit its winners in the full app to change a recorded payout when ticket tracking is not in use. A funded game keeps its approved prize amounts.
 - Player names are typed or dictated; the app does not read contacts or WhatsApp group members. Limits: 100 players, 60 prize schemes, 2 paid winners per scheme (3+ claimants = Bogie), ₹0–₹100000 per prize. No payments are made.
+
+## Share the end-of-game results image
+
+In the keyboard, tap **Winners → Share results picture**, check the image, then WhatsApp Send. The same button appears on **Call** after all 90 numbers and on **Board** when results exist. Before resetting, **Share results picture first** is also available on the new-game confirmation screen. You can share results whenever your game finishes, even before 90 calls.
+
+The image lists every saved player, the prizes they won, each prize's amount, their personal total, and the grand total. A shared ₹10 prize appears as ₹5 for each winner. Players without a win show ₹0. Bogies appear separately with their prize name, claimant count and **No payout**, and add nothing to totals. With ticket planning, it also shows purchased sets per player, the amount collected and the unpaid balance. Only recorded results are included; unawarded schemes are not treated as wins. Updated prize settings do not change an already recorded payout.
+
+The family summary normally fits one PNG. Large player lists or many prizes produce numbered pages to keep text readable. A supported chat editor receives a single image directly; otherwise choose WhatsApp and your group in Android's share chooser. For multiple pages the chooser shares them together. Nothing is sent automatically. An existing text draft must be sent or cleared first. Sharing does not draw a number or reset results. The full app also offers **Results to share → Share results picture**.
 
 ## Undo and new game
 
 **Board → Start a new game → Yes, start new game** resets the round inside the keyboard and returns to **Next number**, keeping you in the chat. New game clears numbers and winners while keeping players, prize settings and voice preferences. An unsent draft is kept until you send it or explicitly clear it. Messages already sent to WhatsApp remain unchanged. Share results before starting another game.
 
-**Board → Undo / Full board** opens the app. Undo asks for confirmation, returns the last number to the pool and clears awards recorded on that call. You can also start a new live game here. Return to your chat and tap its message box to continue. The keyboard refreshes when saved calls change and when the editor reopens, including after all 90 numbers were called. In practice, **Board → Reset practice round** resets only practice.
+If ticket planning is enabled, **Review tickets & schemes** and confirm the new round's purchases/budget before Next number becomes available again.
+
+**Call → Undo last number** asks for confirmation inside the keyboard. Its exact unsent emoji number is removed, whether selected or with the cursor in the middle. Other text stays. If the editor cannot remove the number draft, the call is kept so the draft and board cannot silently disagree. If the game or prizes change while confirmation is open, review the latest number and start Undo again. If you already sent the call, tell the group about the correction; the sent message stays.
+
+**Board → Undo / Full board** still opens the app's full board and controls. The keyboard refreshes when saved calls change and when the editor reopens, including after all 90 numbers were called. Practice undo/reset changes only practice. **Board → Reset practice round** resets only practice.
 
 ## Privacy and compatibility
 
@@ -124,10 +150,21 @@ Instrumented tests reset both game stores. Use a dedicated emulator, never a pho
 adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.PrizeJsonTest,io.github.sbshrey.tambola.keyboard.QuickWinnerTest,io.github.sbshrey.tambola.keyboard.WinnerSpeechTest,io.github.sbshrey.tambola.keyboard.FeaturesTest,io.github.sbshrey.tambola.keyboard.KeyboardTest,io.github.sbshrey.tambola.keyboard.NewGameNavigationTest,io.github.sbshrey.tambola.keyboard.PrizeCatalogUiTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
+Run the call-correction suite and the continuous three-game scenario on that same dedicated emulator:
+
+```text
+adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.CallCorrectionTest,io.github.sbshrey.tambola.keyboard.FullGameTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`FullGameTest` taps Next number for every draw in three complete 90-number games, corrects one accidental draw in each game, claims and awards prizes, shares a results image, inserts Bogies/results, reopens the editor halfway through, resets, and starts a fourth round. The debug editor's Send button records and clears local test messages; it does not use WhatsApp. Progress is logged under `TambolaFullGame`. `CallCorrectionTest` also supports `-e landscape true` with fixed user rotation enabled, as described in VALIDATION.md. Run `ResultsImageTest` for family totals, image readability, large/Hindi-name pagination, read-only sharing and draft protection.
+
+Run `TicketPlanUiTest` for purchased sets, selection, equal allocation, manual editing, budget approval, eligibility and next-round review. Pass `-e funded true` to `FullGameTest` to exercise three games with mixed one/two-set purchases and a ₹600 budget, including all three Houses and a Bogie. The long test supplies the plan data through the store; the planner UI is covered separately. Ticket-plan JSON is a separate version-1 preference; existing prize records keep their version-2 format.
+
 Run the microphone permission UI test separately after revoking the permission on that **dedicated emulator** (revoking a permission can stop the app):
 
 ```text
 adb -s <emulator-serial> shell pm revoke io.github.sbshrey.tambola.keyboard android.permission.RECORD_AUDIO
+adb -s <emulator-serial> shell pm clear-permission-flags io.github.sbshrey.tambola.keyboard android.permission.RECORD_AUDIO user-set user-fixed
 adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.VoicePermissionTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
 ```
 

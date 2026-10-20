@@ -1,3 +1,63 @@
+# Tambola Keyboard 1.4.1: ticket budgets, corrections and results pictures
+
+Validated on 20 October 2026. Version code 8, local branch `feat/tap-winner-announcements`. This Android update builds on the 1.4.0 tap-winner flow documented below.
+
+## Behavior covered
+
+- **Ticket purchases:** one set is six tickets for ₹50. Each saved player can have 0–20 sets; zero means not playing. One-set and two-set players can win every selected scheme, and each person counts once in a claim.
+- **Before play:** select schemes by group, edit whole-rupee amounts, or split the full collection equally. Any remainder is assigned as ₹1 to the first selected schemes. Setup can only be confirmed when the prize budget exactly matches the collection. The keyboard blocks the first draw until an existing ticket plan is confirmed. Existing installations without a plan retain their calling flow.
+- **During play:** purchased sets and selected prize amounts are fixed; names can still be corrected. One winner receives the approved prize, two split it, and three or more are Bogie with ₹0 paid. Zero-set players cannot claim. A new round retains purchases and scheme choices for review, clears results, and requires confirmation again.
+- **Correction inside the keyboard:** Clear message removes the unsent draft but keeps the call/results. Undo last number confirms the correction, returns the latest number to the pool, clears its exact unsent number text, and removes awards/Bogies made on that call. Other drafts and earlier awards stay. Selected text and a cursor inside the emoji are covered. A rejected editor deletion prevents undo; a changed game/prize snapshot invalidates the confirmation. Sent chat messages are never altered.
+- **Results PNG:** every saved player, purchased sets when tracked, won prizes, individual shares, personal totals and grand total. Bogies appear separately with no payout. A ticket-funded game shows collected and unpaid amounts. Bogie/unawarded money is not redistributed. The family list fits one image; long Hindi names and 100 players/60 schemes paginate within 1080×4096 pixels per page without dropping text.
+- **Sharing:** actual IME image handoff to the local editor, existing-draft protection, a share-before-reset action, single/multiple image intents with read-only URI grants, and production exclusion of all debug editor/speech fixtures.
+
+## Checks
+
+**42 JVM tests and 61 distinct Android instrumented cases passed**, including the three-funded-game scenario. Large-text/landscape runs repeat relevant cases. Final recovery changes were checked by the focused recovery test after the broader regression run.
+
+| Check | Result |
+| --- | --- |
+| JVM unit tests | 42 passed, 0 failures/errors/skips |
+| Ticket-planner UI and recovery | All 5 cases passed across the main run and focused recovery rerun: purchases, selection, equal allocation, manual edit, eligibility, frozen budget, persistence, next-round approval and confirmed recovery of damaged prize data |
+| Full games without ticket tracking | Three 90-number games passed before the planner was added; fourth round started successfully |
+| Full funded games | Three complete 90-number games plus the first call of a fourth passed in 632.926 seconds; mixed one/two-set purchases, ₹600 allocated, ₹590 paid and ₹10 Bogie unpaid per game |
+| Android regression suite | 54 passed in 454.967 seconds: 41 existing cases, 8 correction cases and 5 image cases |
+| Microphone denied → granted | Passed; existing calling stays available after denial and the editor returns correctly after granting |
+| Large text and landscape | All 3 focused checks passed at 160% font scale; setup and undo passed at 2280×1080 landscape across the main run and focused planner rerun; screenshots inspected |
+| Debug, instrumentation and release builds | Passed |
+| Debug and release lint | No issues found |
+| Audio packaging | All 270 bundled recording hashes verified by the build |
+| Release inspection | Version 1.4.1/code 8, min SDK 26, target 35; debug editor, test speech service and provider absent |
+| Test APK signature | Verified with apksigner |
+
+The setup UI tests wait for saved data and dialog dismissal after Android dispatches taps. Code review also found that a damaged prize record could not be reset while a funded plan was present; the confirmed recovery now clears prizes and their budget atomically while retaining called numbers, with a dedicated test. Early runs exposed assumptions about immediate tap completion and activity cleanup; these are corrected in the test harness. Production budget and eligibility enforcement is also tested independently of the UI. An initial funded-run attempt could not find the test editor’s Send button during a window transition; a fresh complete run passed on the same production build. The harness now also waits for that editor control before sending. The recovery test uses stable Android dialog IDs because the theme capitalizes button labels. Permission testing required clearing stale user-set/user-fixed emulator flags and restarting editor focus; the deny-then-grant test then passed. The landscape planner initially missed an allocation tap; requiring a larger visible target and waiting for the UI thread after persisted changes resolved the test, and the complete landscape setup flow passed without changing production behavior.
+
+## Reproduce
+
+Use a dedicated emulator: instrumentation resets its saved rounds. This run uses API 35 ARM64 (Pixel 4), SDK/build-tools 35, AGP 8.7.3, Gradle 8.9 and local OpenJDK 20.0.1. The project targets Java 17.
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.TicketPlanUiTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+adb shell am instrument -w -r -e funded true -e class io.github.sbshrey.tambola.keyboard.FullGameTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+The funded full-game test supplies purchases and allocations through the store; the separate planner UI test covers setting them with taps and manual amount editing. All 90 draws, claims, winner announcements, corrections, results, resets and the next game's first call use the actual keyboard/editor connection. The fixture's Send button only records local test messages.
+
+Run the regression classes listed in README plus `CallCorrectionTest` and `ResultsImageTest`. Run `VoicePermissionTest` separately after revoking RECORD_AUDIO and clearing its user-set/user-fixed permission flags, using the commands in README. For large text, set `adb shell settings put system font_scale 1.6`; restore 1.0 afterward. For landscape, set `adb shell wm fixed-to-user-rotation enabled` and pass `-e landscape true`; restore fixed rotation to `default` afterward. Tests assert the wide display.
+
+## Artifacts and limits
+
+`releases/1.4.1/` contains the debug-signed test APK, unsigned production APK, SHA-256 checksums, installation guide and test logs/screenshots. No release was pushed or published. The original production signing key is not available in this clone. Sign the release with that key to update the existing phone installation. The debug APK cannot replace it; do not uninstall the existing app to bypass the signature check.
+
+No physical phone or WhatsApp delivery was tested. Android UI tests use the actual IME with a local test editor, and speech regression tests use the deterministic debug recognition provider. On the phone, check the setup return-to-chat flow, correction of an unsent number, image attachment/chooser and recipient before group play. The host still checks paper tickets and sends each prepared message/image.
+
+The website was unchanged in this update; its previously passing 69-test/build result was not repeated.
+
+---
+
 # Tambola Keyboard 1.4.0: host claims and tap-to-announce results
 
 Validated on 20 October 2026. Version code 7. The repository was cloned at `e3d0f21`; this is a local Android update on `feat/tap-winner-announcements`.

@@ -21,12 +21,22 @@ public class VoicePermissionTest {
     private void main(Runnable action) { InstrumentationRegistry.getInstrumentation().runOnMainSync(action); }
     private void tap(BySelector selector) { UiObject2 item = device.wait(Until.findObject(selector), 5000); assertNotNull(selector.toString(), item); item.click(); device.waitForIdle(); }
     private void focus() {
-        main(() -> rule.getActivity().draft.requestFocus()); device.waitForIdle();
+        main(() -> {
+            rule.getActivity().draft.requestFocus();
+            ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(rule.getActivity().draft);
+        }); device.waitForIdle();
         main(() -> ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(rule.getActivity().draft, InputMethodManager.SHOW_IMPLICIT));
-        assertNotNull(device.wait(Until.findObject(By.text("Call")), 10000));
+        UiObject2 call = device.wait(Until.findObject(By.text("Call")), 10000);
+        if (call == null) {
+            device.takeScreenshot(new java.io.File(context.getFilesDir(), "permission-keyboard-failure.png"));
+            try { device.dumpWindowHierarchy(new java.io.File(context.getFilesDir(), "permission-keyboard-failure.xml")); }
+            catch (java.io.IOException error) { throw new AssertionError(error); }
+        }
+        assertNotNull(call);
     }
     @Test public void denyThenGrantReturnsToChatAndKeepsCallingAvailable() throws Exception {
         Assume.assumeTrue("Run separately after revoking microphone permission", context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED);
+        device.executeShellCommand("ime enable io.github.sbshrey.tambola.keyboard/.TambolaInputMethod");
         device.executeShellCommand("ime set io.github.sbshrey.tambola.keyboard/.TambolaInputMethod");
         GameStore store = new GameStore(context, false); store.save(Game.decode("1,2,3,4,5")); store.prizes(PrizeBook.defaults()); new Preferences(context).voice(false);
         rule.launchActivity(new Intent()); device.waitForIdle(); focus();

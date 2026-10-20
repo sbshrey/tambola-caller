@@ -22,11 +22,13 @@ public final class TambolaInputMethod extends InputMethodService {
     private GameStore store, liveStore, practiceStore;
     private Preferences preferences;
     private CallAudio audio;
-    private boolean practice, textField, mediaBusy, draftBlocked;
+    private boolean practice, textField, mediaBusy;
     private long lastDraw;
     private int session;
     private String panel = "Call", awardId;
-    private String shownRound;
+    private String shownRound, shownPlan;
+    private String undoRound, undoPrizes;
+    private int undoSession;
     private String quickGroup = "Quick prizes", quickId, quickRound, quickPrizes;
     private int quickSession;
     private WinnerSpeech winnerSpeech;
@@ -35,7 +37,7 @@ public final class TambolaInputMethod extends InputMethodService {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable refreshRound = this::refreshSavedRound;
     private final SharedPreferences.OnSharedPreferenceChangeListener roundListener = (preferences, key) -> {
-        if ("called-v1".equals(key)) { handler.removeCallbacks(refreshRound); handler.post(refreshRound); }
+        if ("called-v1".equals(key) || "ticket-plan-v1".equals(key)) { handler.removeCallbacks(refreshRound); handler.post(refreshRound); }
     };
 
     @Override public void onCreate() {
@@ -60,12 +62,12 @@ public final class TambolaInputMethod extends InputMethodService {
     }
     @Override public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting); configureEditor(info);
-        if (render()) say(!textField ? "Tap ABC to use your normal keyboard." : practice ? "Practice only · nothing is sent" : "1. Next number   2. WhatsApp Send");
+        if (render()) say(!textField ? "Tap ABC to use your normal keyboard." : practice ? "Practice only · nothing is sent" : store.plan() != null && !store.plan().approved ? "Review tickets & schemes before calling." : "1. Next number   2. WhatsApp Send");
         if (scroll != null) scroll.post(() -> scroll.scrollTo(0, 0));
     }
     private void configureEditor(EditorInfo info) {
         cancelWinnerSpeech();
-        session++; mediaBusy = false; draftBlocked = false; panel = "Call"; shownRound = null;
+        session++; mediaBusy = false; panel = "Call"; shownRound = null;
         practice = getPackageName().equals(info.packageName) && PRACTICE.equals(info.privateImeOptions); store = practice ? practiceStore : liveStore;
         int variation = info.inputType & InputType.TYPE_MASK_VARIATION;
         textField = (info.inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT && variation != InputType.TYPE_TEXT_VARIATION_PASSWORD
@@ -84,16 +86,16 @@ public final class TambolaInputMethod extends InputMethodService {
     private void refreshSavedRound() {
         if (store == null || body == null || !isInputViewShown()) return;
         try {
-            Game game = store.load(); if (game.encode().equals(shownRound)) return;
+            Game game = store.load(); if (game.encode().equals(shownRound) && store.planSnapshot().equals(shownPlan)) return;
             if (winnerSpeech != null) { cancelWinnerSpeech(); speechMessage = "Game changed. Tap Speak again."; }
             boolean reset = shownRound != null && !shownRound.isEmpty() && game.count() == 0;
             if (reset) { session++; mediaBusy = false; lastDraw = 0; panel = "Call"; audio.stop(); }
             render();
-            if (reset) { scroll.scrollTo(0, 0); say("New game ready. Send or clear any old draft, then Next number."); }
+            if (reset) { scroll.scrollTo(0, 0); say(!practice && store.plan() != null ? "New game. Review tickets & schemes before calling." : "New game ready. Send or clear any old draft, then Next number."); }
         } catch (IllegalArgumentException | IllegalStateException error) { render(); }
     }
     private void chooseKeyboard() { ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showInputMethodPicker(); }
-    private void open(String section) { cancelWinnerSpeech(); audio.stop(); startActivity(new Intent(this, MainActivity.class).putExtra("section", section).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)); }
+    private void open(String section) { cancelWinnerSpeech(); audio.stop(); startActivity(new Intent(this, MainActivity.class).putExtra("section", section).putExtra("returnToChat", section.equals("plan")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)); }
     private void navigate(String next) { cancelWinnerSpeech(); panel = next; render(); scroll.scrollTo(0, 0); say(practice ? "Practice only · nothing is sent" : "You choose when to send in WhatsApp."); }
     private boolean render() {
         if (body == null || store == null) return false; body.removeAllViews(); tabs.removeAllViews();
@@ -101,6 +103,7 @@ public final class TambolaInputMethod extends InputMethodService {
         try {
             Game game = store.load();
             shownRound = game.encode();
+            shownPlan = store.planSnapshot();
             if (!textField) { Ui.add(body, Ui.text(this, "Use your normal keyboard here", 22), -2); Ui.action(body, "ABC · Change keyboard", Ui.GREEN, this::chooseKeyboard); return true; }
             if (panel.equals("Call")) call(game);
             else if (panel.equals("Board")) board(game);
@@ -112,6 +115,7 @@ public final class TambolaInputMethod extends InputMethodService {
             else if (panel.equals("Share")) share(game);
             else if (panel.equals("New game")) newGame();
             else if (panel.equals("Clear message")) confirmClearMessage();
+            else if (panel.equals("Undo number")) confirmUndo();
             else if (panel.equals("Award")) { Ui.action(body, "‹ Back to winners", Ui.PAPER, () -> navigate("Winners")); PrizeViews.award(body, store, awardId, false, () -> { navigate("Winners"); say("Winners saved. Tap their announcement to insert it."); }, this::say); }
             return true;
         } catch (IllegalArgumentException | IllegalStateException error) { Ui.add(body, Ui.text(this, error.getMessage(), 18), -2); Ui.action(body, "Open help & setup", Ui.PAPER, () -> open("help")); say("Saved details need attention. Open help & setup."); return false; }
@@ -123,9 +127,20 @@ public final class TambolaInputMethod extends InputMethodService {
         TextView count = Ui.text(this, (practice ? "PRACTICE\n" : "") + game.count() + " / 90", 18); heading.addView(count, new LinearLayout.LayoutParams(0, -2, 1));
         Button abc = Ui.button(this, "ABC", Ui.PAPER, this::chooseKeyboard); abc.setContentDescription("Switch to your regular keyboard"); heading.addView(abc, new LinearLayout.LayoutParams(Ui.dp(this, 72), -2)); Ui.add(body, heading, -2);
         TextView phrase = Ui.text(this, CallAudio.phrase(this, preferences.language(), game.latest()), 18); phrase.setGravity(Gravity.CENTER); Ui.add(body, phrase, -2);
-        Button next = Ui.button(this, game.count() == 90 ? "All 90 called" : "Next number", Ui.GREEN, () -> insertNumber(true)); next.setContentDescription("Next number"); next.setEnabled(game.count() < 90 && !mediaBusy); Ui.add(body, next, 58);
-        if (practice) Ui.action(body, "Clear practice message", Ui.PINK, this::clearPractice).setContentDescription("Clear practice draft");
-        else if (draftBlocked) Ui.action(body, "Clear unsent message…", Ui.PINK, () -> navigate("Clear message"));
+        TicketPlan plan = practice ? null : store.plan();
+        if (!practice && game.count() == 0) {
+            Ui.action(body, plan == null ? "Set tickets & schemes" : "Review tickets & schemes", Ui.PAPER, () -> open("plan"));
+            if (plan != null) Ui.add(body, Ui.text(this, plan.approved ? "Ready · " + plan.totalSets() + " sets · " + PrizeBook.money(plan.collection() * 100) + " prize budget" : "Confirm ticket sales and prize budget before calling.", 17), -2);
+        }
+        Button next = Ui.button(this, game.count() == 90 ? "All 90 called" : "Next number", Ui.GREEN, () -> insertNumber(true)); next.setContentDescription("Next number"); next.setEnabled(game.count() < 90 && !mediaBusy && (plan == null || plan.approved)); Ui.add(body, next, 58);
+        if (!practice && game.count() == 90 && store.prizes().hasWinners()) Ui.action(body, "Share results picture", Ui.GREEN, this::resultsPicture).setEnabled(!mediaBusy);
+        LinearLayout corrections = new LinearLayout(this);
+        Button clear = Ui.button(this, practice ? "Clear practice message" : "Clear message…", Ui.PAPER,
+            practice ? this::clearPractice : () -> navigate("Clear message"));
+        clear.setContentDescription(practice ? "Clear practice draft" : "Clear unsent message");
+        Button undo = Ui.button(this, "Undo last number", Ui.PINK, this::startUndo);
+        undo.setEnabled(game.count() > 0 && !mediaBusy);
+        Ui.weighted(corrections, clear); Ui.weighted(corrections, undo); Ui.add(body, corrections, 58);
         LinearLayout actions = new LinearLayout(this);
         Button hear = Ui.button(this, "Hear again", Ui.PAPER, () -> audio.play(game.latest(), preferences.language(), this::say)); hear.setEnabled(game.latest() > 0);
         Button again = Ui.button(this, "Insert again", Ui.PAPER, () -> insertNumber(false)); again.setContentDescription("Insert current number again"); again.setEnabled(game.latest() > 0 && !mediaBusy);
@@ -136,6 +151,8 @@ public final class TambolaInputMethod extends InputMethodService {
     private void board(Game game) {
         Ui.add(body, Ui.text(this, game.count() + " of 90 called", 22), -2);
         Ui.action(body, practice ? "Reset practice round" : "Start a new game", Ui.PINK, () -> navigate("New game"));
+        if (!practice) Ui.action(body, "Tickets & schemes", Ui.PAPER, () -> open("plan"));
+        if (!practice && store.prizes().hasWinners()) Ui.action(body, "Share results picture", Ui.GREEN, this::resultsPicture).setEnabled(!mediaBusy);
         Ui.action(body, "Share board picture", Ui.GREEN, () -> media(Sharing.BOARD)).setEnabled(!practice && game.latest() > 0 && !mediaBusy);
         Ui.board(body, game); Ui.add(body, Ui.text(this, "Pink = called · Dark pink = latest", 16), -2);
         Ui.action(body, "Undo / Full board", Ui.PAPER, () -> open(practice ? "practice" : "board"));
@@ -144,11 +161,12 @@ public final class TambolaInputMethod extends InputMethodService {
         Ui.add(body, Ui.text(this, practice ? "Reset practice round?" : "Start a new game?", 24), -2);
         Ui.add(body, Ui.text(this, practice ? "Practice numbers will be cleared. Your live game stays unchanged." : "Called numbers and winners will be cleared. Player names and prize settings stay. Share results first if needed.", 19), -2);
         Ui.add(body, Ui.text(this, "Any unsent message stays in the box. Send or clear it before calling again.", 18), -2);
+        if (!practice && store.prizes().hasWinners()) Ui.action(body, "Share results picture first", Ui.GREEN, this::resultsPicture).setEnabled(!mediaBusy);
         Ui.action(body, "Keep playing", Ui.PAPER, () -> navigate("Call"));
         Ui.action(body, "Yes, start new game", Ui.PINK, () -> {
             try {
-                store.newRound(); session++; mediaBusy = false; lastDraw = 0; draftBlocked = false; audio.stop(); navigate("Call");
-                if (emptyEditor() != null) say("New game ready. Tap Next number.");
+                store.newRound(); session++; mediaBusy = false; lastDraw = 0; audio.stop(); navigate("Call");
+                if (emptyEditor() != null) say(!practice && store.plan() != null ? "New game. Review tickets & schemes before calling." : "New game ready. Tap Next number.");
             } catch (IllegalArgumentException | IllegalStateException error) { say(error.getMessage()); }
         });
     }
@@ -160,13 +178,52 @@ public final class TambolaInputMethod extends InputMethodService {
         Ui.action(body, "Yes, clear message", Ui.PINK, () -> {
             if (started != session || !textField) return;
             InputConnection editor = getCurrentInputConnection(); if (editor == null) { say("Tap the message box, then try again."); return; }
-            boolean cleared;
-            editor.beginBatchEdit();
-            try { editor.finishComposingText(); cleared = editor.setSelection(0, 0) && editor.deleteSurroundingText(0, Integer.MAX_VALUE); }
-            finally { editor.endBatchEdit(); }
-            draftBlocked = false; navigate("Call");
-            say(cleared ? "Message cleared. Tap Next number." : "Tap ABC and clear the message with your normal keyboard.");
+            boolean cleared = clearEditor(editor);
+            navigate("Call");
+            say(cleared ? (!practice && store.plan() != null && !store.plan().approved ? "Message cleared. Review tickets & schemes." : "Message cleared. Tap Next number.") : "Tap ABC and clear the message with your normal keyboard.");
         });
+    }
+    private void startUndo() {
+        if (mediaBusy || !textField) return;
+        undoRound = store.load().encode(); undoPrizes = PrizeJson.encode(store.prizes()); undoSession = session;
+        if (!undoRound.isEmpty()) navigate("Undo number");
+    }
+    private void confirmUndo() {
+        Game snapshot = Game.decode(undoRound);
+        Ui.add(body, Ui.text(this, "Undo number " + snapshot.latest() + "?", 24), -2);
+        Ui.add(body, Ui.text(this, "Return it to the pool and remove its unsent number message. Other draft text stays. Winners and Bogies recorded on this call will be cleared.", 19), -2);
+        if (!practice) Ui.add(body, Ui.text(this, "Already sent it? Tell the group about the correction. Sent messages stay unchanged.", 18), -2);
+        Ui.action(body, "Keep number", Ui.PAPER, () -> navigate("Call"));
+        Ui.action(body, "Yes, undo number", Ui.PINK, () -> {
+            try {
+                if (undoSession != session || !textField || !store.load().encode().equals(undoRound)
+                    || !PrizeJson.encode(store.prizes()).equals(undoPrizes)) {
+                    navigate("Call"); say("Game or prizes changed. Review the latest number, then try Undo again."); return;
+                }
+                InputConnection editor = getCurrentInputConnection();
+                String draft = editor == null ? null : readDraft(editor);
+                if (draft == null) { say("Could not check the draft. Tap the message box, then try Undo again."); return; }
+                boolean numberDraft = draft.equals(Game.emoji(snapshot.latest()));
+                if (numberDraft && !clearEditor(editor)) {
+                    say("Could not clear the number message. The number is still called. Try Clear message first."); return;
+                }
+                store.undo(); lastDraw = 0; audio.stop(); navigate("Call");
+                say("Number " + snapshot.latest() + " undone. " + (numberDraft ? "Unsent number cleared." : draft.isEmpty() ? "Ready to continue." : "Other draft text kept."));
+            } catch (IllegalArgumentException | IllegalStateException error) { navigate("Call"); say(error.getMessage()); }
+        });
+    }
+    // More than either number's six UTF-16 units prevents a longer draft matching a truncated suffix.
+    private String readDraft(InputConnection editor) {
+        CharSequence before = editor.getTextBeforeCursor(8, 0), after = editor.getTextAfterCursor(8, 0), selected = editor.getSelectedText(0);
+        return before == null || after == null ? null : before.toString() + (selected == null ? "" : selected.toString()) + after;
+    }
+    private boolean clearEditor(InputConnection editor) {
+        boolean accepted;
+        editor.beginBatchEdit();
+        try { editor.finishComposingText(); accepted = editor.setSelection(0, 0) && editor.deleteSurroundingText(0, Integer.MAX_VALUE); }
+        finally { editor.endBatchEdit(); }
+        // A remote connection may accept the request even when the editor rejects the deletion.
+        return accepted && "".equals(readDraft(editor));
     }
     private void voice() {
         Ui.action(body, "‹ Back to call", Ui.PAPER, () -> navigate("Call")); Ui.add(body, Ui.text(this, "Spoken language", 23), -2);
@@ -194,7 +251,10 @@ public final class TambolaInputMethod extends InputMethodService {
         Ui.action(body, "Players & prize amounts", Ui.PAPER, () -> open("players"));
         Ui.action(body, "Add family players & schemes", Ui.PAPER, this::addFamilySetup);
         if (book.players.isEmpty()) Ui.add(body, Ui.text(this, "Speaking adds new names automatically. Or add names above to choose manually.", 18), -2);
-        if (book.hasWinners()) Ui.action(body, "Insert all results", Ui.GREEN, () -> insertText(store.prizes().results(store.load().count())));
+        if (book.hasWinners()) {
+            Ui.action(body, "Share results picture", Ui.GREEN, this::resultsPicture).setEnabled(!mediaBusy);
+            Ui.action(body, "Insert all results", Ui.GREEN, () -> insertText(store.prizes().results(store.load().count())));
+        }
         for (PrizeBook.Scheme item : book.schemes) if (item.enabled) {
             Ui.action(body, item.name + " · " + PrizeBook.money((item.resolved() ? item.awardedRupees : item.rupees) * 100) + "\n" + (item.resolved() ? book.winners(item) : "Choose winners"), Ui.PAPER, () -> { awardId = item.id; navigate("Award"); });
             if (item.resolved()) Ui.action(body, "Insert " + item.name + " announcement", Ui.GREEN, () -> { PrizeBook current = store.prizes(); insertText(current.announcement(current.scheme(item.id))); });
@@ -246,7 +306,7 @@ public final class TambolaInputMethod extends InputMethodService {
         if (quickSession != session || !game.encode().equals(quickRound) || !PrizeJson.encode(store.prizes()).equals(quickPrizes)) {
             Ui.add(body, Ui.text(this, "Game or prizes changed. Choose the prize again.", 20), -2); return;
         }
-        PrizeBook book = store.prizes(); PrizeBook.Scheme scheme = book.scheme(quickId);
+        PrizeBook book = store.prizes(); PrizeBook.Scheme scheme = book.scheme(quickId); TicketPlan ticketPlan = store.plan();
         String host = FamilySetup.hostId(book);
         if (host != null && !scheme.resolved()) {
             Ui.action(body, "Claim for " + book.players.get(host), Ui.PINK, () -> {
@@ -260,9 +320,9 @@ public final class TambolaInputMethod extends InputMethodService {
                     if (inserted) { navigate("Winners"); say("Claim ready · WhatsApp Send. Confirm winners after checking claims."); }
                     else say("Could not insert claim. Tap the empty message box and try again.");
                 } catch (IllegalArgumentException | IllegalStateException error) { say(error.getMessage()); }
-            }).setEnabled(game.count() >= scheme.minimumCalls);
+            }).setEnabled(game.count() >= scheme.minimumCalls && (ticketPlan == null || ticketPlan.sets(host) > 0));
         }
-        QuickWinnerViews.choose(body, book, scheme, game.count(), selected -> {
+        QuickWinnerViews.choose(body, book, scheme, game.count(), ticketPlan, selected -> {
             try {
                 if (quickSession != session || !isInputViewShown() || !store.load().encode().equals(quickRound)
                     || !PrizeJson.encode(store.prizes()).equals(quickPrizes)) {
@@ -342,17 +402,16 @@ public final class TambolaInputMethod extends InputMethodService {
         CharSequence before = editor.getTextBeforeCursor(1, 0), after = editor.getTextAfterCursor(1, 0), selected = editor.getSelectedText(0);
         if (before == null || after == null) { say("Tap the empty message box, then try again."); return null; }
         if (before.length() > 0 || after.length() > 0 || (selected != null && selected.length() > 0)) {
-            draftBlocked = true;
             if (panel.equals("Call")) { render(); scroll.scrollTo(0, 0); }
             say("Send or clear the current message first."); return null;
         }
-        draftBlocked = false; return editor;
+        return editor;
     }
     private void insertText(String text) { InputConnection editor = emptyEditor(); if (editor == null) return; boolean ready = editor.commitText(text, 1); say(ready ? (practice ? "Practice only · nothing is sent" : "Ready · tap WhatsApp Send") : "Could not insert. Tap the message box and try again."); }
     private void insertNumber(boolean draw) {
         if (mediaBusy) return; InputConnection editor = emptyEditor(); if (editor == null) return; if (draw && SystemClock.elapsedRealtime() - lastDraw < 650) return;
         try {
-            Game game = store.load(); if (draw) { if (game.count() == 90) return; game = game.draw(random); store.save(game); lastDraw = SystemClock.elapsedRealtime(); }
+            Game game = store.load(); if (draw) { if (game.count() == 90) return; if (!practice) store.requireReady(); game = game.draw(random); store.save(game); lastDraw = SystemClock.elapsedRealtime(); }
             if (game.latest() == 0) return; boolean inserted = editor.commitText(Game.emoji(game.latest()), 1); render(); scroll.post(() -> scroll.scrollTo(0, 0));
             say(inserted ? practice ? "Practice only · tap Clear to try again" : "Number ready · tap WhatsApp Send" : "Number saved. Tap the message box and Insert again.");
             if (draw && preferences.voice()) audio.play(game.latest(), preferences.language(), this::say);
@@ -360,7 +419,22 @@ public final class TambolaInputMethod extends InputMethodService {
     }
     private void clearPractice() {
         if (!practice) return; InputConnection editor = getCurrentInputConnection(); if (editor == null) return;
-        editor.beginBatchEdit(); editor.setSelection(0, 0); editor.deleteSurroundingText(0, Integer.MAX_VALUE); editor.endBatchEdit(); say("Practice box cleared. Tap Next number.");
+        say(clearEditor(editor) ? "Practice box cleared. Tap Next number." : "Could not clear the practice box. Try again.");
+    }
+    private void resultsPicture() {
+        if (practice || mediaBusy || emptyEditor() == null) return;
+        Game snapshot = store.load(); PrizeBook prizes = store.prizes(); String prizeSnapshot = PrizeJson.encode(prizes), planSnapshot = store.planSnapshot();
+        int started = session; mediaBusy = true; render(); say("Preparing results picture…");
+        Sharing.prepareResults(this, snapshot, prizes, store.plan(), uris -> {
+            if (started != session) return; mediaBusy = false; render();
+            if (!store.load().encode().equals(snapshot.encode()) || !PrizeJson.encode(store.prizes()).equals(prizeSnapshot) || !store.planSnapshot().equals(planSnapshot)) {
+                say("Game or prizes changed. Share results again."); return;
+            }
+            InputConnection editor = emptyEditor(); if (editor == null) return;
+            if (uris.size() == 1 && Sharing.insert(editor, getCurrentInputEditorInfo(), uris.get(0), "image/png")) say("Results picture ready · check it, then Send.");
+            else try { audio.stop(); Sharing.images(this, uris); say("Choose WhatsApp, your group, then Send."); }
+            catch (RuntimeException error) { say("Could not open sharing. Try Results to share in the app."); }
+        }, error -> { if (started == session) { mediaBusy = false; render(); say(error); } });
     }
     private void media(String kind) {
         if (practice || mediaBusy || emptyEditor() == null) return; Game snapshot = store.load(); if (snapshot.latest() == 0) { say("Call a number first."); return; }

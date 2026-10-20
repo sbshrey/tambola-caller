@@ -20,6 +20,8 @@ public final class MainActivity extends Activity {
     private String section = "home", awardId;
     private int viewSession;
     private boolean sharing;
+    private boolean planSchemes;
+    private String planGroup = "Quick prizes";
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved); store = new GameStore(this, false); preferences = new Preferences(this); audio = new CallAudio(this);
         section = saved == null ? getIntent().getStringExtra("section") : saved.getString("section", "home");
@@ -38,7 +40,7 @@ public final class MainActivity extends Activity {
     private void chooseKeyboard() { ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showInputMethodPicker(); }
     private void hideKeyboard() { View focus = getCurrentFocus(); if (focus != null) ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(focus.getWindowToken(), 0); }
     private void toast(String text) { Toast.makeText(this, text, Toast.LENGTH_LONG).show(); }
-    private void go(String next) { hideKeyboard(); audio.stop(); section = next; render(); scroll.scrollTo(0, 0); }
+    private void go(String next) { hideKeyboard(); audio.stop(); if (next.equals("plan")) { planSchemes = false; planGroup = "Quick prizes"; } section = next; render(); scroll.scrollTo(0, 0); }
     private void text(String value, int size) { Ui.add(page, Ui.text(this, value, size), -2); }
     private void action(String label, int color, Runnable click) { Ui.action(page, label, color, click); }
     private void safe(Runnable action) { try { action.run(); } catch (IllegalArgumentException | IllegalStateException error) { toast(error.getMessage()); } }
@@ -54,12 +56,14 @@ public final class MainActivity extends Activity {
                 case "catalog": catalog(); break;
                 case "voice": voice(); break;
                 case "results": results(); break;
+                case "plan": plan(); break;
                 case "award": action("‹ All prizes", Ui.PAPER, () -> go("players")); PrizeViews.award(page, store, awardId, true, () -> go("players"), this::toast); break;
                 default: home();
             }
         } catch (IllegalArgumentException | IllegalStateException error) {
             text(error.getMessage(), 20); action("Help", Ui.PAPER, () -> go("help"));
-            action("Reset unreadable prize details", Ui.PAPER, () -> confirm("Reset prize details?", "This clears player names, prizes and winners. Called numbers stay saved.", () -> { store.prizes(PrizeBook.defaults()); go("players"); }));
+            if (error.getMessage().startsWith("Ticket plan cannot")) action("Reset unreadable ticket plan", Ui.PAPER, () -> confirm("Reset ticket tracking?", "Purchased-set counts and the saved budget will be removed. Called numbers, players and recorded prizes stay.", () -> { store.resetPlan(); go("board"); }));
+            action("Reset unreadable prize details", Ui.PAPER, () -> confirm("Reset prize details?", "This clears player names, prizes, winners and the ticket budget. Called numbers stay saved.", () -> { store.resetPrizeDetails(); go("players"); }));
             action("Reset saved live game", Ui.PAPER, () -> confirm("Reset saved numbers and winners?", "Start again with all 90 numbers. Player names and prize settings stay. Messages sent to WhatsApp stay unchanged.", () -> { store.newRound(); go("board"); }));
         }
     }
@@ -68,6 +72,7 @@ public final class MainActivity extends Activity {
         text("1. Open your WhatsApp group.\n2. Tap the message box. Choose Tambola Keyboard.\n3. Tap Next number, then WhatsApp Send.", 20);
         action("Help me set it up", Ui.GREEN, () -> go("help"));
         action("Practice first", Ui.PINK, () -> go("practice"));
+        action("Set tickets & schemes", Ui.GREEN, () -> go("plan"));
         action("See board / New game", Ui.PAPER, () -> go("board"));
         action("Voice & language", Ui.PAPER, () -> go("voice"));
         action("Players & prizes (optional)", Ui.PAPER, () -> go("players"));
@@ -82,11 +87,13 @@ public final class MainActivity extends Activity {
         action("2. Choose Tambola Keyboard", Ui.GREEN, this::chooseKeyboard);
         action("3. Practice safely", Ui.PAPER, () -> go("practice"));
         text("To play", 25); text("Open the right WhatsApp group and tap its message box.\n\nNext number puts the emoji number into the box. Tap WhatsApp Send. Repeat for each call.", 20);
-        text("Useful buttons", 25); text("Hear again: hear the same number.\nInsert again: put the same number in the box.\nABC: return to normal typing.\nBoard: see called numbers.\nWinners: optional prize tracking.", 19);
+        text("Before the first call", 25); text("Set tickets & schemes: choose each player's purchased sets. One set is 6 tickets for ₹50; 0 means not playing. Choose schemes and edit their prizes, or split the collection equally. Confirm when the prize total matches ticket sales. Everyone playing can win any selected scheme. Review this setup again for each new game.", 19);
+        text("Useful buttons", 25); text("Clear message: remove an unsent draft.\nUndo last number: correct an accidental call.\nHear again: hear the same number.\nInsert again: put the same number in the box.\nABC: return to normal typing.\nBoard: see called numbers.\nWinners: prize tracking and results pictures.", 19);
         text("Swipe up inside the keyboard to see more buttons. Tap Call at the top to return to Next number.", 19);
         text("Tap a winner", 25); text("In the chat: Winners → Tap prize + winner → Add family players & schemes once. Choose a prize group and prize. Claim for Varsha inserts her claim without awarding it. After checking all claims, tap each claimant. Insert winner announcement fills the message box and saves the award. Check it, then WhatsApp Send. No typing or microphone needed.", 19);
         text("Speak a winner", 25); text("In the chat: Winners → Speak prize + winner. Allow microphone once and return to your chat. Say Early five winner Asha Sharma, or King winners Asha aur Bina. Use Speech · change for Hindi. The prize must be enabled. Names are added and winners saved automatically, using the configured prize amount. Check the name in the message box, then WhatsApp Send. Two winners split the prize equally; three or more means Bogie with no payout.", 19);
         text("Pictures and voice clips", 25); text("Tap Share in the keyboard. Choose a picture or voice clip. If a chooser opens, select WhatsApp and your group. Check the preview, then Send. Sound played aloud stays on this phone.", 19);
+        text("At the end of the game", 25); text("Winners → Share results picture lists each player, their prizes and total winnings, plus the grand total. Bogies pay nothing. Share it before starting a new game. Check the image and recipient, then Send.", 19);
         text("Your privacy", 25); text("No accounts, ads, Internet or contacts permission in this app. Optional winner dictation asks for microphone access; your phone's speech service may process audio online. The app does not save microphone recordings. It saves winner names on this phone and checks the current draft to avoid overwriting it; chat text is not saved. Number voice clips are AI-generated and included in the app.", 17);
     }
     private void practice() {
@@ -101,6 +108,7 @@ public final class MainActivity extends Activity {
     }
     private void board() {
         Game game = store.load(); text("Your live board", 28); text(game.count() + " of 90 called" + (game.latest() > 0 ? " · latest " + game.latest() : ""), 22);
+        action("Tickets & schemes", Ui.PAPER, () -> go("plan"));
         text("Recent: " + game.recent(), 18); Ui.board(page, game); text("Pink = called · Dark pink = latest", 16);
         if (game.latest() > 0) {
             action("Hear latest number", Ui.GREEN, () -> audio.play(game.latest(), preferences.language(), this::toast));
@@ -182,7 +190,42 @@ public final class MainActivity extends Activity {
         ScrollView wrapper = new ScrollView(this); wrapper.addView(box); AlertDialog dialog = new AlertDialog.Builder(this).setTitle(title).setView(wrapper).setNegativeButton("Cancel", null).setPositiveButton(positive, null).create();
         dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> safe(() -> { save.run(); hideKeyboard(); dialog.dismiss(); render(); }))); dialog.show(); return dialog;
     }
-    private void results() { PrizeBook book = store.prizes(); text("Results to share", 28); if (!book.hasWinners()) { text("No winners saved yet. Add winners under Players & prizes, or keep playing.", 20); action("Players & prizes", Ui.PINK, () -> go("players")); return; } text(book.results(store.load().count()), 20); action("Share results to WhatsApp", Ui.GREEN, () -> { try { Sharing.text(this, store.prizes().results(store.load().count())); } catch (RuntimeException error) { toast("Could not open sharing. Use Winners in the keyboard."); } }); text("Or return to your group: keyboard → Winners → Insert all results → WhatsApp Send.", 18); }
+    private void plan() {
+        text("Plan the game", 28); PrizeBook book = store.prizes();
+        if (store.load().count() > 0 || book.hasWinners()) {
+            text("Game in progress. Start a new game before changing purchased sets, schemes or prize amounts.", 20);
+            TicketPlan saved = store.plan(); if (saved != null) TicketPlanViews.totals(page, saved, book);
+            action("See board / New game", Ui.GREEN, () -> go("board")); return;
+        }
+        if (!FamilySetup.hasPlayers(book)) action("Add family players & schemes", Ui.PAPER, () -> safe(() -> { store.prizes(FamilySetup.addTo(store.prizes())); render(); }));
+        if (book.players.isEmpty()) { text("Add the family list above, or add names under Players & prizes.", 20); return; }
+        if (store.plan() == null) store.plan(TicketPlan.forPlayers(book), book, false);
+        if (!planSchemes) TicketPlanViews.tickets(page, store, this::render, () -> { planSchemes = true; render(); scroll.scrollTo(0, 0); }, this::toast);
+        else TicketPlanViews.schemes(page, store, planGroup, value -> { planGroup = value; render(); },
+            () -> { planSchemes = false; render(); scroll.scrollTo(0, 0); }, this::render, this::editPlanAmount,
+            () -> { toast("Setup confirmed. Ready to call the first number."); if (getIntent().getBooleanExtra("returnToChat", false)) finish(); else go("board"); }, this::toast);
+    }
+    private void editPlanAmount(String id) {
+        PrizeBook.Scheme prize = store.prizes().scheme(id); LinearLayout box = dialogBox();
+        EditText amount = input("Total prize in rupees", Integer.toString(prize.rupees), InputType.TYPE_CLASS_NUMBER); amount.setContentDescription("Planned prize amount"); Ui.add(box, amount, 56);
+        editDialog(prize.name + " · total prize", box, "Save amount", () -> {
+            int value; try { value = Integer.parseInt(amount.getText().toString()); } catch (NumberFormatException error) { throw new IllegalArgumentException("Enter a whole-rupee prize."); }
+            store.plan(store.plan(), store.prizes().configure(id, prize.name, value, true), false);
+        });
+    }
+    private void results() { PrizeBook book = store.prizes(); text("Results to share", 28); if (!book.hasWinners()) { text("No winners saved yet. Add winners under Players & prizes, or keep playing.", 20); action("Players & prizes", Ui.PINK, () -> go("players")); return; }
+        action("Share results picture", Ui.GREEN, this::shareResultsPicture);
+        text("Every player, their prizes and total winnings. Shared prizes show each person's share; Bogies pay ₹0.", 18);
+        text(book.results(store.load().count()), 20); action("Share results to WhatsApp", Ui.GREEN, () -> { try { Sharing.text(this, store.prizes().results(store.load().count())); } catch (RuntimeException error) { toast("Could not open sharing. Use Winners in the keyboard."); } }); text("Or return to your group: keyboard → Winners → Share results picture → WhatsApp Send.", 18); }
+    private void shareResultsPicture() {
+        if (sharing) return; sharing = true; int started = viewSession; Game game = store.load(); PrizeBook book = store.prizes(); String prizes = PrizeJson.encode(book), planSnapshot = store.planSnapshot();
+        toast("Preparing results picture…");
+        Sharing.prepareResults(this, game, book, store.plan(), uris -> {
+            if (isFinishing() || started != viewSession) return; sharing = false;
+            if (!store.load().encode().equals(game.encode()) || !PrizeJson.encode(store.prizes()).equals(prizes) || !store.planSnapshot().equals(planSnapshot)) { toast("Game or prizes changed. Share results again."); return; }
+            try { Sharing.images(this, uris); } catch (RuntimeException error) { toast("No sharing app is available."); }
+        }, error -> { if (started == viewSession) { sharing = false; toast(error); } });
+    }
     private void confirm(String title, String message, Runnable action) { hideKeyboard(); new AlertDialog.Builder(this).setTitle(title).setMessage(message).setNegativeButton("Keep playing", null).setPositiveButton("Yes, continue", (dialog, which) -> safe(action)).show(); }
     private void share(String kind) {
         if (sharing) return; sharing = true; int started = viewSession; Game snapshot = store.load(); toast("Preparing…");

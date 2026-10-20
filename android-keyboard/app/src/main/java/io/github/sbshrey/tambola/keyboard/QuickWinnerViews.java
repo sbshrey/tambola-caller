@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 /** Large, keyboard-only controls; choosing a name does not save an award. */
 final class QuickWinnerViews {
-    static void choose(LinearLayout page, PrizeBook book, PrizeBook.Scheme scheme, int calls,
+    static void choose(LinearLayout page, PrizeBook book, PrizeBook.Scheme scheme, int calls, TicketPlan ticketPlan,
                        Consumer<List<String>> insert, Runnable review) {
         Context context = page.getContext();
         Ui.add(page, Ui.text(context, scheme.name, 23), -2);
@@ -51,6 +51,7 @@ final class QuickWinnerViews {
                 else selected.add(player.getKey());
                 refresh.run();
             });
+            button.setEnabled(ticketPlan == null || ticketPlan.sets(player.getKey()) > 0);
             LinearLayout.LayoutParams size = new LinearLayout.LayoutParams(0, -2, 1);
             size.setMargins(Ui.dp(context, 3), 0, Ui.dp(context, 3), 0);
             row.addView(button, size); buttons.put(player.getKey(), button);

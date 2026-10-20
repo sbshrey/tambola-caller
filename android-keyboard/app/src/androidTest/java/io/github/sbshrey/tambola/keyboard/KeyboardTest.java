@@ -144,9 +144,9 @@ public class KeyboardTest {
         assertEquals(0, live.load().count()); assertFalse(live.prizes().hasWinners()); assertEquals(2, live.prizes().players.size());
         assertEquals(10, live.prizes().scheme("prize-0").rupees); assertEquals("47", new GameStore(context, true).load().encode());
         assertEquals(Game.emoji(5), message()); tap("Next number"); assertEquals(0, live.load().count());
-        visible(By.text("Clear unsent message…")).click(); device.waitForIdle();
+        visible(By.desc("Clear unsent message")).click(); device.waitForIdle();
         visible(By.text("Keep message")).click(); device.waitForIdle(); assertEquals(Game.emoji(5), message());
-        visible(By.text("Clear unsent message…")).click(); device.waitForIdle();
+        visible(By.desc("Clear unsent message")).click(); device.waitForIdle();
         visible(By.text("Yes, clear message")).click();
         assertTrue(device.wait(Until.hasObject(By.text("Message cleared. Tap Next number.")), 5000));
         assertEquals("", message()); assertEquals(0, live.load().count());

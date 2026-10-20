@@ -20,16 +20,52 @@ final class Sharing {
         worker.execute(() -> { try { Uri uri = create(app, game, language, kind); main.post(() -> ready.accept(uri)); }
             catch (IOException | RuntimeException error) { main.post(() -> failed.accept("Could not prepare the file. Please try again.")); } });
     }
+    static void prepareResults(Context context, Game game, PrizeBook book, Consumer<List<Uri>> ready, Consumer<String> failed) {
+        prepareResults(context, game, book, null, ready, failed);
+    }
+    static void prepareResults(Context context, Game game, PrizeBook book, TicketPlan plan, Consumer<List<Uri>> ready, Consumer<String> failed) {
+        Context app = context.getApplicationContext();
+        worker.execute(() -> { try { List<Uri> files = createResults(app, game, book, plan); main.post(() -> ready.accept(files)); }
+            catch (IOException | RuntimeException error) { main.post(() -> failed.accept("Could not prepare results. Please try again.")); } });
+    }
+    static List<Uri> createResults(Context context, Game game, PrizeBook book) throws IOException {
+        return createResults(context, game, book, null);
+    }
+    static List<Uri> createResults(Context context, Game game, PrizeBook book, TicketPlan plan) throws IOException {
+        if (game.count() == 0) throw new IllegalArgumentException("Call a number first.");
+        if (plan != null) plan.validateLive(book);
+        ResultsImage document = new ResultsImage(book, game.count(), plan); List<Uri> uris = new ArrayList<>(); List<File> files = new ArrayList<>();
+        File folder = cleanFolder(context);
+        try {
+            for (int page = 0; page < document.pages.size(); page++) {
+                File file = new File(folder, UUID.randomUUID() + ".png"); files.add(file);
+                Bitmap bitmap = document.picture(page);
+                try (OutputStream output = new FileOutputStream(file)) {
+                    if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) throw new IOException("PNG failed");
+                } finally { bitmap.recycle(); }
+                uris.add(uri(context, file));
+            }
+            return uris;
+        } catch (IOException | RuntimeException error) { for (File file : files) file.delete(); throw error; }
+    }
+    private static File cleanFolder(Context context) {
+        File folder = ShareProvider.folder(context); File[] old = folder.listFiles();
+        if (old != null) for (File file : old) if (file.lastModified() < System.currentTimeMillis() - 48L * 60 * 60 * 1000) file.delete();
+        return folder;
+    }
+    private static Uri uri(Context context, File file) {
+        return new Uri.Builder().scheme("content").authority(context.getPackageName() + ".shared").appendPath(file.getName()).build();
+    }
     static Uri create(Context context, Game game, String language, String kind) throws IOException {
         if (game.latest() == 0) throw new IllegalArgumentException("Call a number first.");
         if (!Arrays.asList(NUMBER, RECENT, BOARD, AUDIO).contains(kind)) throw new IllegalArgumentException("Unknown picture.");
-        File folder = ShareProvider.folder(context); File[] old = folder.listFiles(); if (old != null) for (File file : old) if (file.lastModified() < System.currentTimeMillis() - 48L * 60 * 60 * 1000) file.delete();
+        File folder = cleanFolder(context);
         File file = new File(folder, UUID.randomUUID() + (AUDIO.equals(kind) ? ".mp3" : ".png"));
         try (OutputStream output = new FileOutputStream(file)) {
             if (AUDIO.equals(kind)) try (InputStream input = context.getAssets().open(CallAudio.asset(language, game.latest()))) { byte[] buffer = new byte[8192]; int size; while ((size = input.read(buffer)) != -1) output.write(buffer, 0, size); }
             else { Bitmap picture = picture(context, game, language, kind); try { if (!picture.compress(Bitmap.CompressFormat.PNG, 100, output)) throw new IOException("PNG failed"); } finally { picture.recycle(); } }
         } catch (IOException | RuntimeException error) { file.delete(); throw error; }
-        return new Uri.Builder().scheme("content").authority(context.getPackageName() + ".shared").appendPath(file.getName()).build();
+        return uri(context, file);
     }
     static Bitmap picture(Context context, Game game, String language, String kind) {
         int height = BOARD.equals(kind) ? 1280 : 1000; Bitmap bitmap = Bitmap.createBitmap(1080, height, Bitmap.Config.ARGB_8888);
@@ -75,6 +111,16 @@ final class Sharing {
         send.setClipData(ClipData.newUri(context.getContentResolver(), "Tambola", uri));
         chooser(context, send);
     }
+    static Intent imagesIntent(List<Uri> uris) {
+        if (uris.isEmpty()) throw new IllegalArgumentException("No results pictures.");
+        Intent send = new Intent(uris.size() == 1 ? Intent.ACTION_SEND : Intent.ACTION_SEND_MULTIPLE).setType("image/png").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        if (uris.size() == 1) send.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+        else send.putParcelableArrayListExtra(Intent.EXTRA_STREAM, new ArrayList<>(uris));
+        ClipData clips = new ClipData("Tambola results", new String[]{"image/png"}, new ClipData.Item(uris.get(0)));
+        for (int i = 1; i < uris.size(); i++) clips.addItem(new ClipData.Item(uris.get(i)));
+        send.setClipData(clips); return send;
+    }
+    static void images(Context context, List<Uri> uris) { chooser(context, imagesIntent(uris)); }
     static void text(Context context, String text) { chooser(context, new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text)); }
     private static void chooser(Context context, Intent send) { context.startActivity(Intent.createChooser(send, "Choose WhatsApp, then your group").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); }
 }
