@@ -75,6 +75,25 @@ public class TicketPlanUiTest extends KeyboardScenario {
         assertThrows(IllegalArgumentException.class, () -> TicketPlanJson.decode("{\"version\":1,\"approved\":false,\"sets\":{\"x\":1.5},\"prizes\":{}}"));
         assertThrows(IllegalArgumentException.class, () -> TicketPlanJson.decode("{\"version\":9}"));
     }
+    @Test public void addNewPlayersFromSetupAndChangeTheirParticipationWithoutDeletingNames() {
+        store.prizes(new PrizeBook(Collections.singletonMap("v", "Varsha"), PrizeBook.defaults().schemes)); focus();
+        tap("Set tickets & schemes"); tap("Add players"); visible(By.clazz(android.widget.EditText.class)).setText("Guest"); tap(By.res("android:id/button1"));
+        await("Guest saved", () -> store.prizes().players.containsValue("Guest"));
+        assertTrue(device.wait(androidx.test.uiautomator.Until.gone(By.res("android:id/button1")), 5000));
+        String guest = store.prizes().players.entrySet().stream().filter(person -> person.getValue().equals("Guest")).findFirst().get().getKey();
+        assertEquals(1, store.plan().sets(guest)); assertEquals(100, store.plan().collection());
+        tap(By.desc("One more set for Guest")); await("Guest buys two sets", () -> store.plan().sets(guest) == 2);
+        visible(By.desc("Playing this game: Guest")); screenshot("round-player-selection");
+        tap(By.desc("Playing this game: Guest")); await("Guest sits out", () -> store.plan().sets(guest) == 0);
+        assertEquals("Guest", store.prizes().players.get(guest));
+        tap(By.desc("Playing this game: Guest")); await("Guest rejoins with one set", () -> store.plan().sets(guest) == 1);
+        tap(By.desc("Playing this game: Guest")); await("Guest sits out again", () -> store.plan().sets(guest) == 0);
+        tap(By.desc("Playing this game: Varsha")); await("Varsha sits out", () -> store.plan().sets("v") == 0);
+        assertEquals(0, store.plan().players()); tap("Choose ₹10 schemes →");
+        assertFalse(visible(By.text("Confirm setup · ready to call")).isEnabled());
+        assertThrows(IllegalArgumentException.class, store::requireReady);
+        screenshot("round-no-players");
+    }
     @Test public void upgradingPreservesLivePayoutsButRequiresTenRupeeSetupForANewGame() {
         PrizeBook old = store.prizes(); Map<String, Integer> amounts = new LinkedHashMap<>(); int index = 0;
         for (PrizeBook.Scheme prize : new ArrayList<>(old.schemes)) {

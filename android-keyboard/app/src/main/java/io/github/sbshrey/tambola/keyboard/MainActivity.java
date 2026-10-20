@@ -203,6 +203,7 @@ public final class MainActivity extends Activity {
             action("See board / New game", Ui.GREEN, () -> go("board")); return;
         }
         if (!FamilySetup.hasPlayers(book)) action("Add family players & schemes", Ui.PAPER, () -> safe(() -> { store.prizes(FamilySetup.addTo(store.prizes())); render(); }));
+        if (!planSchemes) action("Add players", Ui.PAPER, this::addPlayers);
         if (book.players.isEmpty()) { text("Add the family list above, or add names under Players & prizes.", 20); return; }
         if (store.plan() == null || book.schemes.stream().anyMatch(prize -> prize.rupees != PrizeBook.PRIZE_RUPEES))
             store.plan(store.plan() == null ? TicketPlan.forPlayers(book) : store.plan(), book, false);

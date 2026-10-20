@@ -17,6 +17,8 @@ final class GameMessageViews {
             Ui.add(page, Ui.text(page.getContext(), error.getMessage(), 19), -2);
             Ui.action(page, "Review tickets & schemes", Ui.GREEN, setup); return;
         }
+        if (store.load().count() == 0 && !store.prizes().hasWinners())
+            Ui.action(page, "Change players & schemes", Ui.PAPER, setup);
         Ui.action(page, (keyboard ? "Insert " : "Share ") + kind.action, Ui.GREEN, () -> {
             try {
                 String latest = current(store, kind);

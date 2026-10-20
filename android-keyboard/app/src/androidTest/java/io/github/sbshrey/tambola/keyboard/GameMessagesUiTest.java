@@ -31,6 +31,59 @@ public class GameMessagesUiTest extends KeyboardScenario {
     }
     private void choose(GameMessages.Kind kind) { tap(By.desc("Game message: " + kind.label)); }
     private String expected(GameMessages.Kind kind) { return GameMessages.text(kind, store.prizes(), store.plan(), store.load()); }
+    @Test public void changeParticipantsPurchasesAndSchemesAfterStartMessageBeforeFirstCall() throws Exception {
+        Map<String, String> names = new LinkedHashMap<>(); names.put("v", "Varsha"); names.put("r", "Rekha"); names.put("s", "Suman");
+        PrizeBook book = new PrizeBook(names, PrizeBook.defaults().schemes).addPresets(Collections.singletonList("catalog-king")).configure("catalog-king", "King", 10, false);
+        for (int i = 0; i < 10; i++) book = book.configure(null, "Extra " + i, 10, i < 5);
+        store.plan(TicketPlan.forPlayers(book).with("s", 0), book, true);
+        main(() -> rule.getActivity().acceptImages = true); focus();
+        tap("Game messages"); choose(GameMessages.Kind.START); tap("Insert start message");
+        await("Original start message inserted", () -> draft().equals(expected(GameMessages.Kind.START))); send();
+        tap("Change players & schemes"); expect("1. Purchased ticket sets");
+        tap(By.desc("Playing this game: Rekha"));
+        await("Rekha sitting out without deleting her name", () -> store.plan().sets("r") == 0);
+        assertEquals("Rekha", store.prizes().players.get("r")); assertFalse(store.plan().approved);
+        tap(By.desc("Playing this game: Suman")); await("Suman joins", () -> store.plan().sets("s") == 1);
+        tap(By.desc("One more set for Varsha")); await("Varsha buys two sets", () -> store.plan().sets("v") == 2);
+        assertEquals(2, store.plan().players()); assertEquals(3, store.plan().totalSets()); assertEquals(150, store.plan().collection());
+        assertThrows(IllegalArgumentException.class, store::requireReady);
+        assertThrows(IllegalArgumentException.class, () -> expected(GameMessages.Kind.PLAYERS));
+        assertThrows(IllegalArgumentException.class, () -> new SchemeStatus(store.prizes(), store.plan()));
+        visible(By.desc("Playing this game: Varsha")); screenshot("current-game-players");
+        tap("Choose ₹10 schemes →"); assertFalse(visible(By.text("Confirm setup · ready to call")).isEnabled());
+        tap("Select all"); await("All 16 schemes selected", () -> TicketPlan.selected(store.prizes()) == 16);
+        assertFalse(visible(By.text("Confirm setup · ready to call")).isEnabled());
+        tap(By.desc("Use scheme: Early 5")); await("15 schemes allocated", () -> TicketPlan.selected(store.prizes()) == 15);
+        assertTrue(store.prizes().scheme("catalog-king").enabled); assertFalse(store.prizes().scheme("prize-0").enabled);
+        tap("Confirm setup · ready to call"); expect("Test chat editor"); focus(); assertEquals(0, store.load().count());
+        tap("Game messages");
+        for (GameMessages.Kind kind : GameMessages.Kind.values()) {
+            choose(kind); tap("Insert " + kind.action); await("Revised message inserted", () -> draft().equals(expected(kind)));
+            if (kind == GameMessages.Kind.PLAYERS) {
+                assertTrue(draft().contains("Varsha — 2 sets (12 tickets) · ₹100")); assertTrue(draft().contains("Suman — 1 set")); assertFalse(draft().contains("Rekha"));
+            } else if (kind == GameMessages.Kind.SCHEMES) { assertTrue(draft().contains("King — ₹10")); assertFalse(draft().contains("Early 5")); }
+            else { assertTrue(draft().contains("2 players · 3 sets · 18 tickets")); assertTrue(draft().contains("₹150 · 15 schemes")); }
+            send();
+        }
+        tap("Winners"); tap("Share scheme status picture");
+        await("Revised scheme image inserted", () -> { int[] count = {0}; main(() -> count[0] = rule.getActivity().receivedImages.size()); return count[0] == 1; });
+        android.net.Uri[] uri = {null}; main(() -> uri[0] = rule.getActivity().receivedImages.get(0));
+        try (java.io.InputStream input = context.getContentResolver().openInputStream(uri[0])) {
+            android.graphics.Bitmap actual = android.graphics.BitmapFactory.decodeStream(input), expected = new SchemeStatusImage(store.prizes(), store.load(), store.plan()).picture(0);
+            try { assertTrue(expected.sameAs(actual)); } finally { expected.recycle(); actual.recycle(); }
+        }
+        assertEquals(15, new SchemeStatus(store.prizes(), store.plan()).remaining.size());
+        ResultsTable results = new ResultsTable(store.prizes(), store.plan()); assertEquals(2, results.players.size());
+        assertEquals("Varsha", results.players.get(0).name); assertEquals("Suman", results.players.get(1).name);
+        tap("Call"); draw(); send(); tap("Share…"); tap("Game messages");
+        assertFalse(device.hasObject(By.text("Change players & schemes")));
+        assertThrows(IllegalArgumentException.class, () -> store.plan(store.plan().with("r", 1), store.prizes(), false));
+        store.newRound(); assertFalse(store.plan().approved); assertEquals(0, store.load().count());
+        assertEquals(0, store.plan().sets("r")); assertEquals(2, store.plan().sets("v")); assertEquals(15, TicketPlan.selected(store.prizes()));
+        focus(); tap("Review tickets & schemes"); expect("1. Purchased ticket sets"); tap(By.desc("Playing this game: Rekha"));
+        await("Rekha rejoins the next game", () -> store.plan().sets("r") == 1);
+        assertEquals(3, store.prizes().players.size()); assertEquals(200, store.plan().collection());
+    }
     @Test public void insertAllThreeMessagesThenCallWithoutChangingSetupOrOverwritingDrafts() {
         approve(); String plan = store.planSnapshot(), prizes = PrizeJson.encode(store.prizes()); tap("Game messages");
         for (GameMessages.Kind kind : GameMessages.Kind.values()) {

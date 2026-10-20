@@ -35,4 +35,14 @@ public class ResultsTableTest {
         ResultsTable table = new ResultsTable(book.resolve("prize-0", Collections.singletonList("v"), 5), plan);
         assertEquals("Varsha\n1 set", table.players.get(0).label()); assertEquals("Collected ₹50 · Unallocated ₹0 · Unpaid prizes ₹40", table.balance());
     }
+    @Test public void fundedResultsKeepOnlyThisRoundsPlayersIncludingThoseWithoutWins() {
+        PrizeBook book = people("v", "Varsha", "r", "Rekha", "s", "Suman");
+        for (int i = 0; i < 5; i++) book = book.configure(null, "Extra " + i, 10, true);
+        TicketPlan plan = TicketPlan.forPlayers(book).with("r", 0).approve(book);
+        ResultsTable table = new ResultsTable(book.resolve("prize-0", Collections.singletonList("v"), 5), plan);
+        assertEquals(Arrays.asList("v", "s"), Arrays.asList(table.players.get(0).id, table.players.get(1).id));
+        assertEquals(2, table.players.size()); assertEquals(1000, table.players.get(0).totalPaise); assertEquals(0, table.players.get(1).totalPaise);
+        assertEquals(3, book.players.size()); assertEquals("Rekha", book.players.get("r"));
+        assertEquals(3, new ResultsTable(book, null).players.size());
+    }
 }

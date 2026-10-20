@@ -30,6 +30,7 @@ final class ResultsTable {
         this.plan = plan; summary = new PrizeSummary(book);
         List<Player> people = new ArrayList<>();
         for (Map.Entry<String, String> person : book.players.entrySet()) {
+            if (plan != null && plan.sets(person.getKey()) == 0) continue;
             List<Win> wins = new ArrayList<>();
             for (PrizeBook.Scheme prize : book.schemes) if (prize.enabled && prize.winners.contains(person.getKey())) wins.add(new Win(prize));
             people.add(new Player(person.getKey(), person.getValue(), plan == null ? -1 : plan.sets(person.getKey()), wins));

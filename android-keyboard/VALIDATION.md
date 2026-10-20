@@ -1,3 +1,42 @@
+# Tambola Keyboard 1.4.6: choose this round's players and revise setup
+
+Validated on 20 October 2026. Version code 13, local branch `feat/tap-winner-announcements`.
+
+## Behavior covered
+
+- **Playing this game** includes or excludes a saved player without deleting their name. Checking starts at one purchased set; −/+ adjusts purchases. **Add players** is available directly in setup. Zero participants cannot confirm or start.
+- Before the first number, **Game messages → Change players & schemes** reopens setup, including after confirmation or preparing/sending a start announcement. Changes invalidate confirmation; selected ₹10 prizes must again match the full ticket collection. The host reconfirms and shares fresh messages/images. Already-sent messages remain unchanged.
+- Current participants, purchases and selected schemes drive the revised player/ticket list, scheme list, start message and status picture. Ticket-funded results omit saved players sitting out while keeping participating players with no wins. Names remain available for later games. First-call locking and next-round review remain enforced.
+
+## Checks
+
+All **61 JVM tests** passed without failures, errors or skips. Debug, test and release builds and debug/release lint passed. Release inspection confirmed version 1.4.6/code 13, no debug editor/speech fixtures, and a valid debug APK signature.
+
+All **14 distinct Android scenarios** have passing final results across the logs listed in `validation/android-coverage.txt`: five game-message scenarios, seven ticket-plan scenarios and two native results-image regressions. The late-change flow prepares an original start message, swaps Rekha for Suman, changes Varsha to two sets, replaces Early 5 with King, selects 15 ₹10 prizes for ₹150, reconfirms and checks all three revised messages. It compares the handed-off PNG pixel for pixel with the current saved game, verifies participant-only results, calls the first number, checks setup locking, then rejoins a player in the following round. The separate add-player scenario verifies two sets, sitting out, rejoining with one set, and blocking a game with no players.
+
+The add-player/participation scenario also passed at **160% font scale (66.217 seconds)** and in **landscape (69.567 seconds)**. Native screenshots were inspected for readable labels, purchase controls and the empty-roster confirmation gate. Default display settings were restored.
+
+The initial runs exposed test-harness issues: image support was enabled after the editor advertised its accepted types; Android capitalized the dialog's SAVE NAMES label; and some assertions read preferences before the tap callback saved them. Tests now enable image support before rebinding, identify the positive dialog button by its Android ID, and await saved state. Failed runs and screenshots are retained. No assertions were removed and no production behavior was changed to make these tests pass. The final participation run passed in 39.799 seconds and the full late-change run in 129.947 seconds. Existing message, eligibility, budget, next-round, persistence, recovery, upgrade and image cases passed as recorded in the coverage manifest.
+
+The three full 90-number games under 1.4.2 remain prior evidence; they were not repeated for this setup change. Physical-phone and real WhatsApp delivery remain unverified. The editor records locally and chooser tests intercept/cancel sharing without sending to another person.
+
+## Reproduce and artifacts
+
+Use the dedicated API 35 ARM64 emulator after boot/unlock completes. From `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.GameMessagesUiTest,io.github.sbshrey.tambola.keyboard.TicketPlanUiTest,io.github.sbshrey.tambola.keyboard.ResultsImageTest#fundedResultsShowPurchasedSetsAndUnpaidBogieBalance,io.github.sbshrey.tambola.keyboard.ResultsImageTest#fortyTwoSchemeResultsFitReadablePlayerColumnsWithExactShares io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`releases/1.4.6/` contains the debug-signed test APK, unsigned release APK, checksums, installation notes and source commit. `validation/` includes build/test logs, the Android coverage manifest, JVM/lint XML and screenshots. `run-displays.py` repeats participation testing at 160% text and in landscape, restoring defaults afterward; adjust its SDK path on another machine.
+
+Nothing was pushed or published. Updating the existing phone installation requires the original release signing key. Do not uninstall the live app to install the debug test APK.
+
+---
+
 # Tambola Keyboard 1.4.5: remaining schemes and winner updates
 
 Validated on 20 October 2026. Version code 12, local branch `feat/tap-winner-announcements`.
