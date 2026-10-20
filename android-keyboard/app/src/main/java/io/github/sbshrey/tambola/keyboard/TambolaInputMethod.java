@@ -26,6 +26,7 @@ public final class TambolaInputMethod extends InputMethodService {
     private long lastDraw;
     private int session;
     private String panel = "Call", awardId;
+    private GameMessages.Kind messageKind = GameMessages.Kind.PLAYERS;
     private String shownRound, shownPlan;
     private String undoRound, undoPrizes;
     private int undoSession;
@@ -113,6 +114,7 @@ public final class TambolaInputMethod extends InputMethodService {
             else if (panel.equals("Voice")) voice();
             else if (panel.equals("Speak winner")) speakWinnerPanel();
             else if (panel.equals("Share")) share(game);
+            else if (panel.equals("Game messages")) gameMessages();
             else if (panel.equals("New game")) newGame();
             else if (panel.equals("Clear message")) confirmClearMessage();
             else if (panel.equals("Undo number")) confirmUndo();
@@ -131,6 +133,7 @@ public final class TambolaInputMethod extends InputMethodService {
         if (!practice && game.count() == 0) {
             Ui.action(body, plan == null ? "Set tickets & schemes" : "Review tickets & schemes", Ui.PAPER, () -> open("plan"));
             if (plan != null) Ui.add(body, Ui.text(this, plan.approved ? "Ready · " + plan.totalSets() + " sets · " + PrizeBook.money(plan.collection() * 100) + " prize budget" : "Confirm ticket sales and prize budget before calling.", 17), -2);
+            Ui.action(body, "Game messages", Ui.GREEN, () -> navigate("Game messages"));
         }
         Button next = Ui.button(this, game.count() == 90 ? "All 90 called" : "Next number", Ui.GREEN, () -> insertNumber(true)); next.setContentDescription("Next number"); next.setEnabled(game.count() < 90 && !mediaBusy && (plan == null || plan.approved)); Ui.add(body, next, 58);
         if (!practice && game.count() == 90 && store.prizes().hasWinners()) Ui.action(body, "Share results picture", Ui.GREEN, this::resultsPicture).setEnabled(!mediaBusy);
@@ -232,13 +235,22 @@ public final class TambolaInputMethod extends InputMethodService {
         Ui.add(body, Ui.text(this, "Sound plays on this phone only. Turn up media volume. These are AI-generated recordings.", 17), -2);
     }
     private void share(Game game) {
-        Ui.action(body, "‹ Back to call", Ui.PAPER, () -> navigate("Call")); if (game.latest() == 0) { Ui.add(body, Ui.text(this, "Call a number first.", 20), -2); return; }
+        Ui.action(body, "‹ Back to call", Ui.PAPER, () -> navigate("Call"));
+        if (!practice) Ui.action(body, "Game messages", Ui.GREEN, () -> navigate("Game messages"));
+        if (game.latest() == 0) { Ui.add(body, Ui.text(this, "Call a number first to share numbers, pictures or voice clips.", 20), -2); return; }
         Ui.add(body, Ui.text(this, "Choose what to share", 23), -2); Ui.action(body, "Insert recent numbers", Ui.GREEN, () -> insertText(Sharing.recent(store.load())));
         for (String kind : new String[]{Sharing.NUMBER, Sharing.RECENT, Sharing.BOARD, Sharing.AUDIO}) {
             String label = kind.equals(Sharing.NUMBER) ? "Number picture" : kind.equals(Sharing.RECENT) ? "Recent numbers picture" : kind.equals(Sharing.BOARD) ? "Board picture" : "Voice clip · " + preferences.label();
             Button button = Ui.button(this, label, Ui.PAPER, () -> media(kind)); button.setEnabled(!mediaBusy && !practice); Ui.add(body, button, -2);
         }
         Ui.add(body, Ui.text(this, practice ? "File sharing is off during practice." : "Pictures go into this chat when supported. Otherwise choose WhatsApp and your group. Check the preview, then Send.", 17), -2);
+    }
+    private void gameMessages() {
+        Ui.action(body, "‹ Back to call", Ui.PAPER, () -> navigate("Call"));
+        if (practice) return;
+        GameMessageViews.show(body, store, messageKind, kind -> { messageKind = kind; navigate("Game messages"); },
+            () -> open("plan"), true, this::insertText, this::say);
+        Ui.action(body, "Clear message…", Ui.PAPER, () -> navigate("Clear message"));
     }
     private void winners(Game game) {
         if (practice) { Ui.add(body, Ui.text(this, "Winners are for your live game. Practice does not change them.", 20), -2); return; }

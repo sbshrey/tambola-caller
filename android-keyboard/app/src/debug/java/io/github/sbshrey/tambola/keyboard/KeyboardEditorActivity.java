@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 public final class KeyboardEditorActivity extends Activity {
     EditText draft;
     boolean rejectCommit;
+    int commitAttempts;
     boolean rejectDelete;
     boolean acceptImages;
     final java.util.List<android.net.Uri> receivedImages = new java.util.ArrayList<>();
@@ -24,6 +25,7 @@ public final class KeyboardEditorActivity extends Activity {
                 if (acceptImages) info.contentMimeTypes = new String[]{"image/png"};
                 return base == null ? null : new android.view.inputmethod.InputConnectionWrapper(base, false) {
                     @Override public boolean commitText(CharSequence text, int position) {
+                        commitAttempts++;
                         return !rejectCommit && super.commitText(text, position);
                     }
                     @Override public boolean deleteSurroundingText(int before, int after) {
@@ -37,11 +39,20 @@ public final class KeyboardEditorActivity extends Activity {
             }
         }; draft.setTextSize(24); draft.setContentDescription("Test chat draft");
         draft.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        Ui.add(page, draft, 72);
-        Ui.action(page, "Send test message", Ui.GREEN, () -> {
+        Runnable send = () -> {
             if (draft.length() == 0) return;
             sentMessages.add(draft.getText().toString()); draft.getText().clear();
-        }).setContentDescription("Send test message");
+        };
+        if (getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+            // Keep Send alongside the composer when the IME leaves little vertical space.
+            LinearLayout composer = new LinearLayout(this);
+            composer.addView(draft, new LinearLayout.LayoutParams(0, -1, 1));
+            android.widget.Button button = Ui.button(this, "Send test message", Ui.GREEN, send); button.setContentDescription("Send test message");
+            composer.addView(button, new LinearLayout.LayoutParams(Ui.dp(this, 140), -1)); Ui.add(page, composer, 56);
+        } else {
+            Ui.add(page, draft, 72);
+            Ui.action(page, "Send test message", Ui.GREEN, send).setContentDescription("Send test message");
+        }
         setContentView(page);
     }
 }

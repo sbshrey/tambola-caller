@@ -18,6 +18,7 @@ public final class MainActivity extends Activity {
     private EditText practice;
     private ScrollView scroll;
     private String section = "home", awardId;
+    private GameMessages.Kind messageKind = GameMessages.Kind.PLAYERS;
     private int viewSession;
     private boolean sharing;
     private boolean planSchemes;
@@ -57,6 +58,7 @@ public final class MainActivity extends Activity {
                 case "voice": voice(); break;
                 case "results": results(); break;
                 case "plan": plan(); break;
+                case "messages": gameMessages(); break;
                 case "award": action("‹ All prizes", Ui.PAPER, () -> go("players")); PrizeViews.award(page, store, awardId, () -> go("players"), this::toast); break;
                 default: home();
             }
@@ -73,6 +75,7 @@ public final class MainActivity extends Activity {
         action("Help me set it up", Ui.GREEN, () -> go("help"));
         action("Practice first", Ui.PINK, () -> go("practice"));
         action("Set tickets & schemes", Ui.GREEN, () -> go("plan"));
+        action("Game messages", Ui.GREEN, () -> go("messages"));
         action("See board / New game", Ui.PAPER, () -> go("board"));
         action("Voice & language", Ui.PAPER, () -> go("voice"));
         action("Players & prizes (optional)", Ui.PAPER, () -> go("players"));
@@ -88,6 +91,7 @@ public final class MainActivity extends Activity {
         action("3. Practice safely", Ui.PAPER, () -> go("practice"));
         text("To play", 25); text("Open the right WhatsApp group and tap its message box.\n\nNext number puts the emoji number into the box. Tap WhatsApp Send. Repeat for each call.", 20);
         text("Before the first call", 25); text("Set tickets & schemes: choose each player's purchased sets. One set is 6 tickets for ₹50; 0 means not playing. Every scheme is ₹10. Select five prizes per purchased set and add extra named prizes if needed. Confirm when the prize total matches ticket sales. Everyone playing can win any selected scheme. Review this setup again for each new game.", 19);
+        text("Tell the group", 25); text("After confirming setup, open Game messages in the keyboard or main menu. Share Players & tickets, Selected schemes, then the Start message. Preview each message, insert it, and tap WhatsApp Send. Start message does not draw a number; return to Call → Next number when everyone is ready. During play, Game messages is under Share….", 19);
         text("Useful buttons", 25); text("Clear message: remove an unsent draft.\nUndo last number: correct an accidental call.\nHear again: hear the same number.\nInsert again: put the same number in the box.\nABC: return to normal typing.\nBoard: see called numbers.\nWinners: prize tracking and results pictures.", 19);
         text("Swipe up inside the keyboard to see more buttons. Tap Call at the top to return to Next number.", 19);
         text("Tap a winner", 25); text("In the chat: Winners → Tap prize + winner → Add family players & schemes once. Choose a prize group and prize. Claim for Varsha inserts her claim without awarding it. After checking all claims, tap each claimant. Insert winner announcement fills the message box and saves the award. Check it, then WhatsApp Send. No typing or microphone needed.", 19);
@@ -204,7 +208,14 @@ public final class MainActivity extends Activity {
         if (!planSchemes) TicketPlanViews.tickets(page, store, this::render, () -> { planSchemes = true; render(); scroll.scrollTo(0, 0); }, this::toast);
         else TicketPlanViews.schemes(page, store, planGroup, value -> { planGroup = value; render(); },
             () -> { planSchemes = false; render(); scroll.scrollTo(0, 0); }, this::render, this::addPlanPrizes,
-            () -> { toast("Setup confirmed. Ready to call the first number."); if (getIntent().getBooleanExtra("returnToChat", false)) finish(); else go("board"); }, this::toast);
+            () -> { toast("Setup confirmed. Game messages are ready to share."); if (getIntent().getBooleanExtra("returnToChat", false)) finish(); else go("messages"); }, this::toast);
+    }
+    private void gameMessages() {
+        GameMessageViews.show(page, store, messageKind, kind -> { messageKind = kind; render(); scroll.scrollTo(0, 0); },
+            () -> go("plan"), false, text -> {
+                try { Sharing.text(this, text); }
+                catch (RuntimeException error) { toast("Could not open sharing. Use Game messages in the keyboard."); }
+            }, this::toast);
     }
     private void addPlanPrizes() {
         LinearLayout box = dialogBox();

@@ -1,3 +1,52 @@
+# Tambola Keyboard 1.4.3: setup and start announcements
+
+Validated on 20 October 2026. Version code 10, local branch `feat/tap-winner-announcements`.
+
+## Behavior covered
+
+- **Game messages** is available before the first call in the keyboard and from its Share panel during play, plus the app's main menu. Confirming setup in the app opens Game messages; setup opened from the keyboard returns to the chat.
+- **Players & tickets** lists participating names, purchased sets, individual ticket counts and each purchase amount, plus total players/sets/tickets and collection. Two sets appear as 12 tickets/₹100. Zero-set players are omitted.
+- **Selected schemes** lists every enabled prize with its amount, total prize budget, eligibility and payout/Bogie rules. Disabled prizes are omitted. Tests include all 500 schemes and 100 Hindi player names without truncation.
+- **Start message** uses the confirmed totals and explains how to claim. One winner gets ₹10, two ₹5 each, and three or more valid claimants are Bogie with no payout. Inserting/sharing does not draw a number or award a prize; the host uses Next number after sending. Start messages are unavailable after a number is called or a result is recorded.
+- All messages require a confirmed setup with the full collection allocated. Existing approved games retain their actual amounts in lists. New rounds require confirmation again. Practice does not offer live game messages.
+- Each message has a preview. The keyboard inserts into an empty draft and protects existing text; the app opens the Android text-share chooser. No automatic sending occurs. A changed preview requires another review/tap. Failed editor insertion leaves setup and game progress unchanged.
+
+## Checks
+
+| Check | Result |
+| --- | --- |
+| JVM suite | 55 passed, 0 failures/errors/skips, including 7 new announcement cases |
+| Android regression | 25 passed in 279.503 seconds: all 4 new message cases plus ticket-plan, number-correction and keyboard regressions |
+| Large text and landscape | Two cases passed at 160% font scale (353.779 seconds). Native app sharing passed in landscape; the final keyboard scenario passed in a focused rerun (159.091 seconds). Previews and controls inspected. |
+| Debug, test and release builds | Passed |
+| Debug/release lint | No issues |
+| Release package | 1.4.3/code 10, min SDK 26, target 35; debug editor/speech fixtures excluded; test APK signature verified |
+
+The message tests exercise all three insertions, duplicate-tap draft protection, the first draw afterward, resharing lists during play, the blocked start message during play, missing/unconfirmed plans, new-round review, rejected editor insertion, changed names requiring a refreshed preview, and all three native text-sharing intents. The app test confirms setup through the UI before sharing. A share-chooser monitor captures the actual ACTION_SEND payload and returns cancellation without contacting another app or recipient.
+
+The first focused run passed 3/4 cases. One assertion expected Android to report an editor rejection synchronously. The remote InputConnection can acknowledge queuing first, so the test fixture now records actual commit attempts and verifies the draft stays empty and saved state unchanged. The corrected test passed in the clean 25-case run; production insertion behavior was unchanged. Landscape testing exposed the debug editor's vertically stacked Send button being clipped beneath the IME; a screenshot and window hierarchy confirmed this. The debug-only editor now puts Send beside its composer in landscape. Subsequent failures were in test navigation: fast swipes skipped buttons, and the visibility finder incorrectly required a one-line notice to meet the 44 dp button-height threshold. The driver now uses slow overlapping drags, checks twice before accepting a scroll boundary, and uses a text-sized visibility threshold for nonclickable text. It scrolls to the blocked-start notice and retains the assertion and subsequent list-resharing check. The affected case was rerun separately. Failure diagnostics capture the editor before orientation cleanup. No production keyboard layout change was needed.
+
+The three complete 90-number game runs reported under 1.4.2 remain prior evidence; they were not repeated for this message-only change. This update checks the message-to-first-call transition and existing calling/reset/undo cases. Physical-phone and real WhatsApp delivery remain unverified.
+
+## Reproduce and artifacts
+
+Use a dedicated API 35 Android emulator; instrumentation resets its saved rounds. Validation used the existing ARM64 Pixel 4 emulator, Android build-tools 35, AGP 8.7.3, Gradle 8.9 and OpenJDK 20.0.1 (Java 17 source compatibility).
+
+From `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.GameMessagesUiTest,io.github.sbshrey.tambola.keyboard.TicketPlanUiTest,io.github.sbshrey.tambola.keyboard.CallCorrectionTest,io.github.sbshrey.tambola.keyboard.KeyboardTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`releases/1.4.3/` contains the test APK, unsigned release APK, checksums and installation notes. `validation/` contains logs, XML unit/lint reports, screenshots and `run-displays.py` (adjust its local SDK path). Display runs repeat the insertion and native app-sharing scenarios at font scale 1.6 and in landscape. The runner restores default font size and rotation handling.
+
+Nothing was pushed or published. Updating the existing phone installation requires the original release signing key. The test APK is debug-signed and cannot replace that installation; do not uninstall the live app to work around the signature mismatch. The website was unchanged.
+
+---
+
 # Tambola Keyboard 1.4.2: ₹10 schemes and transposed results
 
 Validated on 20 October 2026. Version code 9, local branch `feat/tap-winner-announcements`. This supersedes the editable prize allocation described in the 1.4.1 report below.

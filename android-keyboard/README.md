@@ -1,10 +1,10 @@
-# Tambola Keyboard 1.4.2 for Android
+# Tambola Keyboard 1.4.3 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
 **Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
 
-The 1.4.2 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
+The 1.4.3 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
 
 ## Set up once
 
@@ -25,6 +25,18 @@ The collected total and planned prize total must match exactly before **Confirm 
 Each new round keeps the previous purchased-set counts and schemes, clears results, and requires a fresh review/confirmation before calling. Adjust purchases and the number of selected schemes for the new game. The ₹50 price and six-ticket set size are fixed for this group's rules. Up to 20 sets per player and 100 sets total (500 prize schemes) are supported. A game already in progress from an older version retains its recorded amounts; new rounds use ₹10 for every scheme.
 
 The full collection is allocated **before play**. A Bogie still pays ₹0 under your rule. Money for Bogies or schemes not awarded remains unpaid; the results image shows that balance and does not silently redistribute it.
+
+## Share the setup and start message
+
+After confirming tickets and schemes, open **Game messages** on the keyboard's Call screen or in the app's main menu. The app opens this screen after confirming setup; setup opened from the keyboard returns to the chat.
+
+- **Players & tickets** lists participating players, purchased sets, individual ticket counts and each purchase amount, plus totals. A two-set purchase is shown as **2 sets (12 tickets) · ₹100**. Players with zero sets are omitted.
+- **Selected schemes** lists every enabled scheme and its prize, the full prize budget, eligibility and shared/Bogie rules. Disabled schemes are omitted.
+- **Start message** announces the game, participant/ticket totals, prize pool and claim rules. It does not draw a number. Send it, then return to **Call → Next number** when the group is ready.
+
+Check the preview. **Insert** fills an empty chat draft; tap **WhatsApp Send** yourself. Existing drafts are protected, and a changed preview must be reviewed again. The app's **Share** buttons open Android's chooser so you can choose WhatsApp and the group.
+
+These messages require a confirmed setup with the full collection allocated. During play, **Share… → Game messages** still offers the player and scheme lists; the start announcement is unavailable after the first call. A new round requires confirmation again before sharing. Practice does not offer live game messages.
 
 ## Play the game
 
@@ -162,6 +174,8 @@ adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.ta
 
 Run `TicketPlanUiTest` for purchased sets, selection, extra named ₹10 prizes, exact budget approval, eligibility and next-round review. Pass `-e funded true` to `FullGameTest` to exercise three games with mixed one/two-set purchases and a ₹600 budget, including all three Houses and a Bogie. The long test supplies the plan data through the store; the planner UI is covered separately. Ticket-plan JSON is a separate version-1 preference; existing prize records keep their version-2 format.
 
+Run `GameMessagesUiTest` for confirmed player/ticket and scheme messages, start announcements, protected drafts, changed-preview review, rejected insertion, and native text-share intents. It captures sharing locally without sending to another app. The insertion and app-share cases also run with large text and `-e landscape true`; the debug chat editor puts Send beside the composer in landscape. `GameMessagesTest` covers exact totals, disabled schemes/nonparticipants, old amounts, new rounds and maximum-size Hindi lists.
+
 Run the microphone permission UI test separately after revoking the permission on that **dedicated emulator** (revoking a permission can stop the app):
 
 ```text
@@ -172,4 +186,4 @@ adb -s <emulator-serial> shell am instrument -w -r -e class io.github.sbshrey.ta
 
 Screenshots are written to the debug app's private files directory. Prize storage upgrades version 1 records to version 2 on save while keeping players, amounts and awards; version 2 adds Bogie claimants. Older APKs cannot read version 2, so keep the upgraded app.
 
-Core logic is in `Game`, `PrizeBook`, `FamilySetup` and `WinnerCommand`; persistence in `GameStore`/`PrizeJson`; recordings in `CallAudio`; optional recognition in `WinnerSpeech`; PNGs and attachment handoff in `Sharing`/`ShareProvider`; `PrizeViews` is shared by the keyboard and full-screen app. `WinnerSpeechTest` selects a debug-only speech provider and restores the previous provider after each test. It tests Android's recognition callback/binder path without recording audio; the fixture is excluded from the release APK.
+Core logic is in `Game`, `PrizeBook`, `FamilySetup`, `GameMessages` and `WinnerCommand`; persistence in `GameStore`/`PrizeJson`; recordings in `CallAudio`; optional recognition in `WinnerSpeech`; PNGs and attachment handoff in `Sharing`/`ShareProvider`; `PrizeViews` is shared by the keyboard and full-screen app. `WinnerSpeechTest` selects a debug-only speech provider and restores the previous provider after each test. It tests Android's recognition callback/binder path without recording audio; the fixture is excluded from the release APK.

@@ -50,14 +50,17 @@ public abstract class KeyboardScenario {
     }
     protected UiObject2 visible(BySelector selector) {
         for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN, Direction.UP}) {
+            int stopped = 0;
             for (int i = 0; i < 20; i++) {
                 UiObject2 found = device.findObject(selector);
-                if (found != null && found.getVisibleBounds().height() >= Ui.dp(context, 44)) return found;
+                if (found != null && found.getVisibleBounds().height() >= Ui.dp(context, found.isClickable() ? 44 : 16)) return found;
                 UiObject2 panel = device.findObject(By.desc("Tambola controls"));
                 if (panel == null) panel = device.wait(Until.findObject(By.clazz(android.widget.ScrollView.class)), 5000);
                 if (panel == null) screenshot("missing-scroll-panel");
                 assertNotNull("No scroll panel while looking for " + selector, panel);
-                boolean more = panel.scroll(direction, 0.7f); device.waitForIdle(); if (!more) break;
+                // Overlapping, slow drags avoid flinging past a button in a short landscape viewport.
+                boolean more = panel.scroll(direction, 0.45f, Ui.dp(context, 200)); device.waitForIdle();
+                if (more) stopped = 0; else if (++stopped == 2) break;
             }
         }
         UiObject2 found = device.findObject(selector);
@@ -87,7 +90,13 @@ public abstract class KeyboardScenario {
     protected void screenshot(String name) { assertTrue(device.takeScreenshot(new java.io.File(context.getFilesDir(), name + ".png"))); }
     protected void send() {
         String expected = draft(); assertFalse("Nothing to send", expected.isEmpty());
-        assertTrue("Test editor is visible after the IME transition", device.wait(Until.hasObject(By.desc("Send test message")), 5000));
+        boolean visible = device.wait(Until.hasObject(By.desc("Send test message")), 5000);
+        if (!visible) {
+            screenshot("editor-hidden-before-send");
+            try { device.dumpWindowHierarchy(new java.io.File(context.getFilesDir(), "editor-hidden-before-send.xml")); }
+            catch (java.io.IOException error) { throw new AssertionError(error); }
+        }
+        assertTrue("Test editor is visible after the IME transition", visible);
         tap(By.desc("Send test message")); await("Send cleared draft", () -> draft().isEmpty());
         main(() -> assertEquals(expected, rule.getActivity().sentMessages.get(rule.getActivity().sentMessages.size() - 1)));
     }
