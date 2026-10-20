@@ -37,6 +37,6 @@ public class PrizeCatalogTest {
         PrizeBook base = PrizeBook.defaults();
         assertThrows(IllegalArgumentException.class, () -> base.addPresets(Arrays.asList("catalog-king", "not-a-prize"))); assertEquals(5, base.schemes.size());
         PrizeBook full = base; for (int i = 5; i < PrizeBook.MAX_SCHEMES; i++) full = full.configure(null, "Custom " + i, 10, true);
-        PrizeBook limit = full; assertThrows(IllegalArgumentException.class, () -> limit.addPresets(Arrays.asList("catalog-king"))); assertEquals(60, limit.schemes.size());
+        PrizeBook limit = full; assertThrows(IllegalArgumentException.class, () -> limit.addPresets(Arrays.asList("catalog-king"))); assertEquals(PrizeBook.MAX_SCHEMES, limit.schemes.size());
     }
 }

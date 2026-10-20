@@ -9,6 +9,7 @@ final class TicketPlanViews {
     static void totals(LinearLayout page, TicketPlan plan, PrizeBook book) {
         Ui.add(page, Ui.text(page.getContext(), plan.players() + " players · " + plan.totalSets() + " sets · " + plan.totalSets() * TicketPlan.TICKETS + " tickets", 21), -2);
         Ui.add(page, Ui.text(page.getContext(), "Collected: " + PrizeBook.money(plan.collection() * 100) + "\nPlanned prizes: " + PrizeBook.money(TicketPlan.budget(book) * 100), 22), -2);
+        Ui.add(page, Ui.text(page.getContext(), TicketPlan.selected(book) + " / " + plan.totalSets() * 5 + " prizes selected · five ₹10 prizes per purchased set", 18), -2);
         String problem = plan.problem(book); Ui.add(page, Ui.text(page.getContext(), problem == null ? "✓ Prize budget matches ticket sales" : problem, 18), -2);
     }
     static void tickets(LinearLayout page, GameStore store, Runnable refresh, Runnable next, Consumer<String> feedback) {
@@ -16,7 +17,7 @@ final class TicketPlanViews {
         Ui.add(page, Ui.text(page.getContext(), "1. Purchased ticket sets", 25), -2);
         Ui.add(page, Ui.text(page.getContext(), "1 set = 6 tickets = ₹50. Use 0 for someone not playing. Every participant can win any selected scheme.", 19), -2);
         totals(page, plan, book);
-        Ui.action(page, "Choose schemes & amounts →", Ui.GREEN, next);
+        Ui.action(page, "Choose ₹10 schemes →", Ui.GREEN, next);
         for (Map.Entry<String, String> player : book.players.entrySet()) {
             int count = plan.sets(player.getKey());
             Ui.add(page, Ui.text(page.getContext(), player.getValue(), 23), -2);
@@ -25,19 +26,18 @@ final class TicketPlanViews {
             Button minus = Ui.button(page.getContext(), "− 1 set", Ui.PAPER, () -> safe(() -> { store.plan(plan.with(player.getKey(), count - 1), book, false); refresh.run(); }, feedback));
             minus.setContentDescription("One fewer set for " + player.getValue()); minus.setEnabled(count > 0);
             Button plus = Ui.button(page.getContext(), "+ 1 set", Ui.PAPER, () -> safe(() -> { store.plan(plan.with(player.getKey(), count + 1), book, false); refresh.run(); }, feedback));
-            plus.setContentDescription("One more set for " + player.getValue()); plus.setEnabled(count < TicketPlan.MAX_SETS);
+            plus.setContentDescription("One more set for " + player.getValue()); plus.setEnabled(count < TicketPlan.MAX_SETS && plan.totalSets() < TicketPlan.MAX_TOTAL_SETS);
             Ui.weighted(row, minus); Ui.weighted(row, plus); Ui.add(page, row, 52);
         }
-        Ui.action(page, "Choose schemes & amounts →", Ui.GREEN, next);
+        Ui.action(page, "Choose ₹10 schemes →", Ui.GREEN, next);
     }
     static void schemes(LinearLayout page, GameStore store, String group, Consumer<String> chooseGroup, Runnable back,
-                        Runnable refresh, Consumer<String> editAmount, Runnable ready, Consumer<String> feedback) {
+                        Runnable refresh, Runnable addPrizes, Runnable ready, Consumer<String> feedback) {
         PrizeBook book = store.prizes(); TicketPlan plan = store.plan();
-        Ui.add(page, Ui.text(page.getContext(), "2. Schemes & prize amounts", 25), -2);
+        Ui.add(page, Ui.text(page.getContext(), "2. Schemes · ₹10 each", 25), -2);
         Ui.action(page, "‹ Change purchased sets", Ui.PAPER, back); totals(page, plan, book);
-        Ui.add(page, Ui.text(page.getContext(), "Choose schemes, then adjust their total prizes to use the full collection. Two winners share a prize; 3+ is Bogie with no payout.", 18), -2);
-        Ui.action(page, "Split full collection equally", Ui.GREEN, () -> safe(() -> { store.plan(plan, plan.balance(book), false); refresh.run(); }, feedback));
-        Ui.add(page, Ui.text(page.getContext(), "Equal split uses whole rupees; any remainder adds ₹1 to the first selected schemes. You can edit each amount afterward.", 17), -2);
+        Ui.add(page, Ui.text(page.getContext(), "Every scheme pays ₹10. Two winners get ₹5 each; 3+ is Bogie with no payout. Select five prizes per purchased set to allocate the full collection.", 18), -2);
+        Ui.action(page, "Add extra ₹10 prizes", Ui.GREEN, addPrizes);
         Ui.action(page, "Confirm setup · ready to call", Ui.PINK, () -> safe(() -> { store.plan(plan, book, true); ready.run(); }, feedback)).setEnabled(plan.problem(book) == null);
         LinearLayout choices = new LinearLayout(page.getContext());
         Ui.weighted(choices, Ui.button(page.getContext(), "Clear selection", Ui.PAPER, () -> selectAll(store, book, plan, false, refresh, feedback)));
@@ -52,23 +52,13 @@ final class TicketPlanViews {
             Ui.add(page, row, 58);
         }
         for (PrizeBook.Scheme prize : book.schemes) if (PrizeCatalog.group(book, prize).equals(group)) {
-            CheckBox choice = new CheckBox(page.getContext()); choice.setText(prize.name); choice.setTextSize(21); choice.setMinHeight(Ui.dp(page.getContext(), 56));
+            CheckBox choice = new CheckBox(page.getContext()); choice.setText(page.getContext().getString(R.string.ten_rupee_scheme, prize.name)); choice.setTextSize(21); choice.setMinHeight(Ui.dp(page.getContext(), 56));
             choice.setContentDescription("Use scheme: " + prize.name); choice.setChecked(prize.enabled);
             choice.setOnCheckedChangeListener((button, enabled) -> safe(() -> { store.plan(plan, book.configure(prize.id, prize.name, prize.rupees, enabled), false); refresh.run(); }, feedback));
             Ui.add(page, choice, -2);
-            if (prize.enabled) {
-                LinearLayout row = new LinearLayout(page.getContext());
-                Button minus = Ui.button(page.getContext(), "− ₹5", Ui.PAPER, () -> change(store, book, plan, prize, Math.max(0, prize.rupees - 5), refresh, feedback)); minus.setEnabled(prize.rupees > 0); minus.setContentDescription("Reduce prize for " + prize.name);
-                Button amount = Ui.button(page.getContext(), PrizeBook.money(prize.rupees * 100) + " · edit", Ui.PAPER, () -> editAmount.accept(prize.id)); amount.setContentDescription("Edit prize amount: " + prize.name);
-                Button plus = Ui.button(page.getContext(), "+ ₹5", Ui.PAPER, () -> change(store, book, plan, prize, Math.min(100000, prize.rupees + 5), refresh, feedback)); plus.setEnabled(prize.rupees < 100000); plus.setContentDescription("Increase prize for " + prize.name);
-                Ui.weighted(row, minus); Ui.weighted(row, amount); Ui.weighted(row, plus); Ui.add(page, row, 58);
-            }
         }
         totals(page, plan, book);
         Ui.action(page, "Confirm setup · ready to call", Ui.PINK, () -> safe(() -> { store.plan(plan, book, true); ready.run(); }, feedback)).setEnabled(plan.problem(book) == null);
-    }
-    private static void change(GameStore store, PrizeBook book, TicketPlan plan, PrizeBook.Scheme prize, int amount, Runnable refresh, Consumer<String> feedback) {
-        safe(() -> { store.plan(plan, book.configure(prize.id, prize.name, amount, true), false); refresh.run(); }, feedback);
     }
     private static void selectAll(GameStore store, PrizeBook book, TicketPlan plan, boolean enabled, Runnable refresh, Consumer<String> feedback) {
         safe(() -> { PrizeBook next = book; for (PrizeBook.Scheme prize : book.schemes) next = next.configure(prize.id, prize.name, prize.rupees, enabled); store.plan(plan, next, false); refresh.run(); }, feedback);

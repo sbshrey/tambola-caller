@@ -1,3 +1,54 @@
+# Tambola Keyboard 1.4.2: ₹10 schemes and transposed results
+
+Validated on 20 October 2026. Version code 9, local branch `feat/tap-winner-announcements`. This supersedes the editable prize allocation described in the 1.4.1 report below.
+
+## Behavior covered
+
+- **Every new-game scheme is ₹10:** amount editors and equal allocation are removed. One winner receives ₹10, two receive ₹5 each, and three or more remain Bogie with no payout. The same rule applies to custom schemes and the next round.
+- **Allocate the full collection:** each ₹50 purchased set requires five selected ₹10 prizes. Approval remains blocked for under/over allocation. The setup shows selected/required counts and lets the host add distinct extra prize names, one per line. Eleven sets need 55 schemes; two sets for every family player need 110. No extra prizes are invented automatically. Capacity is now 500 schemes and 100 total sets per new game, with 0–20 sets per player.
+- **Upgrade safety:** an older round in progress retains its approved amounts and recorded payouts, including an older plan above the new set limit. A new round clears results, resets all scheme defaults to ₹10 and requires review. An older approved setup with no calls is converted and must be confirmed again. Existing no-plan calling remains available.
+- **Transposed screen and PNG:** awarded schemes and Bogies are rows; saved players are columns. Cells show actual per-player payouts, shared prizes show ₹5 in each winning column, and full-game totals appear at the bottom. Players with no payout remain visible. Unawarded schemes are counted in the header. Funded games include purchased sets, collections and unpaid prizes.
+- **Large results:** the screen scrolls horizontally and pages through schemes/player groups. Images repeat headings, scheme labels and full-game totals on every page, with at most 12 players per image and a 4096-pixel height limit. Tests verify that all 6,000 player/scheme cells in a 100-player, 60-scheme Hindi fixture appear exactly once. A separate fixture awards all 46 family/default schemes to one player to check the requested many-wins layout.
+
+## Checks
+
+**48 JVM tests and 62 distinct Android cases passed across the main and focused reruns**, including the three-game scenario. Display runs repeat the relevant cases.
+
+| Check | Result |
+| --- | --- |
+| JVM tests | 48 passed, 0 failures/errors/skips |
+| Planner/results focused run | 11 passed in 108.715 seconds: ₹10 selection, extra names, exact approval, eligibility, new-round review, recovery, totals, pagination, screen layout, read-only image sharing and draft protection |
+| Broader regression and upgrade case | 47/50 initially passed; all 3 failing cases passed after test-driver synchronization fixes in a 55.643-second focused run |
+| Three full games | Passed in 715.084 seconds: three complete 90-number games, one accidental draw undone per game, Varsha's claim, a shared award, single winners, Bogie, all three Houses, editor restart at 45, image/text results, cancel/confirm reset, and the first call of a fourth game |
+| Ticket/payout accounting during those games | 12 sets collect ₹600 and select 60 ₹10 prizes. The scenario records five paid schemes (₹50), one Bogie (₹0), and leaves 54 unawarded; ₹550 remains unpaid. Varsha/Rekha switch their one/two-set purchases for the second game. This explicitly tests unpaid prize reporting; the app does not automatically award paper tickets. |
+| Large text and landscape | Both cases passed at 160% font scale (48.962 seconds) and in 2280×1080 landscape (91.586 seconds); actual prize rows and page navigation were inspected. |
+| Debug, test and release builds | Passed |
+| Debug/release lint | No issues found |
+| Release inspection | Version 1.4.2/code 9, min SDK 26, target 35; debug editor and test speech fixtures excluded |
+| Test APK signature | Verified with apksigner |
+
+An initial image-handoff check exposed that including every unawarded scheme made a small result unnecessarily span multiple pictures. The final layout uses awarded/Bogie rows and an unawarded count; all focused cases then passed. The broader suite exposed test-driver timing and partial-target problems in prize navigation, new-game confirmation and undo snapshot checks. The harness now waits for the destination/confirmation screen and saved state, and requires a larger visible tap target; assertions were retained. All three focused reruns passed. One full-game attempt stopped before its first call because Android timed out binding the IME after a new instrumentation process; the test setup now refocuses the editor with a user-equivalent tap. The subsequent complete three-game run passed. Visual inspection then shortened the results-screen instructions so actual prize rows are visible sooner at large text sizes. The final large-text and landscape runs rechecked those rows. An initial landscape test also stopped its scroll search too early after a screen transition; a final upward search finds controls above the viewport, and the entire landscape setup/results run then passed.
+
+## Reproduce and artifacts
+
+Use a dedicated emulator: these tests reset its saved rounds. Validation uses API 35 ARM64 (Pixel 4), Android build-tools 35, AGP 8.7.3, Gradle 8.9 and OpenJDK 20.0.1; source compatibility is Java 17.
+
+From `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.TicketPlanUiTest,io.github.sbshrey.tambola.keyboard.ResultsImageTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+adb shell am instrument -w -r -e funded true -e class io.github.sbshrey.tambola.keyboard.FullGameTest io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`releases/1.4.2/` contains the debug-signed test APK, unsigned production APK, checksums, installation guide, logs and result previews. `validation/run-remaining.py` records the full-game/display sequence; adjust its SDK/repository paths for another machine. Large-text runs use font scale 1.6. Landscape uses `wm fixed-to-user-rotation enabled` and `-e landscape true`; the runner restores font scale 1.0 and default rotation afterward.
+
+No production release was pushed or published. The original signing key is required to update the existing phone installation. The test APK cannot replace it; do not uninstall the live app to bypass the signature mismatch. No physical-phone, real WhatsApp delivery/compression, or live speech-provider test was performed in this update. The local editor exercises actual IME calls and image handoff without sending messages to anyone. The website was unchanged.
+
+---
+
 # Tambola Keyboard 1.4.1: ticket budgets, corrections and results pictures
 
 Validated on 20 October 2026. Version code 8, local branch `feat/tap-winner-announcements`. This Android update builds on the 1.4.0 tap-winner flow documented below.

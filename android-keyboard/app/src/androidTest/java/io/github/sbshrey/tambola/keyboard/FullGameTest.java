@@ -15,12 +15,11 @@ public class FullGameTest extends KeyboardScenario {
     private void house(String prize, String player) {
         choose("Houses", prize); name(player); tap("Insert winner announcement"); expect("Winner saved"); send(); tap("Call");
     }
-    @Test public void threeCompleteGamesThroughKeyboardKeepSetupAndNeverLeakCallsOrAwards() {
-        store.prizes(store.prizes().configure("catalog-king", "King", 20, true));
+    @Test public void threeCompleteGamesThroughKeyboardKeepSetupAndNeverLeakCallsOrAwards() throws Exception {
         if (funded()) {
-            Map<String, Integer> amounts = new LinkedHashMap<>(); amounts.put("prize-0", 10); amounts.put("catalog-king", 20); amounts.put("catalog-queen", 10);
-            amounts.put("catalog-house-1", 190); amounts.put("catalog-house-2", 190); amounts.put("catalog-house-3", 180);
-            PrizeBook book = store.prizes(); for (PrizeBook.Scheme prize : book.schemes) book = book.configure(prize.id, prize.name, amounts.getOrDefault(prize.id, prize.rupees), amounts.containsKey(prize.id)); store.prizes(book);
+            PrizeBook book = store.prizes();
+            while (TicketPlan.selected(book) < 60) book = book.configure(null, "Extra " + book.schemes.size(), 10, true);
+            store.prizes(book);
         }
         String setup = PrizeJson.encode(store.prizes());
         new GameStore(context, true).save(Game.decode("47"));
@@ -47,7 +46,7 @@ public class FullGameTest extends KeyboardScenario {
                 }
                 if (count == 6) {
                     choose("Quick prizes", "King"); name("Kamlesh Bhabhi"); tap("Insert winner announcement"); expect("Winner saved");
-                    assertEquals("🏆 King: Kamlesh Bhabhi\n₹20 prize", draft()); send(); tap("Call");
+                    assertEquals("🏆 King: Kamlesh Bhabhi\n₹10 prize", draft()); send(); tap("Call");
                 }
                 if (count == 7) {
                     choose("Quick prizes", "Queen"); name("Varsha"); name("Rekha"); name("Suman"); tap("Insert Bogie announcement"); expect("Bogie saved");
@@ -72,11 +71,16 @@ public class FullGameTest extends KeyboardScenario {
             if (funded()) house("House 3", "Suman");
             else house("House " + round, "Varsha");
             tap("Call"); tap("Share results picture"); expect("Results picture ready");
-            main(() -> assertEquals(1, rule.getActivity().receivedImages.size()));
-            assertEquals(funded() ? 59000 : 4000, new PrizeSummary(store.prizes()).totalPaise); assertEquals(90, store.load().count());
+            main(() -> assertEquals(new ResultsImage(store.prizes(), 90, store.plan()).pages.size(), rule.getActivity().receivedImages.size()));
+            assertEquals(funded() ? 5000 : 3000, new PrizeSummary(store.prizes()).totalPaise); assertEquals(90, store.load().count());
+            if (funded() && round == 1) {
+                android.graphics.Bitmap picture = new ResultsImage(store.prizes(), 90, store.plan()).picture(0);
+                try (java.io.OutputStream output = context.openFileOutput("full-game-table.png", android.content.Context.MODE_PRIVATE)) { assertTrue(picture.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, output)); }
+                finally { picture.recycle(); }
+            }
             tap("Winners"); tap("Insert all results"); expect("Ready · tap WhatsApp Send");
             assertTrue(draft().contains("90 numbers called")); assertTrue(draft().contains("Queen: Bogie"));
-            assertTrue(draft().contains(funded() ? "Total prizes\nVarsha: ₹195\nRekha: ₹195\nKamlesh Bhabhi: ₹20\nSuman: ₹180" : "Total prizes\nVarsha: ₹15\nRekha: ₹5\nKamlesh Bhabhi: ₹20"));
+            assertTrue(draft().contains(funded() ? "Total prizes\nVarsha: ₹15\nRekha: ₹15\nKamlesh Bhabhi: ₹10\nSuman: ₹10" : "Total prizes\nVarsha: ₹15\nRekha: ₹5\nKamlesh Bhabhi: ₹10"));
             screenshot("full-game-" + round + "-results");
             // A new game keeps the old draft visible and blocks accidental calls until explicitly cleared.
             String results = draft(); tap("Board"); tap("Start a new game"); tap("Keep playing");

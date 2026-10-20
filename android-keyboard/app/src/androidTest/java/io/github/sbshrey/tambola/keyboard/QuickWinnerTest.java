@@ -43,7 +43,7 @@ public class QuickWinnerTest {
     private UiObject2 visible(BySelector selector) {
         for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN}) {
             for (int i = 0; i < 18; i++) {
-                UiObject2 found = device.findObject(selector); if (found != null && found.getVisibleBounds().height() >= 80) return found;
+                UiObject2 found = device.findObject(selector); if (found != null && found.getVisibleBounds().height() >= Ui.dp(context, 44)) return found;
                 UiObject2 panel = device.findObject(By.desc("Tambola controls")); assertNotNull(panel);
                 boolean more = panel.scroll(direction, 0.7f); device.waitForIdle();
                 if (!more) break;
@@ -51,7 +51,7 @@ public class QuickWinnerTest {
         }
         UiObject2 found = device.findObject(selector); assertNotNull(selector.toString(), found); return found;
     }
-    private void tap(String text) { visible(By.text(text)).click(); device.waitForIdle(); }
+    private void tap(String text) { visible(By.text(text)).click(); main(() -> {}); device.waitForIdle(); if (text.equals("‹ Choose another prize") || text.equals("Tap prize + winner")) expect("1. Choose a prize"); }
     private void choose(String prize) { visible(By.desc("Choose prize: " + prize)).click(); device.waitForIdle(); }
     private void name(String name, boolean selected) { visible(By.desc(name + (selected ? ", selected claimant" : ", choose claimant"))).click(); device.waitForIdle(); }
     private void quick() { tap("Winners"); tap("Tap prize + winner"); }

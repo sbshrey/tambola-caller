@@ -116,7 +116,7 @@ public final class TambolaInputMethod extends InputMethodService {
             else if (panel.equals("New game")) newGame();
             else if (panel.equals("Clear message")) confirmClearMessage();
             else if (panel.equals("Undo number")) confirmUndo();
-            else if (panel.equals("Award")) { Ui.action(body, "‹ Back to winners", Ui.PAPER, () -> navigate("Winners")); PrizeViews.award(body, store, awardId, false, () -> { navigate("Winners"); say("Winners saved. Tap their announcement to insert it."); }, this::say); }
+            else if (panel.equals("Award")) { Ui.action(body, "‹ Back to winners", Ui.PAPER, () -> navigate("Winners")); PrizeViews.award(body, store, awardId, () -> { navigate("Winners"); say("Winners saved. Tap their announcement to insert it."); }, this::say); }
             return true;
         } catch (IllegalArgumentException | IllegalStateException error) { Ui.add(body, Ui.text(this, error.getMessage(), 18), -2); Ui.action(body, "Open help & setup", Ui.PAPER, () -> open("help")); say("Saved details need attention. Open help & setup."); return false; }
     }

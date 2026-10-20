@@ -4,7 +4,7 @@ import java.util.*;
 
 /** One purchased set is six paper tickets for ₹50. A player is counted once per claim. */
 final class TicketPlan {
-    static final int PRICE = 50, TICKETS = 6, MAX_SETS = 20;
+    static final int PRICE = 50, TICKETS = 6, MAX_SETS = 20, MAX_TOTAL_SETS = PrizeBook.MAX_SCHEMES / 5;
     final Map<String, Integer> sets, allocations;
     final boolean approved;
     TicketPlan(Map<String, Integer> sets, Map<String, Integer> allocations, boolean approved) {
@@ -27,23 +27,18 @@ final class TicketPlan {
     String problem(PrizeBook book) {
         if (!sets.keySet().equals(book.players.keySet())) return "Player list changed. Review ticket sales again.";
         if (totalSets() == 0) return "Choose at least one purchased set.";
+        if (!approved && totalSets() > MAX_TOTAL_SETS) return "Use up to " + MAX_TOTAL_SETS + " purchased sets per game.";
         if (selected(book) == 0) return "Select at least one prize scheme.";
         int difference = collection() - budget(book);
-        if (difference > 0) return "Allocate the remaining " + PrizeBook.money(difference * 100) + " to prizes.";
-        if (difference < 0) return "Reduce prizes by " + PrizeBook.money(-difference * 100) + " to match ticket sales.";
+        if (difference > 0) return "Select " + (difference / PrizeBook.PRIZE_RUPEES) + " more ₹10 prizes to allocate " + PrizeBook.money(difference * 100) + ".";
+        if (difference < 0) return "Remove " + (-difference / PrizeBook.PRIZE_RUPEES) + " ₹10 prizes to match ticket sales.";
         return null;
     }
     TicketPlan approve(PrizeBook book) {
+        for (PrizeBook.Scheme prize : book.schemes) if (prize.enabled && prize.rupees != PrizeBook.PRIZE_RUPEES) throw new IllegalArgumentException("Every scheme must be ₹10.");
         String error = problem(book); if (error != null) throw new IllegalArgumentException(error);
         Map<String, Integer> amounts = new LinkedHashMap<>(); for (PrizeBook.Scheme prize : book.schemes) if (prize.enabled) amounts.put(prize.id, prize.rupees);
         return new TicketPlan(sets, amounts, true);
-    }
-    PrizeBook balance(PrizeBook book) {
-        int count = selected(book); if (totalSets() == 0 || count == 0) throw new IllegalArgumentException("Choose purchased sets and at least one scheme first.");
-        if (collection() < count) throw new IllegalArgumentException("Select fewer schemes so every prize can receive at least ₹1.");
-        int base = collection() / count, remainder = collection() % count; PrizeBook next = book;
-        for (PrizeBook.Scheme prize : book.schemes) if (prize.enabled) next = next.configure(prize.id, prize.name, base + (remainder-- > 0 ? 1 : 0), true);
-        return next;
     }
     void validateLive(PrizeBook book) {
         if (!approved) throw new IllegalArgumentException("Review tickets and schemes before calling the first number.");

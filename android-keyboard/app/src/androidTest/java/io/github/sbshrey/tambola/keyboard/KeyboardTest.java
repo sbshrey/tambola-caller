@@ -91,9 +91,15 @@ public class KeyboardTest {
         assertEquals(Game.emoji(second.latest()), message());
     }
     private UiObject2 visible(BySelector selector) {
-        UiObject2 item = device.findObject(selector);
-        for (int tries = 0; item == null && tries < 6; tries++) { UiObject2 panel = device.findObject(By.desc("Tambola controls")); assertNotNull(panel); panel.scroll(Direction.DOWN, 0.65f); device.waitForIdle(); item = device.findObject(selector); }
-        assertNotNull(item); return item;
+        for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN}) {
+            for (int tries = 0; tries < 20; tries++) {
+                UiObject2 item = device.findObject(selector);
+                if (item != null && item.getVisibleBounds().height() >= Ui.dp(context, 44)) return item;
+                UiObject2 panel = device.findObject(By.desc("Tambola controls")); assertNotNull(panel);
+                boolean more = panel.scroll(direction, 0.65f); device.waitForIdle(); if (!more) break;
+            }
+        }
+        UiObject2 item = device.findObject(selector); assertNotNull(item); return item;
     }
     @Test public void winnersCanBeChosenAndResultsInsertedWithoutDrawing() throws Exception {
         java.util.LinkedHashMap<String, String> names = new java.util.LinkedHashMap<>(); names.put("a", "Asha"); names.put("b", "Bina");
@@ -140,7 +146,8 @@ public class KeyboardTest {
         assertEquals(5, live.load().count()); assertTrue(live.prizes().hasWinners());
         device.findObject(By.text("Board")).click(); device.waitForIdle();
         visible(By.text("Start a new game")).click(); device.waitForIdle();
-        visible(By.text("Yes, start new game")).click(); device.waitForIdle();
+        visible(By.text("Yes, start new game")).click();
+        assertTrue(device.wait(Until.hasObject(By.text("0 / 90")), 5000)); onMain(() -> {}); device.waitForIdle();
         assertEquals(0, live.load().count()); assertFalse(live.prizes().hasWinners()); assertEquals(2, live.prizes().players.size());
         assertEquals(10, live.prizes().scheme("prize-0").rupees); assertEquals("47", new GameStore(context, true).load().encode());
         assertEquals(Game.emoji(5), message()); tap("Next number"); assertEquals(0, live.load().count());

@@ -4,7 +4,7 @@ import java.util.*;
 
 /** Optional prize tracking. Money is integer rupees, split into exact paise. */
 final class PrizeBook {
-    static final int MAX_PLAYERS = 100, MAX_SCHEMES = 60;
+    static final int PRIZE_RUPEES = 10, MAX_PLAYERS = 100, MAX_SCHEMES = 500;
     final Map<String, String> players;
     final List<Scheme> schemes;
 
@@ -34,7 +34,7 @@ final class PrizeBook {
     }
 
     PrizeBook(Map<String, String> players, List<Scheme> schemes) {
-        if (players.size() > MAX_PLAYERS || schemes.size() > MAX_SCHEMES) throw new IllegalArgumentException("Use up to 100 players and 60 prize schemes.");
+        if (players.size() > MAX_PLAYERS || schemes.size() > MAX_SCHEMES) throw new IllegalArgumentException("Use up to 100 players and 500 prize schemes.");
         LinkedHashMap<String, String> checked = new LinkedHashMap<>(); Set<String> names = new HashSet<>(), ids = new HashSet<>();
         players.forEach((id, name) -> { String value = clean(name); if (id == null || id.isEmpty() || !names.add(value.toLowerCase(Locale.ROOT))) throw new IllegalArgumentException("Player names must be different."); checked.put(id, value); });
         for (Scheme scheme : schemes) { if (!ids.add(scheme.id) || !checked.keySet().containsAll(scheme.winners) || !checked.keySet().containsAll(scheme.bogiePlayers)) throw new IllegalArgumentException("Unreadable prize details."); }
@@ -81,7 +81,12 @@ final class PrizeBook {
     }
     private PrizeBook replace(Scheme item, boolean add) { List<Scheme> next = new ArrayList<>(); for (Scheme old : schemes) next.add(old.id.equals(item.id) ? item : old); if (add) next.add(item); return new PrizeBook(players, next); }
     PrizeBook afterUndo(int count) { List<Scheme> next = new ArrayList<>(); for (Scheme item : schemes) next.add(item.callCount > count ? item.cleared() : item); return new PrizeBook(players, next); }
-    PrizeBook newRound() { return afterUndo(0); }
+    PrizeBook fixedPrizes() {
+        PrizeBook next = this;
+        for (Scheme prize : schemes) if (prize.rupees != PRIZE_RUPEES) next = next.configure(prize.id, prize.name, PRIZE_RUPEES, prize.enabled);
+        return next;
+    }
+    PrizeBook newRound() { return afterUndo(0).fixedPrizes(); }
     String names(List<String> ids) { List<String> names = new ArrayList<>(); for (String id : ids) names.add(players.get(id)); return String.join(" & ", names); }
     String winners(Scheme item) { return item.bogie() ? "Bogie · " + names(item.bogiePlayers) : names(item.winners); }
     String claim(String schemeId, String playerId, int count) {

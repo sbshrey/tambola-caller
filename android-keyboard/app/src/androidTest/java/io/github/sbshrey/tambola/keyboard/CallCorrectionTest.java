@@ -50,10 +50,10 @@ public class CallCorrectionTest extends KeyboardScenario {
         main(() -> assertEquals(Collections.singletonList(Game.emoji(number)), rule.getActivity().sentMessages));
     }
     @Test public void changedRoundOrPrizesInvalidatesUndoConfirmation() {
-        draw(); tap("Undo last number");
-        store.prizes(store.prizes().configure("catalog-king", "King", 25, true));
+        draw(); tap("Undo last number"); expect("Undo number " + store.load().latest() + "?");
+        main(() -> store.prizes(store.prizes().configure("catalog-king", "King", 25, true)));
         tap("Yes, undo number"); expect("Game or prizes changed."); assertEquals(1, store.load().count());
-        tap("Undo last number"); main(() -> store.save(store.load().draw(new Random(5)))); device.waitForIdle();
+        tap("Undo last number"); expect("Undo number " + store.load().latest() + "?"); main(() -> store.save(store.load().draw(new Random(5)))); device.waitForIdle();
         tap("Yes, undo number"); expect("Game or prizes changed."); assertEquals(2, store.load().count());
     }
     @Test public void rejectedDeletionDoesNotUndoOrPretendTheDraftWasCleared() {

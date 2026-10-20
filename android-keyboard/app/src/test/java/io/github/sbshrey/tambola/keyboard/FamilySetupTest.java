@@ -41,10 +41,10 @@ public class FamilySetupTest {
         assertThrows(IllegalArgumentException.class, () -> FamilySetup.addTo(snapshot));
         assertEquals(95, snapshot.players.size()); assertEquals(5, snapshot.schemes.size());
         PrizeBook schemes = PrizeBook.defaults();
-        for (int i = 5; i < 60; i++) schemes = schemes.configure(null, "Prize " + i, 10, true);
+        for (int i = 5; i < PrizeBook.MAX_SCHEMES; i++) schemes = schemes.configure(null, "Prize " + i, 10, true);
         PrizeBook crowded = schemes;
         assertThrows(IllegalArgumentException.class, () -> FamilySetup.addTo(crowded));
-        assertTrue(crowded.players.isEmpty()); assertEquals(60, crowded.schemes.size());
+        assertTrue(crowded.players.isEmpty()); assertEquals(PrizeBook.MAX_SCHEMES, crowded.schemes.size());
     }
     @Test public void everyFamilyPlayerCanWinEverySuppliedPrizeWithoutCreatingNames() {
         PrizeBook book = FamilySetup.addTo(PrizeBook.defaults());

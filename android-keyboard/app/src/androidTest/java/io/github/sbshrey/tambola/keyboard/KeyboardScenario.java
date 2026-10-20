@@ -40,10 +40,16 @@ public abstract class KeyboardScenario {
         });
         device.waitForIdle();
         main(() -> ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(rule.getActivity().draft, InputMethodManager.SHOW_IMPLICIT));
+        if (device.wait(Until.findObject(By.text("Call")), 5000) == null) {
+            // A fresh instrumentation process can outlive Android's first IME bind request.
+            // Refocus with the same tap a user makes when returning to the chat.
+            UiObject2 editor = device.wait(Until.findObject(By.desc("Test chat draft")), 5000); assertNotNull(editor); editor.click();
+            main(() -> ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(rule.getActivity().draft, InputMethodManager.SHOW_IMPLICIT));
+        }
         assertNotNull(device.wait(Until.findObject(By.text("Call")), 10000)); device.waitForIdle();
     }
     protected UiObject2 visible(BySelector selector) {
-        for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN}) {
+        for (Direction direction : new Direction[]{Direction.UP, Direction.DOWN, Direction.UP}) {
             for (int i = 0; i < 20; i++) {
                 UiObject2 found = device.findObject(selector);
                 if (found != null && found.getVisibleBounds().height() >= Ui.dp(context, 44)) return found;

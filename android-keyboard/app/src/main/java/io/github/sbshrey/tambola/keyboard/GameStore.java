@@ -17,6 +17,7 @@ final class GameStore {
     void resetPlan() { commit(preferences.edit().remove("ticket-plan-v1")); }
     void resetPrizeDetails() { commit(preferences.edit().putString("prizes-v1", PrizeJson.encode(PrizeBook.defaults())).remove("ticket-plan-v1")); }
     void prizes(PrizeBook book) {
+        if (load().count() == 0 && !book.hasWinners()) book = book.fixedPrizes();
         TicketPlan plan = plan(); SharedPreferences.Editor edit = preferences.edit().putString("prizes-v1", PrizeJson.encode(book));
         if (plan != null) {
             if (load().count() > 0) plan.validateLive(book);
@@ -26,10 +27,20 @@ final class GameStore {
     }
     void plan(TicketPlan plan, PrizeBook book, boolean approve) {
         if (load().count() > 0 || prizes().hasWinners()) throw new IllegalArgumentException("Start a new game before changing ticket sales or schemes.");
+        book = book.fixedPrizes();
         TicketPlan next = approve ? plan.approve(book) : plan.review(book);
         commit(preferences.edit().putString("prizes-v1", PrizeJson.encode(book)).putString("ticket-plan-v1", TicketPlanJson.encode(next)));
     }
-    void requireReady() { TicketPlan plan = plan(); if (plan != null) plan.validateLive(prizes()); }
+    void requireReady() {
+        TicketPlan plan = plan();
+        if (load().count() == 0) {
+            PrizeBook book = prizes();
+            if (!book.hasWinners() && book.schemes.stream().anyMatch(prize -> prize.rupees != PrizeBook.PRIZE_RUPEES)) {
+                if (plan == null) prizes(book.fixedPrizes()); else { plan(plan, book, false); plan = plan(); }
+            }
+        }
+        if (plan != null) plan.validateLive(prizes());
+    }
     void newRound() {
         TicketPlan plan = plan(); PrizeBook book = prizes().newRound();
         SharedPreferences.Editor edit = preferences.edit().putString("called-v1", "").putString("prizes-v1", PrizeJson.encode(book));

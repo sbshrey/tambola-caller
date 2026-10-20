@@ -74,7 +74,7 @@ public class FeaturesTest {
         rule.launchActivity(new Intent().putExtra("section", "home")); AtomicInteger saved = new AtomicInteger(); final LinearLayout[] panel = {null};
         InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
             panel[0] = Ui.column(rule.getActivity()); panel[0].setBackgroundColor(Ui.PAPER); rule.getActivity().setContentView(panel[0]);
-            PrizeViews.award(panel[0], store, "prize-0", false, saved::incrementAndGet, value -> fail(value));
+            PrizeViews.award(panel[0], store, "prize-0", saved::incrementAndGet, value -> fail(value));
             List<Spinner> selectors = new ArrayList<>(); for (int i = 0; i < panel[0].getChildCount(); i++) if (panel[0].getChildAt(i) instanceof Spinner) selectors.add((Spinner) panel[0].getChildAt(i));
             assertEquals(2, selectors.size()); selectors.get(0).setSelection(1); selectors.get(1).setSelection(2);
         });
