@@ -236,8 +236,11 @@ public final class TambolaInputMethod extends InputMethodService {
     }
     private void share(Game game) {
         Ui.action(body, "‹ Back to call", Ui.PAPER, () -> navigate("Call"));
-        if (!practice) Ui.action(body, "Game messages", Ui.GREEN, () -> navigate("Game messages"));
-        if (game.latest() == 0) { Ui.add(body, Ui.text(this, "Call a number first to share numbers, pictures or voice clips.", 20), -2); return; }
+        if (!practice) {
+            Ui.action(body, "Share scheme status picture", Ui.GREEN, this::schemeStatusPicture).setEnabled(!mediaBusy);
+            Ui.action(body, "Game messages", Ui.GREEN, () -> navigate("Game messages"));
+        }
+        if (game.latest() == 0) { Ui.add(body, Ui.text(this, "Call a number first to share a number, recent numbers, board or voice clip.", 20), -2); return; }
         Ui.add(body, Ui.text(this, "Choose what to share", 23), -2); Ui.action(body, "Insert recent numbers", Ui.GREEN, () -> insertText(Sharing.recent(store.load())));
         for (String kind : new String[]{Sharing.NUMBER, Sharing.RECENT, Sharing.BOARD, Sharing.AUDIO}) {
             String label = kind.equals(Sharing.NUMBER) ? "Number picture" : kind.equals(Sharing.RECENT) ? "Recent numbers picture" : kind.equals(Sharing.BOARD) ? "Board picture" : "Voice clip · " + preferences.label();
@@ -256,6 +259,7 @@ public final class TambolaInputMethod extends InputMethodService {
         if (practice) { Ui.add(body, Ui.text(this, "Winners are for your live game. Practice does not change them.", 20), -2); return; }
         PrizeBook book = store.prizes(); Ui.add(body, Ui.text(this, "Winners (optional)", 23), -2);
         Ui.action(body, "Tap prize + winner", Ui.GREEN, () -> { quickGroup = "Quick prizes"; navigate("Tap winners"); }).setEnabled(!mediaBusy);
+        Ui.action(body, "Share scheme status picture", Ui.GREEN, this::schemeStatusPicture).setEnabled(!mediaBusy);
         Ui.action(body, "Speak prize + winner", Ui.GREEN, this::startWinnerSpeech).setEnabled(!mediaBusy);
         Ui.action(body, "Speech: " + (preferences.dictationLanguage().equals("hi-IN") ? "Hindi" : "English / Hinglish") + " · change", Ui.PAPER, () -> { preferences.dictationLanguage(preferences.dictationLanguage().equals("hi-IN") ? "en-IN" : "hi-IN"); render(); });
         Ui.add(body, Ui.text(this, "Say: Early five winner Asha Sharma. We save the winner and fill the message. Check it, then Send.", 18), -2);
@@ -433,20 +437,25 @@ public final class TambolaInputMethod extends InputMethodService {
         if (!practice) return; InputConnection editor = getCurrentInputConnection(); if (editor == null) return;
         say(clearEditor(editor) ? "Practice box cleared. Tap Next number." : "Could not clear the practice box. Try again.");
     }
-    private void resultsPicture() {
+    private void resultsPicture() { prizePicture(false); }
+    private void schemeStatusPicture() { prizePicture(true); }
+    private void prizePicture(boolean schemes) {
         if (practice || mediaBusy || emptyEditor() == null) return;
         Game snapshot = store.load(); PrizeBook prizes = store.prizes(); String prizeSnapshot = PrizeJson.encode(prizes), planSnapshot = store.planSnapshot();
-        int started = session; mediaBusy = true; render(); say("Preparing results picture…");
-        Sharing.prepareResults(this, snapshot, prizes, store.plan(), uris -> {
+        int started = session; mediaBusy = true; render(); say(schemes ? "Preparing scheme status…" : "Preparing results picture…");
+        java.util.function.Consumer<java.util.List<android.net.Uri>> ready = uris -> {
             if (started != session) return; mediaBusy = false; render();
             if (!store.load().encode().equals(snapshot.encode()) || !PrizeJson.encode(store.prizes()).equals(prizeSnapshot) || !store.planSnapshot().equals(planSnapshot)) {
-                say("Game or prizes changed. Share results again."); return;
+                say(schemes ? "Game or prizes changed. Share scheme status again." : "Game or prizes changed. Share results again."); return;
             }
             InputConnection editor = emptyEditor(); if (editor == null) return;
-            if (uris.size() == 1 && Sharing.insert(editor, getCurrentInputEditorInfo(), uris.get(0), "image/png")) say("Results picture ready · check it, then Send.");
+            if (uris.size() == 1 && Sharing.insert(editor, getCurrentInputEditorInfo(), uris.get(0), "image/png")) say(schemes ? "Scheme status ready · check it, then Send." : "Results picture ready · check it, then Send.");
             else try { audio.stop(); Sharing.images(this, uris); say("Choose WhatsApp, your group, then Send."); }
             catch (RuntimeException error) { say("Could not open sharing. Try Results to share in the app."); }
-        }, error -> { if (started == session) { mediaBusy = false; render(); say(error); } });
+        };
+        java.util.function.Consumer<String> failed = error -> { if (started == session) { mediaBusy = false; render(); say(error); } };
+        if (schemes) Sharing.prepareSchemeStatus(this, snapshot, prizes, store.plan(), ready, failed);
+        else Sharing.prepareResults(this, snapshot, prizes, store.plan(), ready, failed);
     }
     private void media(String kind) {
         if (practice || mediaBusy || emptyEditor() == null) return; Game snapshot = store.load(); if (snapshot.latest() == 0) { say("Call a number first."); return; }

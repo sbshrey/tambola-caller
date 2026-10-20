@@ -97,6 +97,7 @@ public final class MainActivity extends Activity {
         text("Tap a winner", 25); text("In the chat: Winners → Tap prize + winner → Add family players & schemes once. Choose a prize group and prize. Claim for Varsha inserts her claim without awarding it. After checking all claims, tap each claimant. Insert winner announcement fills the message box and saves the award. Check it, then WhatsApp Send. No typing or microphone needed.", 19);
         text("Speak a winner", 25); text("In the chat: Winners → Speak prize + winner. Allow microphone once and return to your chat. Say Early five winner Asha Sharma, or King winners Asha aur Bina. Use Speech · change for Hindi. The prize must be enabled. Names are added and winners saved automatically, using the configured prize amount. Check the name in the message box, then WhatsApp Send. Two winners split the prize equally; three or more means Bogie with no payout.", 19);
         text("Pictures and voice clips", 25); text("Tap Share in the keyboard. Choose a picture or voice clip. If a chooser opens, select WhatsApp and your group. Check the preview, then Send. Sound played aloud stays on this phone.", 19);
+        text("Share progress during play", 25); text("Winners → Share scheme status picture lists remaining schemes, saved winners and Bogies. A claim stays open until you save the checked result. Send or clear any announcement first, then share the picture. It reflects saved results, not WhatsApp delivery.", 19);
         text("At the end of the game", 25); text("Winners → Share results picture groups names in columns with only each player’s won schemes and their total underneath. Bogies pay nothing. Share it before starting a new game. Check the image and recipient, then Send.", 19);
         text("Your privacy", 25); text("No accounts, ads, Internet or contacts permission in this app. Optional winner dictation asks for microphone access; your phone's speech service may process audio online. The app does not save microphone recordings. It saves winner names on this phone and checks the current draft to avoid overwriting it; chat text is not saved. Number voice clips are AI-generated and included in the app.", 17);
     }
@@ -235,18 +236,22 @@ public final class MainActivity extends Activity {
             store.plan(store.plan(), book, false); planGroup = "Other prizes";
         });
     }
-    private void results() { PrizeBook book = store.prizes(); text("Results to share", 28); if (!book.hasWinners()) { text("No winners saved yet. Add winners under Players & prizes, or keep playing.", 20); action("Players & prizes", Ui.PINK, () -> go("players")); return; }
+    private void results() { PrizeBook book = store.prizes(); text("Results to share", 28); action("Share scheme status picture", Ui.GREEN, () -> sharePrizePicture(true)); if (!book.hasWinners()) { text("No winners saved yet. Add winners under Players & prizes, or keep playing.", 20); action("Players & prizes", Ui.PINK, () -> go("players")); return; }
         action("Share results picture", Ui.GREEN, this::shareResultsPicture);
         ResultsViews.table(page, new ResultsTable(book, store.plan()));
         action("Share results to WhatsApp", Ui.GREEN, () -> { try { Sharing.text(this, store.prizes().results(store.load().count())); } catch (RuntimeException error) { toast("Could not open sharing. Use Winners in the keyboard."); } }); text("Or return to your group: keyboard → Winners → Share results picture → WhatsApp Send.", 18); }
-    private void shareResultsPicture() {
+    private void shareResultsPicture() { sharePrizePicture(false); }
+    private void sharePrizePicture(boolean schemes) {
         if (sharing) return; sharing = true; int started = viewSession; Game game = store.load(); PrizeBook book = store.prizes(); String prizes = PrizeJson.encode(book), planSnapshot = store.planSnapshot();
-        toast("Preparing results picture…");
-        Sharing.prepareResults(this, game, book, store.plan(), uris -> {
+        toast(schemes ? "Preparing scheme status…" : "Preparing results picture…");
+        java.util.function.Consumer<java.util.List<android.net.Uri>> ready = uris -> {
             if (isFinishing() || started != viewSession) return; sharing = false;
-            if (!store.load().encode().equals(game.encode()) || !PrizeJson.encode(store.prizes()).equals(prizes) || !store.planSnapshot().equals(planSnapshot)) { toast("Game or prizes changed. Share results again."); return; }
+            if (!store.load().encode().equals(game.encode()) || !PrizeJson.encode(store.prizes()).equals(prizes) || !store.planSnapshot().equals(planSnapshot)) { toast(schemes ? "Game or prizes changed. Share scheme status again." : "Game or prizes changed. Share results again."); return; }
             try { Sharing.images(this, uris); } catch (RuntimeException error) { toast("No sharing app is available."); }
-        }, error -> { if (started == viewSession) { sharing = false; toast(error); } });
+        };
+        java.util.function.Consumer<String> failed = error -> { if (started == viewSession) { sharing = false; toast(error); } };
+        if (schemes) Sharing.prepareSchemeStatus(this, game, book, store.plan(), ready, failed);
+        else Sharing.prepareResults(this, game, book, store.plan(), ready, failed);
     }
     private void confirm(String title, String message, Runnable action) { hideKeyboard(); new AlertDialog.Builder(this).setTitle(title).setMessage(message).setNegativeButton("Keep playing", null).setPositiveButton("Yes, continue", (dialog, which) -> safe(action)).show(); }
     private void share(String kind) {

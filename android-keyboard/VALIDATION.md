@@ -1,3 +1,42 @@
+# Tambola Keyboard 1.4.5: remaining schemes and winner updates
+
+Validated on 20 October 2026. Version code 12, local branch `feat/tap-winner-announcements`.
+
+## Behavior covered
+
+- **Share scheme status picture** is available near the top of Winners, under Call → Share…, and in the app's Results to share screen, including before any winner is saved.
+- Each snapshot lists selected **Remaining** schemes first with amounts, **Won** schemes with winner names and individual payouts, then **Bogie** schemes with claimants and no payout. Disabled schemes are omitted. Two-column cards keep ordinary lists compact; long lists paginate with repeated counts and section headings. Exceptionally long Bogie lists continue across pages without losing text.
+- A claim or an unsaved selection does not close a scheme. Only the host's saved decision moves it out of Remaining. The image does not claim to track WhatsApp delivery. Each share uses the latest saved state, so corrections, undo and new rounds are reflected in later pictures. Before the first call, all selected schemes are remaining.
+- Funded games require a confirmed matching plan. Existing drafts are protected, sharing does not change calls/prizes/ticket setup, and a changed game/editor during asynchronous preparation invalidates the handoff. Single pictures can be inserted into supported editors; several pages use Android's chooser with read-only URI grants. The host chooses the recipient and sends.
+- The inspected 42-scheme sample is one 1200 × 3930 PNG: 29 remaining, 11 won (including three shared awards), two Bogies, and ₹110 paid after 35 calls. It is synthetic sample data from a no-plan game, not a funded setup or a real result.
+
+## Checks
+
+All 10 Android cases passed in 110.096 seconds (seven new scheme-status cases and three final-results regressions). The two display scenarios passed again at 160% font scale (33.875 seconds) and in landscape (50.656 seconds); screenshots were inspected.
+
+The JVM suite passed all 60 tests with no failures/errors/skips. Debug/test/release builds and debug/release lint passed. Release inspection confirmed version 1.4.5/code 12, min SDK 26, target 35, no debug editor/speech fixtures, and a verified debug APK signature.
+
+New native image cases cover all 42 schemes before play, a mixed game, all schemes resolved, 500 schemes with long Hindi names, 100 maximum-length Bogie claimant names, exact coverage across pages, PNG decoding and read-only access. New UI cases exercise a real Varsha claim, draft protection, a shared winner announcement, fresh PNG equality with the saved game, a Bogie correction, new-round reset, blocked unconfirmed setup, approved pre-game sharing, and the app's single/multiple-image chooser. The chooser is intercepted and cancelled without sending to another app or person. Existing final-results image/provider/handoff cases are included as regression checks after sharing infrastructure reuse.
+
+The three full 90-number games documented under 1.4.2 remain prior evidence; they were not repeated for this sharing feature. Physical-phone and real WhatsApp delivery remain unverified.
+
+## Reproduce and artifacts
+
+Use the dedicated API 35 ARM64 emulator after boot/unlock completes and no system error dialog covers it. From `android-keyboard`:
+
+```sh
+ANDROID_HOME=/path/to/android/sdk bash ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease lintDebug lintRelease
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+adb shell am instrument -w -r -e class io.github.sbshrey.tambola.keyboard.SchemeStatusImageTest,io.github.sbshrey.tambola.keyboard.SchemeStatusUiTest,io.github.sbshrey.tambola.keyboard.ResultsImageTest#familyResultsPaginateWithAllNamesAndGrandTotal,io.github.sbshrey.tambola.keyboard.ResultsImageTest#keyboardSharesPictureWithoutDrawingOrChangingAwardsAndProtectsDrafts,io.github.sbshrey.tambola.keyboard.ResultsImageTest#imageShareIntentsGrantOnlyReadAccessToEveryPage io.github.sbshrey.tambola.keyboard.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+`releases/1.4.5/` contains the debug-signed test APK, unsigned release APK, checksums, installation notes and source commit. `validation/` contains test/build logs, unit/lint XML, native PNG samples and screenshots. `run-displays.py` repeats the new keyboard entry point/plan gate and app single/multiple-image sharing at 160% font scale and in landscape, restoring default settings afterward. Adjust its SDK path on another machine.
+
+Nothing was pushed or published. Updating the existing phone installation requires the original release signing key. The test APK cannot replace it; do not uninstall the live app to work around the signing mismatch.
+
+---
+
 # Tambola Keyboard 1.4.4: player columns with their winnings
 
 Validated on 20 October 2026. Version code 11, local branch `feat/tap-winner-announcements`.

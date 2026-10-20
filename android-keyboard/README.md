@@ -1,10 +1,10 @@
-# Tambola Keyboard 1.4.4 for Android
+# Tambola Keyboard 1.4.5 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
 **Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
 
-The 1.4.4 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
+The 1.4.5 changes below are built from this checkout. A production update must be signed with the existing release key; the debug APK is for a dedicated test device and cannot update the published app. Do not uninstall a live installation to work around a signature mismatch.
 
 ## Set up once
 
@@ -112,6 +112,14 @@ Tap **Winners → Players & prize amounts**, or open that screen from the app. A
 - Tap **Insert [prize] announcement** or **Insert all results** in the keyboard, then WhatsApp Send. Alternatively, the app's **Results to share** screen opens the share chooser.
 - Rename players without losing their awards. Clear wins before removing a winning player or turning off an awarded prize. Each scheme stays at ₹10 in new games. Existing older games retain their saved amounts until the next round.
 - Player names are typed or dictated; the app does not read contacts or WhatsApp group members. Limits: 100 players, 500 prize schemes, 2 paid winners per scheme (3+ claimants = Bogie), ₹10 per scheme in new games. No payments are made.
+
+## Share remaining schemes and winners during play
+
+Tap **Winners → Share scheme status picture**, or **Call → Share… → Share scheme status picture**. The full app also offers it under **Results to share**, even before any winner is saved.
+
+Each tap creates a fresh picture from the saved game: **Remaining** lists selected schemes still open and their prize amounts; **Won** lists the scheme, winner names and individual payouts (₹5 each for shared ₹10 prizes); **Bogie** lists claimants and no payout. Disabled schemes are omitted. The header gives the call count, latest number and totals for each status. Remaining and won schemes use two columns; long lists continue across numbered images with repeated headings. Long Bogie claimant lists continue without dropping names.
+
+A claim or an unsaved winner selection stays open until the host checks it and saves the result. The picture reflects saved decisions, not whether a WhatsApp message was delivered. Send or clear the announcement text before preparing the picture, then check the attachment and tap Send. Sharing does not draw a number, award a scheme or send messages automatically. A confirmed ticket plan is required when ticket tracking is enabled. Before the first call, all selected schemes appear as remaining. Corrections, undo and a new round are reflected the next time you share.
 
 ## Share the end-of-game results image
 

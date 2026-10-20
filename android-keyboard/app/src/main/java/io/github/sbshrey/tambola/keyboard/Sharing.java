@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 
 final class Sharing {
     static final String NUMBER = "number", RECENT = "recent", BOARD = "board", AUDIO = "audio";
@@ -34,12 +35,26 @@ final class Sharing {
     static List<Uri> createResults(Context context, Game game, PrizeBook book, TicketPlan plan) throws IOException {
         if (game.count() == 0) throw new IllegalArgumentException("Call a number first.");
         if (plan != null) plan.validateLive(book);
-        ResultsImage document = new ResultsImage(book, game.count(), plan); List<Uri> uris = new ArrayList<>(); List<File> files = new ArrayList<>();
+        ResultsImage document = new ResultsImage(book, game.count(), plan);
+        return writePictures(context, document.pages.size(), document::picture);
+    }
+    static void prepareSchemeStatus(Context context, Game game, PrizeBook book, TicketPlan plan, Consumer<List<Uri>> ready, Consumer<String> failed) {
+        Context app = context.getApplicationContext();
+        worker.execute(() -> { try { List<Uri> files = createSchemeStatus(app, game, book, plan); main.post(() -> ready.accept(files)); }
+            catch (IllegalArgumentException error) { main.post(() -> failed.accept(error.getMessage())); }
+            catch (IOException | RuntimeException error) { main.post(() -> failed.accept("Could not prepare scheme status. Please try again.")); } });
+    }
+    static List<Uri> createSchemeStatus(Context context, Game game, PrizeBook book, TicketPlan plan) throws IOException {
+        SchemeStatusImage document = new SchemeStatusImage(book, game, plan);
+        return writePictures(context, document.pages.size(), document::picture);
+    }
+    private static List<Uri> writePictures(Context context, int count, IntFunction<Bitmap> picture) throws IOException {
+        List<Uri> uris = new ArrayList<>(); List<File> files = new ArrayList<>();
         File folder = cleanFolder(context);
         try {
-            for (int page = 0; page < document.pages.size(); page++) {
+            for (int page = 0; page < count; page++) {
                 File file = new File(folder, UUID.randomUUID() + ".png"); files.add(file);
-                Bitmap bitmap = document.picture(page);
+                Bitmap bitmap = picture.apply(page);
                 try (OutputStream output = new FileOutputStream(file)) {
                     if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) throw new IOException("PNG failed");
                 } finally { bitmap.recycle(); }
@@ -112,11 +127,11 @@ final class Sharing {
         chooser(context, send);
     }
     static Intent imagesIntent(List<Uri> uris) {
-        if (uris.isEmpty()) throw new IllegalArgumentException("No results pictures.");
+        if (uris.isEmpty()) throw new IllegalArgumentException("No pictures to share.");
         Intent send = new Intent(uris.size() == 1 ? Intent.ACTION_SEND : Intent.ACTION_SEND_MULTIPLE).setType("image/png").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (uris.size() == 1) send.putExtra(Intent.EXTRA_STREAM, uris.get(0));
         else send.putParcelableArrayListExtra(Intent.EXTRA_STREAM, new ArrayList<>(uris));
-        ClipData clips = new ClipData("Tambola results", new String[]{"image/png"}, new ClipData.Item(uris.get(0)));
+        ClipData clips = new ClipData("Tambola pictures", new String[]{"image/png"}, new ClipData.Item(uris.get(0)));
         for (int i = 1; i < uris.size(); i++) clips.addItem(new ClipData.Item(uris.get(i)));
         send.setClipData(clips); return send;
     }
