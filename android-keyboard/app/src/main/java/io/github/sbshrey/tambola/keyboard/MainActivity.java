@@ -2,6 +2,7 @@ package io.github.sbshrey.tambola.keyboard;
 
 import android.app.*;
 import android.content.*;
+import android.net.Uri;
 import android.os.*;
 import android.provider.Settings;
 import android.text.InputType;
@@ -99,7 +100,13 @@ public final class MainActivity extends Activity {
         text("Pictures and voice clips", 25); text("Tap Share in the keyboard. Choose a picture or voice clip. If a chooser opens, select WhatsApp and your group. Check the preview, then Send. Sound played aloud stays on this phone.", 19);
         text("Share progress during play", 25); text("Winners → Share scheme status picture lists remaining schemes, saved winners and Bogies. Only a saved winner closes a scheme. A Bogie stays open for another claim. Send or clear any announcement first, then share the picture. It reflects saved results, not WhatsApp delivery.", 19);
         text("At the end of the game", 25); text("Winners → Share results picture groups names in columns with only each player’s won schemes and their total underneath. Bogies pay nothing. Share it before starting a new game. Check the image and recipient, then Send.", 19);
-        text("Your privacy", 25); text("No accounts, ads, Internet or contacts permission in this app. Optional winner dictation asks for microphone access; your phone's speech service may process audio online. The app does not save microphone recordings. It saves winner names on this phone and checks the current draft to avoid overwriting it; chat text is not saved. Number voice clips are AI-generated and included in the app.", 17);
+        text("Your privacy", 25); text("No accounts, ads, analytics, or contacts permission. Player names, game progress and settings stay on this phone. The keyboard checks the active draft only to protect text you have not sent. Optional winner dictation uses your phone's speech service, which may process audio online; this app does not keep recordings. Number voice clips are AI-generated and bundled offline.", 17);
+        action("Read privacy policy", Ui.PAPER, this::openPrivacyPolicy);
+    }
+    private void openPrivacyPolicy() {
+        Intent policy = new Intent(Intent.ACTION_VIEW, Uri.parse("https://sbshrey.github.io/tambola-caller/android-keyboard/privacy-policy.html"));
+        if (policy.resolveActivity(getPackageManager()) == null) { toast("No browser is available to open the privacy policy."); return; }
+        startActivity(policy);
     }
     private void practice() {
         text("Practice safely", 28); text("Nothing here is sent to WhatsApp. Your live game stays unchanged.", 20);

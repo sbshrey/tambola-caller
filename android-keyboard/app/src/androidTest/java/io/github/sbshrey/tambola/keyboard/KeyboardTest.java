@@ -32,6 +32,8 @@ public class KeyboardTest {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         new GameStore(context, false).save(Game.empty()); new GameStore(context, false).prizes(PrizeBook.defaults()); new GameStore(context, true).save(Game.empty());
         new Preferences(context).voice(false);
+        device.executeShellCommand("ime enable io.github.sbshrey.tambola.keyboard/.TambolaInputMethod");
+        device.executeShellCommand("ime set io.github.sbshrey.tambola.keyboard/.TambolaInputMethod");
         rule.launchActivity(new Intent().putExtra("section", "practice"));
         onMain(() -> input = (EditText) findInput(rule.getActivity().findViewById(android.R.id.content)));
         focus(true, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);

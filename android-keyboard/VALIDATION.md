@@ -1,4 +1,16 @@
-# Tambola Keyboard 1.4.7: open Bogies and correct winners during play
+# Tambola Keyboard 1.5.0: Google Play readiness
+
+Prepared on 10 November 2026. The historical 1.4.7 feature validation follows below.
+
+## Android 16 / API 36 checks
+
+- `testDebugUnitTest`, debug/test/release builds, debug/release lint, and `bundleRelease` passed with SDK 36, AGP 8.13.2 and Gradle 8.13. The JVM suite reports 62 passed, 0 failures/errors.
+- Ten selected Android UI tests passed on a clean API 36 ARM64 emulator: all seven `KeyboardTest` cases, both focused `BogieClaimUiTest` cases, and `VoicePermissionTest.denyThenGrantReturnsToChatAndKeepsCallingAvailable`. This was a focused migration check; the full 81-case instrumentation suite was not completed.
+- The first cold-emulator run exposed flaky UiAutomator objects and a `KeyboardTest` setup that relied on another test having selected Tambola Keyboard. The test harness now retries stale object lookups, and `KeyboardTest` explicitly enables/selects the app IME. The focused checks passed after those fixes.
+- A manual API 36 launch check confirmed the installed app reports target SDK 36. `bundletool validate` and `jarsigner -verify` passed for the local release AAB; its manifest reports package `io.github.sbshrey.tambola.keyboard`, code 15, version 1.5.0, target SDK 36, and the expected microphone/IME permissions. The generated AAB uses the same local certificate as 1.4.7 (SHA-256 `E4FA16E16E5F96D188C7F96BF87AF3ED8D3A11A7DE2D608D2BC03C3FFFF0394F`); the artifact and checksum are in the ignored `releases/1.5.0/` directory.
+- This does not verify a Play Console upload, phone-specific speech recognition, or actual WhatsApp delivery. The policy URL becomes live when its page is deployed from the repository. See [PLAY_STORE.md](PLAY_STORE.md) for signing, listing, assets, and owner actions.
+
+## Previous 1.4.7 feature validation
 
 Validated on 20 October 2026. Version code 14, local branch `feat/tap-winner-announcements`.
 

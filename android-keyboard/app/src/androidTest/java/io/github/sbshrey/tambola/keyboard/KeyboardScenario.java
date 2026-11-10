@@ -53,13 +53,21 @@ public abstract class KeyboardScenario {
             int stopped = 0;
             for (int i = 0; i < 20; i++) {
                 UiObject2 found = device.findObject(selector);
-                if (found != null && found.getVisibleBounds().height() >= Ui.dp(context, found.isClickable() ? 44 : 16)) return found;
+                try {
+                    if (found != null && found.getVisibleBounds().height() >= Ui.dp(context, found.isClickable() ? 44 : 16)) return found;
+                } catch (StaleObjectException changedDuringLookup) {
+                    device.waitForIdle();
+                    continue;
+                }
                 UiObject2 panel = device.findObject(By.desc("Tambola controls"));
                 if (panel == null) panel = device.wait(Until.findObject(By.clazz(android.widget.ScrollView.class)), 5000);
                 if (panel == null) screenshot("missing-scroll-panel");
                 assertNotNull("No scroll panel while looking for " + selector, panel);
                 // Overlapping, slow drags avoid flinging past a button in a short landscape viewport.
-                boolean more = panel.scroll(direction, 0.45f, Ui.dp(context, 200)); device.waitForIdle();
+                boolean more;
+                try { more = panel.scroll(direction, 0.45f, Ui.dp(context, 200)); }
+                catch (StaleObjectException changedDuringScroll) { more = true; }
+                device.waitForIdle();
                 if (more) stopped = 0; else if (++stopped == 2) break;
             }
         }

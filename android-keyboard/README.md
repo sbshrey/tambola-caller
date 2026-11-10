@@ -1,10 +1,10 @@
-# Tambola Keyboard 1.4.7 for Android
+# Tambola Keyboard 1.5.0 for Android
 
 **One phone. Next number → WhatsApp Send.** Only the host installs the app. Other players read the WhatsApp messages and mark their paper tickets.
 
-**Last published release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1).
+**Last published GitHub release:** [Download Tambola Keyboard 1.3.1](https://github.com/sbshrey/tambola-caller/releases/download/keyboard-v1.3.1/Tambola-Keyboard-1.3.1.apk) — signed APK, Android 8.0 or newer, approximately 24 MB. Install over the existing app to keep the saved game; do not uninstall first. [Release notes and checksums](https://github.com/sbshrey/tambola-caller/releases/tag/keyboard-v1.3.1). Version 1.5.0 is being prepared for Google Play; it has not been submitted or published.
 
-Version 1.4.7 is built locally and signed with a new release key created at the owner’s request on 20 October 2026. It is for fresh installations; it cannot update the published app signed with the original key. Future updates to this new installation must reuse the new key. Do not uninstall a live installation with saved games to work around a signature mismatch. Nothing has been published.
+The local 1.4.7 APK was built and signed with a new release key created at the owner’s request on 20 October 2026. It is for fresh installations; it cannot update the earlier 1.3.1 APK signed with the original key. Future updates to 1.4.7 installations must reuse the new key. Do not uninstall a live installation with saved games to work around a signature mismatch. Nothing has been published to Google Play.
 
 ## Set up once
 
@@ -143,7 +143,7 @@ If ticket planning is enabled, **Review tickets & schemes** and confirm the new 
 
 ## Privacy and compatibility
 
-No accounts, ads, analytics, Internet, contacts, external-storage or accessibility permissions in this app. Optional winner dictation requests `RECORD_AUDIO` at runtime. Android's [speech recognition service](https://developer.android.com/reference/android/speech/SpeechRecognizer) may process speech on remote servers using its own connectivity; offline recognition is not guaranteed. The app does not save microphone recordings or a transcript history. Recognized winner names are saved in the local prize book. The keyboard checks the immediate draft boundary and selected text to avoid overwriting a message; chat text is not stored. Password, non-text and the app's setup fields use the regular keyboard. Private game/settings data is excluded from cloud backup and device transfer. Uninstalling or clearing app data removes saved rounds.
+No accounts, ads, analytics, Internet, contacts, external-storage or accessibility permissions in this app. Optional winner dictation requests `RECORD_AUDIO` at runtime. Android's [speech recognition service](https://developer.android.com/reference/android/speech/SpeechRecognizer) may process speech on remote servers using its own connectivity; offline recognition is not guaranteed. The app does not save microphone recordings or a transcript history. Recognized winner names are saved in the local prize book. The keyboard checks the active draft boundary and selected text to avoid overwriting a message; chat text is not saved. Password, non-text and the app's setup fields use the regular keyboard. Private game/settings data is excluded from cloud backup and device transfer. Uninstalling or clearing app data removes saved rounds. Read the [Tambola Keyboard privacy policy](privacy-policy.html).
 
 The system-only `BIND_INPUT_METHOD` service permission lets Android bind the keyboard. The non-exported sharing provider grants read access only to a file the host chose to share. Local audio playback does not transmit sound to a group.
 
@@ -153,7 +153,11 @@ WhatsApp and a physical phone still need an acceptance check. Direct attachment 
 
 ## Build and test
 
-Java 17, Android SDK 35, AGP 8.7.3, Gradle 8.9. Set `ANDROID_HOME` or an ignored `local.properties`. No production libraries; AndroidX/JUnit are test-only. Gradle copies the existing website voice packs to generated assets and verifies all 270 file hashes against their manifests. It never calls OpenAI.
+Java 17, Android SDK 36, AGP 8.13.2, Gradle 8.13. Set `ANDROID_HOME` or an ignored `local.properties`. No production libraries; AndroidX/JUnit are test-only. Gradle copies the existing website voice packs to generated assets and verifies all 270 file hashes against their manifests. It never calls OpenAI.
+
+For the Google Play listing draft, privacy policy, signing gate and submission checklist, see [PLAY_STORE.md](PLAY_STORE.md). The policy page is [privacy-policy.html](privacy-policy.html).
+
+To build a signed Play App Bundle, set `TAMBOLA_KEYSTORE_PATH` and `TAMBOLA_KEYSTORE_PASSWORD_FILE`, then run `bash ./build-playstore.sh`. The script writes the AAB and SHA-256 checksum to the ignored `releases/1.5.0/` directory. The signing certificate must be registered as the upload key in Play Console.
 
 ```powershell
 ./gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug
